@@ -1,0 +1,32 @@
+<view class="wrap">
+  <view class="h2" style="margin-top:0">先复习</view>
+  <view class="group">
+    <view class="item">
+      <view class="item-main">
+        <view wx:if="{{due}}"><text class="big">{{due}}</text> 个词今天要复习</view>
+        <view wx:else class="muted">今天没有要复习的词</view>
+      </view>
+    </view>
+  </view>
+  <button wx:if="{{due}}" class="btn btn-main" style="margin-top:24rpx" bindtap="openReview">开始复习</button>
+
+  <view class="h2">再学新课</view>
+  <view class="group">
+    <view wx:if="{{next}}" class="item" bindtap="openLesson">
+      <view class="item-main">
+        <view class="ms big-ms">{{next.title}}</view>
+        <view class="muted small">{{next.zh}}</view>
+      </view>
+      <view class="item-go">›</view>
+    </view>
+    <view wx:else class="item muted">这条路线的课都学完了，新课正在准备。</view>
+  </view>
+  <button wx:if="{{next}}" class="btn {{due ? 'btn-ghost' : 'btn-main'}}" style="margin-top:24rpx" bindtap="openLesson">学这一课</button>
+
+  <view class="h2">学习记录</view>
+  <view class="stats">
+    <view class="stat"><view class="stat-n">{{stats.days}}</view><view class="stat-t">天</view></view>
+    <view class="stat"><view class="stat-n">{{stats.lessons}}</view><view class="stat-t">课</view></view>
+    <view class="stat"><view class="stat-n">{{stats.words}}</view><view class="stat-t">个词</view></view>
+  </view>
+</view>

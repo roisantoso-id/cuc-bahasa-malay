@@ -1,0 +1,41 @@
+page {
+  --brand: #0e6655;
+  --brand-tint: #e2efeb;
+  --accent: #d39b2a;
+  --paper: #f8f7f3;
+  --paper2: #eceae2;
+  --ink: #1f2523;
+  --ink2: #5b6461;
+  --line: #dcdcd2;
+  --bad: #b3412f;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 32rpx;
+  line-height: 1.6;
+}
+
+.wrap { padding: 32rpx 32rpx 64rpx; }
+.muted { color: var(--ink2); }
+.small { font-size: 26rpx; }
+.h1 { font-size: 48rpx; font-weight: 700; line-height: 1.25; }
+.h2 { font-size: 36rpx; font-weight: 700; margin: 48rpx 0 16rpx; }
+.ms { color: var(--brand); font-weight: 700; }
+
+/* 粗线分组,细线分条,不用卡片 */
+.group { border-top: 4rpx solid var(--ink); }
+.item { display: flex; align-items: center; justify-content: space-between; gap: 24rpx; padding: 28rpx 0; border-bottom: 2rpx solid var(--line); }
+.item-main { flex: 1; min-width: 0; }
+.item-go { color: var(--ink2); }
+.done { color: var(--brand); font-size: 26rpx; }
+
+.btn { display: flex; align-items: center; justify-content: center; height: 96rpx; border-radius: 48rpx; font-size: 32rpx; font-weight: 700; }
+.btn-main { background: var(--brand); color: #fff; }
+.btn-ghost { border: 3rpx solid var(--line); color: var(--ink); background: transparent; }
+.btn + .btn { margin-top: 20rpx; }
+button.btn { width: 100%; padding: 0; line-height: 96rpx; }
+button.btn::after { border: 0; }
+
+.stats { display: flex; border-top: 4rpx solid var(--ink); }
+.stat { flex: 1; padding: 20rpx 0; border-bottom: 2rpx solid var(--line); }
+.stat-n { font-size: 48rpx; font-weight: 800; line-height: 1.2; }
+.stat-t { font-size: 24rpx; color: var(--ink2); }

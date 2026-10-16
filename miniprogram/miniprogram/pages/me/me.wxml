@@ -1,0 +1,18 @@
+<view class="wrap">
+  <view class="stats">
+    <view class="stat"><view class="stat-n">{{stats.days}}</view><view class="stat-t">学习天数</view></view>
+    <view class="stat"><view class="stat-n">{{stats.lessons}}</view><view class="stat-t">已学课数</view></view>
+    <view class="stat"><view class="stat-n">{{stats.words}}</view><view class="stat-t">单词量</view></view>
+  </view>
+
+  <view class="group" style="margin-top:48rpx">
+    <view class="item" bindtap="changeTrack">
+      <view class="item-main">起点</view>
+      <view class="muted">{{trackName}} ›</view>
+    </view>
+    <button class="item plain" open-type="feedback">
+      <view class="item-main">意见反馈 / 报错</view>
+      <view class="item-go">›</view>
+    </button>
+  </view>
+</view>

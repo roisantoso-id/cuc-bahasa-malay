@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{SITE_BRAND}} · 用中文学马来语</title>
+<meta name="description" content="用中文讲解学马来语。微信小程序里学课文、生词和练习，零基础的中国学生和会说一些马来语的马来西亚华人都能用。">
+<!--IF_SITE_SITE_URL--><link rel="canonical" href="{{SITE_SITE_URL}}/"><!--/IF_SITE_SITE_URL-->
+<meta property="og:title" content="{{SITE_BRAND}} · 用中文学马来语">
+<meta property="og:description" content="微信小程序里学课文、生词和练习，每天十分钟。">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/js/nav.js" defer></script>
+</head>
+<body>
+<!--NAV-->
+<main>
+
+<section class="hero sec">
+  <div class="wrap hero-in">
+    <div>
+      <p class="muted">{{SITE_BRAND_MS}} · 中文讲解 · 微信小程序</p>
+      <h1><span>用中文学马来语，</span><span>每天十分钟</span></h1>
+      <p class="a-lede">课文、生词和练习都配中文讲解，每句都能听录音。完全没学过的中国学生从发音开始；已经会说一些的马来西亚华人，直接练书面语和语法。</p>
+      <div class="ctas">
+        <a class="btn btn-main" href="#open">打开小程序</a>
+      </div>
+      <p class="sub-link"><a href="/courses/">看课程安排 →</a></p>
+    </div>
+
+    <div class="mp" id="open">
+      <h2 style="font-size:20px;margin-bottom:12px">微信扫码，马上开始</h2>
+<!--IF_SITE_MP_QR-->      <div class="mp-qr"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}}小程序码" width="200" height="200" fetchpriority="high"></div>
+      <p><b>电脑：</b>用微信扫一扫。<b>手机：</b>截图后在微信里识别，或点下面的按钮。</p>
+<!--/IF_SITE_MP_QR-->
+<!--IFNOT_SITE_MP_QR-->      <div class="mp-qr empty">小程序码<br>（在 content/site.json 填 mp_qr）</div>
+      <p>不用下载 App，在微信里搜索小程序名就能打开。</p>
+<!--/IFNOT_SITE_MP_QR-->
+<!--IF_SITE_MP_LINK-->      <p><a class="btn btn-ghost" href="{{SITE_MP_LINK}}">在微信里打开</a></p>
+<!--/IF_SITE_MP_LINK-->
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="loanH">
+  <div class="wrap">
+    <div class="sec-h">
+      <h2 id="loanH">这些马来语，你可能已经认识</h2>
+      <p>马来语用拉丁字母，基本怎么拼就怎么读，也没有声调。很多日常词来自闽南话，华人一听就懂。点一下看看来源。</p>
+    </div>
+    <div class="loan" id="loan">
+      <button type="button" aria-expanded="false"><span class="ms">teh</span><span class="zh">茶</span><span class="src">闽南话「茶」tê</span></button>
+      <button type="button" aria-expanded="false"><span class="ms">tauhu</span><span class="zh">豆腐</span><span class="src">闽南话「豆腐」tāu-hū</span></button>
+      <button type="button" aria-expanded="false"><span class="ms">bihun</span><span class="zh">米粉</span><span class="src">闽南话「米粉」bí-hún</span></button>
+      <button type="button" aria-expanded="false"><span class="ms">kuih</span><span class="zh">糕点</span><span class="src">闽南话「粿」kóe</span></button>
+      <button type="button" aria-expanded="false"><span class="ms">mi</span><span class="zh">面条</span><span class="src">闽南话「面」mī</span></button>
+      <button type="button" aria-expanded="false"><span class="ms">kongsi</span><span class="zh">分享；公司</span><span class="src">闽南话「公司」kong-si</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="trackH">
+  <div class="wrap">
+    <div class="sec-h">
+      <h2 id="trackH">两种起点，一个小程序</h2>
+      <p>第一次打开时选一次，之后的课程按你的起点安排。</p>
+    </div>
+    <div class="track">
+      <div><h3>零基础</h3><p>适合中国学生。从字母和发音学起，再到打招呼、问路、点餐这些日常会话。</p></div>
+      <div><h3>会说一些</h3><p>适合马来西亚华人。跳过发音，重点练正式书面语、语法和阅读。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="featH">
+  <div class="wrap why-wrap">
+    <div><h2 id="featH">小程序里怎么学</h2><p class="muted">每天打开，先复习，再学新课。</p></div>
+    <ol class="why">
+      <li><b>课文</b><p>马来语句子配中文翻译，每句都能点开听。</p></li>
+      <li><b>生词</b><p>每课的生词单独列出，带词性和例句。</p></li>
+      <li><b>练习</b><p>听音选词、选择题、拼写，做完马上知道对错。</p></li>
+      <li><b>单词复习</b><p>按记忆情况安排每天要复习的词，忘了的会更早再出现。</p></li>
+      <li><b>学习记录</b><p>学了几天、几课、多少个词，一眼看清。</p></li>
+    </ol>
+  </div>
+</section>
+
+<!--IF_SITE_TEACHER_NAME-->
+<section class="sec" aria-labelledby="teacherH">
+  <div class="wrap why-wrap">
+    <div><h2 id="teacherH">谁在教</h2></div>
+    <dl class="facts">
+      <div><dt>老师</dt><dd>{{SITE_TEACHER_NAME}}</dd></div>
+<!--IF_SITE_TEACHER_TITLE-->      <div><dt>职称</dt><dd>{{SITE_TEACHER_TITLE}}</dd></div>
+<!--/IF_SITE_TEACHER_TITLE-->
+<!--IF_SITE_TEACHER_BIO-->      <div><dt>经历</dt><dd>{{SITE_TEACHER_BIO}}</dd></div>
+<!--/IF_SITE_TEACHER_BIO-->
+    </dl>
+  </div>
+</section>
+<!--/IF_SITE_TEACHER_NAME-->
+
+<section class="sec" aria-labelledby="stepsH">
+  <div class="wrap">
+    <h2 id="stepsH" style="margin-bottom:24px">三步开始</h2>
+    <ol class="steps">
+      <li><b>微信扫码</b><span>打开小程序，微信一键登录。</span></li>
+      <li><b>选起点</b><span>零基础，或者会说一些。</span></li>
+      <li><b>每天一课</b><span>十分钟左右，先复习再学新的。</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec faq" aria-labelledby="faqH">
+  <div class="wrap" style="max-width:820px">
+    <h2 id="faqH" style="margin-bottom:12px">常见问题</h2>
+    <details><summary>要下载 App 吗？</summary><p>不用。这是微信小程序，在微信里扫码或搜索名字就能打开，学习记录跟着微信账号走。</p></details>
+    <details><summary>完全没学过马来语，能学吗？</summary><p>能。选「零基础」，从字母和发音开始，每句都有中文翻译和录音。</p></details>
+    <details><summary>马来语难学吗？</summary><p>对中文母语者来说算入门快的语言：用拉丁字母，基本照读音拼写，没有声调，动词也不随时态变形。难点主要在词缀和书面语。</p></details>
+    <details><summary>马来语和印尼语一样吗？</summary><p>大部分相通，能互相听懂，但有些拼写、用词和发音不同。这里教的是马来西亚的马来语。</p></details>
+  </div>
+</section>
+
+</main>
+<!--FOOT-->
+<script>
+  // 闽南话借词:点一下显示来源
+  document.querySelectorAll('#loan button').forEach(b => b.addEventListener('click', () => {
+    b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))
+  }))
+</script>
+</body>
+</html>

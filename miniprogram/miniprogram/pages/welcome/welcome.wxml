@@ -1,0 +1,20 @@
+<view class="wrap">
+  <view class="h1">你的马来语现在是什么水平？</view>
+  <view class="muted" style="margin:16rpx 0 48rpx">选一次就好，以后可以在「我的」里改。</view>
+  <view class="group">
+    <view class="item" data-track="zero" bindtap="choose">
+      <view class="item-main">
+        <view class="choice">零基础</view>
+        <view class="muted small">没学过，从字母和发音开始</view>
+      </view>
+      <view class="item-go">›</view>
+    </view>
+    <view class="item" data-track="heritage" bindtap="choose">
+      <view class="item-main">
+        <view class="choice">会说一些</view>
+        <view class="muted small">日常能说，想练书面语和语法</view>
+      </view>
+      <view class="item-go">›</view>
+    </view>
+  </view>
+</view>

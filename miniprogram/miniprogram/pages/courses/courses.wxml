@@ -1,0 +1,16 @@
+<view class="wrap">
+  <block wx:for="{{courses}}" wx:key="id" wx:for-item="c">
+    <view class="h2" style="{{index === 0 ? 'margin-top:0' : ''}}">{{c.title}} <text class="muted small">{{c.desc}}</text></view>
+    <view class="group">
+      <view wx:for="{{c.lessons}}" wx:key="id" wx:for-item="l" wx:for-index="i" class="item" data-id="{{l.id}}" bindtap="open">
+        <view class="num">{{i + 1}}</view>
+        <view class="item-main">
+          <view class="ms">{{l.title}}</view>
+          <view class="muted small">{{l.zh}}</view>
+        </view>
+        <view wx:if="{{done[l.id]}}" class="done">已学 {{done[l.id].score}}%</view>
+        <view wx:else class="item-go">›</view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,58 @@
+<view wx:if="{{lesson}}">
+  <view class="tabs">
+    <view class="tab {{tab === 0 ? 'on' : ''}}" data-tab="0" bindtap="setTab">课文</view>
+    <view class="tab {{tab === 1 ? 'on' : ''}}" data-tab="1" bindtap="setTab">生词</view>
+    <view class="tab {{tab === 2 ? 'on' : ''}}" data-tab="2" bindtap="setTab">练习</view>
+  </view>
+
+  <view class="wrap">
+    <!-- 课文 -->
+    <view wx:if="{{tab === 0}}">
+      <view class="h1 ms">{{lesson.title}}</view>
+      <view class="group" style="margin-top:32rpx">
+        <view wx:for="{{lesson.sentences}}" wx:key="ms" class="item" data-audio="{{item.audio}}" bindtap="play">
+          <view class="item-main">
+            <view class="sent-ms">{{item.ms}}</view>
+            <view class="muted">{{item.zh}}</view>
+          </view>
+          <view wx:if="{{item.audio}}" class="play">播放</view>
+        </view>
+      </view>
+      <button class="btn btn-main" style="margin-top:40rpx" data-tab="1" bindtap="setTab">看生词</button>
+    </view>
+
+    <!-- 生词 -->
+    <view wx:if="{{tab === 1}}">
+      <view class="group">
+        <view wx:for="{{lesson.words}}" wx:key="ms" class="item" data-audio="{{item.audio}}" bindtap="play">
+          <view class="item-main">
+            <text class="ms word">{{item.ms}}</text>
+            <text class="muted small pos">{{item.pos}}</text>
+          </view>
+          <view class="zh">{{item.zh}}</view>
+        </view>
+      </view>
+      <button class="btn btn-main" style="margin-top:40rpx" data-tab="2" bindtap="setTab">做练习</button>
+    </view>
+
+    <!-- 练习 -->
+    <view wx:if="{{tab === 2}}">
+      <view wx:if="{{!finished}}">
+        <view class="muted small">第 {{qi + 1}} / {{quiz.length}} 题 · {{quiz[qi].promptMs ? '选中文意思' : '选马来语'}}</view>
+        <view class="prompt {{quiz[qi].promptMs ? 'ms' : ''}}">{{quiz[qi].prompt}}</view>
+        <view class="group">
+          <view wx:for="{{quiz[qi].options}}" wx:key="*this"
+                class="item opt {{picked && item === quiz[qi].answer ? 'right' : ''}} {{picked === item && item !== quiz[qi].answer ? 'wrong' : ''}}"
+                data-opt="{{item}}" bindtap="pick">{{item}}</view>
+        </view>
+        <button wx:if="{{picked}}" class="btn btn-main" style="margin-top:40rpx" bindtap="nextQ">{{qi + 1 === quiz.length ? '看结果' : '下一题'}}</button>
+      </view>
+      <view wx:else>
+        <view class="result">{{score}}<text class="small muted"> 分</text></view>
+        <view class="muted">答对 {{correct}} / {{quiz.length}}。这课的生词已加入复习，明天开始提醒你。</view>
+        <button class="btn btn-main" style="margin-top:40rpx" bindtap="back">完成</button>
+        <button class="btn btn-ghost" bindtap="retry">再练一次</button>
+      </view>
+    </view>
+  </view>
+</view>

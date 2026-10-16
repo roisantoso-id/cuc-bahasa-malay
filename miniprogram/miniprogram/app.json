@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/courses/courses",
+    "pages/me/me",
+    "pages/lesson/lesson",
+    "pages/review/review",
+    "pages/welcome/welcome"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#f8f7f3",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "马来语学习",
+    "backgroundColor": "#f8f7f3"
+  },
+  "tabBar": {
+    "color": "#5b6461",
+    "selectedColor": "#0e6655",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "今天" },
+      { "pagePath": "pages/courses/courses", "text": "课程" },
+      { "pagePath": "pages/me/me", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

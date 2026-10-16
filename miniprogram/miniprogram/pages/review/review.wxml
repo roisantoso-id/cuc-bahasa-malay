@@ -1,0 +1,20 @@
+<view class="wrap">
+  <view wx:if="{{queue.length}}">
+    <view class="muted small">还剩 {{queue.length}} 个</view>
+    <view class="card" bindtap="reveal">
+      <view class="ms word">{{queue[0].ms}}</view>
+      <view wx:if="{{shown}}" class="zh">{{queue[0].zh}}</view>
+      <view wx:else class="muted small">先想一想，再点这里看意思</view>
+    </view>
+    <view wx:if="{{shown}}" class="grades">
+      <button class="btn btn-ghost g" data-g="0" bindtap="grade">忘了</button>
+      <button class="btn btn-ghost g" data-g="1" bindtap="grade">模糊</button>
+      <button class="btn btn-main g" data-g="2" bindtap="grade">记得</button>
+    </view>
+  </view>
+  <view wx:else>
+    <view class="h1">今天复习完了</view>
+    <view class="muted" style="margin:16rpx 0 40rpx">复习了 {{doneCount}} 个词。明天再来。</view>
+    <button class="btn btn-main" bindtap="back">返回</button>
+  </view>
+</view>

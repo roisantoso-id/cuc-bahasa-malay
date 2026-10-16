@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+website/dist/
+miniprogram/project.private.config.json
+miniprogram/miniprogram_npm/
+.claude/settings.local.json
