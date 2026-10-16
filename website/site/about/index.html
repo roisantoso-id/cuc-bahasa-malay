@@ -4,20 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>关于我们 · {{SITE_BRAND}}</title>
-<meta name="description" content="我们做什么、谁在教、怎么联系。">
+<meta name="description" content="{{SITE_BRAND}} 是中国传媒大学马来语专业教师团队研发的马来语学习小程序。">
 <!--IF_SITE_SITE_URL--><link rel="canonical" href="{{SITE_SITE_URL}}/about/"><!--/IF_SITE_SITE_URL-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
 <script src="/js/nav.js" defer></script>
 </head>
 <body>
 <!--NAV-->
-<main class="wrap prose" style="max-width:820px">
+<main class="wrap prose">
   <p class="crumb"><a href="/">首页</a> · 关于我们</p>
   <h1>关于我们</h1>
-  <p class="a-lede">{{SITE_BRAND}}是一个用中文学马来语的微信小程序，面向中国学生和马来西亚华人。</p>
+  <p style="font-size:18px">{{SITE_BRAND}}（马来语「一起学吧」）是用中文学马来语的微信小程序，面向中国学生和马来西亚华人，由中国传媒大学马来语专业教师团队研发。</p>
 
   <h2>我们做什么</h2>
-  <p>把马来语课程做成每天十分钟能学完的小课：课文配中文翻译和录音，生词进入每日复习，练习当场判对错。</p>
+  <p>把马来语学习拆成每天十分钟能完成的小组：单词按记忆规律安排复习，文章和视频练阅读、听力，在线测试检查学习效果。</p>
 
 <!--IF_SITE_TEACHER_NAME-->  <h2>谁在教</h2>
   <dl class="facts">
@@ -30,7 +32,7 @@
 <!--/IF_SITE_TEACHER_NAME-->
 
   <h2>内容怎么做</h2>
-  <p>课程由马来语教师编写和审核。发现错误可以在小程序「我的」里反馈<!--IF_SITE_EMAIL-->，或写信到 <a href="mailto:{{SITE_EMAIL}}">{{SITE_EMAIL}}</a><!--/IF_SITE_EMAIL-->。</p>
+  <p>单词、文章、视频和试卷由教师团队在后台编写和审核后发布。发现错误可以在小程序「我的 › 意见反馈」里告诉我们<!--IF_SITE_EMAIL-->，或写信到 <a href="mailto:{{SITE_EMAIL}}">{{SITE_EMAIL}}</a><!--/IF_SITE_EMAIL-->。</p>
 
 <!--IF_SITE_OPERATOR-->  <h2>运营方</h2>
   <dl class="facts">
@@ -41,6 +43,7 @@
 <!--/IF_SITE_EMAIL-->
   </dl>
 <!--/IF_SITE_OPERATOR-->
+  <div class="ctas" style="margin-top:36px"><a class="btn btn-main" href="/#open">打开小程序</a></div>
 </main>
 <!--FOOT-->
 </body>
