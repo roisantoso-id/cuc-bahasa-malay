@@ -4,8 +4,23 @@
     {
       "name": "website",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["website/scripts/serve.mjs", "4173"],
+      "runtimeArgs": [
+        "website/scripts/serve.mjs",
+        "4173"
+      ],
       "port": 4173
+    },
+    {
+      "name": "design",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4180",
+        "--directory",
+        "design"
+      ],
+      "port": 4180
     }
   ]
 }
