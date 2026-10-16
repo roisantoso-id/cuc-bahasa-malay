@@ -1,0 +1,22 @@
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error === 'notfound'}}" image="empty" title="试卷不存在或已下架"><button class="btn btn-main" hover-class="hover" bindtap="back">返回试卷目录</button></hb-empty>
+  <hb-empty wx:elif="{{error}}" image="empty" title="试卷加载失败"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+  <block wx:else>
+    <image class="img" src="/assets/study.jpg" mode="aspectFit" />
+    <view class="row" style="gap:8rpx;flex-wrap:wrap;justify-content:center"><text wx:for="{{p.categories}}" wx:key="id" class="tag">{{item.name}}</text></view>
+    <view class="h1 center" style="margin-top:12rpx">{{p.title}}</view>
+    <view class="muted center">{{p.description || '这份试卷暂未提供说明。'}}</view>
+    <view class="facts">
+      <view><view class="n">{{p.questionCount}}</view>道题</view>
+      <view><view class="n">{{p.totalScore}}</view>总分</view>
+      <view><view class="n">{{p.passingScore}}</view>及格分</view>
+    </view>
+    <view class="card">
+      <view class="ms">考试说明</view>
+      <view class="muted small" style="margin-top:8rpx">{{p.instructions || '本试卷包含选择题、判断题和填空题，提交后由系统自动判分。'}}</view>
+    </view>
+    <view class="btns"><button class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="start">{{busy ? '正在准备测试' : '开始测试'}}</button></view>
+    <view class="muted small center" style="margin-top:16rpx">发布于 {{p.date}}</view>
+  </block>
+</view>

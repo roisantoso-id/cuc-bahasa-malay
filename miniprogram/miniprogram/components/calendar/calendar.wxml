@@ -1,0 +1,11 @@
+<view class="cal">
+  <view class="head">
+    <view class="nav" bindtap="prev" aria-role="button" aria-label="上个月">‹</view>
+    <view class="title">{{year}} 年 {{month}} 月</view>
+    <view class="nav" bindtap="next" aria-role="button" aria-label="下个月">›</view>
+  </view>
+  <view class="grid">
+    <view wx:for="{{week}}" wx:key="*this" class="wk">{{item}}</view>
+    <view wx:for="{{cells}}" wx:key="key" class="cell {{item.on ? 'on' : ''}} {{item.today ? 'today' : ''}}">{{item.d || ''}}</view>
+  </view>
+</view>

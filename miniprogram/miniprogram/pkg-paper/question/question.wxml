@@ -1,0 +1,22 @@
+<view>
+  <view class="prompt">{{q.prompt}}</view>
+  <view wx:if="{{q.audioResourceId}}" style="margin-bottom:20rpx"><audio-btn audio-id="{{q.audioResourceId}}" label="{{q.type === 'Dictation' ? '听写音频' : '题目音频'}}" /></view>
+
+  <block wx:if="{{q.type === 'SingleChoice'}}">
+    <view wx:for="{{q.options}}" wx:key="id" class="opt {{answer.selectedOptionId === item.id ? 'on' : ''}}" data-id="{{item.id}}" bindtap="pick">{{item.text}}</view>
+  </block>
+  <view wx:elif="{{q.type === 'TrueFalse'}}" class="tf">
+    <view class="opt {{answer.booleanAnswer === true ? 'on' : ''}}" data-v="1" bindtap="judge">正确</view>
+    <view class="opt {{answer.booleanAnswer === false ? 'on' : ''}}" data-v="0" bindtap="judge">错误</view>
+  </view>
+  <block wx:elif="{{q.type === 'FillBlank'}}">
+    <view class="label">填空答案</view>
+    <input class="input" value="{{answer.textAnswer}}" maxlength="1000" disabled="{{disabled}}" bindinput="fill" bindblur="blur" />
+  </block>
+  <block wx:elif="{{q.type === 'Dictation'}}">
+    <view wx:for="{{q.dictationBlanks}}" wx:key="sortOrder" class="field">
+      <view class="label">第 {{index + 1}} 空</view>
+      <input class="input" value="{{answer.textAnswers[index]}}" disabled="{{disabled}}" data-i="{{index}}" bindinput="blank" bindblur="blur" />
+    </view>
+  </block>
+</view>

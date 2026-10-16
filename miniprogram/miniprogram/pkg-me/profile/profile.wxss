@@ -1,0 +1,2 @@
+.avatar { width: 180rpx; height: 180rpx; border-radius: 50%; background: var(--green-l); margin-bottom: 12rpx; }
+.ta { height: 220rpx; padding: 20rpx 24rpx; width: auto; }

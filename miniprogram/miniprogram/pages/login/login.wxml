@@ -1,0 +1,42 @@
+<view class="wrap">
+  <image class="hero" src="/assets/welcome.jpg" mode="aspectFit" />
+  <view class="h1 center">{{mode === 'login' ? '登录 JomBelajar' : mode === 'register' ? '创建 JomBelajar 账户' : '重置密码'}}</view>
+  <view class="muted center small" style="margin-bottom:32rpx">{{mode === 'login' ? '登录后继续你的马来语学习。' : mode === 'register' ? '注册后即可保存你的学习记录。' : '使用注册邮箱接收验证码。'}}</view>
+
+  <view wx:if="{{mock}}" class="tip">演示模式：任意邮箱 + 8 位以上密码即可登录</view>
+  <view wx:if="{{notice}}" class="tip ok">{{notice}}</view>
+
+  <view class="field">
+    <view class="label">邮箱</view>
+    <input class="input" type="text" value="{{email}}" data-k="email" bindinput="input" placeholder="you@example.com" />
+  </view>
+  <view wx:if="{{mode !== 'login'}}" class="field">
+    <view class="label">{{mode === 'register' ? '注册验证码' : '邮箱验证码'}}</view>
+    <view class="row">
+      <input class="input" style="flex:1" type="number" maxlength="6" value="{{code}}" data-k="code" bindinput="input" />
+      <button class="btn btn-ghost btn-sm" hover-class="hover" disabled="{{wait > 0}}" bindtap="sendCode">{{wait > 0 ? wait + 's 后重发' : '发送验证码'}}</button>
+    </view>
+  </view>
+  <view class="field">
+    <view class="label">{{mode === 'forgot' ? '新密码' : '密码'}}（最小 8 位）</view>
+    <input class="input" password value="{{password}}" data-k="password" bindinput="input" />
+  </view>
+  <view wx:if="{{mode !== 'login'}}" class="field">
+    <view class="label">{{mode === 'forgot' ? '确认新密码' : '确认密码'}}</view>
+    <input class="input" password value="{{password2}}" data-k="password2" bindinput="input" />
+  </view>
+  <view wx:if="{{error}}" class="err">{{error}}</view>
+
+  <view class="btns">
+    <button class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="submit">{{mode === 'login' ? '登录' : mode === 'register' ? '注册' : '重置密码'}}</button>
+    <button wx:if="{{wechat && mode === 'login'}}" class="btn btn-ghost" hover-class="hover" disabled="{{busy}}" bindtap="wechatLogin">微信一键登录</button>
+  </view>
+
+  <view class="links">
+    <block wx:if="{{mode === 'login'}}">
+      <text class="link" data-mode="forgot" bindtap="setMode">忘记密码？</text>
+      <text class="link" data-mode="register" bindtap="setMode">注册账户</text>
+    </block>
+    <text wx:else class="link" data-mode="login" bindtap="setMode">已有账户？返回登录</text>
+  </view>
+</view>

@@ -1,0 +1,30 @@
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="测试不存在" desc="请从试卷详情进入测试。" />
+  <block wx:else>
+    <view class="head">
+      <image class="img" src="/assets/{{r.isPassed ? 'pass' : 'fail'}}.jpg" mode="aspectFit" />
+      <view class="score"><text class="big {{r.isPassed ? 'ok' : 'no'}}">{{r.score}}</text> / {{r.paperTotalScore}}</view>
+      <text class="tag {{r.isPassed ? '' : 'coral'}}">{{r.isPassed ? '已通过' : '未通过'}}</text>
+      <view class="muted small" style="margin-top:12rpx">{{r.paperTitle}} · 第 {{r.attemptNumber}} 次测试 · 及格分 {{r.paperPassingScore}} · 提交于 {{r.date}}</view>
+    </view>
+
+    <view class="h2">逐题结果</view>
+    <view wx:for="{{r.questions}}" wx:key="questionId" class="card q {{item.isCorrect ? 'q-ok' : 'q-no'}}">
+      <view class="between small">
+        <text class="ms">第 {{index + 1}} 题 · {{item.typeLabel}}</text>
+        <text class="{{item.isCorrect ? 'okc' : 'noc'}} ms">{{item.isCorrect ? '正确' : '错误'}} · {{item.awardedPoints}} 分</text>
+      </view>
+      <view class="prompt">{{item.prompt}}</view>
+      <audio-btn wx:if="{{item.audioResourceId}}" audio-id="{{item.audioResourceId}}" label="题目音频" />
+      <view class="small" style="margin-top:12rpx">你的答案：<text class="{{item.isCorrect ? 'okc' : 'noc'}}">{{item.mine}}</text></view>
+      <view wx:if="{{!item.isCorrect}}" class="small">正确答案：<text class="okc">{{item.right}}</text></view>
+      <view wx:if="{{item.explanation}}" class="exp small">解析：{{item.explanation}}</view>
+    </view>
+
+    <view class="btns">
+      <button class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="again">再做一次</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="backDetail">返回试卷详情</button>
+    </view>
+  </block>
+</view>

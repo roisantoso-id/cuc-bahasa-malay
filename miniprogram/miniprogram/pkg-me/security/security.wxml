@@ -1,0 +1,33 @@
+<view class="wrap">
+  <view class="seg">
+    <view class="seg-i {{tab === 'email' ? 'on' : ''}}" data-t="email" bindtap="setTab">修改邮箱</view>
+    <view class="seg-i {{tab === 'password' ? 'on' : ''}}" data-t="password" bindtap="setTab">重置密码</view>
+    <view class="seg-i {{tab === 'delete' ? 'on' : ''}}" data-t="delete" bindtap="setTab">删除账号</view>
+  </view>
+
+  <view class="muted small" style="margin:24rpx 0">
+    <text wx:if="{{tab === 'email'}}">当前邮箱：{{email}}</text>
+    <text wx:elif="{{tab === 'password'}}">验证码发送到当前邮箱。成功后所有设备需重新登录。</text>
+    <text wx:else class="danger">删除后账号资料将被匿名化，所有设备会立即退出，且无法自行恢复。</text>
+  </view>
+
+  <view wx:if="{{tab === 'email'}}" class="field">
+    <view class="label">新邮箱</view>
+    <input class="input" value="{{newEmail}}" data-k="newEmail" bindinput="input" />
+  </view>
+  <view class="field">
+    <view class="label">邮箱验证码</view>
+    <view class="row">
+      <input class="input" style="flex:1" type="number" maxlength="6" value="{{code}}" data-k="code" bindinput="input" />
+      <button class="btn btn-ghost btn-sm" hover-class="hover" disabled="{{wait > 0}}" bindtap="sendCode">{{wait > 0 ? wait + 's 后重发' : '发送验证码'}}</button>
+    </view>
+  </view>
+  <block wx:if="{{tab === 'password'}}">
+    <view class="field"><view class="label">新密码（最小 8 位）</view><input class="input" password value="{{pwd}}" data-k="pwd" bindinput="input" /></view>
+    <view class="field"><view class="label">确认新密码</view><input class="input" password value="{{pwd2}}" data-k="pwd2" bindinput="input" /></view>
+  </block>
+  <view wx:if="{{error}}" class="err">{{error}}</view>
+  <view class="btns">
+    <button class="btn {{tab === 'delete' ? 'btn-danger' : 'btn-main'}}" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="submit">{{tab === 'email' ? '确认修改邮箱' : tab === 'password' ? '确认重置密码' : '永久删除账号'}}</button>
+  </view>
+</view>

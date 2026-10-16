@@ -1,0 +1,4 @@
+<view wx:if="{{audioId}}" class="ab" hover-class="ab-hover" catchtap="tap" aria-role="button" aria-label="{{label || '播放发音'}}">
+  <view class="ic"><view class="tri" /></view>
+  <text wx:if="{{label}}" class="lb">{{label}}</text>
+</view>

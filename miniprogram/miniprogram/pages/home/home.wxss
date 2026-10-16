@@ -1,0 +1,13 @@
+.hello { font-size: 44rpx; font-weight: 900; color: var(--green-d); }
+.streak { background: #ffe9e6; color: #d94a3a; font-weight: 900; padding: 10rpx 22rpx; border-radius: 999rpx; font-size: 26rpx; }
+.flame { color: var(--coral); }
+.goal { display: flex; align-items: center; gap: 16rpx; margin-top: 28rpx; background: var(--blue); color: #fff; border-radius: 36rpx; padding: 20rpx 28rpx 20rpx 12rpx; box-shadow: 0 8rpx 0 #2f86d6; }
+.goal-img { width: 180rpx; height: 180rpx; border-radius: 28rpx; background: #fff; flex: none; }
+.goal-t { font-size: 38rpx; font-weight: 900; }
+.goal-d { font-size: 26rpx; opacity: .9; }
+.stats { display: flex; gap: 20rpx; margin-top: 36rpx; }
+.stat { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 28rpx; padding: 18rpx 0; text-align: center; box-shadow: 0 6rpx 0 var(--line); }
+.n { font-size: 44rpx; font-weight: 900; line-height: 1.2; }
+.cal-foot { display: flex; justify-content: space-between; margin-top: 20rpx; padding-top: 16rpx; border-top: 2rpx solid var(--line); font-size: 24rpx; color: var(--ink2); }
+.b { font-size: 34rpx; font-weight: 900; color: var(--ink); margin-right: 6rpx; }
+.word { font-size: 36rpx; }

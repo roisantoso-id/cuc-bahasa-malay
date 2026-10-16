@@ -1,6 +1,0 @@
-.card { border-top: 4rpx solid var(--ink); border-bottom: 2rpx solid var(--line); padding: 96rpx 0; margin: 24rpx 0 40rpx; text-align: center; }
-.word { font-size: 72rpx; }
-.zh { font-size: 40rpx; margin-top: 16rpx; }
-.grades { display: flex; gap: 20rpx; }
-.grades .g { flex: 1; margin: 0; }
-.btn + .btn.g { margin-top: 0; }

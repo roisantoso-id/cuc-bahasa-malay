@@ -1,18 +1,37 @@
 <view class="wrap">
-  <view class="stats">
-    <view class="stat"><view class="stat-n">{{stats.days}}</view><view class="stat-t">学习天数</view></view>
-    <view class="stat"><view class="stat-n">{{stats.lessons}}</view><view class="stat-t">已学课数</view></view>
-    <view class="stat"><view class="stat-n">{{stats.words}}</view><view class="stat-t">单词量</view></view>
+  <view class="profile card card-tap" hover-class="hover" data-url="/pkg-me/profile/profile" bindtap="go">
+    <image class="avatar" src="{{me.avatarUrl || '/assets/avatar.jpg'}}" mode="aspectFill" />
+    <view class="item-main">
+      <view class="name">{{me.nickname || '未设置昵称'}}</view>
+      <view class="muted small">{{me.email}}</view>
+    </view>
+    <text class="arrow">编辑 ›</text>
   </view>
 
-  <view class="group" style="margin-top:48rpx">
-    <view class="item" bindtap="changeTrack">
-      <view class="item-main">起点</view>
-      <view class="muted">{{trackName}} ›</view>
-    </view>
-    <button class="item plain" open-type="feedback">
-      <view class="item-main">意见反馈 / 报错</view>
-      <view class="item-go">›</view>
-    </button>
+  <view class="stats">
+    <view class="stat"><view class="n" style="color:var(--coral)">{{streak}}</view><view class="muted small">连续打卡</view></view>
+    <view class="stat"><view class="n" style="color:var(--green)">{{learning.todayLearnedCount || 0}}</view><view class="muted small">今日学习</view></view>
+    <view class="stat"><view class="n">{{learning.totalLearnedCount || 0}}</view><view class="muted small">累计学习</view></view>
   </view>
+
+  <view class="h2">单词</view>
+  <view class="card list">
+    <view class="item" hover-class="hover-row" data-url="/pkg-word/favorites/favorites" bindtap="go"><view class="item-main">收藏本</view><text class="arrow">›</text></view>
+    <view class="item" hover-class="hover-row" data-url="/pkg-word/exclusions/exclusions" bindtap="go"><view class="item-main">已停止复习的词</view><text class="arrow">›</text></view>
+    <view class="item" hover-class="hover-row" data-url="/pkg-me/settings/settings" bindtap="go"><view class="item-main">单词学习设置<view class="muted small">每组数量、目标记忆保持率</view></view><text class="arrow">›</text></view>
+  </view>
+
+  <view class="h2">在线测试</view>
+  <view class="card list">
+    <view class="item" hover-class="hover-row" data-url="/pkg-paper/wrong/wrong" bindtap="go"><view class="item-main">错题本<view class="muted small">查看自动收录的错题并逐题重做</view></view><text class="arrow">›</text></view>
+  </view>
+
+  <view class="h2">账号</view>
+  <view class="card list">
+    <view class="item" hover-class="hover-row" data-url="/pkg-me/security/security" bindtap="go"><view class="item-main">账户安全<view class="muted small">修改邮箱、重置密码、删除账号</view></view><text class="arrow">›</text></view>
+    <button class="item fb" open-type="feedback"><view class="item-main">意见反馈 / 报错</view><text class="arrow">›</text></button>
+  </view>
+
+  <button class="btn btn-ghost" hover-class="hover" style="margin-top:48rpx" bindtap="logout">退出登录</button>
+  <view class="muted small center" style="margin-top:32rpx">JomBelajar · 中国传媒大学马来语专业教师团队研发</view>
 </view>

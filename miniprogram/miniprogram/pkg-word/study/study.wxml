@@ -1,0 +1,97 @@
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在准备单词学习" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="empty" title="单词学习加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="choose">重新加载</button></hb-empty>
+  <hb-empty wx:elif="{{view === 'empty'}}" image="cheer" title="当前学习已完成" desc="没有到期复习或待学新词，明天再来吧。"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
+  <hb-empty wx:elif="{{view === 'nocard'}}" image="empty" title="暂时没有可显示的卡片，请刷新学习进度。"><button class="btn btn-main" hover-class="hover" bindtap="refresh">刷新进度</button></hb-empty>
+
+  <block wx:else>
+    <!-- 顶部进度 -->
+    <view wx:if="{{view === 'mem' || view === 'spell'}}">
+      <view class="between small">
+        <text class="tag {{view === 'spell' ? 'blue' : ''}}">{{view === 'spell' ? '拼写阶段' : '记忆阶段'}}</text>
+        <text class="muted">{{passed}} / {{valid}}</text>
+        <view class="fav {{item.isFavorite ? 'on' : ''}}" bindtap="toggleFav">{{item.isFavorite ? '♥ 已收藏' : '♡ 收藏'}}</view>
+      </view>
+      <view class="bar" style="margin-top:16rpx"><view class="bar-in" style="width:{{pct}}%" /></view>
+      <view wx:if="{{view === 'mem'}}" class="muted small center" style="margin-top:12rpx">新词 {{s.newCount}} · 学习中 {{s.learningCount}} · 复习 {{s.reviewCount}}</view>
+    </view>
+
+    <!-- 记忆 -->
+    <view wx:if="{{view === 'mem'}}">
+      <view class="flash">
+        <view class="hw">{{item.memorization.headword}}</view>
+        <audio-btn audio-id="{{item.memorization.audioResourceId}}" label="单词音频" />
+        <view wx:if="{{!revealed}}" class="muted small" style="margin-top:24rpx">先回忆它的含义，再显示答案。</view>
+      </view>
+      <block wx:if="{{revealed}}">
+        <view class="card">
+          <view wx:for="{{item.senses}}" wx:for-item="se" wx:key="definition" class="sense">
+            <view><text class="tag gray">{{se.posLabel}}</text> <text class="def">{{se.definition}}</text></view>
+            <view wx:if="{{se.usageNote}}" class="muted small">用法：{{se.usageNote}}</view>
+            <view wx:for="{{se.examples}}" wx:for-item="ex" wx:key="sentence" class="example">
+              <view class="row"><text class="ms">{{ex.sentence}}</text><audio-btn audio-id="{{ex.audioResourceId}}" /></view>
+              <view class="muted small">{{ex.translation}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="muted small center" style="margin:28rpx 0 16rpx">回忆得怎么样？选择后安排下次复习。</view>
+        <view class="rates">
+          <view wx:for="{{ratings}}" wx:key="key" class="rate r-{{item.key}}" hover-class="hover" data-r="{{item.key}}" bindtap="rate">
+            <view class="rate-hint">{{item.hint}}</view>
+            <view class="rate-t">{{item.label}}</view>
+          </view>
+        </view>
+      </block>
+      <button wx:else class="btn btn-main" hover-class="hover" style="margin-top:32rpx" bindtap="reveal">显示答案</button>
+      <view wx:if="{{mode === 'review'}}" class="center" style="margin-top:32rpx"><text class="link small" bindtap="exclude">不再复习此词</text></view>
+      <view class="muted small center" style="margin-top:20rpx">本组记忆完成后查看小结，可选择是否练习拼写</view>
+    </view>
+
+    <!-- 小结 -->
+    <view wx:if="{{view === 'summary'}}">
+      <image class="big-img" src="/assets/cheer.jpg" mode="aspectFit" />
+      <view class="h1 center">本组学习小结</view>
+      <view class="muted center">完成 {{s.summary.wordCount}} 个单词的记忆练习，共评分 {{s.summary.ratingCount}} 次</view>
+      <view class="sum">
+        <view class="sum-i"><view class="n c-again">{{s.summary.againCount}}</view>重来</view>
+        <view class="sum-i"><view class="n c-hard">{{s.summary.hardCount}}</view>困难</view>
+        <view class="sum-i"><view class="n c-good">{{s.summary.goodCount}}</view>良好</view>
+        <view class="sum-i"><view class="n c-easy">{{s.summary.easyCount}}</view>简单</view>
+      </view>
+      <view class="muted small center">复习安排已保存。可以继续练习拼写，也可以直接结束本组。</view>
+      <view class="btns">
+        <button class="btn btn-main" hover-class="hover" data-skip="0" bindtap="summary">确认，进入拼写</button>
+        <button class="btn btn-ghost" hover-class="hover" data-skip="1" bindtap="summary">跳过拼写，完成本组</button>
+      </view>
+    </view>
+
+    <!-- 拼写 -->
+    <view wx:if="{{view === 'spell'}}">
+      <view class="card" style="margin-top:32rpx">
+        <view wx:for="{{item.senses}}" wx:for-item="se" wx:key="definition" class="sense"><text class="tag gray">{{se.posLabel}}</text> <text class="def">{{se.definition}}</text></view>
+      </view>
+      <view class="label" style="margin-top:28rpx">拼写单词</view>
+      <input class="input spell-in" value="{{answer}}" disabled="{{!!outcome}}" focus="{{!outcome}}" bindinput="onAnswer" bindconfirm="spell" confirm-type="done" />
+      <view wx:if="{{outcome}}" class="outcome {{outcome.result === 'Correct' ? 'good' : outcome.result === 'Incorrect' ? 'bad' : ''}}">
+        <view class="ms">{{outcome.result === 'Correct' ? '拼写正确' : outcome.result === 'Incorrect' ? '拼写错误' : '已跳过，稍后再练'}}</view>
+        <view wx:if="{{outcome.correctAnswer}}" class="small">正确答案：{{outcome.correctAnswer}}</view>
+      </view>
+      <view class="btns">
+        <button wx:if="{{!outcome}}" class="btn btn-main" hover-class="hover" disabled="{{busy}}" bindtap="spell">{{answer ? '提交拼写' : '不知道，跳过'}}</button>
+        <button wx:else class="btn btn-main" hover-class="hover" bindtap="next">{{last ? '查看结果' : '下一词'}}</button>
+        <button wx:if="{{!outcome}}" class="btn btn-ghost" hover-class="hover" data-skip="1" bindtap="summary">退出本次拼写</button>
+      </view>
+    </view>
+
+    <!-- 完成 -->
+    <view wx:if="{{view === 'done'}}">
+      <image class="big-img" src="/assets/cheer.jpg" mode="aspectFit" />
+      <view class="h1 center">本组已完成</view>
+      <view class="muted center">完成 {{s.completedCount}} 个，排除 {{s.excludedCount}} 个，跳过 {{s.skippedCount}} 个</view>
+      <view class="btns">
+        <button class="btn btn-main" hover-class="hover" bindtap="again">继续学习</button>
+        <button class="btn btn-ghost" hover-class="hover" bindtap="back">返回</button>
+      </view>
+    </view>
+  </block>
+</view>

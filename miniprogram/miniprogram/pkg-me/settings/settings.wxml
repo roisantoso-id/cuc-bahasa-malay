@@ -1,0 +1,20 @@
+<view class="wrap">
+  <hb-empty wx:if="{{!s}}" image="loading" title="正在加载…" />
+  <block wx:else>
+    <view class="card">
+      <view class="between"><text class="ms">每组新词数量</text><text class="v">{{s.dailyWordStudyCount}}</text></view>
+      <slider min="1" max="100" value="{{s.dailyWordStudyCount}}" activeColor="#2fae66" block-size="22" bindchanging="onStudy" bindchange="onStudy" />
+    </view>
+    <view class="card">
+      <view class="between"><text class="ms">每组复习数量</text><text class="v">{{s.dailyWordReviewCount}}</text></view>
+      <slider min="1" max="200" value="{{s.dailyWordReviewCount}}" activeColor="#4aa8ff" block-size="22" bindchanging="onReview" bindchange="onReview" />
+    </view>
+    <view class="card">
+      <view class="between"><text class="ms">目标记忆保持率</text><text class="v">{{retention}}%</text></view>
+      <slider min="70" max="97" value="{{retention}}" activeColor="#ffc83d" block-size="22" bindchanging="onRetention" bindchange="onRetention" />
+      <view class="muted small">建议 90%。提高保持率通常意味着更频繁的复习；不会立即重排已有日期。</view>
+    </view>
+    <view class="btns"><button class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="save">保存设置</button></view>
+    <view class="muted small center" style="margin-top:16rpx">每组数量从下一组生效；目标保持率从下一次评分生效。</view>
+  </block>
+</view>

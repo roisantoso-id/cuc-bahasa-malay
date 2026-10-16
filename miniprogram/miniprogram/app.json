@@ -1,28 +1,38 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/courses/courses",
+    "pages/home/home",
+    "pages/read/read",
+    "pages/papers/papers",
     "pages/me/me",
-    "pages/lesson/lesson",
-    "pages/review/review",
-    "pages/welcome/welcome"
+    "pages/login/login"
+  ],
+  "subPackages": [
+    { "root": "pkg-word", "pages": ["study/study", "favorites/favorites", "exclusions/exclusions"] },
+    { "root": "pkg-read", "pages": ["article/article", "video/video"] },
+    { "root": "pkg-paper", "pages": ["detail/detail", "attempt/attempt", "result/result", "wrong/wrong"] },
+    { "root": "pkg-me", "pages": ["settings/settings", "profile/profile", "security/security"] }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#f8f7f3",
+    "navigationBarBackgroundColor": "#fafaf7",
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "马来语学习",
-    "backgroundColor": "#f8f7f3"
+    "navigationBarTitleText": "JomBelajar",
+    "backgroundColor": "#fafaf7"
   },
   "tabBar": {
-    "color": "#5b6461",
-    "selectedColor": "#0e6655",
+    "color": "#8a9097",
+    "selectedColor": "#2fae66",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/index/index", "text": "今天" },
-      { "pagePath": "pages/courses/courses", "text": "课程" },
+      { "pagePath": "pages/home/home", "text": "学习" },
+      { "pagePath": "pages/read/read", "text": "阅读" },
+      { "pagePath": "pages/papers/papers", "text": "测试" },
       { "pagePath": "pages/me/me", "text": "我的" }
     ]
+  },
+  "usingComponents": {
+    "hb-empty": "/components/hb-empty/hb-empty",
+    "audio-btn": "/components/audio-btn/audio-btn"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

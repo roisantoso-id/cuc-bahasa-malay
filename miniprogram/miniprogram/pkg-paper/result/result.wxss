@@ -1,0 +1,9 @@
+.head { text-align: center; }
+.img { width: 260rpx; height: 260rpx; display: block; margin: 0 auto; }
+.score { font-size: 32rpx; color: var(--ink2); margin-bottom: 12rpx; }
+.big { font-size: 96rpx; font-weight: 900; }
+.big.ok { color: var(--green); } .big.no { color: var(--coral); }
+.okc { color: var(--green-d); } .noc { color: #d94a3a; }
+.q-ok { border-color: #bfe8d0; } .q-no { border-color: #ffd0c9; }
+.prompt { font-weight: 800; margin: 12rpx 0; }
+.exp { margin-top: 12rpx; padding: 14rpx 18rpx; background: #fff7dd; border-radius: 16rpx; }

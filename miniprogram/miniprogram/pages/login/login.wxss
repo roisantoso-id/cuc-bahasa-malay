@@ -1,0 +1,4 @@
+.hero { width: 260rpx; height: 260rpx; display: block; margin: 0 auto 8rpx; }
+.tip { background: #fff7dd; border-radius: 20rpx; padding: 16rpx 24rpx; font-size: 24rpx; margin-bottom: 24rpx; }
+.tip.ok { background: var(--green-l); color: var(--green-d); }
+.links { display: flex; justify-content: space-between; margin-top: 36rpx; font-size: 26rpx; }

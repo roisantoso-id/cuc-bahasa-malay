@@ -1,0 +1,41 @@
+<view class="wrap">
+  <view class="wrong card card-tap" hover-class="hover" bindtap="openWrong">
+    <image src="/assets/fail.jpg" class="wrong-img" mode="aspectFit" />
+    <view class="item-main">
+      <view class="ms">错题本</view>
+      <view class="muted small">答错和未作答题目会自动收录</view>
+    </view>
+    <text wx:if="{{wrongCount}}" class="tag coral">{{wrongCount}} 题待掌握</text>
+    <text class="arrow">›</text>
+  </view>
+
+  <view class="search">
+    <input class="input" style="flex:1" value="{{keyword}}" maxlength="200" confirm-type="search" bindinput="onKeyword" bindconfirm="search" placeholder="搜索试卷标题" />
+    <button class="btn btn-ghost btn-sm" hover-class="hover" bindtap="search">搜索</button>
+  </view>
+  <scroll-view scroll-x class="cats" enhanced show-scrollbar="{{false}}">
+    <view class="chips">
+      <view class="chip {{!categoryId ? 'on' : ''}}" data-id="" bindtap="setCat">全部试卷</view>
+      <view wx:for="{{cats}}" wx:key="id" class="chip {{categoryId === item.id ? 'on' : ''}}" data-id="{{item.id}}" bindtap="setCat">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="试卷加载失败"><button class="btn btn-main" hover-class="hover" bindtap="reload">重新加载</button></hb-empty>
+  <hb-empty wx:elif="{{!items.length}}" image="empty" title="{{keyword || categoryId ? '没有找到匹配的试卷' : '暂时没有公开试卷'}}">
+    <button wx:if="{{keyword || categoryId}}" class="btn btn-ghost" hover-class="hover" bindtap="clear">清除筛选</button>
+  </hb-empty>
+  <block wx:else>
+    <view class="muted small" style="margin:8rpx 0 16rpx">共 {{total}} 份试卷</view>
+    <view wx:for="{{items}}" wx:key="id" class="card card-tap" hover-class="hover" data-id="{{item.id}}" bindtap="open">
+      <view class="row" style="gap:8rpx;flex-wrap:wrap"><text wx:for="{{item.categories}}" wx:for-item="c" wx:key="id" class="tag">{{c.name}}</text><text class="tag gray">客观题</text></view>
+      <view class="title">{{item.title}}</view>
+      <view class="muted small">{{item.description || '这份试卷暂未提供说明。'}}</view>
+      <view class="meta">
+        <text><text class="b">{{item.questionCount}}</text> 题</text>
+        <text>总分 <text class="b">{{item.totalScore}}</text></text>
+        <text>及格 <text class="b">{{item.passingScore}}</text></text>
+      </view>
+    </view>
+  </block>
+</view>

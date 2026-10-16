@@ -1,0 +1,16 @@
+<view class="wrap">
+  <view class="center">
+    <image class="avatar" src="{{avatar || '/assets/avatar.jpg'}}" mode="aspectFill" bindtap="chooseAvatar" />
+    <view><text class="link small" bindtap="chooseAvatar">{{avatar ? '更换头像' : '上传头像'}}</text></view>
+    <view class="muted small" style="margin-top:8rpx">{{me.email}} · 加入于 {{joined}}</view>
+  </view>
+  <view class="field" style="margin-top:40rpx">
+    <view class="label">昵称</view>
+    <input class="input" value="{{nickname}}" maxlength="60" placeholder="未设置昵称" bindinput="onNick" />
+  </view>
+  <view class="field">
+    <view class="between"><view class="label">个人简介</view><text class="muted small">{{bio.length}} / 500</text></view>
+    <textarea class="input ta" value="{{bio}}" maxlength="500" placeholder="尚未填写个人简介。" bindinput="onBio" />
+  </view>
+  <view class="btns"><button class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="save">保存资料</button></view>
+</view>

@@ -1,2 +1,0 @@
-.big { font-size: 56rpx; font-weight: 800; color: var(--brand); }
-.big-ms { font-size: 40rpx; }

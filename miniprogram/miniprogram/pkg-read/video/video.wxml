@@ -1,0 +1,18 @@
+<view>
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error === 'notfound'}}" image="empty" title="该视频当前无法访问"><button class="btn btn-main" hover-class="hover" bindtap="back">返回视频列表</button></hb-empty>
+  <hb-empty wx:elif="{{error === 'error'}}" image="empty" title="视频播放地址获取失败，请稍后重试。"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+  <block wx:else>
+    <video wx:if="{{play.masterPlaylistUrl && error !== 'play'}}" class="player" src="{{play.masterPlaylistUrl}}" poster="{{play.posterUrl || v.coverUrl}}" initial-time="{{play.positionSeconds}}" show-center-play-btn enable-play-gesture bindtimeupdate="onTime" bindpause="onPause" bindended="onEnded" binderror="onError" />
+    <view wx:else class="player ph">
+      <text>{{error === 'play' ? '视频加载失败，请重新加载。' : '演示数据没有视频文件'}}</text>
+    </view>
+    <view class="wrap">
+      <view class="row" style="gap:8rpx;flex-wrap:wrap"><text wx:for="{{v.categories}}" wx:key="id" class="tag">{{item.name}}</text></view>
+      <view class="h1" style="margin-top:12rpx">{{v.title}}</view>
+      <view class="muted small" style="margin-top:8rpx">{{v.author.nickname || 'JomBelajar 编辑'}} · 发布于 {{v.date}} · {{v.dur}}</view>
+      <view wx:if="{{play.positionSeconds > 0}}" class="tag blue" style="margin-top:16rpx">从上次的位置继续播放</view>
+      <view class="desc">{{v.description || '这个视频暂未提供简介。'}}</view>
+    </view>
+  </block>
+</view>

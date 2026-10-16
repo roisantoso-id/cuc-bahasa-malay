@@ -31,6 +31,14 @@ const PROMPTS = [
   { name: 'c-hero', size: '1536x1024', prompt: `${C} The hornbill mascot stands on the right side waving happily with one wing, holding a smartphone with the other wing; around it float a few rounded speech-bubble shapes (empty, no text) and small leaves. Leave the left 40% clean for a headline.` },
   { name: 'c-study', size: '1024x1024', prompt: `${C} The same hornbill mascot sits cross-legged reading a book, with a few blank flashcards floating around it and a small tropical plant beside it. Centered, plain background.` },
   { name: 'c-cheer', size: '1024x1024', prompt: `${C} The same hornbill mascot jumps with joy, wings up, confetti and small stars around it, celebrating finishing a lesson. Centered, plain background.` },
+  // 小程序用:登录欢迎、空状态、测试通过 / 未通过、打卡、默认头像、加载中
+  { name: 'c-welcome', size: '1024x1024', prompt: `${C} The same hornbill mascot bows politely with one wing on its chest and the other wing open in welcome, a small tropical hibiscus flower near its feet. Centered, plain background, lots of empty space around.` },
+  { name: 'c-empty', size: '1024x1024', prompt: `${C} The same hornbill mascot sits on the ground looking curiously into an empty open cardboard box, head tilted, one small question-mark-shaped leaf floating above. Calm and cute. Centered, plain background.` },
+  { name: 'c-pass', size: '1024x1024', prompt: `${C} The same hornbill mascot proudly holds up a big golden trophy cup with both wings, small sparkles around. Centered, plain background.` },
+  { name: 'c-fail', size: '1024x1024', prompt: `${C} The same hornbill mascot gives an encouraging thumbs-up with one wing while holding a pencil in the other, slightly sheepish but determined smile, as if saying try again. Centered, plain background.` },
+  { name: 'c-checkin', size: '1024x1024', prompt: `${C} The same hornbill mascot stands next to a large blank wall calendar and is stamping a big green check mark on it with a rubber stamp, a small flame shape beside it suggesting a streak. Centered, plain background.` },
+  { name: 'c-avatar', size: '1024x1024', prompt: `${C} Head-and-shoulders portrait of the same hornbill mascot, friendly smile, facing forward, centered inside a perfect circle of soft leaf-green background. Simple, works as a small round profile avatar.` },
+  { name: 'c-loading', size: '1024x1024', prompt: `${C} The same hornbill mascot running happily to the right carrying a small stack of books under one wing, motion lines behind it. Centered, plain background.` },
 ]
 
 const only = process.argv.slice(2)

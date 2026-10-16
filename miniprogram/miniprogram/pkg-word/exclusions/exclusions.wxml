@@ -1,0 +1,14 @@
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+  <hb-empty wx:elif="{{!items.length}}" image="empty" title="没有停止复习的单词" />
+  <view wx:else class="card list">
+    <view wx:for="{{items}}" wx:key="wordId" class="item">
+      <view class="item-main">
+        <text class="ms">{{item.headword}}</text>
+        <view class="muted small">{{item.first.posLabel}} {{item.first.definition}}</view>
+      </view>
+      <button class="btn btn-ghost btn-sm" hover-class="hover" data-id="{{item.wordId}}" bindtap="restore">恢复复习</button>
+    </view>
+  </view>
+</view>

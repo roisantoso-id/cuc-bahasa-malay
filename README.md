@@ -18,6 +18,13 @@
 
 ## 小程序
 
-1. 用实体注册小程序，拿到 AppID，填进 `miniprogram/project.config.json` 的 `appid`（现在是测试号 `touristappid`）。
-2. 开通云开发后，把环境 ID 填进 `miniprogram/miniprogram/config.js`；右键 `cloudfunctions/login` → 上传并部署。
-3. 示例课程在 `miniprogram/miniprogram/data/courses.js`，学习记录现在存在手机本地（`utils/store.js`），第二阶段改成云数据库。
+小程序是已上线系统 JomBelajar（www.bahasa.cn）的新客户端，直接调用它的接口，不另建后端。接口和功能清单见 [docs/JomBelajar功能清单.md](docs/JomBelajar功能清单.md)，视觉规范见 [docs/品牌规范.md](docs/品牌规范.md)（方向 C · 犀鸟）。
+
+- `miniprogram/miniprogram/config.js`：
+  - `useMock: true`：用本地演示数据，没有后端也能把整个流程点一遍。演示模式下，任意邮箱加 8 位以上密码就能登录。
+  - 接真实接口时改成 `false`，同时在开发者工具里勾选「不校验合法域名」。
+- `api/`：一个模块对应一组后端接口。`api/mock/` 是演示数据。
+- 页面：
+  - 4 个 tab：学习、阅读、测试、我的。
+  - 4 个分包：单词学习、阅读详情、试卷、我的设置。
+- 上线前还缺：小程序 AppID、后端的微信登录接口、刷新令牌不走 cookie。见功能清单第六节。

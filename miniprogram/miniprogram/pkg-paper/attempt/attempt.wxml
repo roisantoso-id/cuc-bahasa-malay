@@ -1,0 +1,37 @@
+<wxs module="S">
+  var L = { none: '未作答', saving: '保存中', saved: '已保存', failed: '保存失败', dirty: '未保存' };
+  module.exports = { label: function (s) { return L[s] || '' } };
+</wxs>
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="测试加载失败"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+  <block wx:else>
+    <view class="top">
+      <view class="between small">
+        <text class="ms">第 {{qi + 1}} / {{qs.length}} 题</text>
+        <text class="muted">已作答 {{answered}} / {{qs.length}} 题</text>
+        <text class="link" bindtap="toggleDir">题目目录</text>
+      </view>
+      <view class="bar" style="margin-top:12rpx"><view class="bar-in" style="width:{{answered / qs.length * 100}}%" /></view>
+    </view>
+
+    <view wx:if="{{dir}}" class="card dir">
+      <view wx:for="{{qs}}" wx:key="id" class="dot s-{{states[item.id]}} {{index === qi ? 'cur' : ''}}" data-i="{{index}}" bindtap="jump">{{index + 1}}</view>
+      <view class="legend muted small">绿 = 已保存 · 红 = 保存失败 · 灰 = 未作答</view>
+    </view>
+
+    <view class="qhead">
+      <text class="tag blue">{{qs[qi].typeLabel}}</text>
+      <text class="muted small">{{qs[qi].points}} 分</text>
+      <text class="muted small state s-{{states[qs[qi].id]}}">{{S.label(states[qs[qi].id])}}</text>
+      <text wx:if="{{states[qs[qi].id] === 'failed'}}" class="link small" bindtap="retry">重试保存</text>
+    </view>
+    <question q="{{qs[qi]}}" answer="{{answers[qs[qi].id]}}" disabled="{{submitting}}" bind:change="onChange" bind:blur="onBlur" />
+
+    <view class="nav">
+      <button class="btn btn-ghost" hover-class="hover" disabled="{{qi === 0}}" bindtap="prev">上一题</button>
+      <button wx:if="{{qi < qs.length - 1}}" class="btn btn-ghost" hover-class="hover" bindtap="next">下一题</button>
+    </view>
+    <button class="btn btn-main" hover-class="hover" style="margin-top:32rpx" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">提交试卷{{qs.length - answered ? '（' + (qs.length - answered) + ' 题未作答）' : ''}}</button>
+  </block>
+</view>

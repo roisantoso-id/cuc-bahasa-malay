@@ -1,7 +1,6 @@
 {
   "description": "马来语学习小程序",
   "miniprogramRoot": "miniprogram/",
-  "cloudfunctionRoot": "cloudfunctions/",
   "appid": "touristappid",
   "projectname": "bahasa-malay",
   "compileType": "miniprogram",

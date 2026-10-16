@@ -1,0 +1,34 @@
+<view class="wrap">
+  <block wx:if="{{!redo}}">
+    <view class="muted small" style="margin-bottom:20rpx">答错和未作答题目会自动收录。</view>
+    <view class="seg">
+      <view class="seg-i {{status === 'Pending' ? 'on' : ''}}" data-s="Pending" bindtap="setStatus">待掌握</view>
+      <view class="seg-i {{status === 'Mastered' ? 'on' : ''}}" data-s="Mastered" bindtap="setStatus">已掌握</view>
+    </view>
+    <hb-empty wx:if="{{loading}}" image="loading" title="正在加载错题..." />
+    <hb-empty wx:elif="{{error}}" image="empty" title="错题加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+    <hb-empty wx:elif="{{!items.length}}" image="{{status === 'Pending' ? 'cheer' : 'empty'}}" title="{{status === 'Pending' ? '暂无待掌握错题。' : '还没有已掌握的错题。'}}" />
+    <view wx:for="{{items}}" wx:key="id" class="card">
+      <view class="between small">
+        <text class="muted">{{item.paperTitle}} · {{item.typeLabel}}</text>
+        <text class="tag coral">错误 {{item.wrongCount}} 次</text>
+      </view>
+      <view class="prompt">{{item.prompt}}</view>
+      <button wx:if="{{status === 'Pending'}}" class="btn btn-ghost btn-sm" hover-class="hover" style="align-self:flex-start;display:inline-flex" data-id="{{item.id}}" bindtap="open">重做此题</button>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="between small" style="margin-bottom:24rpx"><text class="muted">{{redo.paperTitle}}</text><text class="link" bindtap="close">返回错题本</text></view>
+    <question q="{{redo}}" answer="{{answer}}" disabled="{{!!fb}}" bind:change="onChange" />
+    <view wx:if="{{fb}}" class="fb {{fb.ok ? 'ok' : 'no'}}">
+      <view class="ms">{{fb.ok ? '回答正确，已掌握。' : '回答错误，已恢复为待掌握。'}}</view>
+      <view wx:if="{{!fb.ok}}" class="small">标准答案：{{fb.right}}</view>
+      <view wx:if="{{fb.explanation}}" class="small">解析：{{fb.explanation}}</view>
+    </view>
+    <view class="btns">
+      <button wx:if="{{!fb}}" class="btn btn-main" hover-class="hover" loading="{{busy}}" disabled="{{busy}}" bindtap="submit">{{busy ? '正在判分' : '提交答案'}}</button>
+      <button wx:else class="btn btn-main" hover-class="hover" bindtap="close">返回错题本</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,40 @@
+<view class="wrap">
+  <view class="seg">
+    <view class="seg-i {{kind === 'article' ? 'on' : ''}}" data-kind="article" bindtap="setKind">文章</view>
+    <view class="seg-i {{kind === 'video' ? 'on' : ''}}" data-kind="video" bindtap="setKind">视频</view>
+  </view>
+
+  <view class="search">
+    <input class="input" style="flex:1" value="{{keyword}}" maxlength="200" confirm-type="search" bindinput="onKeyword" bindconfirm="search" placeholder="{{kind === 'article' ? '搜索标题或摘要' : '搜索标题或描述'}}" />
+    <button class="btn btn-ghost btn-sm" hover-class="hover" bindtap="search">搜索</button>
+  </view>
+
+  <scroll-view scroll-x class="cats" enhanced show-scrollbar="{{false}}">
+    <view class="chips">
+      <view class="chip {{!categoryId ? 'on' : ''}}" data-id="" bindtap="setCat">{{kind === 'article' ? '全部文章' : '全部视频'}}</view>
+      <view wx:for="{{cats}}" wx:key="id" class="chip {{categoryId === item.id ? 'on' : ''}}" data-id="{{item.id}}" bindtap="setCat">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="reload">重新加载</button></hb-empty>
+  <hb-empty wx:elif="{{!items.length}}" image="empty" title="{{keyword || categoryId ? (kind === 'article' ? '没有找到匹配的文章' : '没有找到匹配的视频') : (kind === 'article' ? '暂时没有公开文章' : '暂时没有公开视频')}}">
+    <button wx:if="{{keyword || categoryId}}" class="btn btn-ghost" hover-class="hover" bindtap="clear">清除筛选</button>
+  </hb-empty>
+  <block wx:else>
+    <view class="muted small" style="margin:8rpx 0 16rpx">共 {{total}} {{kind === 'article' ? '篇文章' : '个视频'}}</view>
+    <view wx:for="{{items}}" wx:key="id" class="card card-tap" hover-class="hover" data-id="{{item.id}}" bindtap="open">
+      <view class="cover" wx:if="{{item.coverUrl || kind === 'video'}}">
+        <image wx:if="{{item.coverUrl}}" src="{{item.coverUrl}}" mode="aspectFill" class="cover-img" lazy-load />
+        <view wx:else class="cover-ph">{{kind === 'video' ? '▶' : ''}}</view>
+        <view wx:if="{{item.dur}}" class="dur">{{item.dur}}</view>
+      </view>
+      <view class="row" style="flex-wrap:wrap;gap:8rpx">
+        <text wx:for="{{item.categories}}" wx:for-item="c" wx:key="id" class="tag">{{c.name}}</text>
+      </view>
+      <view class="title">{{item.title}}</view>
+      <view class="muted small">{{item.summary || item.description || (kind === 'article' ? '这篇文章暂未提供摘要。' : '这个视频暂未提供简介。')}}</view>
+      <view class="muted small" style="margin-top:8rpx">{{item.author.nickname || 'JomBelajar 编辑'}} · {{item.date}}</view>
+    </view>
+  </block>
+</view>

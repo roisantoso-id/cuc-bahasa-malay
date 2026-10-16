@@ -1,0 +1,25 @@
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
+  <hb-empty wx:elif="{{!items.length}}" image="empty" title="暂无收藏单词" desc="学习时点「收藏」就会出现在这里。" />
+  <view wx:else class="card list">
+    <view wx:for="{{items}}" wx:key="wordId">
+      <view class="item" data-id="{{item.wordId}}" bindtap="toggle">
+        <view class="item-main">
+          <text class="ms w">{{item.headword}}</text>
+          <view class="muted small">{{item.senses[0].posLabel}} {{item.senses[0].definition}}</view>
+        </view>
+        <audio-btn audio-id="{{item.audioResourceId}}" />
+        <text class="link small" data-id="{{item.wordId}}" catchtap="remove">取消收藏</text>
+      </view>
+      <view wx:if="{{open === item.wordId}}" class="detail">
+        <view wx:for="{{item.senses}}" wx:for-item="se" wx:key="definition" class="sense">
+          <view><text class="tag gray">{{se.posLabel}}</text> {{se.definition}}</view>
+          <view wx:for="{{se.examples}}" wx:for-item="ex" wx:key="sentence" class="example">
+            <view class="ms">{{ex.sentence}}</view><view class="muted small">{{ex.translation}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
