@@ -259,3 +259,32 @@ p{text-wrap:pretty}
 .avatar-txt{width:112px;height:112px;border-radius:50%;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font:900 44px/1 var(--serif);flex:none}
 @media (max-width:560px){.avatar-txt{width:88px;height:88px;font-size:34px}}
 @media (max-width:560px){.people .tech{grid-template-columns:1fr}}
+
+/* 学术带:行业数据 + 老师照片 */
+.ac-title{font-family:var(--serif);font-size:clamp(26px,1rem + 2.2vw,42px);color:#fff;margin:6px 0 28px;max-width:20em}
+.rare{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.2)}
+.rare div{padding:18px 16px 18px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.rare dt{font-size:16px;color:#d7ddea;font-weight:800}
+.rare dt b{font-family:var(--serif);font-size:clamp(36px,1rem + 2.6vw,54px);color:var(--gold);line-height:1;margin-right:2px}
+.rare dd{font-size:14px;color:#b9c2d6;margin-top:6px}
+@media (max-width:860px){.rare{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.src{font-size:12.5px;color:#8e98b0;margin-top:12px}
+.academic .ac-head{grid-template-columns:minmax(0,4fr) minmax(0,8fr);margin-top:clamp(36px,6vw,64px);align-items:center}
+.ac-photo{margin:0}
+.ac-photo img{width:100%;max-width:360px;aspect-ratio:3/4;object-fit:cover;border-radius:20px;box-shadow:0 0 0 6px rgba(227,176,75,.25),0 30px 50px -24px rgba(0,0,0,.6)}
+.academic .ac-facts{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:20px}
+.academic .ac-facts b{font-size:30px}
+@media (max-width:860px){.academic .ac-head{grid-template-columns:1fr}.ac-photo img{max-width:240px}.academic .ac-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* 媒体报道 */
+.media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.clip{display:block;background:#fff;border:2px solid var(--line);border-radius:22px;overflow:hidden;text-decoration:none;color:var(--ink);box-shadow:0 5px 0 var(--line);transition:transform .1s}
+.clip:hover{transform:translateY(-3px)}
+.clip .thumb{position:relative}
+.clip .thumb img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.clip .thumb::after{content:"";position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(0,0,0,.6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/30px no-repeat}
+.clip .meta{padding:16px 20px 18px}
+.clip .src-name{font-size:13px;font-weight:900;color:var(--coral-d)}
+.clip h3{font-size:18px;margin:4px 0 6px;line-height:1.35}
+.clip p{font-size:15px;color:var(--ink2)}
+@media (max-width:760px){.media{grid-template-columns:1fr}}
