@@ -246,3 +246,16 @@ p{text-wrap:pretty}
 .prose .shelf{margin-top:20px}
 .prose .tech{margin-top:12px}
 @media (max-width:760px){.prose .shelf{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+
+/* 相邻区块不叠加上下留白 */
+.sec + .sec{padding-top:0}
+
+/* 研发团队 */
+.credits-3{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:20px}
+@media (max-width:860px){.credits-3{grid-template-columns:1fr}}
+.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+.people .tech{grid-template-columns:auto minmax(0,1fr);align-items:start}
+@media (max-width:960px){.people{grid-template-columns:1fr}}
+.avatar-txt{width:112px;height:112px;border-radius:50%;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font:900 44px/1 var(--serif);flex:none}
+@media (max-width:560px){.avatar-txt{width:88px;height:88px;font-size:34px}}
+@media (max-width:560px){.people .tech{grid-template-columns:1fr}}
