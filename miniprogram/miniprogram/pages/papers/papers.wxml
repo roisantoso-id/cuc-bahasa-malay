@@ -1,6 +1,5 @@
 <view class="wrap">
   <view class="wrong card card-tap" hover-class="hover" bindtap="openWrong">
-    <image src="/assets/fail.jpg" class="wrong-img" mode="aspectFit" />
     <view class="item-main">
       <view class="ms">错题本</view>
       <view class="muted small">答错和未作答题目会自动收录</view>

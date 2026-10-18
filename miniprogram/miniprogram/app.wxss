@@ -1,16 +1,17 @@
-/* 方向 C · 犀鸟。规范见 docs/品牌规范.md */
+/* 学术出版物风格:深蓝 + 米白 + 金色,细线分隔,无投影。规范见 docs/品牌规范.md */
 page {
-  --green: #2fae66;
-  --green-d: #22874e;
-  --green-l: #e7f7ee;
-  --yellow: #ffc83d;
-  --blue: #4aa8ff;
-  --coral: #ff6b5a;
-  --bg: #fafaf7;
+  --green: #14213d;
+  --green-d: #0d1730;
+  --green-l: #eceff5;
+  --yellow: #a8823a;
+  --blue: #3c5a8a;
+  --coral: #a23b2a;
+  --bg: #f6f4ef;
   --card: #ffffff;
-  --ink: #20242a;
-  --ink2: #8a9097;
-  --line: #e8e8e2;
+  --ink: #1b1c1e;
+  --ink2: #8b8e93;
+  --line: #d9d4c8;
+  --ok: #2e6b4a;
   background: var(--bg);
   color: var(--ink);
   font-size: 30rpx;
@@ -21,31 +22,31 @@ page {
 .wrap { padding: 24rpx 32rpx 64rpx; }
 .muted { color: var(--ink2); }
 .small { font-size: 24rpx; }
-.h1 { font-size: 44rpx; font-weight: 900; line-height: 1.3; }
-.h2 { font-size: 34rpx; font-weight: 900; margin: 40rpx 0 18rpx; }
+.h1 { font-size: 44rpx; font-weight: 700; font-family: "Songti SC", "STSong", serif; line-height: 1.3; }
+.h2 { font-size: 34rpx; font-weight: 700; font-family: "Songti SC", "STSong", serif; margin: 40rpx 0 18rpx; }
 .ms { font-weight: 800; }
 .row { display: flex; align-items: center; gap: 16rpx; }
 .between { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
 .center { text-align: center; }
 
 /* 按钮:底部投影,按下下沉 */
-.btn { display: flex; align-items: center; justify-content: center; height: 96rpx; border-radius: 28rpx; font-size: 32rpx; font-weight: 900; margin: 0; padding: 0 32rpx; line-height: 96rpx; }
+.btn { display: flex; align-items: center; justify-content: center; height: 96rpx; border-radius: 8rpx; font-size: 32rpx; font-weight: 700; margin: 0; padding: 0 32rpx; line-height: 96rpx; }
 .btn::after { border: 0; }
-.btn-main { background: var(--green); color: #fff; box-shadow: 0 8rpx 0 var(--green-d); }
-.btn-main.hover { transform: translateY(8rpx); box-shadow: none; }
-.btn-ghost { background: #fff; color: var(--ink); border: 4rpx solid var(--line); box-shadow: 0 6rpx 0 var(--line); }
-.btn-ghost.hover { transform: translateY(6rpx); box-shadow: none; }
-.btn-blue { background: var(--blue); color: #fff; box-shadow: 0 8rpx 0 #2f86d6; }
-.btn-danger { background: var(--coral); color: #fff; box-shadow: 0 8rpx 0 #d94a3a; }
+.btn-main { background: var(--green); color: #fff; }
+.btn-main.hover { opacity: .85; }
+.btn-ghost { background: #fff; color: var(--ink); border: 2rpx solid var(--line); }
+.btn-ghost.hover { opacity: .85; }
+.btn-blue { background: var(--blue); color: #fff; }
+.btn-danger { background: var(--coral); color: #fff; }
 .btn[disabled] { opacity: .5; }
-.btn-sm { height: 68rpx; line-height: 68rpx; font-size: 26rpx; border-radius: 20rpx; padding: 0 24rpx; }
+.btn-sm { height: 68rpx; line-height: 68rpx; font-size: 26rpx; border-radius: 8rpx; padding: 0 24rpx; }
 .btns { display: flex; flex-direction: column; gap: 24rpx; margin-top: 32rpx; }
 .link { color: var(--green-d); font-weight: 700; }
 
 /* 卡片:边框 + 底部投影,不用阴影 */
-.card { background: var(--card); border: 4rpx solid var(--line); border-radius: 32rpx; padding: 28rpx; box-shadow: 0 6rpx 0 var(--line); }
+.card { background: var(--card); border: 2rpx solid var(--line); border-radius: 8rpx; padding: 28rpx; }
 .card + .card { margin-top: 24rpx; }
-.card-tap.hover { transform: translateY(6rpx); box-shadow: none; }
+.card-tap.hover { opacity: .85; }
 
 /* 列表行 */
 .list .item { display: flex; align-items: center; gap: 20rpx; padding: 28rpx 0; border-bottom: 2rpx solid var(--line); }
@@ -54,25 +55,25 @@ page {
 .arrow { color: var(--ink2); }
 
 /* 标签、胶囊 */
-.tag { display: inline-block; font-size: 22rpx; font-weight: 800; padding: 4rpx 14rpx; border-radius: 12rpx; background: var(--green-l); color: var(--green-d); }
-.tag.blue { background: #e4f1ff; color: #2f86d6; }
-.tag.coral { background: #ffe9e6; color: #d94a3a; }
-.tag.gray { background: #f0f0ea; color: var(--ink2); }
+.tag { display: inline-block; font-size: 22rpx; font-weight: 800; padding: 4rpx 14rpx; border-radius: 8rpx; background: var(--green-l); color: var(--green-d); }
+.tag.blue { background: #eceff5; color: #2c4670; }
+.tag.coral { background: #f6e9e6; color: #8a2f21; }
+.tag.gray { background: #ece8df; color: var(--ink2); }
 .chips { display: flex; gap: 16rpx; white-space: nowrap; }
-.chip { display: inline-block; padding: 12rpx 28rpx; border-radius: 999rpx; background: #fff; border: 4rpx solid var(--line); font-size: 26rpx; font-weight: 800; }
+.chip { display: inline-block; padding: 12rpx 28rpx; border-radius: 6rpx; background: #fff; border: 2rpx solid var(--line); font-size: 26rpx; font-weight: 800; }
 .chip.on { background: var(--green); border-color: var(--green); color: #fff; }
 
 /* 进度条 */
-.bar { height: 28rpx; border-radius: 999rpx; background: var(--line); overflow: hidden; }
-.bar-in { height: 100%; background: var(--green); border-radius: 999rpx; transition: width .3s; }
+.bar { height: 28rpx; border-radius: 6rpx; background: var(--line); overflow: hidden; }
+.bar-in { height: 100%; background: var(--green); border-radius: 6rpx; transition: width .3s; }
 
 /* 选项(答题、打分) */
-.opt { background: #fff; border: 4rpx solid var(--line); border-radius: 28rpx; padding: 24rpx 28rpx; font-weight: 800; box-shadow: 0 6rpx 0 var(--line); margin-bottom: 20rpx; }
-.opt.on { border-color: var(--blue); background: #e4f1ff; box-shadow: 0 6rpx 0 var(--blue); }
-.opt.right { border-color: var(--green); background: var(--green-l); color: var(--green-d); box-shadow: 0 6rpx 0 var(--green); }
-.opt.wrong { border-color: var(--coral); background: #ffe9e6; color: #d94a3a; box-shadow: 0 6rpx 0 var(--coral); }
+.opt { background: #fff; border: 2rpx solid var(--line); border-radius: 8rpx; padding: 24rpx 28rpx; font-weight: 800; margin-bottom: 20rpx; }
+.opt.on { border-color: var(--blue); background: #eceff5; }
+.opt.right { border-color: var(--ok); background: #eaf2ec; color: var(--ok); }
+.opt.wrong { border-color: var(--coral); background: #f6e9e6; color: #8a2f21; }
 
-.input { background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 0 24rpx; height: 92rpx; font-size: 32rpx; }
+.input { background: #fff; border: 2rpx solid var(--line); border-radius: 8rpx; padding: 0 24rpx; height: 92rpx; font-size: 32rpx; }
 .input-focus { border-color: var(--green); }
 .field { margin-bottom: 28rpx; }
 .label { font-size: 26rpx; font-weight: 800; margin-bottom: 12rpx; }

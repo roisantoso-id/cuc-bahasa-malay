@@ -42,16 +42,16 @@
     }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#fafaf7",
+    "navigationBarBackgroundColor": "#f6f4ef",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "JomBelajar",
-    "backgroundColor": "#fafaf7"
+    "backgroundColor": "#f6f4ef"
   },
   "tabBar": {
-    "color": "#8a9097",
-    "selectedColor": "#2fae66",
+    "color": "#8b8e93",
+    "selectedColor": "#14213d",
     "backgroundColor": "#ffffff",
-    "borderStyle": "white",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/home",

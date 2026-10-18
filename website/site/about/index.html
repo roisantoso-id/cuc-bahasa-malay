@@ -3,83 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>关于我们 · {{SITE_BRAND}}</title>
-<meta name="description" content="{{SITE_BRAND}} 由中国传媒大学国际传播学院马来语专业张静灵副教授团队研发，技术由 JobTalent AI 支持。">
+<title>关于 · {{SITE_BRAND}}</title>
+<meta name="description" content="JomBelajar 由中国传媒大学国际传播学院马来语专业张静灵副教授主持研发。">
 <!--IF_SITE_SITE_URL--><link rel="canonical" href="{{SITE_SITE_URL}}/about/"><!--/IF_SITE_SITE_URL-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
 <script src="/js/nav.js" defer></script>
 </head>
 <body>
 <!--NAV-->
-<main class="wrap prose">
-  <p class="crumb"><a href="/">首页</a> · 关于我们</p>
-  <h1>关于我们</h1>
-  <p style="font-size:18px">{{SITE_BRAND}}（马来语「一起学吧」）是用中文学马来语的微信小程序，面向中国学生和马来西亚华人，由中国传媒大学国际传播学院马来语专业张静灵副教授主持研发，团队成员包括马来语专业本科生杨启航，技术由 JobTalent AI 支持。</p>
+<main class="wrap">
+  <p class="crumb"><a href="/">首页</a> / 关于</p>
+  <div class="prose">
+    <h1>关于 JomBelajar</h1>
+    <p class="lede">JomBelajar（马来语「一起学吧」）是用中文学马来语的微信小程序，面向中国学生和马来西亚华人，由中国传媒大学国际传播学院马来语专业张静灵副教授主持研发。</p>
 
-  <h2>我们做什么</h2>
-  <p>把马来语学习拆成每天十分钟能完成的小组：单词按记忆规律安排复习，文章和视频练阅读、听力，在线测试检查学习效果。</p>
+    <h2>研发单位</h2>
+    <p>中国传媒大学国际传播学院 马来语专业。据软科 2025 中国大学专业排名，中传马来语专业位列全国第 3（B+）。全国开设马来语专业的高校有 18 所，从事马来语教学和专业工作的人不足 60 位，其中正高职称 3 人、副高职称 6 人（数据由中传马来语专业提供）。</p>
+  </div>
 
-  <h2>课程研发</h2>
-  <div class="tech" style="margin-bottom:16px">
-    <img src="/img/team/zhang.jpg" alt="张静灵副教授" width="525" height="720" style="border-radius:16px;width:120px;height:160px">
-    <div>
-      <h3>张静灵 副教授</h3>
-      <div class="role">中国传媒大学国际传播学院 · 马来语专业 · JomBelajar 课程主持</div>
-      <p>全国从事马来语教学与专业工作的不足 60 人，其中副高及以上职称仅 9 人，张静灵老师是其中之一。中国传媒大学马来语专业在软科 2025 中国大学专业排名中位列全国第 3。</p>
+  <div class="people" style="margin-top:28px;max-width:780px">
+    <div class="person">
+      <img src="/img/team/zhang.jpg" alt="张静灵副教授" width="525" height="720" style="height:160px;object-fit:cover">
+      <div>
+        <h3>张静灵 副教授</h3>
+        <p class="role">课程主持 · 中国传媒大学国际传播学院马来语专业</p>
+        <p>出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》（光明日报出版社）、马来文专著 <i>Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari</i>（Akar Indonesia），译著《马来西亚诗选》（作家出版社）；参与编撰《马来语报刊选读》（世界图书出版公司）、《新经典马来文学史教程》（外语教学与研究出版社）、《马来语写作教程》（中国传媒大学出版社）。</p>
+      </div>
     </div>
-  </div>
-  <dl class="facts">
-    <div><dt>研发单位</dt><dd>中国传媒大学国际传播学院 马来语专业</dd></div>
-    <div><dt>主持人</dt><dd>张静灵 副教授</dd></div>
-    <div><dt>著作</dt><dd>专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》（光明日报出版社）；马来文专著 <i>Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari</i>（Akar Indonesia）；译著《马来西亚诗选》（作家出版社）</dd></div>
-    <div><dt>教材</dt><dd>参与编撰《马来语报刊选读》（世界图书出版公司）、《新经典马来文学史教程》（外语教学与研究出版社）、《马来语写作教程》（中国传媒大学出版社）</dd></div>
-  </dl>
-  <div class="shelf" style="grid-template-columns:repeat(6,minmax(0,1fr))">
-    <figure class="book"><img src="/img/books/tongyuan.jpg" alt="《同源异流》封面" width="373" height="560" loading="lazy"></figure>
-    <figure class="book"><img src="/img/books/warisan.jpg" alt="Warisan Kebudayaan Minangkabau 封面" width="373" height="560" loading="lazy"></figure>
-    <figure class="book"><img src="/img/books/poems.jpg" alt="《马来西亚诗选》封面" width="373" height="560" loading="lazy"></figure>
-    <figure class="book"><img src="/img/books/newspaper.jpg" alt="《马来语报刊选读》封面" width="373" height="560" loading="lazy"></figure>
-    <figure class="book"><img src="/img/books/literature.jpg" alt="《新经典马来文学史教程》封面" width="373" height="560" loading="lazy"></figure>
-    <figure class="book"><img src="/img/books/writing.jpg" alt="《马来语写作教程》封面" width="373" height="560" loading="lazy"></figure>
-  </div>
-
-  <h2>团队成员</h2>
-  <div class="tech">
-    <img src="/img/team/yang.jpg" alt="杨启航" width="320" height="320" loading="lazy">
-    <div>
-      <h3>杨启航</h3>
-      <div class="role">中国传媒大学国际传播学院 马来语专业本科生</div>
-      <p>获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学（USM）交流学习，深入了解当地社会文化与政治经济状况。曾受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》节目直播访谈。擅长把语言学习和人工智能结合起来，有扎实的视频制作能力。</p>
-      <p style="margin-top:8px;font-size:15px">媒体报道：<a href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener">NST Online</a> · <a href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener">Berita RTM《早安马来西亚》</a></p>
+    <div class="person">
+      <img src="/img/team/yang.jpg" alt="杨启航" width="320" height="320">
+      <div>
+        <h3>杨启航</h3>
+        <p class="role">团队成员 · 中国传媒大学国际传播学院马来语专业本科生</p>
+        <p>获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学交流学习，深入了解当地社会文化与政治经济状况。曾受邀参加马来西亚国家广播电视台《早安马来西亚》节目直播访谈。擅长将语言学习与人工智能技术相结合，具备扎实的视频制作能力。</p>
+        <p class="more">报道：<a href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener">Berita RTM</a> · <a href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener">NST Online</a></p>
+      </div>
+    </div>
+    <div class="person">
+      <img src="/img/team/santoso.jpg" alt="Santoso" width="320" height="320">
+      <div>
+        <h3>Santoso</h3>
+        <p class="role">技术支持 · JobTalent AI 创始人</p>
+        <p>负责网站、小程序和后端的架构与部署。此前在阿里巴巴（雅加达）、友邦保险、GE 医疗从事云计算、运维与 AI 部署工作。</p>
+        <p class="more"><a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">JobTalent AI 团队介绍</a></p>
+      </div>
     </div>
   </div>
 
-  <h2>技术支持</h2>
-  <div class="tech">
-    <img src="/img/team/santoso.jpg" alt="Santoso" width="320" height="320" loading="lazy">
-    <div>
-      <h3>Santoso</h3>
-      <div class="role">JobTalent AI 创始人 · 云计算与技术架构 · 雅加达</div>
-      <p>负责 JomBelajar 网站、小程序和后端的架构与部署。曾在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维与 DevOps，在 GE 医疗负责首款 AI 驱动 CT「Revolution ACT」的 DevOps 与 AI 部署。</p>
-      <p style="margin-top:8px;font-size:15px"><a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">JobTalent AI 团队介绍 →</a></p>
-    </div>
-  </div>
-
-  <h2>内容怎么做</h2>
-  <p>单词、文章、视频和试卷由教师团队在后台编写和审核后发布。发现错误可以在小程序「我的 › 意见反馈」里告诉我们<!--IF_SITE_EMAIL-->，或写信到 <a href="mailto:{{SITE_EMAIL}}">{{SITE_EMAIL}}</a><!--/IF_SITE_EMAIL-->。</p>
-
-<!--IF_SITE_OPERATOR-->  <h2>运营方</h2>
-  <dl class="facts">
-    <div><dt>名称</dt><dd>{{SITE_OPERATOR}}</dd></div>
-<!--IF_SITE_ADDRESS-->    <div><dt>地址</dt><dd>{{SITE_ADDRESS}}</dd></div>
-<!--/IF_SITE_ADDRESS-->
-<!--IF_SITE_EMAIL-->    <div><dt>邮箱</dt><dd><a href="mailto:{{SITE_EMAIL}}">{{SITE_EMAIL}}</a></dd></div>
-<!--/IF_SITE_EMAIL-->
-  </dl>
+  <div class="prose">
+    <h2>内容审核与反馈</h2>
+    <p>单词、课文、视频和试卷由教师团队在后台编写、审核后发布。发现错误可以在小程序「我的 › 意见反馈」里告诉我们<!--IF_SITE_EMAIL-->，或写信到 <a href="mailto:{{SITE_EMAIL}}">{{SITE_EMAIL}}</a><!--/IF_SITE_EMAIL-->。</p>
+<!--IF_SITE_OPERATOR-->    <h2>运营方</h2>
+    <p>{{SITE_OPERATOR}}<!--IF_SITE_ADDRESS-->，{{SITE_ADDRESS}}<!--/IF_SITE_ADDRESS--></p>
 <!--/IF_SITE_OPERATOR-->
-  <div class="ctas" style="margin-top:36px"><a class="btn btn-main" href="/#open">打开小程序</a></div>
+  </div>
 </main>
 <!--FOOT-->
 </body>

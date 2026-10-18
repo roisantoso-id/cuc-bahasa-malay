@@ -1,4 +1,4 @@
 .img { width: 240rpx; height: 240rpx; display: block; margin: 0 auto; }
 .facts { display: flex; gap: 20rpx; margin: 32rpx 0; text-align: center; color: var(--ink2); font-size: 24rpx; }
-.facts > view { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 16rpx 0; }
-.n { font-size: 44rpx; font-weight: 900; color: var(--ink); }
+.facts > view { flex: 1; background: #fff; border: 2rpx solid var(--line); border-radius: 8rpx; padding: 16rpx 0; }
+.n { font-size: 44rpx; font-weight: 700; color: var(--ink); }

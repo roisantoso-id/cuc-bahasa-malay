@@ -3,7 +3,6 @@
   <hb-empty wx:elif="{{error}}" image="empty" title="测试不存在" desc="请从试卷详情进入测试。" />
   <block wx:else>
     <view class="head">
-      <image class="img" src="/assets/{{r.isPassed ? 'pass' : 'fail'}}.jpg" mode="aspectFit" />
       <view class="score"><text class="big {{r.isPassed ? 'ok' : 'no'}}">{{r.score}}</text> / {{r.paperTotalScore}}</view>
       <text class="tag {{r.isPassed ? '' : 'coral'}}">{{r.isPassed ? '已通过' : '未通过'}}</text>
       <view class="muted small" style="margin-top:12rpx">{{r.paperTitle}} · 第 {{r.attemptNumber}} 次测试 · 及格分 {{r.paperPassingScore}} · 提交于 {{r.date}}</view>

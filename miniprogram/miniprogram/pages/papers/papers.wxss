@@ -2,6 +2,6 @@
 .wrong-img { width: 110rpx; height: 110rpx; }
 .search { display: flex; gap: 16rpx; align-items: center; margin: 32rpx 0 16rpx; }
 .cats { margin-bottom: 16rpx; white-space: nowrap; }
-.title { font-size: 34rpx; font-weight: 900; margin: 10rpx 0 6rpx; }
+.title { font-size: 34rpx; font-weight: 700; margin: 10rpx 0 6rpx; }
 .meta { display: flex; gap: 32rpx; margin-top: 14rpx; padding-top: 14rpx; border-top: 2rpx solid var(--line); font-size: 24rpx; color: var(--ink2); }
-.b { color: var(--ink); font-weight: 900; font-size: 30rpx; }
+.b { color: var(--ink); font-weight: 700; font-size: 30rpx; }
