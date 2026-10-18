@@ -1,5 +1,6 @@
 <view class="wrap">
   <image class="hero" src="/assets/welcome.jpg" mode="aspectFit" />
+  <view class="credit"><text class="mark">中传</text>中国传媒大学马来语专业 · 张静灵副教授团队研发</view>
   <view class="h1 center">{{mode === 'login' ? '登录 JomBelajar' : mode === 'register' ? '创建 JomBelajar 账户' : '重置密码'}}</view>
   <view class="muted center small" style="margin-bottom:32rpx">{{mode === 'login' ? '登录后继续你的马来语学习。' : mode === 'register' ? '注册后即可保存你的学习记录。' : '使用注册邮箱接收验证码。'}}</view>
 

@@ -7,10 +7,39 @@
     "pages/login/login"
   ],
   "subPackages": [
-    { "root": "pkg-word", "pages": ["study/study", "favorites/favorites", "exclusions/exclusions"] },
-    { "root": "pkg-read", "pages": ["article/article", "video/video"] },
-    { "root": "pkg-paper", "pages": ["detail/detail", "attempt/attempt", "result/result", "wrong/wrong"] },
-    { "root": "pkg-me", "pages": ["settings/settings", "profile/profile", "security/security"] }
+    {
+      "root": "pkg-word",
+      "pages": [
+        "study/study",
+        "favorites/favorites",
+        "exclusions/exclusions"
+      ]
+    },
+    {
+      "root": "pkg-read",
+      "pages": [
+        "article/article",
+        "video/video"
+      ]
+    },
+    {
+      "root": "pkg-paper",
+      "pages": [
+        "detail/detail",
+        "attempt/attempt",
+        "result/result",
+        "wrong/wrong"
+      ]
+    },
+    {
+      "root": "pkg-me",
+      "pages": [
+        "settings/settings",
+        "profile/profile",
+        "security/security",
+        "about/about"
+      ]
+    }
   ],
   "window": {
     "navigationBarBackgroundColor": "#fafaf7",
@@ -24,10 +53,22 @@
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/home/home", "text": "学习" },
-      { "pagePath": "pages/read/read", "text": "阅读" },
-      { "pagePath": "pages/papers/papers", "text": "测试" },
-      { "pagePath": "pages/me/me", "text": "我的" }
+      {
+        "pagePath": "pages/home/home",
+        "text": "学习"
+      },
+      {
+        "pagePath": "pages/read/read",
+        "text": "阅读"
+      },
+      {
+        "pagePath": "pages/papers/papers",
+        "text": "测试"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的"
+      }
     ]
   },
   "usingComponents": {

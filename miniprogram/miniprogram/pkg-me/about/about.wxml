@@ -1,0 +1,72 @@
+<view class="page">
+  <!-- 学术背书:深色带 -->
+  <view class="band">
+    <view class="inst"><text class="mark">中传</text><view><view class="b">中国传媒大学 国际传播学院</view><view class="s">马来语专业 · 课程研发</view></view></view>
+    <view class="title">全国稀缺的马来语师资，中传排名第 3</view>
+    <view class="rare">
+      <view class="ri"><view class="n">18<text class="u"> 所</text></view><view class="d">全国开设马来语专业的高校</view></view>
+      <view class="ri"><view class="n"><text class="u">不足 </text>60<text class="u"> 人</text></view><view class="d">全国从事马来语教学与专业工作</view></view>
+      <view class="ri"><view class="n">9<text class="u"> 人</text></view><view class="d">副高及以上职称（正高 3、副高 6）</view></view>
+      <view class="ri"><view class="n"><text class="u">第 </text>3<text class="u"> 名</text></view><view class="d">中传马来语专业全国排名</view></view>
+    </view>
+    <view class="src">人数为中传马来语专业提供的行业数据；排名来自软科 2025 中国大学专业排名（马来语，B+）。</view>
+
+    <view class="prof">
+      <image class="photo" src="/pkg-me/img/zhang.jpg" mode="aspectFill" />
+      <view class="pt">
+        <view class="name">张静灵 副教授</view>
+        <view class="role">中国传媒大学国际传播学院 · 马来语专业 · 课程主持</view>
+      </view>
+    </view>
+    <view class="bio">全国仅有的 9 位副高及以上职称马来语教师之一，长期从事马来语教学与马来世界文化研究。出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》、马来文专著 Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari，译著《马来西亚诗选》；参与编撰高校教材《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。</view>
+
+    <scroll-view scroll-x class="shelf" enhanced show-scrollbar="{{false}}">
+      <view class="books">
+        <view wx:for="{{books}}" wx:key="img" class="book" data-i="{{index}}" bindtap="preview">
+          <image src="/pkg-me/img/{{item.img}}.jpg" mode="aspectFill" class="cover" lazy-load />
+          <text class="brole">{{item.role}}</text>
+          <view class="bt">{{item.title}}</view>
+          <view class="bp">{{item.pub}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="wrap">
+    <view class="h2">研发团队</view>
+    <view class="card person">
+      <image class="avatar" src="/pkg-me/img/yang.jpg" mode="aspectFill" />
+      <view class="item-main">
+        <view class="pn">杨启航</view>
+        <view class="pr">团队成员 · 中传马来语专业本科生</view>
+        <view class="pd">获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学（USM）交流学习。曾受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈。擅长把语言学习和人工智能结合起来，有扎实的视频制作能力。</view>
+      </view>
+    </view>
+    <view class="live card" bindtap="previewLive">
+      <image src="/pkg-me/img/rtm-live.jpg" mode="widthFix" class="live-img" />
+      <view class="muted small" style="padding:16rpx 4rpx 0">RTM《早安马来西亚》直播访谈现场（2026 年 4 月 28 日）</view>
+    </view>
+
+    <view class="card person">
+      <image class="avatar" src="/pkg-me/img/santoso.jpg" mode="aspectFill" />
+      <view class="item-main">
+        <view class="pn">Santoso</view>
+        <view class="pr">技术支持 · JobTalent AI 创始人</view>
+        <view class="pd">负责 JomBelajar 网站、小程序和后端的架构与部署。曾在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维与 DevOps，在 GE 医疗负责首款 AI 驱动 CT 的 DevOps 与 AI 部署。</view>
+      </view>
+    </view>
+
+    <view class="h2">媒体报道</view>
+    <view class="card list">
+      <view class="item" data-url="https://www.youtube.com/watch?v=W1hjFnL5-jY" bindtap="copyLink">
+        <view class="item-main"><view class="ms">Berita RTM《早安马来西亚》</view><view class="muted small">Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</view></view>
+        <text class="link small">复制链接</text>
+      </view>
+      <view class="item" data-url="https://www.youtube.com/watch?v=hRMBC_EC-uE" bindtap="copyLink">
+        <view class="item-main"><view class="ms">NST Online《新海峡时报》</view><view class="muted small">Bahasa Melayu thrives in China!</view></view>
+        <text class="link small">复制链接</text>
+      </view>
+    </view>
+    <view class="muted small center" style="margin-top:32rpx">JomBelajar · 中国传媒大学国际传播学院马来语专业研发</view>
+  </view>
+</view>

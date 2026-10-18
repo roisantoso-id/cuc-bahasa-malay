@@ -1,0 +1,31 @@
+.band { background: #14213d; color: #eef1f7; padding: 40rpx 32rpx 48rpx; }
+.inst { display: flex; align-items: center; gap: 20rpx; }
+.mark { display: inline-flex; align-items: center; justify-content: center; width: 96rpx; height: 84rpx; border-radius: 20rpx; background: #e3b04b; color: #14213d; font-weight: 900; font-size: 30rpx; }
+.inst .b { font-weight: 900; font-size: 30rpx; }
+.inst .s { font-size: 24rpx; color: #b9c2d6; }
+.title { font-family: "Songti SC", "STSong", serif; font-weight: 900; font-size: 44rpx; color: #fff; margin: 32rpx 0 20rpx; line-height: 1.35; }
+.rare { display: grid; grid-template-columns: 1fr 1fr; border-top: 2rpx solid rgba(255,255,255,.2); }
+.ri { padding: 20rpx 12rpx 20rpx 0; border-bottom: 2rpx solid rgba(255,255,255,.12); }
+.n { font-family: "Songti SC", serif; font-size: 64rpx; color: #e3b04b; font-weight: 900; line-height: 1.1; }
+.u { font-size: 26rpx; color: #d7ddea; font-family: -apple-system, sans-serif; }
+.d { font-size: 22rpx; color: #b9c2d6; margin-top: 6rpx; }
+.src { font-size: 20rpx; color: #8e98b0; margin-top: 16rpx; }
+.prof { display: flex; align-items: center; gap: 24rpx; margin-top: 40rpx; }
+.photo { width: 180rpx; height: 240rpx; border-radius: 24rpx; flex: none; border: 6rpx solid rgba(227,176,75,.35); }
+.name { font-family: "Songti SC", serif; font-size: 44rpx; font-weight: 900; color: #fff; }
+.role { font-size: 24rpx; color: #e3b04b; font-weight: 700; margin-top: 8rpx; }
+.bio { font-size: 26rpx; line-height: 1.8; color: #d7ddea; margin-top: 24rpx; }
+.shelf { margin-top: 32rpx; white-space: nowrap; }
+.books { display: inline-flex; gap: 24rpx; }
+.book { width: 200rpx; white-space: normal; }
+.cover { width: 200rpx; height: 300rpx; border-radius: 8rpx 16rpx 16rpx 8rpx; background: #1d2d50; }
+.brole { display: inline-block; margin-top: 12rpx; font-size: 20rpx; font-weight: 900; color: #14213d; background: #e3b04b; border-radius: 8rpx; padding: 0 10rpx; }
+.bt { font-size: 24rpx; font-weight: 800; color: #fff; margin-top: 6rpx; line-height: 1.35; }
+.bp { font-size: 20rpx; color: #9fa9c0; }
+.person { display: flex; gap: 24rpx; align-items: flex-start; }
+.avatar { width: 120rpx; height: 120rpx; border-radius: 50%; flex: none; background: var(--green-l); }
+.pn { font-size: 34rpx; font-weight: 900; }
+.pr { font-size: 24rpx; color: var(--green-d); font-weight: 800; margin: 4rpx 0 8rpx; }
+.pd { font-size: 26rpx; color: #5d646c; line-height: 1.7; }
+.live { padding: 16rpx; }
+.live-img { width: 100%; border-radius: 20rpx; display: block; }

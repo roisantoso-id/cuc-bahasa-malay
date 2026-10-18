@@ -11,3 +11,5 @@
 .cal-foot { display: flex; justify-content: space-between; margin-top: 20rpx; padding-top: 16rpx; border-top: 2rpx solid var(--line); font-size: 24rpx; color: var(--ink2); }
 .b { font-size: 34rpx; font-weight: 900; color: var(--ink); margin-right: 6rpx; }
 .word { font-size: 36rpx; }
+.credit { display: inline-flex; align-items: center; gap: 10rpx; font-size: 22rpx; color: #5d646c; margin-bottom: 16rpx; }
+.credit .mark { background: #14213d; color: #e3b04b; font-weight: 900; font-size: 20rpx; padding: 4rpx 10rpx; border-radius: 8rpx; }

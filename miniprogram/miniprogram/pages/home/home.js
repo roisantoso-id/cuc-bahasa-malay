@@ -60,6 +60,10 @@ Page({
     this.loadCal()
   },
 
+  about() {
+    wx.navigateTo({ url: '/pkg-me/about/about' })
+  },
+
   study() {
     wx.navigateTo({ url: '/pkg-word/study/study' })
   }
