@@ -9,8 +9,6 @@
 <meta property="og:title" content="{{SITE_BRAND}} · 每天 10 分钟学马来语">
 <meta property="og:description" content="中国传媒大学马来语专业教师团队研发。跟着小犀鸟，每天十分钟。">
 <!--IF_SITE_SITE_URL--><meta property="og:image" content="{{SITE_SITE_URL}}/img/hero.jpg"><!--/IF_SITE_SITE_URL-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
 <script src="/js/nav.js" defer></script>
 </head>
@@ -18,42 +16,21 @@
 <!--NAV-->
 <main>
 
-<section class="hero">
-  <div class="wrap hero-in">
+<section class="hero2">
+  <div class="wrap hero2-in">
     <div>
-      <div class="inst"><span class="inst-mark">中传</span><div><b>中国传媒大学 国际传播学院</b><span>马来语专业 · 张静灵副教授团队研发</span></div></div>
-      <h1>跟中传老师学马来语，<br><span class="mark">每天 10 分钟</span></h1>
-      <p class="lede">课程由中国传媒大学马来语专业教师编写审定：单词按记忆规律安排复习，文章有朗读，视频练听力，测试自动判分。中文讲解，零基础和有基础都能学。</p>
-      <div class="ctas"><a class="btn btn-main" href="#open">打开小程序，免费开始</a></div>
-      <p class="sub-link"><a href="#team">认识研发团队 →</a></p>
+      <p class="hk">中国传媒大学 国际传播学院 · 马来语专业</p>
+      <h1>中传马来语专业编写的<br>马来语学习小程序</h1>
+      <p class="hl">由张静灵副教授主持研发，面向中国学生和马来西亚华人。单词按记忆规律安排复习，另有课文朗读、情景视频和在线测试，全部配中文讲解。</p>
+      <div class="ctas"><a class="btn btn-main" href="#open">打开小程序</a><a class="plain" href="/courses/">看课程安排</a></div>
     </div>
-    <div class="hero-art">
-      <img src="/img/hero.jpg" alt="小犀鸟拿着手机挥手打招呼" width="1400" height="933" fetchpriority="high">
-      <div class="float f1">Apa khabar?<small>你好吗？</small></div>
-      <div class="float f2">Terima kasih!<small>谢谢！</small></div>
-      <div class="float f3">Selamat pagi<small>早上好</small></div>
-    </div>
-  </div>
-</section>
-
-<section class="wrap" id="open" aria-labelledby="openH">
-  <div class="open">
-<!--IF_SITE_MP_QR-->    <div class="qr"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="180" height="180"></div>
-<!--/IF_SITE_MP_QR-->
-<!--IFNOT_SITE_MP_QR-->    <div class="qr">小程序码<br>上线后放这里</div>
-<!--/IFNOT_SITE_MP_QR-->
-    <div>
-      <h2 id="openH">微信扫码，马上开始</h2>
-      <p class="muted">不用下载 App。电脑上用微信扫一扫；手机上截图后在微信里识别，或者直接在微信搜索「{{SITE_BRAND}}」。</p>
-<!--IF_SITE_MP_LINK-->      <p style="margin-top:12px"><a class="btn btn-ghost btn-sm" href="{{SITE_MP_LINK}}">在微信里打开</a></p>
-<!--/IF_SITE_MP_LINK-->
-    </div>
+    <img class="hero2-art" src="/img/hero.jpg" alt="小犀鸟拿着手机打招呼" width="1400" height="933" fetchpriority="high">
   </div>
 </section>
 
 <section class="academic" id="team" aria-labelledby="teamH">
   <div class="wrap">
-    <span class="eyebrow">学术背书</span>
+    <p class="band-k">课程主持</p>
     <h2 class="ac-title">全国稀缺的马来语师资，中传排名第 3</h2>
     <dl class="rare">
       <div><dt><b>18</b> 所</dt><dd>全国开设马来语专业的高校</dd></div>
@@ -90,92 +67,72 @@
   </div>
 </section>
 
-<section class="sec" id="people" aria-labelledby="peopleH">
+<section class="blk" id="people" aria-labelledby="peopleH">
   <div class="wrap">
-    <div class="sec-h"><span class="eyebrow">研发团队</span><h2 id="peopleH">中传师生做内容，工程师做技术</h2>
-      <p>课程由中国传媒大学国际传播学院马来语专业师生编写审定，技术由有企业级云平台经验的工程师负责。</p></div>
-    <dl class="credits credits-3">
-      <div class="credit"><dt>课程主持</dt><dd>张静灵 副教授<small>中传国际传播学院 马来语专业</small></dd></div>
-      <div class="credit"><dt>团队成员</dt><dd>杨启航<small>中传马来语专业本科生</small></dd></div>
-      <div class="credit"><dt>技术支持</dt><dd>Santoso<small>JobTalent AI 创始人</small></dd></div>
-    </dl>
-    <div class="people">
-      <div class="tech">
-        <img src="/img/team/yang.jpg" alt="杨启航" width="320" height="320" loading="lazy">
-        <div>
-          <h3>杨启航</h3>
-          <div class="role">团队成员 · 中国传媒大学国际传播学院马来语专业本科生</div>
-          <p>获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学（USM）交流学习，深入了解当地社会文化与政治经济状况。曾受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》节目直播访谈。擅长把语言学习和人工智能结合起来，有扎实的视频制作能力。</p>
-          <div class="tags"><span class="tag">国家留学基金委资助</span><span class="tag blue">马来西亚理科大学交流</span><span class="tag yellow"><a href="#media" style="color:inherit">《早安马来西亚》访谈</a></span><span class="tag coral">AI + 语言学习</span><span class="tag">视频制作</span></div>
-        </div>
+    <h2 id="peopleH" class="blk-h">团队成员</h2>
+    <div class="member">
+      <img src="/img/team/yang.jpg" alt="杨启航" width="320" height="320" loading="lazy">
+      <div>
+        <h3>杨启航</h3>
+        <p class="who">中国传媒大学国际传播学院马来语专业本科生</p>
+        <p>获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学交流学习，深入了解当地社会文化与政治经济状况。曾受邀参加马来西亚国家广播电视台《早安马来西亚》节目直播访谈。擅长将语言学习与人工智能技术相结合，具备扎实的视频制作能力。</p>
       </div>
-      <div class="tech">
-        <img src="/img/team/santoso.jpg" alt="Santoso" width="320" height="320" loading="lazy">
-        <div>
-          <h3>Santoso</h3>
-          <div class="role">技术支持 · JobTalent AI 创始人 · 云计算与技术架构</div>
-          <p>负责 JomBelajar 网站、小程序和后端的架构与部署。曾在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维与 DevOps，在 GE 医疗负责首款 AI 驱动 CT「Revolution ACT」的 DevOps 与 AI 部署。</p>
-          <div class="tags"><span class="tag">阿里巴巴</span><span class="tag blue">云计算</span><span class="tag yellow">技术架构</span><span class="tag">DevOps</span></div>
-          <p style="margin-top:10px;font-size:15px"><a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">JobTalent AI 团队介绍 →</a></p>
-        </div>
+    </div>
+    <div class="member">
+      <img src="/img/team/santoso.jpg" alt="Santoso" width="320" height="320" loading="lazy">
+      <div>
+        <h3>Santoso</h3>
+        <p class="who">技术支持 · JobTalent AI 创始人</p>
+        <p>负责网站、小程序和后端的架构与部署。此前在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维，在 GE 医疗负责 AI 驱动 CT「Revolution ACT」的 DevOps 与部署。<a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">JobTalent AI 团队介绍</a></p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="sec" id="media" aria-labelledby="mediaH">
+<section class="blk blk-alt" id="media" aria-labelledby="mediaH">
   <div class="wrap">
-    <div class="sec-h"><span class="eyebrow">媒体报道</span><h2 id="mediaH">马来西亚主流媒体关注的中传马来语学子</h2>
-      <p>团队成员杨启航作为中传马来语专业学生代表，受邀登上马来西亚国家广播电视台（RTM）《早安马来西亚》直播，并接受《新海峡时报》采访。</p></div>
-    <div class="gallery">
-      <figure><img src="/img/media/rtm-live.jpg" alt="杨启航在 RTM《早安马来西亚》直播节目中接受访谈" width="1200" height="672" loading="lazy">
-        <figcaption><b>直播现场</b>RTM《早安马来西亚》（Selamat Pagi Malaysia）直播访谈，字幕：Yang Qihang @ Bahari，中国传媒大学马来语专业学生。</figcaption></figure>
-      <figure><img src="/img/media/rtm-poster.jpg" alt="RTM《早安马来西亚》节目官方海报，嘉宾包括杨启航" width="900" height="900" loading="lazy">
-        <figcaption><b>节目海报</b>2026 年 4 月 28 日 8:30–10:00，TV1 / Berita RTM 直播。同期嘉宾为马来西亚高等教育部官员和北京外国语大学教授。</figcaption></figure>
+    <h2 id="mediaH" class="blk-h">媒体报道</h2>
+    <p class="blk-p">2026 年 4 月 28 日，杨启航作为中传马来语专业学生，参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈。</p>
+    <div class="press2">
+      <figure><img src="/img/media/rtm-live.jpg" alt="杨启航在 RTM《早安马来西亚》直播中" width="1200" height="672" loading="lazy"><figcaption>直播画面，字幕：Yang Qihang @ Bahari，中国传媒大学马来语专业学生</figcaption></figure>
+      <figure><img src="/img/media/rtm-poster.jpg" alt="RTM《早安马来西亚》节目海报" width="900" height="900" loading="lazy"><figcaption>节目海报：TV1 / Berita RTM，同场嘉宾有马来西亚高等教育部官员和北京外国语大学教授</figcaption></figure>
     </div>
-    <div class="media">
-      <a class="clip" href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener">
-        <div class="thumb"><img src="/img/media/hRMBC_EC-uE.jpg" alt="NST Online 报道画面" width="800" height="450" loading="lazy"></div>
-        <div class="meta"><div class="src-name">NST Online · 马来西亚《新海峡时报》</div><h3>Bahasa Melayu thrives in China! A growing wave of fluency</h3><p>报道中国学生学马来语的热潮，片中有杨启航的介绍。</p></div>
-      </a>
-      <a class="clip" href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener">
-        <div class="thumb"><img src="/img/media/W1hjFnL5-jY.jpg" alt="Berita RTM《早安马来西亚》节目画面" width="800" height="450" loading="lazy"></div>
-        <div class="meta"><div class="src-name">Berita RTM · 马来西亚国家广播电视台《早安马来西亚》</div><h3>Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</h3><p>2026 年 4 月 28 日直播节目「中马青年语言文化交流营」。</p></div>
-      </a>
-    </div>
-    <p class="muted" style="font-size:13px;margin-top:12px">视频在 YouTube 上播放。</p>
+    <ul class="vlist">
+      <li><a href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener"><img src="/img/media/W1hjFnL5-jY.jpg" alt="" width="800" height="450" loading="lazy"><span><small>Berita RTM · 2026-04-28</small>Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</span></a></li>
+      <li><a href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener"><img src="/img/media/hRMBC_EC-uE.jpg" alt="" width="800" height="450" loading="lazy"><span><small>NST Online（马来西亚《新海峡时报》）</small>Bahasa Melayu thrives in China! A growing wave of fluency</span></a></li>
+    </ul>
+    <p class="fine">视频在 YouTube 播放。</p>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="waysH">
+<section class="blk" aria-labelledby="learnH">
   <div class="wrap">
-    <div class="sec-h">
-      <span class="eyebrow">四种学法</span>
-      <h2 id="waysH">单词、阅读、视频、测试，一个小程序全包</h2>
-      <p>内容由老师在后台统一编写，网页端和小程序同步更新。</p>
+    <h2 id="learnH" class="blk-h">学习内容</h2>
+    <div class="zig">
+      <img src="/img/study.jpg" alt="" width="520" height="520" loading="lazy">
+      <div><h3>单词</h3><p>先看单词、回忆意思，再看释义和例句，按「重来、困难、良好、简单」评分。系统用 FSRS 记忆算法安排下次复习，到期的词会出现在首页。记完一组可以练拼写。</p></div>
     </div>
-    <div class="ways">
-      <div class="way"><img src="/img/study.jpg" alt="" width="520" height="520" loading="lazy"><div><h3>单词</h3><p>先回忆再看答案，按记得的程度打分，系统用 FSRS 记忆算法安排下次复习。学完还能练拼写。</p><div class="tags"><span class="tag">科学记忆</span><span class="tag blue">到期提醒</span><span class="tag yellow">拼写练习</span></div></div></div>
-      <div class="way"><img src="/img/loading.jpg" alt="" width="520" height="520" loading="lazy"><div><h3>文章</h3><p>真实语境的短文，配中文翻译和老师朗读，边听边读。</p><div class="tags"><span class="tag">朗读</span><span class="tag blue">按主题分类</span></div></div></div>
-      <div class="way"><img src="/img/hero.jpg" alt="" width="520" height="347" loading="lazy" style="object-fit:cover"><div><h3>视频</h3><p>情景对话视频，练听力。下次打开自动从上次看到的地方继续。</p><div class="tags"><span class="tag">情景对话</span><span class="tag blue">续播</span></div></div></div>
-      <div class="way"><img src="/img/pass.jpg" alt="" width="520" height="520" loading="lazy"><div><h3>在线测试</h3><p>单选、判断、填空、听写四种题型，交卷自动判分；做错的题自动进错题本，可以反复重做。</p><div class="tags"><span class="tag">自动判分</span><span class="tag coral">错题本</span></div></div></div>
+    <div class="zig rev">
+      <img src="/img/loading.jpg" alt="" width="520" height="520" loading="lazy">
+      <div><h3>课文与视频</h3><p>按主题分类的短文，配中文翻译，部分有老师朗读，可以边听边读。情景对话视频用来练听力，下次打开从上次的位置继续。</p></div>
+    </div>
+    <div class="zig">
+      <img src="/img/pass.jpg" alt="" width="520" height="520" loading="lazy">
+      <div><h3>在线测试</h3><p>单选、判断、填空、听写四种题型。交卷后自动评分，逐题给出解析；答错和没做的题进入错题本，重做正确算掌握。</p></div>
+    </div>
+    <div class="zig rev">
+      <img src="/img/checkin.jpg" alt="" width="520" height="520" loading="lazy">
+      <div><h3>打卡</h3><p>完成当天的新词学习就算打卡，月历上记录连续天数和累计天数。</p></div>
     </div>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="appH">
-  <div class="wrap split">
-    <div>
-      <span class="eyebrow">小程序长这样</span>
-      <h2 id="appH">每天打开，先复习，再学新词</h2>
-      <ul>
-        <li><b>1</b><span>首页告诉你今天有几个词到期，点一下就开始。</span></li>
-        <li><b>2</b><span>完成当天的新词学习就算打卡，月历上记录连续天数。</span></li>
-        <li><b>3</b><span>收藏本、错题本、学习设置都在「我的」里。</span></li>
-      </ul>
-    </div>
-    <div class="phones" aria-hidden="true">
-      <div class="phone"><div class="screen">
+<section class="blk blk-alt" aria-labelledby="appH">
+  <div class="wrap">
+    <h2 id="appH" class="blk-h">小程序界面</h2>
+    <p class="blk-p">以下为演示数据。</p>
+    <div class="shots">
+      <figure><div class="phone"><div class="screen">
         <div class="status"><span>9:41</span><span>●●●</span></div><div class="mpbar">学习</div>
         <div class="sbody">
           <div class="m-hello">Selamat pagi!</div>
@@ -185,8 +142,9 @@
           <div class="m-cal"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i><i>11</i><i>12</i><i class="on">13</i><i class="on">14</i><i class="on">15</i><i class="on">16</i><i>17</i><i>18</i><i>19</i><i>20</i><i>21</i></div>
         </div>
         <div class="tabbar"><span class="on">学习</span><span>阅读</span><span>测试</span><span>我的</span></div>
-      </div></div>
-      <div class="phone"><div class="screen">
+      </div></div><figcaption>学习首页</figcaption></figure>
+
+      <figure><div class="phone"><div class="screen">
         <div class="status"><span>9:41</span><span>●●●</span></div><div class="mpbar">学习新词</div>
         <div class="sbody">
           <div class="m-bar"><i></i></div>
@@ -200,61 +158,80 @@
             <span style="background:var(--blue)"><small>4 天</small>简单</span>
           </div>
         </div>
-      </div></div>
+      </div></div><figcaption>单词卡</figcaption></figure>
+
+      <figure><div class="phone"><div class="screen">
+        <div class="status"><span>9:41</span><span>●●●</span></div><div class="mpbar">答题</div>
+        <div class="sbody">
+          <div class="m-q-top"><span>第 1 / 4 题</span><span>单选题 · 2 分</span></div>
+          <div class="m-bar"><i style="width:25%"></i></div>
+          <div class="m-prompt">「Apa khabar?」是什么意思？</div>
+          <div class="m-opt">早上好</div>
+          <div class="m-opt on">你好吗？</div>
+          <div class="m-opt">谢谢</div>
+          <div class="m-opt">再见</div>
+          <div class="m-btn">下一题</div>
+        </div>
+      </div></div><figcaption>在线测试</figcaption></figure>
+
+      <figure><div class="phone"><div class="screen">
+        <div class="status"><span>9:41</span><span>●●●</span></div><div class="mpbar">测试结果</div>
+        <div class="sbody" style="text-align:center">
+          <img class="m-big" src="/img/pass.jpg" alt="">
+          <div class="m-score"><b>8</b> / 10</div>
+          <div class="m-pass">已通过</div>
+          <div class="m-res"><span>第 1 题</span><span class="ok">正确</span></div>
+          <div class="m-res"><span>第 2 题</span><span class="ok">正确</span></div>
+          <div class="m-res"><span>第 3 题</span><span class="no">错误 · 已进错题本</span></div>
+        </div>
+      </div></div><figcaption>测试结果</figcaption></figure>
     </div>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="trackH">
+<section class="blk" aria-labelledby="whoH">
   <div class="wrap">
-    <div class="sec-h">
-      <span class="eyebrow">两种起点</span>
-      <h2 id="trackH">零基础和有基础，都有适合的路</h2>
-    </div>
-    <div class="tracks">
-      <div class="track"><i style="background:var(--green)">零</i><div><h3>零基础</h3><p>适合中国学生。从字母和发音学起，再到打招呼、问路、点餐这些日常会话。</p></div></div>
-      <div class="track"><i style="background:var(--blue)">有</i><div><h3>会说一些</h3><p>适合马来西亚华人。跳过发音，重点练正式书面语、语法和阅读。</p></div></div>
+    <h2 id="whoH" class="blk-h">适合谁</h2>
+    <div class="two">
+      <div><h3>没学过马来语的中国学生</h3><p>从字母和发音开始，再到打招呼、问路、点餐这些日常会话。马来语用拉丁字母，基本照读音拼写，没有声调。</p>
+        <p class="loan-line">很多日常词来自闽南话：<b>teh</b> 茶、<b>tauhu</b> 豆腐、<b>bihun</b> 米粉、<b>kuih</b> 糕点、<b>mi</b> 面。</p></div>
+      <div><h3>会说一些的马来西亚华人</h3><p>跳过发音，重点学正式书面语、语法和阅读。</p></div>
     </div>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="loanH">
+<section class="blk blk-alt" aria-labelledby="moreH">
   <div class="wrap">
-    <div class="sec-h">
-      <span class="eyebrow">先热个身</span>
-      <h2 id="loanH">这些马来语，你可能已经会了</h2>
-      <p>马来语用拉丁字母，基本怎么拼就怎么读，也没有声调。很多日常词来自闽南话。点一下看来源。</p>
-    </div>
-    <div class="loan" id="loan">
-      <button type="button" aria-expanded="false"><span class="ms">teh</span><span class="zh">茶</span><span class="src">闽南话「茶」tê</span></button>
-      <button type="button" aria-expanded="false"><span class="ms">tauhu</span><span class="zh">豆腐</span><span class="src">闽南话「豆腐」tāu-hū</span></button>
-      <button type="button" aria-expanded="false"><span class="ms">bihun</span><span class="zh">米粉</span><span class="src">闽南话「米粉」bí-hún</span></button>
-      <button type="button" aria-expanded="false"><span class="ms">kuih</span><span class="zh">糕点</span><span class="src">闽南话「粿」kóe</span></button>
-      <button type="button" aria-expanded="false"><span class="ms">mi</span><span class="zh">面条</span><span class="src">闽南话「面」mī</span></button>
-      <button type="button" aria-expanded="false"><span class="ms">kongsi</span><span class="zh">分享；公司</span><span class="src">闽南话「公司」kong-si</span></button>
+    <h2 id="moreH" class="blk-h">进一步了解</h2>
+    <div class="more2">
+      <a href="/courses/"><img src="/img/welcome.jpg" alt="" width="520" height="520" loading="lazy"><span><b>课程安排</b>四部分内容的详细说明，两种起点各学什么。</span></a>
+      <a href="/about/"><img src="/img/cheer.jpg" alt="" width="520" height="520" loading="lazy"><span><b>关于我们</b>研发单位、课程主持、团队成员、技术支持和联系方式。</span></a>
     </div>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="stepsH">
-  <div class="wrap">
-    <div class="sec-h"><h2 id="stepsH">三步开始</h2></div>
-    <ol class="steps">
-      <li><b>微信扫码</b><span>打开小程序，登录后学习记录自动保存。</span></li>
-      <li><b>开始第一组</b><span>每组 20 个新词左右，数量可以自己调。</span></li>
-      <li><b>每天回来复习</b><span>到期的词会出现在首页，十分钟就能复习完。</span></li>
-    </ol>
+<section class="blk" id="open" aria-labelledby="openH">
+  <div class="wrap open2">
+<!--IF_SITE_MP_QR-->    <div class="qr"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="168" height="168"></div>
+<!--/IF_SITE_MP_QR-->
+<!--IFNOT_SITE_MP_QR-->    <div class="qr">小程序码<br>上线后放这里</div>
+<!--/IFNOT_SITE_MP_QR-->
+    <div>
+      <h2 id="openH" class="blk-h" style="margin-bottom:8px">打开小程序</h2>
+      <p>用微信扫码，或在微信里搜索「{{SITE_BRAND}}」，不需要下载 App。打开后先登录，学习记录会自动保存。</p>
+<!--IF_SITE_MP_LINK-->      <p style="margin-top:12px"><a class="btn btn-ghost btn-sm" href="{{SITE_MP_LINK}}">在微信里打开</a></p>
+<!--/IF_SITE_MP_LINK-->
+    </div>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="faqH">
+<section class="blk blk-alt" aria-labelledby="faqH">
   <div class="wrap faq">
-    <div class="sec-h"><h2 id="faqH">常见问题</h2></div>
-    <details><summary>要下载 App 吗？</summary><p>不用。这是微信小程序，在微信里扫码或搜索名字就能打开。</p></details>
-    <details><summary>完全没学过马来语，能学吗？</summary><p>能。课文和单词都有中文讲解和录音，从最常用的问候语开始。</p></details>
-    <details><summary>马来语难学吗？</summary><p>对中文母语者来说算入门快的：用拉丁字母，基本照读音拼写，没有声调，动词也不随时态变形。难点主要在词缀和书面语。</p></details>
-    <details><summary>马来语和印尼语一样吗？</summary><p>大部分相通，能互相听懂，但有些拼写、用词和发音不同。这里教的是马来西亚的马来语。</p></details>
-    <details><summary>内容是谁做的？</summary><p>由中国传媒大学国际传播学院马来语专业张静灵副教授主持，师生团队编写和审定，成员包括马来语专业本科生杨启航；技术由 JobTalent AI 的 Santoso 支持。</p></details>
+    <h2 id="faqH" class="blk-h">常见问题</h2>
+    <details><summary>需要下载 App 吗？</summary><p>不需要。这是微信小程序，在微信里扫码或搜索名字就能打开。</p></details>
+    <details><summary>完全没学过马来语，可以学吗？</summary><p>可以。从最常用的问候语开始，每句都有中文翻译。</p></details>
+    <details><summary>马来语和印尼语一样吗？</summary><p>大部分相通，但拼写、用词和发音有差别。这里教的是马来西亚的马来语。</p></details>
+    <details><summary>内容由谁编写？</summary><p>由中国传媒大学国际传播学院马来语专业张静灵副教授主持，师生团队编写和审定。</p></details>
   </div>
 </section>
 
