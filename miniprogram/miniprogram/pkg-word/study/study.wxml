@@ -49,6 +49,7 @@
 
     <!-- 小结 -->
     <view wx:if="{{view === 'summary'}}">
+      <image class="big-img" src="/assets/cheer.jpg" mode="aspectFit" />
       <view class="h1 center">本组学习小结</view>
       <view class="muted center">完成 {{s.summary.wordCount}} 个单词的记忆练习，共评分 {{s.summary.ratingCount}} 次</view>
       <view class="sum">
@@ -84,6 +85,7 @@
 
     <!-- 完成 -->
     <view wx:if="{{view === 'done'}}">
+      <image class="big-img" src="/assets/cheer.jpg" mode="aspectFit" />
       <view class="h1 center">本组已完成</view>
       <view class="muted center">完成 {{s.completedCount}} 个，排除 {{s.excludedCount}} 个，跳过 {{s.skippedCount}} 个</view>
       <view class="btns">

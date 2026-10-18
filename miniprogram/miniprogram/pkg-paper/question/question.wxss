@@ -1,8 +1,8 @@
-.prompt { font-size: 36rpx; font-weight: 700; line-height: 1.45; margin-bottom: 24rpx; }
+.prompt { font-size: 36rpx; font-weight: 900; line-height: 1.45; margin-bottom: 24rpx; }
 .tf { display: flex; gap: 20rpx; }
 .tf .opt { flex: 1; text-align: center; }
-.opt { background: #fff; border: 2rpx solid #d9d4c8; border-radius: 8rpx; padding: 24rpx 28rpx; font-weight: 800; margin-bottom: 20rpx; }
-.opt.on { border-color: #3c5a8a; background: #eceff5; }
+.opt { background: #fff; border: 4rpx solid #e8e8e2; border-radius: 28rpx; padding: 24rpx 28rpx; font-weight: 800; box-shadow: 0 6rpx 0 #e8e8e2; margin-bottom: 20rpx; }
+.opt.on { border-color: #4aa8ff; background: #e4f1ff; box-shadow: 0 6rpx 0 #4aa8ff; }
 .label { font-size: 26rpx; font-weight: 800; margin-bottom: 12rpx; }
 .field { margin-bottom: 24rpx; }
-.input { background: #fff; border: 2rpx solid #d9d4c8; border-radius: 8rpx; padding: 0 24rpx; height: 92rpx; font-size: 32rpx; }
+.input { background: #fff; border: 4rpx solid #e8e8e2; border-radius: 24rpx; padding: 0 24rpx; height: 92rpx; font-size: 32rpx; }

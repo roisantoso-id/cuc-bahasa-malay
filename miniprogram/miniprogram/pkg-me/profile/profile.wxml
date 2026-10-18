@@ -1,7 +1,6 @@
 <view class="wrap">
   <view class="center">
-    <image wx:if="{{avatar}}" class="avatar" src="{{avatar}}" mode="aspectFill" bindtap="chooseAvatar" />
-    <view wx:else class="avatar avatar-txt" bindtap="chooseAvatar">{{nickname ? nickname[0] : '我'}}</view>
+    <image class="avatar" src="{{avatar || '/assets/avatar.jpg'}}" mode="aspectFill" bindtap="chooseAvatar" />
     <view><text class="link small" bindtap="chooseAvatar">{{avatar ? '更换头像' : '上传头像'}}</text></view>
     <view class="muted small" style="margin-top:8rpx">{{me.email}} · 加入于 {{joined}}</view>
   </view>

@@ -1,1 +1,1 @@
-.v { font-size: 40rpx; font-weight: 700; color: var(--green-d); }
+.v { font-size: 40rpx; font-weight: 900; color: var(--green-d); }

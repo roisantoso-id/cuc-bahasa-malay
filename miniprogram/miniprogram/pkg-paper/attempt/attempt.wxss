@@ -1,10 +1,10 @@
 .top { margin-bottom: 28rpx; }
 .dir { display: flex; flex-wrap: wrap; gap: 16rpx; margin-bottom: 28rpx; }
-.dot { width: 72rpx; height: 72rpx; line-height: 68rpx; text-align: center; border-radius: 8rpx; border: 2rpx solid var(--line); font-weight: 800; background: #fff; }
+.dot { width: 72rpx; height: 72rpx; line-height: 68rpx; text-align: center; border-radius: 20rpx; border: 4rpx solid var(--line); font-weight: 800; background: #fff; }
 .dot.s-saved { background: var(--green-l); border-color: var(--green); color: var(--green-d); }
-.dot.s-failed { background: #f6e9e6; border-color: var(--coral); color: #8a2f21; }
+.dot.s-failed { background: #ffe9e6; border-color: var(--coral); color: #d94a3a; }
 .dot.s-dirty, .dot.s-saving { border-color: var(--yellow); }
-.dot.cur { opacity: .85; }
+.dot.cur { box-shadow: 0 0 0 4rpx var(--ink); }
 .legend { width: 100%; }
 .qhead { display: flex; align-items: center; gap: 16rpx; margin-bottom: 16rpx; }
 .state.s-failed { color: var(--coral); }

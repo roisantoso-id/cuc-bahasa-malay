@@ -16,6 +16,7 @@
     </view>
 
     <view class="goal">
+      <image class="goal-img" src="/assets/{{allDone ? 'cheer' : 'study'}}.jpg" mode="aspectFit" />
       <view class="goal-txt">
         <block wx:if="{{allDone}}">
           <view class="goal-t">都学完啦</view>

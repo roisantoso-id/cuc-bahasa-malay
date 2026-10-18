@@ -1,7 +1,6 @@
 <view class="wrap">
   <view class="profile card card-tap" hover-class="hover" data-url="/pkg-me/profile/profile" bindtap="go">
-    <image wx:if="{{me.avatarUrl}}" class="avatar" src="{{me.avatarUrl}}" mode="aspectFill" />
-    <view wx:else class="avatar avatar-txt">{{me.nickname ? me.nickname[0] : '我'}}</view>
+    <image class="avatar" src="{{me.avatarUrl || '/assets/avatar.jpg'}}" mode="aspectFill" />
     <view class="item-main">
       <view class="name">{{me.nickname || '未设置昵称'}}</view>
       <view class="muted small">{{me.email}}</view>

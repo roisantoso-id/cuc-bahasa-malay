@@ -1,7 +1,7 @@
-.player { display: flex; align-items: center; gap: 20rpx; margin-top: 28rpx; background: #fff; border: 2rpx solid var(--line); border-radius: 8rpx; padding: 16rpx 24rpx; }
-.play { width: 88rpx; height: 88rpx; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; flex: none; }
-.play.hover { opacity: .85; }
+.player { display: flex; align-items: center; gap: 20rpx; margin-top: 28rpx; background: #fff; border: 4rpx solid var(--line); border-radius: 28rpx; padding: 16rpx 24rpx; box-shadow: 0 6rpx 0 var(--line); }
+.play { width: 88rpx; height: 88rpx; border-radius: 50%; background: var(--green); box-shadow: 0 6rpx 0 var(--green-d); display: flex; align-items: center; justify-content: center; flex: none; }
+.play.hover { transform: translateY(6rpx); box-shadow: none; }
 .tri { width: 0; height: 0; border-left: 28rpx solid #fff; border-top: 18rpx solid transparent; border-bottom: 18rpx solid transparent; margin-left: 8rpx; }
 .pause { display: flex; gap: 10rpx; }
-.pause view { width: 10rpx; height: 32rpx; background: #fff; border-radius: 2rpx; }
+.pause view { width: 10rpx; height: 32rpx; background: #fff; border-radius: 4rpx; }
 .body { margin-top: 36rpx; font-size: 32rpx; line-height: 1.8; }

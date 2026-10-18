@@ -1,23 +1,23 @@
-.fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 6rpx; border: 3rpx solid var(--line); }
+.fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 999rpx; border: 3rpx solid var(--line); }
 .fav.on { color: var(--coral); border-color: var(--coral); }
 .flash { text-align: center; padding: 64rpx 0 40rpx; }
-.hw { font-size: 80rpx; font-weight: 700; margin-bottom: 20rpx; line-height: 1.2; }
+.hw { font-size: 80rpx; font-weight: 900; margin-bottom: 20rpx; line-height: 1.2; }
 .def { font-weight: 700; }
 .rates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16rpx; }
-.rate { text-align: center; border-radius: 8rpx; padding: 14rpx 0 18rpx; color: #fff; }
-.rate.hover { opacity: .85; }
+.rate { text-align: center; border-radius: 24rpx; padding: 14rpx 0 18rpx; color: #fff; }
+.rate.hover { transform: translateY(8rpx); box-shadow: none !important; }
 .rate-hint { font-size: 20rpx; opacity: .9; }
-.rate-t { font-size: 32rpx; font-weight: 700; }
-.r-Again { background: var(--coral); }
-.r-Hard { background: #8a6a2a; }
-.r-Good { background: var(--green); }
-.r-Easy { background: var(--blue); }
+.rate-t { font-size: 32rpx; font-weight: 900; }
+.r-Again { background: var(--coral); box-shadow: 0 8rpx 0 #d94a3a; }
+.r-Hard { background: #f5a524; box-shadow: 0 8rpx 0 #c98410; }
+.r-Good { background: var(--green); box-shadow: 0 8rpx 0 var(--green-d); }
+.r-Easy { background: var(--blue); box-shadow: 0 8rpx 0 #2f86d6; }
 .big-img { width: 300rpx; height: 300rpx; display: block; margin: 24rpx auto 0; }
 .sum { display: flex; gap: 16rpx; margin: 32rpx 0 24rpx; }
-.sum-i { flex: 1; text-align: center; background: #fff; border: 2rpx solid var(--line); border-radius: 8rpx; padding: 16rpx 0; font-size: 24rpx; color: var(--ink2); }
-.n { font-size: 44rpx; font-weight: 700; }
-.c-again { color: var(--coral); } .c-hard { color: #8a6a2a; } .c-good { color: var(--green); } .c-easy { color: var(--blue); }
+.sum-i { flex: 1; text-align: center; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 16rpx 0; font-size: 24rpx; color: var(--ink2); }
+.n { font-size: 44rpx; font-weight: 900; }
+.c-again { color: var(--coral); } .c-hard { color: #f5a524; } .c-good { color: var(--green); } .c-easy { color: var(--blue); }
 .spell-in { font-size: 44rpx; height: 112rpx; text-align: center; font-weight: 800; }
-.outcome { margin-top: 24rpx; padding: 20rpx 24rpx; border-radius: 8rpx; background: #ece8df; }
+.outcome { margin-top: 24rpx; padding: 20rpx 24rpx; border-radius: 24rpx; background: #f0f0ea; }
 .outcome.good { background: var(--green-l); color: var(--green-d); }
-.outcome.bad { background: #f6e9e6; color: #8a2f21; }
+.outcome.bad { background: #ffe9e6; color: #d94a3a; }

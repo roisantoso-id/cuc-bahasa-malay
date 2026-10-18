@@ -17,15 +17,13 @@ const val = k => SITE[k.toLowerCase()] ?? ''
 
 // 导航唯一来源。页面清单见 docs/页面清单.md,加页面两边一起改。
 const NAV = [
-  { href: '/courses/', t: '课程' },
-  { href: '/#team', t: '研发团队' },
-  { href: '/#media', t: '媒体报道' },
-  { href: '/about/', t: '关于' },
+  { href: '/courses/', t: '学什么' },
+  { href: '/about/', t: '关于我们' },
 ]
 const CTA = ['/#open', '打开小程序']
 
 const renderNav = path => `<header class="nav" id="nav"><div class="wrap">
-  <a class="brand" href="/">${esc(SITE.brand)}<small>马来语</small></a>
+  <a class="brand" href="/"><img src="/img/avatar.jpg" alt="" width="36" height="36">${esc(SITE.brand)}</a>
   <nav aria-label="主导航"><ul class="links" id="links">${NAV.map(i => `<li><a href="${i.href}"${path.startsWith(i.href) ? ' aria-current="page"' : ''}>${esc(i.t)}</a></li>`).join('')}</ul></nav>
   <div class="nav-cta"><a class="btn btn-main nav-main" href="${CTA[0]}"><span class="t">${esc(CTA[1])}</span></a>
   <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="links">菜单</button></div>
@@ -33,7 +31,7 @@ const renderNav = path => `<header class="nav" id="nav"><div class="wrap">
 
 const renderFoot = () => `<footer class="foot"><div class="wrap">
   <div class="fnav">
-    <div><h4>学习</h4><ul><li><a href="/#open">打开小程序</a></li><li><a href="/courses/">课程</a></li></ul></div>
+    <div><h4>学习</h4><ul><li><a href="/#open">打开小程序</a></li><li><a href="/courses/">学什么</a></li></ul></div>
     <div><h4>关于</h4><ul><li><a href="/about/">关于我们</a></li><li><a href="/privacy/">隐私政策</a></li></ul></div>
   </div>
   <p class="muted">课程研发：中国传媒大学国际传播学院马来语专业 · 张静灵副教授团队</p>

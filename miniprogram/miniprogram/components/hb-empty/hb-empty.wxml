@@ -1,4 +1,5 @@
 <view class="empty">
+  <image class="img" src="/assets/{{image}}.jpg" mode="aspectFit" />
   <view class="t">{{title}}</view>
   <view wx:if="{{desc}}" class="d">{{desc}}</view>
   <slot />

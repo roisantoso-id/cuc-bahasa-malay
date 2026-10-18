@@ -1,6 +1,6 @@
 .hero { width: 260rpx; height: 260rpx; display: block; margin: 0 auto 8rpx; }
-.tip { background: #f3eee2; border-radius: 8rpx; padding: 16rpx 24rpx; font-size: 24rpx; margin-bottom: 24rpx; }
+.tip { background: #fff7dd; border-radius: 20rpx; padding: 16rpx 24rpx; font-size: 24rpx; margin-bottom: 24rpx; }
 .tip.ok { background: var(--green-l); color: var(--green-d); }
 .links { display: flex; justify-content: space-between; margin-top: 36rpx; font-size: 26rpx; }
 .credit { display: flex; align-items: center; justify-content: center; gap: 12rpx; font-size: 22rpx; color: #5d646c; margin-bottom: 20rpx; }
-.credit .mark { background: #14213d; color: #e3b04b; font-weight: 700; font-size: 20rpx; padding: 4rpx 10rpx; border-radius: 8rpx; }
+.credit .mark { background: #14213d; color: #e3b04b; font-weight: 900; font-size: 20rpx; padding: 4rpx 10rpx; border-radius: 8rpx; }
