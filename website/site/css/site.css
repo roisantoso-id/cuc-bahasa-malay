@@ -391,3 +391,44 @@ p{text-wrap:pretty}
 @media (max-width:560px){.open2{grid-template-columns:1fr}}
 .faq details{background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:0}
 .faq details:first-of-type{border-top:2px solid var(--ink)}
+
+/* ================= 做这门课的人:主持人大幅肖像 + 两位成员,滚动展开动效 ================= */
+.crew{padding:clamp(64px,9vw,120px) 0;background:var(--bg)}
+.crew-h{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:clamp(28px,4vw,48px);border-bottom:2px solid var(--ink)}
+.crew-h h2{font-size:clamp(30px,1rem + 2.6vw,48px);font-weight:900;letter-spacing:-.01em}
+.crew-h p{color:var(--ink2);max-width:22em}
+.crew-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,4vw,56px);align-items:start}
+.lead-p{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(20px,3vw,36px);align-items:end}
+.side-p{display:grid;gap:clamp(24px,3vw,36px)}
+.mini-p{display:grid;grid-template-columns:132px minmax(0,1fr);gap:20px;align-items:start;padding-top:clamp(24px,3vw,36px);border-top:1px solid var(--line)}
+.mini-p:first-child{padding-top:0;border-top:0}
+.pt{margin:0;overflow:hidden;border-radius:4px;background:#e9e6de}
+.pt img{width:100%;aspect-ratio:3/4;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.pt:hover img{transform:scale(1.04)}
+.pt-role{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--green-d);margin-bottom:6px}
+.pt-txt h3{font-size:clamp(24px,1rem + 1.2vw,32px);font-weight:900;line-height:1.2}
+.mini-p .pt-txt h3{font-size:22px}
+.pt-aff{color:var(--ink2);font-weight:700;margin:6px 0 14px;font-size:15px}
+.pt-txt p:not(.pt-role):not(.pt-aff){font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:10px}
+@media (max-width:960px){.crew-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.lead-p{grid-template-columns:1fr}.lead-p .pt{max-width:300px}.mini-p{grid-template-columns:96px minmax(0,1fr);gap:16px}}
+
+/* 书架:书封依次升起,悬停抬起并显示书名 */
+.books{margin-top:clamp(48px,6vw,80px)}
+.books-h{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--ink2);margin-bottom:18px}
+.books-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(12px,2vw,28px);align-items:start;padding-bottom:4px}
+.bk{display:block;color:var(--ink);text-decoration:none}
+.bk img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:2px 6px 6px 2px;box-shadow:inset 4px 0 0 rgba(0,0,0,.12),0 14px 24px -14px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.bk:hover img{transform:translateY(-10px) rotate(-1deg)}
+.bk span{display:block;font-size:12.5px;color:var(--mute);line-height:1.45;margin-top:10px;min-height:3.6em}
+.bk b{display:block;color:var(--ink);font-size:13.5px}
+@media (max-width:860px){.books-row{grid-template-columns:repeat(6,140px);overflow-x:auto;scroll-snap-type:x mandatory;border-bottom:0}.bk{scroll-snap-align:start}}
+
+/* 滚动出现:肖像从下往上展开,文字淡入上移;书依次升起 */
+.js .reveal .pt img{clip-path:inset(100% 0 0 0);transition:clip-path .9s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform .6s}
+.js .reveal .pt-txt,.js .crew-h.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease calc(var(--d,0s) + .25s),transform .7s ease calc(var(--d,0s) + .25s)}
+.js .reveal.in .pt img{clip-path:inset(0 0 0 0)}
+.js .reveal.in .pt-txt,.js .crew-h.reveal.in{opacity:1;transform:none}
+.js .books.reveal .bk{opacity:0;transform:translateY(40px);transition:opacity .6s ease calc(var(--i)*.08s),transform .6s cubic-bezier(.2,.7,.2,1) calc(var(--i)*.08s)}
+.js .books.reveal.in .bk{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .reveal .pt img{clip-path:none}.js .reveal .pt-txt,.js .crew-h.reveal,.js .books.reveal .bk{opacity:1;transform:none}}

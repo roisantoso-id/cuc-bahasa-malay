@@ -34,7 +34,7 @@ const renderFoot = () => `<footer class="foot"><div class="wrap">
     <div><h4>学习</h4><ul><li><a href="/#open">打开小程序</a></li><li><a href="/courses/">学什么</a></li></ul></div>
     <div><h4>关于</h4><ul><li><a href="/about/">关于我们</a></li><li><a href="/privacy/">隐私政策</a></li></ul></div>
   </div>
-  <p class="muted">课程研发：中国传媒大学国际传播学院马来语专业 · 张静灵副教授团队</p>
+  <p class="muted">课程主持：张静灵（中国传媒大学马来语专业教师）</p>
   <p class="muted">技术支持：<a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">Santoso · JobTalent AI</a></p>
   <p class="muted">© ${new Date().getFullYear()} ${esc(SITE.operator || SITE.brand)}${SITE.icp ? ` · <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${esc(SITE.icp)}</a>` : ''}</p>
 </div></footer>`

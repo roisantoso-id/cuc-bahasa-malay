@@ -28,7 +28,7 @@
 
   <view class="h2">关于</view>
   <view class="card list">
-    <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于我们 · 研发团队<view class="muted small">中传马来语专业张静灵副教授团队研发</view></view><text class="arrow">›</text></view>
+    <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于我们 · 研发团队<view class="muted small">作者介绍与著作</view></view><text class="arrow">›</text></view>
   </view>
 
   <view class="h2">账号</view>
@@ -38,5 +38,5 @@
   </view>
 
   <button class="btn btn-ghost" hover-class="hover" style="margin-top:48rpx" bindtap="logout">退出登录</button>
-  <view class="muted small center" style="margin-top:32rpx">JomBelajar · 中国传媒大学国际传播学院马来语专业研发</view>
+  <view class="muted small center" style="margin-top:32rpx">JomBelajar · 张静灵老师主持编写</view>
 </view>

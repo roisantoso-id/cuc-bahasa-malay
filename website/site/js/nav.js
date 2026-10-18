@@ -19,3 +19,15 @@ if (nav && links && btn) {
   })
   matchMedia('(min-width: 1081px)').addEventListener('change', e => { if (e.matches) setMenu(false) })
 }
+
+// 滚动出现动效:元素进入视口时加 .in;不支持或减少动效时直接显示
+document.documentElement.classList.add('js')
+const revealEls = document.querySelectorAll('.reveal')
+if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  revealEls.forEach(el => el.classList.add('in'))
+} else {
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+  }), { threshold: 0.18 })
+  revealEls.forEach(el => io.observe(el))
+}

@@ -4,7 +4,7 @@
     <button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button>
   </hb-empty>
   <block wx:else>
-    <view class="credit" bindtap="about"><text class="mark">中传</text>中国传媒大学马来语专业出品 ›</view>
+    <view class="credit" bindtap="about">张静灵老师主持编写 ›</view>
     <view class="between">
       <view>
         <view class="hello">{{hello}}</view>

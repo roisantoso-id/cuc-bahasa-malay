@@ -1,24 +1,16 @@
 <view class="page">
   <!-- 学术背书:深色带 -->
   <view class="band">
-    <view class="inst"><text class="mark">中传</text><view><view class="b">中国传媒大学 国际传播学院</view><view class="s">马来语专业 · 课程研发</view></view></view>
-    <view class="title">全国稀缺的马来语师资，中传排名第 3</view>
-    <view class="rare">
-      <view class="ri"><view class="n">18<text class="u"> 所</text></view><view class="d">全国开设马来语专业的高校</view></view>
-      <view class="ri"><view class="n"><text class="u">不足 </text>60<text class="u"> 人</text></view><view class="d">全国从事马来语教学与专业工作</view></view>
-      <view class="ri"><view class="n">9<text class="u"> 人</text></view><view class="d">副高及以上职称（正高 3、副高 6）</view></view>
-      <view class="ri"><view class="n"><text class="u">第 </text>3<text class="u"> 名</text></view><view class="d">中传马来语专业全国排名</view></view>
-    </view>
-    <view class="src">人数为中传马来语专业提供的行业数据；排名来自软科 2025 中国大学专业排名（马来语，B+）。</view>
-
+    <view class="title">做这门课的人</view>
+    
     <view class="prof">
       <image class="photo" src="/pkg-me/img/zhang.jpg" mode="aspectFill" />
       <view class="pt">
         <view class="name">张静灵 副教授</view>
-        <view class="role">中国传媒大学国际传播学院 · 马来语专业 · 课程主持</view>
+        <view class="role">课程主持 · 副教授 · 中国传媒大学马来语专业教师</view>
       </view>
     </view>
-    <view class="bio">全国仅有的 9 位副高及以上职称马来语教师之一，长期从事马来语教学与马来世界文化研究。出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》、马来文专著 Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari，译著《马来西亚诗选》；参与编撰高校教材《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。</view>
+    <view class="bio">长期从事马来语教学与马来世界文化研究。出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》、马来文专著 Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari，译著《马来西亚诗选》；参与编撰高校教材《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。</view>
 
     <scroll-view scroll-x class="shelf" enhanced show-scrollbar="{{false}}">
       <view class="books">
@@ -38,7 +30,7 @@
       <image class="avatar" src="/pkg-me/img/yang.jpg" mode="aspectFill" />
       <view class="item-main">
         <view class="pn">杨启航</view>
-        <view class="pr">团队成员 · 中传马来语专业本科生</view>
+        <view class="pr">团队成员 · 中国传媒大学马来语专业本科生</view>
         <view class="pd">获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学（USM）交流学习。曾受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈。擅长把语言学习和人工智能结合起来，有扎实的视频制作能力。</view>
       </view>
     </view>
@@ -67,6 +59,6 @@
         <text class="link small">复制链接</text>
       </view>
     </view>
-    <view class="muted small center" style="margin-top:32rpx">JomBelajar · 中国传媒大学国际传播学院马来语专业研发</view>
+    <view class="muted small center" style="margin-top:32rpx">JomBelajar · 张静灵老师主持编写</view>
   </view>
 </view>
