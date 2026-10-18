@@ -12,4 +12,4 @@ rsync -az --delete website/dist/ "$HOST:$DIR/"
 # nginx 配置有变化才更新并重载
 scp -q deploy/nginx-website.conf "$HOST:/tmp/jombelajar-website.conf"
 ssh "$HOST" "if ! cmp -s /tmp/jombelajar-website.conf /etc/nginx/conf.d/jombelajar-website.conf; then cp /tmp/jombelajar-website.conf /etc/nginx/conf.d/jombelajar-website.conf && nginx -t && systemctl reload nginx && echo 'nginx 已重载'; fi"
-echo "已部署 → http://${HOST#*@}/"
+echo "已部署 → https://www.bahasa.cn/"
