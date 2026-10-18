@@ -54,6 +54,8 @@ for (const f of walk(OUT).filter(f => f.endsWith('.html'))) {
   const path = '/' + f.slice(OUT.length + 1).replace(/index\.html$/, '')
   let h = readFileSync(f, 'utf8')
   h = h.replace('<!--NAV-->', renderNav(path)).replace('<!--FOOT-->', renderFoot())
+  // 网站图标(犀鸟头像):每页统一注入
+  if (!h.includes('rel="icon"')) h = h.replace('</head>', `<link rel="icon" href="/favicon.ico" sizes="32x32">\n<link rel="icon" type="image/png" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n<meta name="theme-color" content="#2fae66">\n</head>`)
   for (let prev; prev !== h;) {   // 条件块可以嵌套,替换到不再变化为止
     prev = h
     h = h.replace(/<!--IF_SITE_(\w+)-->([\s\S]*?)<!--\/IF_SITE_\1-->\n?/g, (m, k, inner) => (val(k) ? inner : ''))
