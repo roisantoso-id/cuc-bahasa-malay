@@ -1,0 +1,80 @@
+{
+ "lines": [
+  {
+   "id": "v01",
+   "lang": "zh",
+   "voice": "ms-MY-YasminNeural",
+   "rate": "-5%",
+   "text": "Apa khabar?"
+  },
+  {
+   "id": "v02",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "这句马来语，你听懂了吗？"
+  },
+  {
+   "id": "v03",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "其实马来语不难：用拉丁字母，没有声调，很多词还来自闽南话。"
+  },
+  {
+   "id": "v04",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "teh 是茶，tauhu 是豆腐，mi 就是面。",
+   "voice": "zh-CN-XiaoxiaoMultilingualNeural"
+  },
+  {
+   "id": "v05",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "JomBelajar，用中文学马来语的微信小程序。",
+   "voice": "zh-CN-XiaoxiaoMultilingualNeural"
+  },
+  {
+   "id": "v06",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "课程由中国传媒大学马来语专业教师张静灵主持编写。她出版过专著和译著，参与编撰过三部高校马来语教材。"
+  },
+  {
+   "id": "v07",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "背单词，先回忆，再看答案。系统按你的记忆情况，安排下一次复习。"
+  },
+  {
+   "id": "v08",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "课文有朗读，情景视频练听力。"
+  },
+  {
+   "id": "v09",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "在线测试自动评分，做错的题，自动收进错题本。"
+  },
+  {
+   "id": "v10",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "团队成员杨启航，还受邀参加过马来西亚国家广播电视台的直播访谈。"
+  },
+  {
+   "id": "v11",
+   "lang": "zh",
+   "rate": "+10%",
+   "text": "每天十分钟，跟着小犀鸟，开口说马来语。"
+  },
+  {
+   "id": "v12",
+   "lang": "zh",
+   "voice": "ms-MY-YasminNeural",
+   "rate": "+0%",
+   "text": "Jom belajar!"
+  }
+ ]
+}

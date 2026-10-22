@@ -1,0 +1,12 @@
+{
+  "name": "jombelajar-video",
+  "private": true,
+  "scripts": { "dev": "remotion studio", "render": "remotion render Intro out/jombelajar-intro.mp4" },
+  "dependencies": {
+    "@remotion/cli": "4.0.535",
+    "remotion": "4.0.535",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": { "@types/react": "19.2.7", "typescript": "5.9.3" }
+}
