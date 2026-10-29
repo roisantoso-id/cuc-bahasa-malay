@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>JomBelajar 马来语背单词小程序 · 第一版介绍</title>
+<style>
+@page { size: A4; margin: 0; }
+:root { --g:#2fae66; --gd:#22874e; --gl:#e7f7ee; --y:#ffc83d; --b:#4aa8ff; --bd:#2f86d6; --c:#ff6b5a; --bg:#fafaf7; --ink:#20242a; --ink2:#5d646c; --mute:#8a9097; --line:#e8e8e2; --navy:#14213d; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #ddd; }
+body { font-family: "PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pg { width: 210mm; height: 297mm; background: var(--bg); position: relative; overflow: hidden; page-break-after: always; padding: 18mm 18mm 16mm; margin: 0 auto 8mm; }
+.pg:last-child { page-break-after: auto; }
+@media print { .pg { margin: 0; } html, body { background: none; } }
+img { display: block; max-width: 100%; }
+.k { font-size: 10pt; font-weight: 800; color: var(--gd); letter-spacing: .08em; }
+h1 { font-size: 30pt; font-weight: 900; line-height: 1.2; }
+h2 { font-size: 20pt; font-weight: 900; margin: 2mm 0 5mm; }
+h3 { font-size: 12.5pt; font-weight: 900; }
+p, li { font-size: 10.5pt; line-height: 1.75; color: var(--ink2); }
+.foot { position: absolute; left: 18mm; right: 18mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 8pt; color: var(--mute); border-top: .3mm solid var(--line); padding-top: 2.5mm; }
+.card { background: #fff; border: .6mm solid var(--line); border-radius: 5mm; box-shadow: 0 1mm 0 var(--line); }
+.tag { display: inline-block; font-size: 8pt; font-weight: 800; padding: .6mm 2.2mm; border-radius: 1.6mm; background: var(--gl); color: var(--gd); }
+.mark { background: linear-gradient(transparent 62%, var(--y) 62%); }
+
+/* 封面 */
+.cover { background: var(--bg); display: flex; flex-direction: column; }
+.cover .hero { position: absolute; right: -18mm; bottom: 40mm; width: 150mm; }
+.cover .t { margin-top: 26mm; }
+.cover h1 { font-size: 40pt; }
+.cover .sub { font-size: 15pt; font-weight: 800; color: var(--ink2); margin-top: 6mm; }
+.cover .brand { font-family: "Avenir Next", Helvetica, sans-serif; font-size: 22pt; font-weight: 900; color: var(--g); }
+.cover .meta { position: absolute; left: 18mm; bottom: 26mm; font-size: 10pt; color: var(--ink2); line-height: 1.9; }
+.cover .meta b { color: var(--ink); }
+
+/* 手机样机 */
+.phone { width: 58mm; height: 118mm; border-radius: 9mm; padding: 2.2mm; background: #16181c; flex: none; }
+.scr { width: 100%; height: 100%; border-radius: 7mm; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; font-size: 6.6pt; }
+.st { height: 6mm; display: flex; justify-content: space-between; align-items: center; padding: 0 4.5mm; font-weight: 700; font-size: 6pt; }
+.nb { height: 6.5mm; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 7pt; }
+.bd { flex: 1; padding: 1mm 3mm; position: relative; }
+.tb { height: 9mm; display: flex; border-top: .3mm solid var(--line); background: #fff; }
+.tb span { flex: 1; display: grid; place-items: center; font-size: 6pt; font-weight: 800; color: var(--mute); }
+.tb span.on { color: var(--g); }
+.cap { text-align: center; font-size: 9pt; font-weight: 800; margin-top: 3mm; }
+.shots { display: flex; justify-content: space-between; gap: 4mm; }
+
+/* 首页样机内部 */
+.m-hello { font-size: 9pt; font-weight: 900; color: var(--gd); }
+.m-cr { font-size: 5.6pt; color: var(--ink2); margin-bottom: 2mm; }
+.m-today { display: flex; gap: 3mm; align-items: center; background: #fff; border: .4mm solid var(--line); border-radius: 3mm; padding: 2.4mm; }
+.m-ring { width: 15mm; height: 15mm; border-radius: 50%; background: conic-gradient(var(--g) 216deg, var(--line) 0deg); display: grid; place-items: center; flex: none; }
+.m-ring i { width: 11.4mm; height: 11.4mm; border-radius: 50%; background: #fff; display: grid; place-items: center; font-style: normal; font-weight: 900; font-size: 9pt; }
+.m-kv { flex: 1; font-size: 5.8pt; color: var(--ink2); }
+.m-kv div { display: flex; justify-content: space-between; padding: .8mm 0; border-bottom: .2mm solid var(--line); }
+.m-kv b { color: var(--ink); font-size: 8pt; }
+.m-btn { margin-top: 2.2mm; height: 6.4mm; border-radius: 2mm; background: var(--g); color: #fff; font-weight: 900; display: grid; place-items: center; box-shadow: 0 .6mm 0 var(--gd); font-size: 6.6pt; }
+.m-h { font-weight: 900; font-size: 7.4pt; margin: 2.6mm 0 1.6mm; }
+.m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6mm; }
+.m-sc { background: #fff; border: .4mm solid var(--line); border-radius: 2.4mm; padding: 1.2mm; }
+.m-sc img { width: 100%; height: 10mm; object-fit: cover; border-radius: 1.6mm; }
+.m-sc b { display: block; font-size: 6.4pt; margin-top: .8mm; }
+.m-sc small { display: block; font-size: 4.8pt; color: var(--mute); }
+.m-bar { height: 1.2mm; border-radius: 9mm; background: var(--line); margin-top: .8mm; overflow: hidden; }
+.m-bar i { display: block; height: 100%; background: var(--g); }
+.m-row { display: flex; justify-content: space-between; align-items: center; padding: 1.6mm 0; border-bottom: .2mm solid var(--line); }
+.m-row b { font-size: 7.4pt; }
+.m-row small { display: block; color: var(--ink2); font-size: 5.6pt; }
+.m-play { color: var(--b); font-size: 6pt; }
+.m-card { margin-top: 2mm; height: 62mm; background: #fff; border: .4mm solid var(--line); border-radius: 4mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3mm; }
+.m-w { font-size: 17pt; font-weight: 900; }
+.m-snd { margin-top: 1.6mm; font-size: 5.6pt; font-weight: 800; color: var(--bd); background: #e4f1ff; padding: .8mm 2.4mm; border-radius: 9mm; }
+.m-zh { margin-top: 3mm; font-size: 10pt; font-weight: 900; color: var(--gd); }
+.m-ex { margin-top: 2.4mm; background: var(--bg); border-radius: 2mm; padding: 1.8mm 2.2mm; text-align: left; width: 100%; font-size: 5.8pt; }
+.m-g { display: flex; gap: 1.4mm; margin-top: 3mm; }
+.m-g span { flex: 1; text-align: center; color: #fff; font-weight: 900; border-radius: 2mm; padding: 2mm 0; font-size: 6.6pt; }
+.m-opt { border: .4mm solid var(--line); border-radius: 2mm; padding: 2mm 2.4mm; font-weight: 800; margin-bottom: 1.6mm; background: #fff; font-size: 6.6pt; }
+.m-opt.ok { border-color: var(--g); background: var(--gl); color: var(--gd); }
+.m-in { background: #fff; border: .4mm solid var(--line); border-radius: 2mm; height: 6mm; margin: .8mm 0 2mm; padding: 0 2mm; display: flex; align-items: center; color: var(--mute); font-size: 6pt; }
+.m-lb { font-weight: 800; font-size: 6pt; }
+
+/* 列表与表格 */
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.scene { padding: 3.4mm; }
+.scene img { width: 100%; height: 26mm; object-fit: cover; border-radius: 3mm; }
+.scene b { display: block; font-size: 11pt; margin-top: 2mm; }
+.scene small { display: block; font-size: 8pt; color: var(--mute); }
+.scene p { font-size: 8.4pt; line-height: 1.6; margin-top: 1.6mm; }
+.step { display: grid; grid-template-columns: 10mm 1fr; gap: 3mm; padding: 3.2mm 0; border-top: .3mm solid var(--line); }
+.step:first-child { border-top: 0; }
+.step i { font-style: normal; width: 10mm; height: 10mm; border-radius: 50%; background: var(--y); display: grid; place-items: center; font-weight: 900; font-size: 12pt; }
+table { width: 100%; border-collapse: collapse; font-size: 9.6pt; }
+th, td { text-align: left; padding: 2.4mm 2mm; border-bottom: .3mm solid var(--line); vertical-align: top; }
+th { color: var(--ink2); font-weight: 800; font-size: 9pt; background: #f1efe8; }
+td { color: var(--ink); line-height: 1.6; }
+.box { padding: 5mm 6mm; }
+.note { font-size: 8.6pt; color: var(--mute); margin-top: 3mm; }
+.person { display: grid; grid-template-columns: 30mm 1fr; gap: 5mm; padding: 5mm 0; border-top: .3mm solid var(--line); }
+.person img { width: 30mm; height: 40mm; object-fit: cover; border-radius: 3mm; }
+.person .r { font-size: 9pt; font-weight: 800; color: var(--gd); margin: 1mm 0 2mm; }
+.books { display: flex; gap: 3mm; margin-top: 3mm; }
+.books img { width: 20mm; height: 30mm; object-fit: cover; border-radius: .8mm 2mm 2mm .8mm; box-shadow: 0 2mm 3mm -1.6mm rgba(0,0,0,.5); }
+</style>
+</head>
+<body>
+
+<!-- 1 封面 -->
+<section class="pg cover">
+  <div class="brand">JomBelajar</div>
+  <div class="t">
+    <h1>马来语<br><span class="mark">背单词小程序</span></h1>
+    <div class="sub">第一版功能介绍 · 按生活场景背单词</div>
+  </div>
+  <img class="hero" src="img/hero.jpg" alt="">
+  <div class="meta">
+    <b>课程主持</b>　张静灵（副教授，中国传媒大学马来语专业教师）<br>
+    <b>团队成员</b>　杨启航　<b>技术支持</b>　Santoso<br>
+    <b>官网</b>　www.bahasa.cn　<b>日期</b>　2026 年 10 月
+  </div>
+</section>
+
+<!-- 2 是什么 -->
+<section class="pg">
+  <div class="k">01 · 是什么</div>
+  <h2>用中文学马来语的微信小程序</h2>
+  <p>JomBelajar（马来语「一起学吧」）面向想学马来语的中国学生和马来西亚华人。第一版先做最常用的功能：<b style="color:var(--ink)">按生活场景背单词</b>。每个词有中文释义、例句和马来语发音，系统按记忆规律安排复习。</p>
+
+  <div class="grid2" style="margin-top:8mm">
+    <div class="card box">
+      <h3>适合谁</h3>
+      <ul style="margin:3mm 0 0 4mm">
+        <li><b style="color:var(--ink)">零基础的中国学生</b>：从打招呼、数字、点餐这些最常用的词开始。</li>
+        <li><b style="color:var(--ink)">会说一些的马来西亚华人</b>：快速补齐日常词汇，为书面语打基础。</li>
+      </ul>
+    </div>
+    <div class="card box">
+      <h3>怎么开始</h3>
+      <ul style="margin:3mm 0 0 4mm">
+        <li>微信里打开小程序，自动用微信登录，不用记密码。</li>
+        <li>第一次进入填写学习资料：姓名、学校、班级、马来语基础、手机号。</li>
+        <li>选一个生活场景，每组 10 个新词。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="shots" style="margin-top:10mm">
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">填写学习资料</div>
+        <div class="bd">
+          <img src="img/welcome.jpg" style="width:20mm;margin:0 auto 1mm" alt="">
+          <div style="text-align:center;font-weight:900;font-size:9pt">Selamat datang!</div>
+          <div class="m-lb" style="margin-top:2mm">姓名 / 昵称</div><div class="m-in">小明</div>
+          <div class="m-lb">学校</div><div class="m-in">例如：中国传媒大学</div>
+          <div class="m-lb">班级</div><div class="m-in">马来语 2025 级</div>
+          <div class="m-lb">你的马来语基础</div>
+          <div style="display:flex;gap:1mm;background:#f0f0ea;border-radius:2mm;padding:.8mm;margin:.8mm 0 2mm"><span style="flex:1;text-align:center;background:#fff;border-radius:1.6mm;padding:1mm 0;font-weight:800;color:var(--gd)">零基础</span><span style="flex:1;text-align:center;padding:1mm 0;color:var(--mute);font-weight:800">会说一些</span></div>
+          <div class="m-lb">手机号</div><div class="m-in">用于老师联系你</div>
+          <div class="m-btn">开始背单词</div>
+        </div>
+      </div></div>
+      <div class="cap">首次注册</div>
+    </div>
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">背单词</div>
+        <div class="bd">
+          <div class="m-hello">Selamat pagi, 小明!</div><div class="m-cr">张静灵老师主持编写 ›</div>
+          <div class="m-today"><div class="m-ring"><i>6</i></div><div class="m-kv"><div>待复习<b style="color:var(--b)">4</b></div><div>累计学会<b>22</b></div></div></div>
+          <div class="m-btn">复习 4 个词</div>
+          <div class="m-h">生活场景</div>
+          <div class="m-grid">
+            <div class="m-sc"><img src="img/welcome.jpg" alt=""><b>打招呼</b><small>Bertegur sapa</small><div class="m-bar"><i style="width:100%"></i></div></div>
+            <div class="m-sc"><img src="img/pass.jpg" alt=""><b>数字与购物</b><small>Nombor dan membeli-belah</small><div class="m-bar"><i style="width:60%"></i></div></div>
+            <div class="m-sc"><img src="img/cheer.jpg" alt=""><b>茶室点餐</b><small>Di kedai kopi</small><div class="m-bar"><i style="width:20%"></i></div></div>
+            <div class="m-sc"><img src="img/loading.jpg" alt=""><b>问路与交通</b><small>Arah dan pengangkutan</small><div class="m-bar"><i style="width:0"></i></div></div>
+          </div>
+        </div>
+        <div class="tb"><span class="on">背单词</span><span>我的</span></div>
+      </div></div>
+      <div class="cap">首页：今日进度 + 场景</div>
+    </div>
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">茶室点餐</div>
+        <div class="bd">
+          <div style="font-size:12pt;font-weight:900">茶室点餐</div><div style="color:var(--ink2);font-size:5.8pt;margin-bottom:1.4mm">Di kedai kopi · 12 个词</div>
+          <div style="background:#fff;border:.4mm solid var(--line);border-radius:2.4mm;padding:0 2mm">
+            <div class="m-row"><div><b>teh tarik</b><small>拉茶</small></div><span class="m-play">▶</span></div>
+            <div class="m-row"><div><b>nasi lemak</b><small>椰浆饭</small></div><span class="m-play">▶</span></div>
+            <div class="m-row"><div><b>kurang manis</b><small>少甜</small></div><span class="m-play">▶</span></div>
+            <div class="m-row"><div><b>sedap</b><small>好吃</small></div><span class="m-play">▶</span></div>
+            <div class="m-row" style="border:0"><div><b>bil</b><small>账单</small></div><span class="m-play">▶</span></div>
+          </div>
+          <div class="m-btn" style="position:absolute;left:3mm;right:3mm;bottom:3mm">开始学习（10 个新词）</div>
+        </div>
+      </div></div>
+      <div class="cap">场景词表，点一下听发音</div>
+    </div>
+  </div>
+  <div class="foot"><span>JomBelajar · 马来语背单词小程序</span><span>2</span></div>
+</section>
+
+<!-- 3 生活场景 -->
+<section class="pg">
+  <div class="k">02 · 学什么</div>
+  <h2>8 个生活场景，96 个常用词</h2>
+  <p style="margin-bottom:6mm">第一版按生活场景组织，每个场景 12 个词，配例句和马来语发音。以后会再加「按教材背」等模式。</p>
+  <div class="grid4">
+    <div class="card scene"><img src="img/welcome.jpg" alt=""><b>打招呼</b><small>Bertegur sapa</small><p>selamat pagi 早上好<br>terima kasih 谢谢</p></div>
+    <div class="card scene"><img src="img/pass.jpg" alt=""><b>数字与购物</b><small>Nombor dan membeli-belah</small><p>berapa 多少<br>murah 便宜</p></div>
+    <div class="card scene"><img src="img/cheer.jpg" alt=""><b>茶室点餐</b><small>Di kedai kopi</small><p>teh tarik 拉茶<br>kurang manis 少甜</p></div>
+    <div class="card scene"><img src="img/loading.jpg" alt=""><b>问路与交通</b><small>Arah dan pengangkutan</small><p>di mana 在哪里<br>kiri 左</p></div>
+    <div class="card scene"><img src="img/welcome.jpg" alt=""><b>家人</b><small>Keluarga</small><p>ayah 爸爸<br>ibu 妈妈</p></div>
+    <div class="card scene"><img src="img/study.jpg" alt=""><b>学校</b><small>Sekolah</small><p>cikgu 老师<br>belajar 学习</p></div>
+    <div class="card scene"><img src="img/checkin.jpg" alt=""><b>时间与日期</b><small>Masa dan tarikh</small><p>hari ini 今天<br>esok 明天</p></div>
+    <div class="card scene"><img src="img/fail.jpg" alt=""><b>身体与看病</b><small>Badan dan kesihatan</small><p>sakit 疼；生病<br>doktor 医生</p></div>
+  </div>
+  <div class="card box" style="margin-top:8mm;background:#fff7dd;border-color:#f3e2b0">
+    <h3>词库审核说明</h3>
+    <p style="margin-top:1.6mm">第一版词库为草稿，会由张静灵老师逐条审核词义和例句。审核通过的词才会正式上架。审核前，学生看到的场景会提示「还在老师审核中」。</p>
+  </div>
+  <div class="foot"><span>JomBelajar · 马来语背单词小程序</span><span>3</span></div>
+</section>
+
+<!-- 4 怎么背 -->
+<section class="pg">
+  <div class="k">03 · 怎么背</div>
+  <h2>先回忆，再看答案，按记忆安排复习</h2>
+  <div class="shots" style="margin:4mm 0 8mm">
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">背单词</div>
+        <div class="bd">
+          <div class="m-bar" style="height:1.6mm"><i style="width:30%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:1mm;font-size:5.6pt;color:var(--mute)"><span>3 / 10</span><span class="tag" style="font-size:5pt">新词</span></div>
+          <div class="m-card"><div class="m-w">teh tarik</div><div class="m-snd">▶ 发音</div><div style="margin-top:6mm;color:var(--ink2);font-size:6pt">先想一想它是什么意思，<br>再点卡片看答案</div></div>
+          <div class="m-btn" style="margin-top:3mm">看答案</div>
+        </div>
+      </div></div>
+      <div class="cap">① 看词回忆，自动播放发音</div>
+    </div>
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">背单词</div>
+        <div class="bd">
+          <div class="m-bar" style="height:1.6mm"><i style="width:30%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:1mm;font-size:5.6pt;color:var(--mute)"><span>3 / 10</span><span class="tag" style="font-size:5pt">新词</span></div>
+          <div class="m-card"><div class="m-w">teh tarik</div><div class="m-snd">▶ 发音</div><div class="m-zh">拉茶 <span style="font-size:5.6pt;color:var(--mute);font-weight:500">名</span></div><div class="m-ex"><b>Satu teh tarik, kurang manis.</b><br><span style="color:var(--ink2)">一杯拉茶，少甜。</span></div></div>
+          <div class="m-g"><span style="background:var(--c)">不认识</span><span style="background:#f5a524">模糊</span><span style="background:var(--g)">认识</span></div>
+          <div style="text-align:center;font-size:5.4pt;color:var(--mute);margin-top:1.6mm">太简单了，设为已掌握</div>
+        </div>
+      </div></div>
+      <div class="cap">② 看答案和例句，给自己打分</div>
+    </div>
+    <div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>●●●</span></div><div class="nb">背单词</div>
+        <div class="bd">
+          <div style="font-weight:900;color:var(--gd);font-size:6.6pt;margin-top:1mm">小测一下 · 选出中文意思</div>
+          <div style="font-size:15pt;font-weight:900;text-align:center;margin:9mm 0 7mm">sedap</div>
+          <div class="m-opt">便宜</div><div class="m-opt ok">好吃　✓</div><div class="m-opt">账单</div><div class="m-opt">少甜</div>
+        </div>
+      </div></div>
+      <div class="cap">③ 每 5 个词一轮小测</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="step"><i>1</i><div><h3>看词回忆</h3><p>大号马来语单词，自动播放发音。先在心里想意思，再看答案。</p></div></div>
+      <div class="step"><i>2</i><div><h3>自己打分</h3><p>认识、模糊、不认识三档。太简单的词可以直接「设为已掌握」。不认识的词，本组内还会再出现一次。</p></div></div>
+      <div class="step"><i>3</i><div><h3>小测巩固</h3><p>每背 5 个词，穿插一轮选择题：看词选义、看义选词轮流出。</p></div></div>
+    </div>
+    <div class="card box">
+      <h3>复习怎么安排</h3>
+      <table style="margin-top:3mm">
+        <tr><th>打分</th><th>下次复习</th></tr>
+        <tr><td>认识</td><td>间隔逐步拉长：1 → 2 → 4 → 7 → 15 → 30 天</td></tr>
+        <tr><td>模糊</td><td>保持当前间隔，过几天再看</td></tr>
+        <tr><td>不认识</td><td>当天重新复习，间隔从头开始</td></tr>
+        <tr><td>设为已掌握</td><td>不再出现在复习里</td></tr>
+      </table>
+      <p class="note">首页显示今天到期要复习的词数，点一下就开始复习。</p>
+    </div>
+  </div>
+  <div class="foot"><span>JomBelajar · 马来语背单词小程序</span><span>4</span></div>
+</section>
+
+<!-- 5 后台与数据 -->
+<section class="pg">
+  <div class="k">04 · 老师怎么管</div>
+  <h2>网页后台：单词、老师、学生都能管</h2>
+  <p style="margin-bottom:6mm">后台在电脑浏览器里打开（admin.bahasa.cn，正在搭建），老师和管理员在这里维护内容、查看学生情况。改动保存后，小程序里马上生效。</p>
+  <table class="card" style="border-radius:4mm;overflow:hidden">
+    <tr><th style="width:24mm">模块</th><th>能做什么</th></tr>
+    <tr><td><b>场景</b></td><td>新增、编辑、排序、上下架；设置封面图</td></tr>
+    <tr><td><b>单词</b></td><td>按场景和审核状态筛选；增删改；粘贴表格批量导入；一键生成马来语发音；审核通过后才上架</td></tr>
+    <tr><td><b>老师</b></td><td>维护老师的姓名、职称、简介和照片，显示在小程序的「关于老师」页</td></tr>
+    <tr><td><b>学生</b></td><td>查看注册资料（姓名、学校、班级、基础、手机号）；按学校和班级筛选；看每个人学了多少词、最近什么时候学；导出表格</td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:10mm">
+    <div class="card box">
+      <h3>数据存在哪</h3>
+      <p style="margin-top:1.6mm">学习记录和学生资料存在微信云开发里，学生用微信登录，不需要另设密码。每个学生只能读写自己的学习记录。</p>
+    </div>
+    <div class="card box">
+      <h3>隐私</h3>
+      <p style="margin-top:1.6mm">注册时需要学生勾选同意隐私说明。资料只用于安排学习、方便老师了解学习情况，不用于广告。隐私说明见 www.bahasa.cn/privacy。</p>
+    </div>
+  </div>
+  <div class="foot"><span>JomBelajar · 马来语背单词小程序</span><span>5</span></div>
+</section>
+
+<!-- 6 团队与计划 -->
+<section class="pg">
+  <div class="k">05 · 谁在做</div>
+  <h2>团队与下一步</h2>
+  <div class="person" style="border-top:0">
+    <img src="img/zhang.jpg" alt="张静灵">
+    <div>
+      <h3 style="font-size:15pt">张静灵</h3>
+      <div class="r">课程主持 · 副教授 · 中国传媒大学马来语专业教师</div>
+      <p>长期从事马来语教学与马来世界文化研究。出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》、马来文专著 Warisan Kebudayaan Minangkabau，译著《马来西亚诗选》；参与编撰《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。</p>
+      <div class="books"><img src="img/tongyuan.jpg" alt=""><img src="img/warisan.jpg" alt=""><img src="img/poems.jpg" alt=""><img src="img/newspaper.jpg" alt=""><img src="img/literature.jpg" alt=""><img src="img/writing.jpg" alt=""></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="person" style="grid-template-columns:22mm 1fr">
+      <img src="img/yang-34.jpg" alt="杨启航" style="width:22mm;height:29mm">
+      <div><h3>杨启航</h3><div class="r">团队成员 · 中国传媒大学马来语专业本科生</div><p style="font-size:9pt">曾赴马来西亚理科大学交流学习，受邀参加马来西亚国家广播电视台《早安马来西亚》直播访谈。</p></div>
+    </div>
+    <div class="person" style="grid-template-columns:22mm 1fr">
+      <img src="img/santoso-34.jpg" alt="Santoso" style="width:22mm;height:29mm">
+      <div><h3>Santoso</h3><div class="r">技术支持 · JobTalent AI 创始人</div><p style="font-size:9pt">负责网站、小程序和后台的架构与部署。</p></div>
+    </div>
+  </div>
+
+  <div class="card box" style="margin-top:6mm">
+    <h3>上线计划</h3>
+    <table style="margin-top:2mm">
+      <tr><th style="width:30mm">阶段</th><th>内容</th></tr>
+      <tr><td>第一版（当前）</td><td>按生活场景背单词、学生注册、网页后台</td></tr>
+      <tr><td>上线前</td><td>老师审核 96 个词；开通云开发并导入词库；小程序提交审核</td></tr>
+      <tr><td>之后</td><td>按教材背单词；课文朗读；在线测试和错题本；老师按班级查看进度</td></tr>
+    </table>
+  </div>
+  <div class="foot"><span>JomBelajar · www.bahasa.cn</span><span>6</span></div>
+</section>
+
+</body>
+</html>
