@@ -1,0 +1,8 @@
+{"_id": "scene-greet", "name": "打招呼", "name_ms": "Bertegur sapa", "cover": "c-welcome", "order": 1, "published": true}
+{"_id": "scene-shop", "name": "数字与购物", "name_ms": "Nombor dan membeli-belah", "cover": "c-pass", "order": 2, "published": true}
+{"_id": "scene-kopitiam", "name": "茶室点餐", "name_ms": "Di kedai kopi", "cover": "c-cheer", "order": 3, "published": true}
+{"_id": "scene-road", "name": "问路与交通", "name_ms": "Arah dan pengangkutan", "cover": "c-loading", "order": 4, "published": true}
+{"_id": "scene-family", "name": "家人", "name_ms": "Keluarga", "cover": "c-welcome", "order": 5, "published": true}
+{"_id": "scene-school", "name": "学校", "name_ms": "Sekolah", "cover": "c-study", "order": 6, "published": true}
+{"_id": "scene-time", "name": "时间与日期", "name_ms": "Masa dan tarikh", "cover": "c-checkin", "order": 7, "published": true}
+{"_id": "scene-health", "name": "身体与看病", "name_ms": "Badan dan kesihatan", "cover": "c-fail", "order": 8, "published": true}

@@ -1,10 +1,9 @@
-// 小程序配置。上线前:useMock 改 false,apiBase 确认是线上接口地址。
+// 小程序配置。
+// cloudEnv:微信云开发环境 ID(开发者工具 → 云开发 → 设置里复制)。填了就走云开发;留空就用本地演示数据。
+// apiBase / wechatLogin:旧的 JomBelajar 接口(阅读、测试等功能),第一版没有启用。
 module.exports = {
-  // JomBelajar 后端地址(接口都在 /api 下)。
-  // 注意:2026-10-18 起 www.bahasa.cn 指向宣传官网,不再是 JomBelajar 后端;接真实接口前要换成后端的新域名(比如 api.bahasa.cn)
-  apiBase: 'https://www.bahasa.cn/api',
-  // true = 用本地演示数据,不请求后端;没有测试账号、后端还没支持微信登录时用
+  cloudEnv: '',
+  apiBase: '',
   useMock: true,
-  // 后端加好 POST /auth/wechat 之后改成 true,登录页才显示「微信一键登录」
   wechatLogin: false
 }

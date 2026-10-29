@@ -12,5 +12,6 @@
     "minified": true,
     "urlCheck": true
   },
-  "condition": {}
+  "condition": {},
+  "cloudfunctionRoot": "cloudfunctions/"
 }

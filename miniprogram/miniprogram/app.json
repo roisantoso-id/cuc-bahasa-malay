@@ -1,42 +1,20 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/read/read",
-    "pages/papers/papers",
     "pages/me/me",
-    "pages/login/login"
+    "pages/register/register"
   ],
   "subPackages": [
     {
       "root": "pkg-word",
       "pages": [
-        "study/study",
-        "favorites/favorites",
-        "exclusions/exclusions"
-      ]
-    },
-    {
-      "root": "pkg-read",
-      "pages": [
-        "article/article",
-        "video/video"
-      ]
-    },
-    {
-      "root": "pkg-paper",
-      "pages": [
-        "detail/detail",
-        "attempt/attempt",
-        "result/result",
-        "wrong/wrong"
+        "scene/scene",
+        "learn/learn"
       ]
     },
     {
       "root": "pkg-me",
       "pages": [
-        "settings/settings",
-        "profile/profile",
-        "security/security",
         "about/about"
       ]
     }
@@ -55,15 +33,7 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "学习"
-      },
-      {
-        "pagePath": "pages/read/read",
-        "text": "阅读"
-      },
-      {
-        "pagePath": "pages/papers/papers",
-        "text": "测试"
+        "text": "背单词"
       },
       {
         "pagePath": "pages/me/me",

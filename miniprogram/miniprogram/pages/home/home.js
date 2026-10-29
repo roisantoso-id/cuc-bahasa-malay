@@ -1,70 +1,32 @@
-// 学习 tab:今日复习、开始 / 继续学习、打卡日历、今日回顾
-const { wordStudy } = require('../../api/index')
-const { requireLogin, toastError } = require('../../utils/ui')
-const fmt = require('../../utils/format')
+// 背单词首页:今日进度 + 生活场景
+const vocab = require('../../api/vocab')
+const { ensureStudent } = require('../../utils/student')
 
-const HELLO = () => {
-  const h = new Date().getHours()
-  if (h < 11) return 'Selamat pagi!'
-  if (h < 15) return 'Selamat tengah hari!'
-  if (h < 19) return 'Selamat petang!'
-  return 'Selamat malam!'
-}
+const GOAL = 10 // 每天新学目标
+const COVERS = { 'c-welcome': 'welcome', 'c-pass': 'pass', 'c-cheer': 'cheer', 'c-loading': 'loading', 'c-study': 'study', 'c-checkin': 'checkin', 'c-fail': 'fail' }
+const HELLO = () => { const h = new Date().getHours(); return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat tengah hari' : h < 19 ? 'Selamat petang' : 'Selamat malam' }
 
 Page({
-  data: { loading: true, error: false, hello: '', learning: null, review: null, hasActive: false, allDone: false, cal: null, year: 0, month: 0, today: [], todayTotal: 0 },
+  data: { loading: true, error: false, student: null, ov: null, ring: 0, hello: '', next: null },
 
-  onShow() {
-    if (!requireLogin()) return
-    const d = new Date()
-    if (!this.data.year) this.setData({ year: d.getFullYear(), month: d.getMonth() + 1 })
-    this.load()
-  },
-
-  onPullDownRefresh() {
-    this.load().then(() => wx.stopPullDownRefresh())
-  },
+  async onShow() { this.load() },
+  onPullDownRefresh() { this.load().then(() => wx.stopPullDownRefresh()) },
 
   async load() {
-    this.setData({ hello: HELLO(), error: false })
     try {
-      const [learning, review, today] = await Promise.all([wordStudy.learningOverview(), wordStudy.reviewOverview(), wordStudy.today(1, 5)])
-      this.setData({
-        loading: false, learning, review,
-        hasActive: !!(learning.activeSession || review.activeSession),
-        allDone: !learning.activeSession && !review.activeSession && !review.dueCount && !learning.hasMoreWords,
-        today: today.items.map(x => ({ ...x, first: fmt.senses(x.senses)[0] })),
-        todayTotal: today.totalCount
-      })
-      this.loadCal()
+      const student = await ensureStudent()
+      if (!student) return
+      const ov = await vocab.overview()
+      ov.scenes = ov.scenes.map(s => ({ ...s, img: COVERS[s.cover] ? `/assets/${COVERS[s.cover]}.jpg` : s.cover, pct: s.total ? Math.round((s.learned / s.total) * 100) : 0 }))
+      const next = ov.scenes.find(s => s.learned < s.total) || null
+      this.setData({ loading: false, error: false, student, ov, hello: HELLO(), ring: Math.min(100, Math.round((ov.learnedToday / GOAL) * 100)), goal: GOAL, next })
     } catch (e) {
       this.setData({ loading: false, error: true })
     }
   },
 
-  async loadCal() {
-    try {
-      const cal = await wordStudy.checkIns(this.data.year, this.data.month)
-      this.setData({ cal, calDates: cal.checkedInDates.map(x => x.studyDateUtc.slice(0, 10)) })
-    } catch (e) {
-      toastError(e, '打卡日历加载失败，请重试。')
-    }
-  },
-
-  changeMonth(e) {
-    let { year, month } = this.data
-    month += e.detail.delta
-    if (month < 1) { month = 12; year-- }
-    if (month > 12) { month = 1; year++ }
-    this.setData({ year, month })
-    this.loadCal()
-  },
-
-  about() {
-    wx.navigateTo({ url: '/pkg-me/about/about' })
-  },
-
-  study() {
-    wx.navigateTo({ url: '/pkg-word/study/study' })
-  }
+  review() { wx.navigateTo({ url: '/pkg-word/learn/learn?review=1' }) },
+  cont() { if (this.data.next) wx.navigateTo({ url: `/pkg-word/learn/learn?scene=${this.data.next._id}` }) },
+  open(e) { wx.navigateTo({ url: `/pkg-word/scene/scene?id=${e.currentTarget.dataset.id}` }) },
+  about() { wx.navigateTo({ url: '/pkg-me/about/about' }) }
 })

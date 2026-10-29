@@ -1,0 +1,28 @@
+.page { height: 100vh; display: flex; flex-direction: column; padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.top { margin-bottom: 24rpx; }
+.top-r { display: flex; justify-content: space-between; align-items: center; margin-top: 12rpx; }
+.card-big { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 44rpx; box-shadow: 0 8rpx 0 var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40rpx; text-align: center; }
+.w { font-size: 96rpx; font-weight: 900; line-height: 1.15; word-break: break-word; }
+.sound { margin-top: 24rpx; font-size: 26rpx; font-weight: 800; color: var(--blue-d, #2f86d6); background: #e4f1ff; padding: 12rpx 28rpx; border-radius: 999rpx; }
+.hint { margin-top: 60rpx; color: var(--ink2); font-size: 26rpx; }
+.zh { margin-top: 48rpx; font-size: 48rpx; font-weight: 900; color: var(--green-d); }
+.pos { font-size: 24rpx; color: var(--ink2); font-weight: 500; margin-left: 12rpx; }
+.ex { margin-top: 36rpx; padding: 24rpx 28rpx; background: var(--bg); border-radius: 24rpx; text-align: left; width: 100%; box-sizing: border-box; }
+.ex-ms { font-weight: 800; font-size: 30rpx; }
+.ex-zh { color: var(--ink2); font-size: 26rpx; margin-top: 6rpx; }
+.actions { margin-top: 32rpx; }
+.grades { display: flex; gap: 20rpx; }
+.g { flex: 1; text-align: center; padding: 30rpx 0; border-radius: 28rpx; color: #fff; font-size: 32rpx; font-weight: 900; }
+.g.hover { transform: translateY(6rpx); box-shadow: none !important; }
+.g-forgot { background: var(--coral); box-shadow: 0 8rpx 0 #d94a3a; }
+.g-vague { background: #f5a524; box-shadow: 0 8rpx 0 #c98410; }
+.g-know { background: var(--green); box-shadow: 0 8rpx 0 var(--green-d); }
+.master { text-align: center; margin-top: 24rpx; font-size: 24rpx; color: var(--ink2); }
+.quiz-k { font-size: 28rpx; font-weight: 900; color: var(--green-d); }
+.quiz-p { font-size: 64rpx; font-weight: 900; text-align: center; margin: 60rpx 0 50rpx; }
+.done { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.done-img { width: 300rpx; height: 300rpx; display: block; margin: 0 auto; }
+.sum { display: flex; gap: 16rpx; margin: 32rpx 0 20rpx; }
+.sum > view { flex: 1; text-align: center; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 18rpx 0; font-size: 24rpx; color: var(--ink2); }
+.n { font-size: 44rpx; font-weight: 900; color: var(--ink); }
+.c-know { color: var(--green); } .c-vague { color: #f5a524; } .c-forgot { color: var(--coral); }

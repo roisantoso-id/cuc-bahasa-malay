@@ -1,0 +1,7 @@
+.hero { width: 260rpx; height: 260rpx; display: block; margin: 0 auto; }
+.seg { display: flex; background: #f0f0ea; border-radius: 24rpx; padding: 8rpx; }
+.seg-i { flex: 1; text-align: center; padding: 18rpx 0; border-radius: 18rpx; font-weight: 800; color: var(--ink2); }
+.seg-i.on { background: #fff; color: var(--green-d); box-shadow: 0 4rpx 0 var(--line); }
+.agree { display: flex; gap: 16rpx; align-items: flex-start; margin: 8rpx 0 12rpx; color: var(--ink2); }
+.box { width: 40rpx; height: 40rpx; flex: none; border: 4rpx solid var(--line); border-radius: 10rpx; text-align: center; line-height: 34rpx; color: #fff; font-weight: 900; margin-top: 4rpx; }
+.box.on { background: var(--green); border-color: var(--green); }

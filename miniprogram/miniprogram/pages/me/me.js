@@ -1,29 +1,21 @@
-// 我的:资料、学习统计、收藏本、停止复习的词、错题本、设置、账户安全、退出
-const { user, wordStudy, auth } = require('../../api/index')
-const { requireLogin, toastError } = require('../../utils/ui')
+// 我的:学习资料、学习统计、关于老师、反馈
+const vocab = require('../../api/vocab')
+const { ensureStudent } = require('../../utils/student')
+
+const TRACK = { zero: '零基础', heritage: '会说一些' }
 
 Page({
-  data: { me: null, learning: null, streak: 0 },
-
-  onShow() {
-    if (!requireLogin()) return
-    Promise.all([user.me(), wordStudy.learningOverview(), wordStudy.checkIns(new Date().getFullYear(), new Date().getMonth() + 1)])
-      .then(([me, learning, cal]) => this.setData({ me, learning, streak: cal.currentStreak }))
-      .catch(e => toastError(e))
+  data: { student: null, ov: null, track: '' },
+  async onShow() {
+    try {
+      const student = await ensureStudent()
+      if (!student) return
+      const ov = await vocab.overview()
+      this.setData({ student, ov, track: TRACK[student.track] || '' })
+    } catch (e) {
+      wx.showToast({ title: '加载失败，请重试', icon: 'none' })
+    }
   },
-
   go(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
-
-  logout() {
-    wx.showModal({
-      title: '退出登录',
-      content: '确定要退出当前账号吗？',
-      success: async r => {
-        if (!r.confirm) return
-        await auth.logout().catch(() => {})
-        wx.showToast({ title: '已安全退出登录。', icon: 'none' })
-        wx.navigateTo({ url: '/pages/login/login' })
-      }
-    })
-  }
+  privacy() { wx.setClipboardData({ data: 'https://www.bahasa.cn/privacy/', success: () => wx.showToast({ title: '隐私说明链接已复制', icon: 'none' }) }) }
 })

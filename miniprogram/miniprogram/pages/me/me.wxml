@@ -1,42 +1,24 @@
 <view class="wrap">
-  <view class="profile card card-tap" hover-class="hover" data-url="/pkg-me/profile/profile" bindtap="go">
-    <image class="avatar" src="{{me.avatarUrl || '/assets/avatar.jpg'}}" mode="aspectFill" />
+  <view class="profile card card-tap" hover-class="hover" data-url="/pages/register/register" bindtap="go">
+    <view class="avatar avatar-txt">{{student.name ? student.name[0] : '我'}}</view>
     <view class="item-main">
-      <view class="name">{{me.nickname || '未设置昵称'}}</view>
-      <view class="muted small">{{me.email}}</view>
+      <view class="name">{{student.name || '同学'}}</view>
+      <view class="muted small">{{student.school}}{{student.className ? ' · ' + student.className : ''}}</view>
+      <view class="muted small">{{track}}</view>
     </view>
-    <text class="arrow">编辑 ›</text>
+    <text class="arrow">修改 ›</text>
   </view>
 
   <view class="stats">
-    <view class="stat"><view class="n" style="color:var(--coral)">{{streak}}</view><view class="muted small">连续打卡</view></view>
-    <view class="stat"><view class="n" style="color:var(--green)">{{learning.todayLearnedCount || 0}}</view><view class="muted small">今日学习</view></view>
-    <view class="stat"><view class="n">{{learning.totalLearnedCount || 0}}</view><view class="muted small">累计学习</view></view>
+    <view class="stat"><view class="n" style="color:var(--green)">{{ov.learnedToday || 0}}</view><view class="muted small">今日新学</view></view>
+    <view class="stat"><view class="n" style="color:var(--blue)">{{ov.dueTotal || 0}}</view><view class="muted small">待复习</view></view>
+    <view class="stat"><view class="n">{{ov.learnedTotal || 0}}</view><view class="muted small">累计学会</view></view>
   </view>
 
-  <view class="h2">单词</view>
-  <view class="card list">
-    <view class="item" hover-class="hover-row" data-url="/pkg-word/favorites/favorites" bindtap="go"><view class="item-main">收藏本</view><text class="arrow">›</text></view>
-    <view class="item" hover-class="hover-row" data-url="/pkg-word/exclusions/exclusions" bindtap="go"><view class="item-main">已停止复习的词</view><text class="arrow">›</text></view>
-    <view class="item" hover-class="hover-row" data-url="/pkg-me/settings/settings" bindtap="go"><view class="item-main">单词学习设置<view class="muted small">每组数量、目标记忆保持率</view></view><text class="arrow">›</text></view>
+  <view class="card list" style="margin-top:36rpx">
+    <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于老师<view class="muted small">张静灵老师主持编写</view></view><text class="arrow">›</text></view>
+    <button class="item fb" open-type="feedback"><view class="item-main">意见反馈 / 单词报错</view><text class="arrow">›</text></button>
+    <view class="item" hover-class="hover-row" bindtap="privacy"><view class="item-main">隐私说明</view><text class="arrow">›</text></view>
   </view>
-
-  <view class="h2">在线测试</view>
-  <view class="card list">
-    <view class="item" hover-class="hover-row" data-url="/pkg-paper/wrong/wrong" bindtap="go"><view class="item-main">错题本<view class="muted small">查看自动收录的错题并逐题重做</view></view><text class="arrow">›</text></view>
-  </view>
-
-  <view class="h2">关于</view>
-  <view class="card list">
-    <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于我们 · 研发团队<view class="muted small">作者介绍与著作</view></view><text class="arrow">›</text></view>
-  </view>
-
-  <view class="h2">账号</view>
-  <view class="card list">
-    <view class="item" hover-class="hover-row" data-url="/pkg-me/security/security" bindtap="go"><view class="item-main">账户安全<view class="muted small">修改邮箱、重置密码、删除账号</view></view><text class="arrow">›</text></view>
-    <button class="item fb" open-type="feedback"><view class="item-main">意见反馈 / 报错</view><text class="arrow">›</text></button>
-  </view>
-
-  <button class="btn btn-ghost" hover-class="hover" style="margin-top:48rpx" bindtap="logout">退出登录</button>
-  <view class="muted small center" style="margin-top:32rpx">JomBelajar · 张静灵老师主持编写</view>
+  <view class="muted small center" style="margin-top:40rpx">JomBelajar · 张静灵老师主持编写</view>
 </view>

@@ -8,8 +8,17 @@ const BOOKS = [
   { img: 'writing', role: '教材', title: '马来语写作教程', pub: '中国传媒大学出版社' }
 ]
 
+const vocab = require('../../api/vocab')
+
 Page({
-  data: { books: BOOKS },
+  data: { books: BOOKS, lead: null, others: [] },
+  async onLoad() {
+    try {
+      const list = await vocab.teachers()
+      const withUrl = await Promise.all(list.map(async t => ({ ...t, photoUrl: await vocab.fileUrl(t.photo) })))
+      this.setData({ lead: withUrl[0] || null, others: withUrl.slice(1) })
+    } catch (e) { /* 拿不到就只显示书架和技术支持 */ }
+  },
   preview(e) {
     const urls = BOOKS.map(b => `/pkg-me/img/${b.img}.jpg`)
     wx.previewImage({ current: urls[e.currentTarget.dataset.i], urls })

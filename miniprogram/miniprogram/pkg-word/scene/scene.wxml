@@ -1,0 +1,24 @@
+<view class="wrap">
+  <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
+  <hb-empty wx:elif="{{error}}" image="empty" title="{{error}}" />
+  <block wx:else>
+    <view class="head">
+      <view class="h1">{{scene.name}}</view>
+      <view class="muted">{{scene.name_ms}} · {{words.length}} 个词</view>
+      <view wx:if="{{draft}}" class="draft">这一组词还在老师审核中，内容可能会调整。</view>
+    </view>
+    <view class="card list">
+      <view wx:for="{{words}}" wx:key="_id" class="item" data-a="{{item.audio}}" bindtap="play">
+        <view class="item-main">
+          <view><text class="ms w">{{item.ms}}</text><text class="pos">{{item.pos}}</text></view>
+          <view class="muted small">{{item.zh}}</view>
+        </view>
+        <text wx:if="{{item.learned}}" class="ok">✓</text>
+        <text class="play">▶</text>
+      </view>
+    </view>
+    <view class="bottom">
+      <button class="btn btn-main" hover-class="hover" bindtap="start">{{left ? '开始学习（' + (left > 10 ? 10 : left) + ' 个新词）' : '复习这个场景'}}</button>
+    </view>
+  </block>
+</view>

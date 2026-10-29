@@ -3,14 +3,14 @@
   <view class="band">
     <view class="title">做这门课的人</view>
     
-    <view class="prof">
-      <image class="photo" src="/pkg-me/img/zhang.jpg" mode="aspectFill" />
+    <view class="prof" wx:if="{{lead}}">
+      <image class="photo" src="{{lead.photoUrl}}" mode="aspectFill" />
       <view class="pt">
-        <view class="name">张静灵 副教授</view>
-        <view class="role">课程主持 · 副教授 · 中国传媒大学马来语专业教师</view>
+        <view class="name">{{lead.name}}</view>
+        <view class="role">{{lead.role ? lead.role + ' · ' : ''}}{{lead.title}}</view>
       </view>
     </view>
-    <view class="bio">长期从事马来语教学与马来世界文化研究。出版专著《同源异流：印度尼西亚和马来西亚母系社会文化比较研究》、马来文专著 Warisan Kebudayaan Minangkabau: Rumah Gadang di Nagari Kinari，译著《马来西亚诗选》；参与编撰高校教材《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。</view>
+    <view class="bio" wx:if="{{lead}}">{{lead.bio}}</view>
 
     <scroll-view scroll-x class="shelf" enhanced show-scrollbar="{{false}}">
       <view class="books">
@@ -26,12 +26,12 @@
 
   <view class="wrap">
     <view class="h2">研发团队</view>
-    <view class="card person">
-      <image class="avatar" src="/pkg-me/img/yang.jpg" mode="aspectFill" />
+    <view wx:for="{{others}}" wx:key="_id" class="card person">
+      <image class="avatar" src="{{item.photoUrl}}" mode="aspectFill" />
       <view class="item-main">
-        <view class="pn">杨启航</view>
-        <view class="pr">团队成员 · 中国传媒大学马来语专业本科生</view>
-        <view class="pd">获国家留学基金管理委员会资助，入选 2025 年国际区域问题研究及外语高层次人才培养项目，赴马来西亚理科大学（USM）交流学习。曾受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈。擅长把语言学习和人工智能结合起来，有扎实的视频制作能力。</view>
+        <view class="pn">{{item.name}}</view>
+        <view class="pr">{{item.role ? item.role + ' · ' : ''}}{{item.title}}</view>
+        <view class="pd">{{item.bio}}</view>
       </view>
     </view>
     <view class="live card" bindtap="previewLive">

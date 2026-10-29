@@ -1,65 +1,35 @@
 <view class="wrap">
   <hb-empty wx:if="{{loading}}" image="loading" title="正在加载…" />
-  <hb-empty wx:elif="{{error}}" image="empty" title="学习安排加载失败，请重试。">
-    <button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button>
-  </hb-empty>
+  <hb-empty wx:elif="{{error}}" image="empty" title="加载失败，请重试。"><button class="btn btn-main" hover-class="hover" bindtap="load">重新加载</button></hb-empty>
   <block wx:else>
-    <view class="credit" bindtap="about">张静灵老师主持编写 ›</view>
-    <view class="between">
+    <view class="top">
       <view>
-        <view class="hello">{{hello}}</view>
-        <view class="muted small">今天也学十分钟吧</view>
-      </view>
-      <view class="streak" wx:if="{{cal}}">
-        <text class="flame">●</text> {{cal.currentStreak}} 天
+        <view class="hello">{{hello}}, {{student.name}}!</view>
+        <view class="credit" bindtap="about">张静灵老师主持编写 ›</view>
       </view>
     </view>
 
-    <view class="goal">
-      <image class="goal-img" src="/assets/{{allDone ? 'cheer' : 'study'}}.jpg" mode="aspectFit" />
-      <view class="goal-txt">
-        <block wx:if="{{allDone}}">
-          <view class="goal-t">都学完啦</view>
-          <view class="goal-d">当前学习已完成，没有到期复习或待学新词。</view>
-        </block>
-        <block wx:elif="{{review.dueCount}}">
-          <view class="goal-t">{{review.dueCount}} 个词等你复习</view>
-          <view class="goal-d">先完成到期复习，再学习新词</view>
-        </block>
-        <block wx:else>
-          <view class="goal-t">今天的复习完成了</view>
-          <view class="goal-d">去学几个新词吧</view>
-        </block>
+    <view class="today">
+      <view class="ring" style="background: conic-gradient(#2fae66 {{ring * 3.6}}deg, #e8e8e2 0deg)">
+        <view class="ring-in"><view class="ring-n">{{ov.learnedToday}}</view><view class="ring-t">/ {{goal}} 新词</view></view>
+      </view>
+      <view class="today-r">
+        <view class="t-row"><text class="t-k">待复习</text><text class="t-v due">{{ov.dueTotal}}</text></view>
+        <view class="t-row"><text class="t-k">累计学会</text><text class="t-v">{{ov.learnedTotal}}</text></view>
       </view>
     </view>
-    <button wx:if="{{!allDone}}" class="btn btn-main" hover-class="hover" style="margin-top:28rpx" bindtap="study">{{hasActive ? '继续学习' : '开始学习'}}</button>
+    <button wx:if="{{ov.dueTotal}}" class="btn btn-main" hover-class="hover" bindtap="review">复习 {{ov.dueTotal}} 个词</button>
+    <button wx:elif="{{next}}" class="btn btn-main" hover-class="hover" bindtap="cont">继续学「{{next.name}}」</button>
+    <view wx:else class="done-all">所有场景都学完了，明天再来复习。</view>
 
-    <view class="stats">
-      <view class="stat"><view class="n" style="color:var(--blue)">{{review.dueCount}}</view><view class="muted small">待复习</view></view>
-      <view class="stat"><view class="n" style="color:var(--green)">{{learning.todayLearnedCount}}</view><view class="muted small">今日已学习</view></view>
-      <view class="stat"><view class="n">{{learning.totalLearnedCount}}</view><view class="muted small">累计学习</view></view>
-    </view>
-
-    <view class="h2">学习打卡</view>
-    <view class="card">
-      <view class="muted small" style="margin-bottom:12rpx">完成当天新词学习即可打卡。</view>
-      <calendar year="{{year}}" month="{{month}}" dates="{{calDates}}" bind:change="changeMonth" />
-      <view class="cal-foot" wx:if="{{cal}}">
-        <view><text class="b">{{cal.currentStreak}}</text> 当前连续</view>
-        <view><text class="b">{{cal.longestStreak}}</text> 最长连续</view>
-        <view><text class="b">{{cal.totalCheckInDays}}</text> 累计打卡</view>
-      </view>
-    </view>
-
-    <view class="h2 between"><text>今日回顾</text><text class="muted small">共 {{todayTotal}} 条</text></view>
-    <view wx:if="{{!today.length}}" class="card muted center">今天还没有学习记录。</view>
-    <view wx:else class="card list">
-      <view wx:for="{{today}}" wx:key="wordId" class="item">
-        <view class="item-main">
-          <view class="row"><text class="ms word">{{item.headword}}</text><text class="tag {{item.activityType === 'Review' ? 'blue' : ''}}">{{item.activityType === 'Review' ? '今日复习' : '今日新学'}}</text></view>
-          <view class="muted small">{{item.first.posLabel}} {{item.first.definition}}</view>
-        </view>
-        <audio-btn audio-id="{{item.audioResourceId}}" />
+    <view class="h2">生活场景</view>
+    <view class="grid">
+      <view wx:for="{{ov.scenes}}" wx:key="_id" class="scene" hover-class="hover" data-id="{{item._id}}" bindtap="open">
+        <image class="cover" src="{{item.img}}" mode="aspectFill" lazy-load />
+        <view class="s-name">{{item.name}}</view>
+        <view class="s-ms">{{item.name_ms}}</view>
+        <view class="bar"><view class="bar-in" style="width:{{item.pct}}%" /></view>
+        <view class="s-meta"><text>{{item.learned}} / {{item.total}}</text><text wx:if="{{item.due}}" class="s-due">{{item.due}} 待复习</text></view>
       </view>
     </view>
   </block>
