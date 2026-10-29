@@ -1,0 +1,75 @@
+/* 后台样式:朴素、清楚,表格和表单为主 */
+:root{--bg:#f5f6f7;--card:#fff;--ink:#1d2125;--ink2:#5c6670;--line:#e3e6ea;--main:#1f8a52;--main-d:#176a3f;--warn:#b7791f;--bad:#c53030;--blue:#2b6cb0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+[hidden]{display:none!important}
+a{color:var(--blue)}
+h1{font-size:20px;margin:0 0 16px}
+.muted{color:var(--ink2)}
+.err{color:var(--bad);min-height:1.4em;margin:4px 0}
+.btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#c8cdd3}
+.btn.primary{background:var(--main);border-color:var(--main);color:#fff}
+.btn.primary:hover{background:var(--main-d)}
+.btn.danger{color:var(--bad)}
+.btn.sm{height:28px;padding:0 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+.link{background:none;border:0;color:var(--blue);cursor:pointer;font:inherit;padding:0}
+input,select,textarea{font:inherit;color:inherit;border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:#fff;width:100%}
+textarea{min-height:90px;resize:vertical}
+label{display:block;margin-bottom:12px;font-weight:600;font-size:13px}
+label input,label select,label textarea{margin-top:4px;font-weight:400}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:#edf2f7;color:var(--ink2)}
+.tag.ok{background:#e6f4ec;color:var(--main-d)}
+.tag.draft{background:#fdf3e1;color:var(--warn)}
+
+.login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login-box{width:100%;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px}
+.login-box .btn{width:100%;justify-content:center}
+
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:100vh}
+.side{background:#1d2125;color:#cfd5db;display:flex;flex-direction:column;padding:18px 12px}
+.brand{font-weight:700;color:#fff;font-size:17px;padding:0 8px 18px}
+.brand small{display:block;font-weight:400;color:#8a949e;font-size:12px}
+.side nav a{display:block;color:#cfd5db;text-decoration:none;padding:8px 10px;border-radius:6px;margin-bottom:2px}
+.side nav a.on,.side nav a:hover{background:#2d333a;color:#fff}
+.side-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:8px}
+.side-foot .link{color:#8ab4f8}
+.main{padding:24px;min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.bar .grow{flex:1}
+.bar select,.bar input{width:auto;min-width:140px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th,.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:12px;color:var(--ink2);font-weight:600;background:#fafbfc;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .ops{white-space:nowrap;text-align:right}
+.tbl .ms{font-weight:600}
+.scroll{overflow-x:auto}
+.thumb{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#eef0f2;display:block}
+.count{color:var(--ink2);font-size:13px}
+.empty{padding:40px;text-align:center;color:var(--ink2)}
+
+dialog{border:0;border-radius:10px;padding:0;width:min(560px,calc(100vw - 24px));box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+#dlgForm{padding:22px}
+#dlgForm h2{font-size:17px;margin:0 0 16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.dlg-ops{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.preview{max-height:300px;overflow:auto;margin:10px 0}
+.preview td.bad{color:var(--bad)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2125;color:#fff;padding:10px 16px;border-radius:8px;z-index:99}
+
+@media (max-width:760px){
+  .layout{grid-template-columns:1fr}
+  .side{flex-direction:row;align-items:center;padding:10px 12px;gap:8px;position:sticky;top:0;z-index:5}
+  .brand{padding:0;font-size:15px}.brand small{display:none}
+  .side nav{display:flex;gap:2px;overflow-x:auto}
+  .side nav a{padding:6px 8px;margin:0;white-space:nowrap}
+  #modeTag{display:none}
+  .side-foot{margin:0 0 0 auto;padding:0;gap:8px}
+  .main{padding:14px}
+  .row2{grid-template-columns:1fr}
+  .tbl .hide-m{display:none}
+}

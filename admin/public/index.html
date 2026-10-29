@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>JomBelajar 后台</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div id="login" class="login" hidden>
+  <form class="login-box" id="loginForm">
+    <h1>JomBelajar 后台</h1>
+    <p class="muted" id="demoHint" hidden>演示模式：账号 admin，密码 admin123</p>
+    <label>账号<input name="user" autocomplete="username" required></label>
+    <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="loginErr"></p>
+    <button class="btn primary" type="submit">登录</button>
+  </form>
+</div>
+
+<div id="app" class="layout" hidden>
+  <aside class="side">
+    <div class="brand">JomBelajar<small>背单词后台</small></div>
+    <nav>
+      <a href="#/scenes" data-r="scenes">场景</a>
+      <a href="#/words" data-r="words">单词</a>
+      <a href="#/teachers" data-r="teachers">老师</a>
+      <a href="#/students" data-r="students">学生</a>
+    </nav>
+    <div class="side-foot"><span id="modeTag" class="tag"></span><button class="link" id="logout" type="button">退出</button></div>
+  </aside>
+  <main class="main" id="view"></main>
+</div>
+
+<dialog id="dlg"><form method="dialog" id="dlgForm"></form></dialog>
+<div id="toast" class="toast" hidden></div>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

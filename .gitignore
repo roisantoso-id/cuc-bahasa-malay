@@ -4,3 +4,4 @@ website/dist/
 miniprogram/project.private.config.json
 miniprogram/miniprogram_npm/
 .claude/settings.local.json
+admin/data/

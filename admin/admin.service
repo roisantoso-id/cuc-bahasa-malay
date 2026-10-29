@@ -1,0 +1,15 @@
+# systemd 服务:/etc/systemd/system/jombelajar-admin.service
+[Unit]
+Description=JomBelajar 背单词后台
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/env node /opt/jombelajar-admin/server.mjs
+WorkingDirectory=/opt/jombelajar-admin
+Environment=ADMIN_ENV=/etc/jombelajar-admin.env
+Restart=on-failure
+User=root
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
