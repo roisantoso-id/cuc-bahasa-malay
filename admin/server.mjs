@@ -6,7 +6,8 @@
 //   /api/admin/*  后台接口(管理员账号 + 会话 cookie)
 //   其余路径      后台网页(public/)
 // 单词音频在腾讯云 COS,这里只存文件名,拼上 AUDIO_BASE 返回给小程序和后台。
-// 没配 APPID → 演示模式:小程序不校验微信登录,后台账号 admin / admin123
+// 演示模式只在 DEMO=1 时打开(本机开发用):小程序不校验微信登录,后台账号 admin / admin123
+// 正式环境没配 APPID 时小程序登录直接报错,没配 ADMIN_PASSWORD_HASH 时后台登录不上,不会退回演示模式
 import { createServer } from 'node:http'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs'
 import { join, dirname, extname, normalize } from 'node:path'
@@ -28,7 +29,7 @@ function loadEnv(file) {
   return out
 }
 const ENV = { ...loadEnv(process.env.ADMIN_ENV || '/etc/jombelajar-admin.env'), ...process.env }
-const DEMO = !ENV.APPID
+const DEMO = ENV.DEMO === '1'
 const PORT = Number(ENV.ADMIN_PORT || 4200)
 const HOST = ENV.ADMIN_HOST || '127.0.0.1'
 const PUBLIC_HOST = ENV.PUBLIC_HOST || `${HOST}:${PORT}`
@@ -37,7 +38,7 @@ const AUDIO_BASE = (ENV.AUDIO_BASE || (DEMO ? `http://${PUBLIC_HOST}/demo-audio/
 const ADMIN_USER = ENV.ADMIN_USER || 'admin'
 // 演示模式默认密码 admin123;正式环境必须在 env 里配 ADMIN_PASSWORD_HASH(node admin/scripts/hash-password.mjs 生成)
 const ADMIN_HASH = ENV.ADMIN_PASSWORD_HASH || (DEMO ? hashPassword('admin123', 'demo-salt') : '')
-if (!DEMO && (!ENV.ADMIN_PASSWORD_HASH || !ENV.APPSECRET)) { console.error('缺 ADMIN_PASSWORD_HASH 或 APPSECRET,拒绝启动'); process.exit(1) }
+if (!DEMO && (!ENV.ADMIN_PASSWORD_HASH || !ENV.APPID || !ENV.APPSECRET)) console.warn('⚠ 还没配 APPID / APPSECRET / ADMIN_PASSWORD_HASH:小程序登录和后台登录暂时不可用')
 if (!ENV.DATABASE_URL) { console.error('缺 DATABASE_URL'); process.exit(1) }
 
 export function hashPassword(pw, salt = randomBytes(16).toString('hex')) {
@@ -263,6 +264,7 @@ function readToken(req) {
 }
 async function code2openid(code) {
   if (DEMO) return 'demo-' + (String(code || '').replace(/[^\w-]/g, '').slice(0, 40) || 'dev')
+  if (!ENV.APPID || !ENV.APPSECRET) throw Object.assign(new Error('服务器还没配置小程序 AppID'), { code: 503 })
   const u = `https://api.weixin.qq.com/sns/jscode2session?appid=${ENV.APPID}&secret=${ENV.APPSECRET}&js_code=${encodeURIComponent(String(code || ''))}&grant_type=authorization_code`
   const d = await (await fetch(u)).json()
   if (!d.openid) throw Object.assign(new Error('微信登录失败,请重试'), { code: 401 })
@@ -364,7 +366,7 @@ async function adminApi(req, res, p, url) {
     const addr = ip(req)
     if (tooMany(addr)) return fail(res, 429, '登录失败次数太多，请 10 分钟后再试')
     const b = await body(req)
-    if (b.user !== ADMIN_USER || !checkPassword(b.password, ADMIN_HASH)) { fails.get(addr).push(Date.now()); return fail(res, 401, '账号或密码不对') }
+    if (!ADMIN_HASH || b.user !== ADMIN_USER || !checkPassword(b.password, ADMIN_HASH)) { fails.get(addr).push(Date.now()); return fail(res, 401, '账号或密码不对') }
     const token = randomBytes(32).toString('hex')
     sessions.set(token, { user: ADMIN_USER, exp: Date.now() + SESSION_MS })
     const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''
@@ -492,5 +494,5 @@ const server = createServer(async (req, res) => {
 await init()
 server.listen(PORT, HOST, () => {
   console.log(`JomBelajar 背单词服务:http://${HOST}:${PORT}`)
-  if (DEMO) console.warn('⚠ 演示模式(没有配置 APPID):小程序登录不校验,后台 admin / admin123。不要这样上线。')
+  if (DEMO) console.warn('⚠ 演示模式(DEMO=1):小程序登录不校验,后台 admin / admin123。不要这样上线。')
 })

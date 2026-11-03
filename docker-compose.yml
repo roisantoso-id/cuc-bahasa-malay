@@ -1,17 +1,19 @@
-# JomBelajar 背单词:后台网页 + 小程序接口 + PostgreSQL,部署在腾讯云广州轻量服务器
+# JomBelajar:官网 + 背单词后台网页 + 小程序接口 + PostgreSQL,部署在腾讯云广州轻量服务器
 #   第一次:cp .env.example .env,填好后 docker compose up -d --build
 #   更新:bash deploy/deploy-compose.sh
 services:
-  # 反向代理 + 自动 HTTPS;后台网页是静态文件,直接由 caddy 托管
+  # 反向代理 + 自动 HTTPS;官网和后台网页都是静态文件,直接由 caddy 托管
   web:
     image: caddy:2-alpine
     restart: unless-stopped
     ports: ["80:80", "443:443"]
     environment:
       DOMAIN: ${DOMAIN:?请在 .env 里填 DOMAIN}
+      SITE_DOMAIN: ${SITE_DOMAIN:-www.bahasa.cn}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./admin/public:/srv/admin:ro
+      - ./website:/srv/website:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on: [api]

@@ -1,10 +1,10 @@
-# 背单词服务（admin.bahasa.cn）
+# 背单词服务（admin.bahasa.cn / api.bahasa.cn）
 
-部署在腾讯云广州轻量服务器（2 核 4G），用 Docker Compose 管理，配置在仓库根目录的 `docker-compose.yml`：
+部署在腾讯云广州轻量服务器 81.71.143.244，用 Docker Compose 管理，配置在仓库根目录的 `docker-compose.yml`，服务器上的目录是 `/opt/jombelajar`，登录用户 `ubuntu`：
 
 | 容器 | 做什么 |
 |---|---|
-| `web` | Caddy：HTTPS 证书自动申请续期；托管后台网页（`admin/public/`）；把 `/api/*`、`/uploads/*` 转给 `api` |
+| `web` | Caddy：HTTPS 证书自动申请续期；托管官网 www.bahasa.cn（`/opt/jombelajar/website`）和后台网页（`admin/public/`）；把 `/api/*`、`/uploads/*` 转给 `api` |
 | `api` | Node 后端（`admin/server.mjs`）：小程序接口 `/api/app/*`、后台接口 `/api/admin/*`、老师照片 |
 | `db` | PostgreSQL 16，数据在 volume `pgdata` |
 | `backup` | 每天 `pg_dump` 一次到服务器的 `/opt/jombelajar/backups/`，保留 14 天 |
@@ -20,14 +20,14 @@
 ```bash
 npx -y -p @electric-sql/pglite -p @electric-sql/pglite-socket pglite-server -p 5544 -m 10   # 另开一个终端,一直开着
 cd admin && npm install
-DATABASE_URL=postgres://postgres@127.0.0.1:5544/postgres DEMO_AUDIO_DIR=~/Desktop/deloy/马来语5000高频词_音频 node server.mjs
+DEMO=1 DATABASE_URL=postgres://postgres@127.0.0.1:5544/postgres DEMO_AUDIO_DIR=~/Desktop/deloy/马来语5000高频词_音频 node server.mjs
 ```
 
 有 Docker 就直接 `docker compose up db`，`DATABASE_URL` 改成 `postgres://jombelajar:<密码>@127.0.0.1:5432/jombelajar`（这时要给 db 加端口映射）。
 
 - 后台：http://127.0.0.1:4200 ，账号 `admin`，密码 `admin123`。
 - 小程序：`miniprogram/miniprogram/config.js` 里 `vocabApi` 填 `http://127.0.0.1:4200`。开发者工具里不校验合法域名（`project.config.json` 已经关了 urlCheck）。
-- 没配 APPID 就是演示模式：小程序登录不校验微信。
+- `DEMO=1` 是演示模式：小程序登录不校验微信，后台 admin / admin123。线上不要加。线上没填 APPID 或管理员密码时，对应的登录直接不可用，不会退回演示模式。
 - `DEMO_AUDIO_DIR` 指向本机的音频目录。不填也行，只是没有声音。
 
 ## 学习规则
@@ -50,16 +50,16 @@ DATABASE_URL=postgres://postgres@127.0.0.1:5544/postgres DEMO_AUDIO_DIR=~/Deskto
 ## 上线步骤
 
 1. **服务器**：腾讯云轻量，广州，2 核 4G，镜像选 Docker CE 或 Ubuntu 22.04/24.04。在控制台绑定 SSH 公钥。防火墙要开 22、80、443。
-2. **DNS**：`admin.bahasa.cn` 的 A 记录指向新服务器 IP（bahasa.cn 已备案）。
+2. **DNS**（阿里云）：`www`、`admin`、`api` 三条 A 记录指向 81.71.143.244（bahasa.cn 已备案）。防火墙要放行 80 和 443。
 3. **初始化**（只做一次）：
    ```bash
-   ssh root@<IP> 'bash -s' < deploy/server-setup.sh
-   scp .env.example root@<IP>:/opt/jombelajar/.env
+   ssh ubuntu@<IP> 'sudo bash -s' < deploy/server-setup.sh
+   scp .env.example ubuntu@<IP>:/opt/jombelajar/.env
    node admin/scripts/hash-password.mjs      # 在自己电脑上运行,生成管理员密码哈希
    ```
    然后登录服务器，`chmod 600 /opt/jombelajar/.env`，填 `POSTGRES_PASSWORD`、`APPID`、`APPSECRET`、`ADMIN_PASSWORD_HASH`。`AUDIO_BASE` 已经填好。
-4. **部署**：`HOST=root@<IP> bash deploy/deploy-compose.sh`。Caddy 会自动申请证书，第一次要等十几秒。
-5. **小程序**：`config.js` 的 `vocabApi` 改成 `https://admin.bahasa.cn`。到公众平台 → 开发管理 → 服务器域名，把它加进 request 合法域名。
+4. **部署**：`bash deploy/deploy-compose.sh`（后端），`bash deploy/deploy-website.sh`（官网）。Caddy 会自动申请证书，第一次要等十几秒。
+5. **小程序**：`config.js` 的 `vocabApi` 已经是 `https://api.bahasa.cn`。到公众平台 → 开发管理 → 服务器域名：request 合法域名加 `https://api.bahasa.cn`，downloadFile 合法域名加 COS 地址。
 6. 以后更新代码，再跑一次第 4 步。更新词库：在后台「概览 → 导入词库」上传新的 words.json。
 
 常用命令（在服务器的 `/opt/jombelajar` 目录里运行）：

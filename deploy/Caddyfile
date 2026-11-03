@@ -1,4 +1,4 @@
-# 背单词服务:后台网页 + 小程序接口。证书由 caddy 自动申请和续期(Let's Encrypt)
+# 背单词服务:admin.bahasa.cn(后台)和 api.bahasa.cn(小程序接口)指向同一套服务。证书由 caddy 自动申请和续期(Let's Encrypt)
 {$DOMAIN} {
 	encode gzip
 	header {
@@ -18,6 +18,25 @@
 		header X-Frame-Options DENY
 		header /index.html Cache-Control no-cache
 		try_files {path} /index.html
+		file_server
+	}
+}
+
+# 宣传官网(静态,website/dist 构建产物):www.bahasa.cn
+{$SITE_DOMAIN} {
+	encode gzip
+	root * /srv/website
+	header Strict-Transport-Security "max-age=31536000"
+	header -Server
+	# css/js 带内容版本号,可以长缓存;html 不缓存
+	@assets path *.css *.js *.png *.jpg *.jpeg *.webp *.svg *.woff2 *.ico
+	header @assets Cache-Control "public, max-age=2592000"
+	header ?Cache-Control "no-cache"
+	try_files {path} {path}/index.html {path}.html
+	file_server
+	handle_errors {
+		@404 expression {err.status_code} == 404
+		rewrite @404 /404.html
 		file_server
 	}
 }
