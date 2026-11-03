@@ -41,7 +41,7 @@
 	}
 }
 
-# 不带 www 的 bahasa.cn 跳到 www
-{$APEX_DOMAIN} {
-	redir https://www.bahasa.cn{uri} permanent
-}
+# 不带 www 的 bahasa.cn 跳到 www:等 DNS 的 @ 指过来再打开,否则 caddy 会一直申请证书失败
+# {$APEX_DOMAIN} {
+# 	redir https://www.bahasa.cn{uri} permanent
+# }
