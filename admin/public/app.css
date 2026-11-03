@@ -73,3 +73,20 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
   .row2{grid-template-columns:1fr}
   .tbl .hide-m{display:none}
 }
+
+/* 概览、单词编辑 */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.stat b{display:block;font-size:24px;line-height:1.3}
+.levels td.num{text-align:right;font-variant-numeric:tabular-nums}
+.meter{height:8px;background:#edf0f2;border-radius:4px;overflow:hidden;min-width:80px}
+.meter i{display:block;height:100%;background:var(--main)}
+.senses-ed .sense-row{border:1px solid var(--line);border-radius:8px;padding:10px 10px 0;margin-bottom:10px;position:relative}
+.senses-ed .sense-row.check{border-color:#f0c36d;background:#fffaf0}
+.senses-ed .sense-ops{position:absolute;right:8px;top:8px;display:flex;gap:6px;align-items:center;font-size:12px}
+.senses-ed .sense-ops label{margin:0;font-weight:400;display:flex;gap:4px;align-items:center}
+.senses-ed .sense-ops input{width:auto;margin:0}
+.zh-list{max-width:420px}
+.zh-list div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;padding:10px 12px}
+dialog.wide{width:min(760px,calc(100vw - 24px))}

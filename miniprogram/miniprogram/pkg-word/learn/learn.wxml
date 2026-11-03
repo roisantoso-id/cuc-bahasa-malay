@@ -1,62 +1,87 @@
 <view class="page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在准备单词…" />
-  <hb-empty wx:elif="{{view === 'error'}}" image="empty" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
-  <hb-empty wx:elif="{{view === 'empty'}}" image="cheer" title="这里暂时没有要学的词" desc="都学过了，到期的词会自动出现在复习里。"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
+  <hb-empty wx:elif="{{view === 'empty'}}" image="cheer" title="这里暂时没有要学的词" desc="到期的词会自动出现在复习里。"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
 
-  <!-- 词卡 -->
-  <block wx:elif="{{view === 'card'}}">
+  <block wx:elif="{{view === 'card' || view === 'quiz'}}">
     <view class="top">
       <view class="bar"><view class="bar-in" style="width:{{idx / total * 100}}%" /></view>
-      <view class="top-r"><text class="muted small">{{idx}} / {{total}}</text><text class="tag {{card.mode === 'review' ? 'blue' : ''}}">{{card.mode === 'review' ? '复习' : '新词'}}</text></view>
+      <view class="top-r"><text class="muted small no">{{idx}} / {{total}}</text>
+        <text wx:if="{{view === 'quiz' && !quiz.graded}}" class="tag">小练习</text>
+        <text wx:else class="tag {{card.kind === 'review' ? 'blue' : ''}}">{{card.again ? '再来一次' : card.kind === 'review' ? '复习' : '新词'}}</text>
+      </view>
     </view>
-    <view class="card-big" bindtap="flip">
-      <view class="w">{{card.ms}}</view>
-      <view class="sound" catchtap="play">▶ 发音</view>
-      <block wx:if="{{flipped}}">
-        <view class="zh">{{card.zh}}<text class="pos">{{card.pos}}</text></view>
-        <view class="ex">
-          <view class="ex-ms">{{card.example_ms}}</view>
-          <view class="ex-zh">{{card.example_zh}}</view>
+
+    <!-- 词卡:像一张车票,上面是序号和站名 -->
+    <view wx:if="{{view === 'card'}}" class="wcard" bindtap="flip">
+      <view class="songket" />
+      <view class="wc-head between">
+        <text class="no muted small">No.{{card.rank}}</text>
+        <view class="fav {{card.fav ? 'on' : ''}}" catchtap="fav">{{card.fav ? '★ 已收藏' : '☆ 收藏'}}</view>
+      </view>
+      <view class="wc-main">
+        <view class="w">{{card.ms}}</view>
+        <view wx:if="{{card.root}}" class="root">词根 {{card.root}}</view>
+        <view class="say-row"><say-btn src="{{card.audio}}" size="lg" /></view>
+        <view wx:if="{{!flipped}}" class="hint">先在心里想想它的意思，再点卡片</view>
+      </view>
+      <scroll-view wx:if="{{flipped}}" scroll-y class="senses">
+        <view wx:for="{{card.senses}}" wx:key="index" class="sense">
+          <view><text class="pos">{{item.pos}}</text><text class="zh">{{item.zh}}</text></view>
+          <view wx:if="{{item.exMs}}" class="example"><view class="ms">{{item.exMs}}</view><view class="muted small">{{item.exZh}}</view></view>
         </view>
-      </block>
-      <view wx:else class="hint">先想一想它是什么意思，再点卡片看答案</view>
+      </scroll-view>
     </view>
-    <view class="actions">
+
+    <!-- 题 -->
+    <view wx:else class="quiz">
+      <view class="q-k">{{quiz.type === 'ms2zh' ? '选出中文意思' : quiz.type === 'listen' ? '听发音，选意思' : quiz.type === 'zh2ms' ? '选出马来语' : '拼出这个马来语词'}}</view>
+      <view wx:if="{{quiz.type === 'listen'}}" class="q-listen"><say-btn src="{{quiz.word.audio}}" size="lg" /><view class="muted small">没听清就再点一下</view></view>
+      <view wx:else class="q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}">{{quiz.prompt}}</view>
+
+      <block wx:if="{{quiz.type === 'spell'}}">
+        <input class="input spell {{picked ? (picked === quiz.answer ? 'ok' : 'bad') : ''}}" value="{{typed}}" placeholder="{{quiz.hint}}" focus confirm-type="done" bindinput="typing" bindconfirm="checkSpell" disabled="{{!!picked}}" />
+        <view wx:if="{{picked && picked !== quiz.answer}}" class="answer">正确答案：<text class="ms">{{quiz.answer}}</text></view>
+        <view class="btns"><button class="btn btn-main" hover-class="hover" bindtap="checkSpell" disabled="{{!!picked}}">确定</button></view>
+      </block>
+      <view wx:else class="opts">
+        <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type === 'zh2ms' ? 'ms' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
+      </view>
+      <view wx:if="{{quiz.graded && !picked}}" class="idk" bindtap="dontKnow">想不起来</view>
+    </view>
+
+    <view wx:if="{{view === 'card'}}" class="actions">
       <block wx:if="{{flipped}}">
         <view class="grades">
           <view class="g g-forgot" hover-class="hover" data-r="forgot" bindtap="grade">不认识</view>
           <view class="g g-vague" hover-class="hover" data-r="vague" bindtap="grade">模糊</view>
-          <view class="g g-know" hover-class="hover" data-r="know" bindtap="grade">认识</view>
+          <view wx:if="{{!wrongShown || card.kind !== 'review'}}" class="g g-know" hover-class="hover" data-r="know" bindtap="grade">认识</view>
         </view>
-        <view class="master" data-r="mastered" bindtap="grade">太简单了，设为已掌握</view>
+        <view wx:if="{{card.kind === 'new'}}" class="master" data-r="mastered" bindtap="grade">太简单了，设为已掌握</view>
       </block>
-      <button wx:else class="btn btn-main" hover-class="hover" bindtap="flip">看答案</button>
+      <button wx:else class="btn btn-main" hover-class="hover" bindtap="flip">看释义</button>
     </view>
   </block>
 
-  <!-- 小测 -->
-  <block wx:elif="{{view === 'quiz'}}">
-    <view class="top"><view class="quiz-k">小测一下 · {{quiz.askMs ? '选出中文意思' : '选出马来语'}}</view></view>
-    <view class="quiz-p {{quiz.askMs ? 'ms' : ''}}">{{quiz.prompt}}</view>
-    <view class="opts">
-      <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
-    </view>
-  </block>
-
-  <!-- 结束 -->
+  <!-- 结束:盖章 -->
   <view wx:elif="{{view === 'done'}}" class="done">
-    <image class="done-img" src="/assets/cheer.jpg" mode="aspectFit" />
-    <view class="h1 center">这一组完成了</view>
+    <view class="stamp big hit">
+      <text class="s2 no">JOMBELAJAR</text>
+      <text class="s1">{{stop ? stop.city : '完成'}}</text>
+      <text class="s2 no">{{date}}</text>
+    </view>
+    <view class="h1 center">这一程走完了</view>
+    <view wx:if="{{streak}}" class="muted center">已经连续学了 {{streak}} 天</view>
     <view class="sum">
       <view><view class="n c-know">{{stats.know}}</view>认识</view>
       <view><view class="n c-vague">{{stats.vague}}</view>模糊</view>
       <view><view class="n c-forgot">{{stats.forgot}}</view>不认识</view>
       <view><view class="n">{{stats.mastered}}</view>已掌握</view>
     </view>
-    <view class="muted small center">不认识和模糊的词，明天会出现在复习里。</view>
+    <view wx:if="{{stop}}" class="muted small center">{{stop.city}}站：已学 {{stop.learned}} / {{stop.total}}。模糊和不认识的词会排进后面的复习。</view>
     <view class="btns">
-      <button class="btn btn-main" hover-class="hover" bindtap="again">再学一组</button>
-      <button class="btn btn-ghost" hover-class="hover" bindtap="back">返回</button>
+      <button class="btn btn-main" hover-class="hover" bindtap="again">{{left ? '继续今天的' : '再学 10 个'}}</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="back">回到路线</button>
     </view>
   </view>
 </view>

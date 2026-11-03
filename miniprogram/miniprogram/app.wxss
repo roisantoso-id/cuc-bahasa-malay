@@ -82,3 +82,21 @@ page {
 .sense { padding: 20rpx 0; border-top: 2rpx solid var(--line); }
 .sense:first-child { border-top: 0; }
 .example { margin-top: 12rpx; padding-left: 20rpx; border-left: 6rpx solid var(--yellow); }
+
+/* ---------- 旅程主题:车票、印章、宋吉锦花边 ---------- */
+/* 宋吉锦(songket)花边:黄绿相间的斜纹细条,用在车票和词卡顶边 */
+.songket { height: 14rpx; background: repeating-linear-gradient(135deg, var(--yellow) 0 12rpx, var(--green) 12rpx 24rpx, #fff 24rpx 28rpx); }
+/* 车票:左右两侧半圆缺口 + 虚线撕口 */
+.ticket { position: relative; background: #fff; border: 4rpx solid var(--ink); border-radius: 28rpx; box-shadow: 0 8rpx 0 var(--ink); overflow: hidden; }
+.ticket-cut { position: relative; border-top: 4rpx dashed var(--line); margin: 0 28rpx; }
+.ticket-cut::before, .ticket-cut::after { content: ''; position: absolute; top: -22rpx; width: 40rpx; height: 40rpx; border-radius: 50%; background: var(--bg); border: 4rpx solid var(--ink); }
+.ticket-cut::before { left: -52rpx; }
+.ticket-cut::after { right: -52rpx; }
+/* 印章:双圈 + 旋转,盖过的站显示 */
+.stamp { width: 132rpx; height: 132rpx; border-radius: 50%; border: 6rpx solid var(--coral); color: var(--coral); display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-12deg); position: relative; box-sizing: border-box; text-align: center; line-height: 1.15; }
+.stamp::after { content: ''; position: absolute; inset: 8rpx; border: 2rpx solid var(--coral); border-radius: 50%; }
+.stamp .s1 { font-size: 24rpx; font-weight: 900; }
+.stamp .s2 { font-size: 16rpx; font-weight: 800; letter-spacing: 1rpx; }
+.stamp.off { border-color: var(--line); color: var(--ink2); transform: none; border-style: dashed; }
+.stamp.off::after { border-color: transparent; }
+.no { font-family: "SF Mono", Menlo, monospace; font-weight: 800; letter-spacing: 2rpx; }

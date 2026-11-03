@@ -1,0 +1,1 @@
+<view class="say say-{{size}}" hover-class="hover" catchtap="tap"><view class="cone" /><view class="wave" /></view>

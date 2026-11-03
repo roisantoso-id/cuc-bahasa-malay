@@ -1,16 +1,20 @@
-// JomBelajar 背单词后台(零依赖,Node 20+)
-//   node admin/server.mjs              配置读 /etc/jombelajar-admin.env(或环境变量 ADMIN_ENV 指定的文件)
-//   没配 APPID → 演示模式:数据存 admin/data/demo.json,登录 admin / admin123
-// 云开发模式通过微信服务端接口读写云数据库、上传云存储(AppSecret 只在服务器上)
+// JomBelajar 背单词服务(零依赖,Node 22.13+,用内置 node:sqlite)
+//   node admin/server.mjs          配置读 /etc/jombelajar-admin.env(或环境变量 ADMIN_ENV 指定的文件)
+// 一个进程同时提供:
+//   /api/app/*    小程序接口(微信登录换 openid,token 放在 Authorization 头)
+//   /api/admin/*  后台接口(管理员账号 + 会话 cookie)
+//   其余路径      后台网页(public/)
+// 单词音频在腾讯云 COS,这里只存文件名,拼上 AUDIO_BASE 返回给小程序和后台。
+// 没配 APPID → 演示模式:小程序不校验微信登录,后台账号 admin / admin123,数据在 admin/data/app.db
 import { createServer } from 'node:http'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs'
 import { join, dirname, extname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
+import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto'
+import { DatabaseSync } from 'node:sqlite'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
-const DATA = join(HERE, 'data')
 
 // ---------------- 配置 ----------------
 function loadEnv(file) {
@@ -26,10 +30,12 @@ const ENV = { ...loadEnv(process.env.ADMIN_ENV || '/etc/jombelajar-admin.env'), 
 const DEMO = !ENV.APPID
 const PORT = Number(ENV.ADMIN_PORT || 4200)
 const HOST = ENV.ADMIN_HOST || '127.0.0.1'
+const DATA = ENV.DATA_DIR || join(HERE, 'data')
+const AUDIO_BASE = (ENV.AUDIO_BASE || (DEMO ? `http://${HOST}:${PORT}/demo-audio/` : '')).replace(/\/?$/, '/')
 const ADMIN_USER = ENV.ADMIN_USER || 'admin'
 // 演示模式默认密码 admin123;正式环境必须在 env 里配 ADMIN_PASSWORD_HASH(node admin/scripts/hash-password.mjs 生成)
 const ADMIN_HASH = ENV.ADMIN_PASSWORD_HASH || (DEMO ? hashPassword('admin123', 'demo-salt') : '')
-if (!DEMO && !ENV.ADMIN_PASSWORD_HASH) { console.error('缺 ADMIN_PASSWORD_HASH,拒绝启动'); process.exit(1) }
+if (!DEMO && (!ENV.ADMIN_PASSWORD_HASH || !ENV.APPSECRET)) { console.error('缺 ADMIN_PASSWORD_HASH 或 APPSECRET,拒绝启动'); process.exit(1) }
 
 export function hashPassword(pw, salt = randomBytes(16).toString('hex')) {
   return `scrypt:${salt}:${scryptSync(pw, salt, 32).toString('hex')}`
@@ -41,194 +47,304 @@ function checkPassword(pw, stored) {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-const COLLECTIONS = ['scenes', 'words', 'teachers', 'students', 'progress']
-const EDITABLE = ['scenes', 'words', 'teachers']
+// ---------------- 旅程:10 站,每站 500 词 ----------------
+const STOPS = [
+  { level: 1, city: '吉隆坡', ms: 'Kuala Lumpur', note: '双子塔下出发' },
+  { level: 2, city: '马六甲', ms: 'Melaka', note: '老街和娘惹糕' },
+  { level: 3, city: '怡保', ms: 'Ipoh', note: '白咖啡的家乡' },
+  { level: 4, city: '槟城', ms: 'Pulau Pinang', note: '壁画巷和炒粿条' },
+  { level: 5, city: '金马伦', ms: 'Cameron Highlands', note: '茶园山路' },
+  { level: 6, city: '关丹', ms: 'Kuantan', note: '东海岸的海风' },
+  { level: 7, city: '瓜拉登嘉楼', ms: 'Kuala Terengganu', note: '水上清真寺' },
+  { level: 8, city: '哥打巴鲁', ms: 'Kota Bharu', note: '风筝和夜市' },
+  { level: 9, city: '古晋', ms: 'Kuching', note: '犀鸟之乡' },
+  { level: 10, city: '亚庇', ms: 'Kota Kinabalu', note: '神山脚下的终点' }
+]
 
-// ---------------- 演示存储 ----------------
-class DemoStore {
-  constructor() {
-    this.file = join(DATA, 'demo.json')
-    mkdirSync(join(DATA, 'uploads'), { recursive: true })
-    if (!existsSync(this.file)) writeFileSync(this.file, JSON.stringify(seedDemo(), null, 1))
-    this.db = JSON.parse(readFileSync(this.file, 'utf8'))
-  }
-  save() { writeFileSync(this.file, JSON.stringify(this.db, null, 1)) }
-  async list(col) { return (this.db[col] || []).slice() }
-  async add(col, doc) { const d = { _id: `${col}-${randomBytes(5).toString('hex')}`, ...doc }; (this.db[col] ||= []).push(d); this.save(); return d._id }
-  async update(col, id, patch) { const d = (this.db[col] || []).find(x => x._id === id); if (!d) throw new Error('记录不存在'); Object.assign(d, patch); this.save() }
-  async remove(col, id) { this.db[col] = (this.db[col] || []).filter(x => x._id !== id); this.save() }
-  async upload(path, buf) { const name = path.replace(/[^\w.-]/g, '_'); writeFileSync(join(DATA, 'uploads', name), buf); return `/uploads/${name}` }
-  async urls(ids) { return Object.fromEntries(ids.map(id => [id, id])) }
-}
+// ---------------- 数据库 ----------------
+mkdirSync(join(DATA, 'uploads'), { recursive: true })
+const db = new DatabaseSync(join(DATA, 'app.db'))
+db.exec(`
+PRAGMA journal_mode = WAL;
+CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT);
+CREATE TABLE IF NOT EXISTS words (rank INTEGER PRIMARY KEY, ms TEXT NOT NULL, root TEXT DEFAULT '', level INTEGER NOT NULL, senses TEXT DEFAULT '[]', audio TEXT DEFAULT '', status TEXT DEFAULT 'pending', edited INTEGER DEFAULT 0, updated_at TEXT);
+CREATE INDEX IF NOT EXISTS words_level ON words(level, status);
+CREATE TABLE IF NOT EXISTS students (id INTEGER PRIMARY KEY, openid TEXT UNIQUE NOT NULL, name TEXT, school TEXT, class_name TEXT, track TEXT, phone TEXT, daily_new INTEGER DEFAULT 20, created_at TEXT, last_active_at TEXT);
+CREATE TABLE IF NOT EXISTS progress (student_id INTEGER, rank INTEGER, box INTEGER DEFAULT 0, due TEXT, wrong INTEGER DEFAULT 0, seen INTEGER DEFAULT 0, fav INTEGER DEFAULT 0, first_at TEXT, last_day TEXT, last_at TEXT, PRIMARY KEY (student_id, rank));
+CREATE INDEX IF NOT EXISTS progress_due ON progress(student_id, due);
+CREATE TABLE IF NOT EXISTS daily (student_id INTEGER, day TEXT, new_cnt INTEGER DEFAULT 0, review_cnt INTEGER DEFAULT 0, right_cnt INTEGER DEFAULT 0, PRIMARY KEY (student_id, day));
+CREATE TABLE IF NOT EXISTS teachers (id INTEGER PRIMARY KEY, name TEXT, title TEXT, role TEXT, bio TEXT, photo TEXT, sort INTEGER DEFAULT 0);
+`)
+const q = sql => db.prepare(sql)
+const all = (sql, ...a) => q(sql).all(...a)
+const one = (sql, ...a) => q(sql).get(...a)
+const run = (sql, ...a) => q(sql).run(...a)
+function tx(fn) { db.exec('BEGIN'); try { const r = fn(); db.exec('COMMIT'); return r } catch (e) { db.exec('ROLLBACK'); throw e } }
 
-function seedDemo() {
-  const seedFile = join(HERE, '../content/words-seed.json')
-  const seed = existsSync(seedFile) ? JSON.parse(readFileSync(seedFile, 'utf8')) : { scenes: [], words: [] }
+function metaGet(k) { const r = one('SELECT v FROM meta WHERE k = ?', k); return r ? r.v : null }
+function metaSet(k, v) { run('INSERT INTO meta (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v', k, v) }
+// 小程序 token 的签名密钥:第一次启动随机生成,存在库里
+const TOKEN_KEY = metaGet('token_key') || (() => { const k = randomBytes(32).toString('hex'); metaSet('token_key', k); return k })()
+
+const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
+const cleanSense = s => { const o = { pos: str(s.pos, 20), zh: str(s.zh, 200), exMs: str(s.exMs, 400), exZh: str(s.exZh, 400) }; if (s.check) o.check = true; return o }
+
+// 导入词库(content/vocab5000/words.json 的格式)。后台改过的词(edited=1)默认不覆盖
+function importWords(list, { overwriteEdited = false } = {}) {
+  const up = q(`INSERT INTO words (rank, ms, root, level, senses, audio, status, edited, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
+    ON CONFLICT(rank) DO UPDATE SET ms = excluded.ms, root = excluded.root, level = excluded.level, senses = excluded.senses, audio = excluded.audio, status = excluded.status, edited = 0, updated_at = excluded.updated_at
+    WHERE words.edited = 0 OR ?`)
   const now = new Date().toISOString()
-  return {
-    scenes: seed.scenes,
-    // 种子录音在 content/audio/<id>.mp3,演示模式直接用
-    words: (seed.words || []).map(w => ({ ...w, audio: w.audio || (existsSync(join(HERE, '../content/audio', `${w._id}.mp3`)) ? `/seed-audio/${w._id}.mp3` : '') })),
-    teachers: [
-      { _id: 't-zhang', name: '张静灵', title: '副教授 · 中国传媒大学马来语专业教师', role: '课程主持', bio: '长期从事马来语教学与马来世界文化研究。出版专著《同源异流》、马来文专著 Warisan Kebudayaan Minangkabau，译著《马来西亚诗选》；参与编撰《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。', photo: '', order: 1 },
-      { _id: 't-yang', name: '杨启航', title: '中国传媒大学马来语专业本科生', role: '团队成员', bio: '获国家留学基金管理委员会资助赴马来西亚理科大学交流学习，曾受邀参加马来西亚国家广播电视台《早安马来西亚》直播访谈。', photo: '', order: 2 }
-    ],
-    students: [
-      { _id: 's-demo1', _openid: 'demo-1', name: '演示学生 A', school: '演示大学', className: '马来语 1 班', track: 'zero', phone: '13800000001', createdAt: now, lastActiveAt: now },
-      { _id: 's-demo2', _openid: 'demo-2', name: '演示学生 B', school: '演示大学', className: '马来语 2 班', track: 'heritage', phone: '13800000002', createdAt: now, lastActiveAt: now }
-    ],
-    progress: (seed.words || []).slice(0, 7).map((w, i) => ({ _id: `p-${i}`, _openid: 'demo-1', wordId: w._id, sceneId: w.sceneId, box: 1, due: now.slice(0, 10) }))
-  }
-}
-
-// ---------------- 云开发存储(微信服务端接口) ----------------
-class CloudStore {
-  constructor() { this.token = null; this.exp = 0 }
-  async accessToken() {
-    if (this.token && Date.now() < this.exp) return this.token
-    const r = await fetch('https://api.weixin.qq.com/cgi-bin/stable_token', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ grant_type: 'client_credential', appid: ENV.APPID, secret: ENV.APPSECRET }) })
-    const d = await r.json()
-    if (!d.access_token) throw new Error(`获取 access_token 失败:${d.errcode} ${d.errmsg}`)
-    this.token = d.access_token
-    this.exp = Date.now() + (d.expires_in - 300) * 1000
-    return this.token
-  }
-  async api(path, body) {
-    const t = await this.accessToken()
-    const r = await fetch(`https://api.weixin.qq.com/tcb/${path}?access_token=${t}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ env: ENV.CLOUD_ENV, ...body }) })
-    const d = await r.json()
-    if (d.errcode) throw new Error(`云开发接口 ${path} 出错:${d.errcode} ${d.errmsg}`)
-    return d
-  }
-  async list(col) {
-    const out = []
-    for (let skip = 0; ; skip += 1000) {
-      const d = await this.api('databasequery', { query: `db.collection(${JSON.stringify(col)}).skip(${skip}).limit(1000).get()` })
-      const rows = (d.data || []).map(s => normalizeDates(JSON.parse(s)))
-      out.push(...rows)
-      if (rows.length < 1000) return out
+  let changed = 0
+  tx(() => {
+    for (const w of list) {
+      const rank = Number(w.rank)
+      if (!Number.isInteger(rank) || rank < 1 || rank > 20000 || !w.ms) continue
+      const senses = (Array.isArray(w.senses) ? w.senses : []).map(cleanSense).filter(s => s.zh)
+      const status = w.status === 'approved' && senses.some(s => !s.check) ? 'approved' : 'pending'
+      changed += Number(up.run(rank, str(w.ms, 80), str(w.root, 80), Number(w.level) || Math.ceil(rank / 500), JSON.stringify(senses), str(w.audio, 200), status, now, overwriteEdited ? 1 : 0).changes)
     }
-  }
-  async add(col, doc) {
-    const d = await this.api('databaseadd', { query: `db.collection(${JSON.stringify(col)}).add({data:${JSON.stringify([doc])}})` })
-    return (d.id_list || [])[0]
-  }
-  async update(col, id, patch) {
-    const { _id, ...rest } = patch
-    await this.api('databaseupdate', { query: `db.collection(${JSON.stringify(col)}).doc(${JSON.stringify(id)}).update({data:${JSON.stringify(rest)}})` })
-  }
-  async remove(col, id) {
-    await this.api('databasedelete', { query: `db.collection(${JSON.stringify(col)}).doc(${JSON.stringify(id)}).remove()` })
-  }
-  async upload(path, buf, contentType = 'application/octet-stream') {
-    const d = await this.api('uploadfile', { path })
-    const form = new FormData()
-    form.append('key', path)
-    form.append('Signature', d.authorization)
-    form.append('x-cos-security-token', d.token)
-    form.append('x-cos-meta-fileid', d.cos_file_id)
-    form.append('file', new Blob([buf], { type: contentType }), path.split('/').pop())
-    const r = await fetch(d.url, { method: 'POST', body: form })
-    if (r.status >= 300) throw new Error(`上传云存储失败:HTTP ${r.status}`)
-    return d.file_id
-  }
-  async urls(ids) {
-    const list = ids.filter(id => /^cloud:\/\//.test(id))
-    const out = Object.fromEntries(ids.map(id => [id, id]))
-    if (!list.length) return out
-    const d = await this.api('batchdownloadfile', { file_list: list.map(fileid => ({ fileid, max_age: 7200 })) })
-    for (const f of d.file_list || []) if (f.download_url) out[f.fileid] = f.download_url
-    return out
-  }
-}
-// 云数据库返回的日期是 {"$date": 毫秒};统一转成 ISO 字符串
-function normalizeDates(v) {
-  if (Array.isArray(v)) return v.map(normalizeDates)
-  if (v && typeof v === 'object') {
-    if ('$date' in v && Object.keys(v).length === 1) return new Date(v.$date).toISOString()
-    return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, normalizeDates(x)]))
-  }
-  return v
+  })
+  return { total: list.length, changed }
 }
 
-const store = DEMO ? new DemoStore() : new CloudStore()
+if (!one('SELECT 1 FROM words LIMIT 1')) {
+  const seed = join(HERE, '../content/vocab5000/words.json')
+  if (existsSync(seed)) console.log('首次启动,导入词库:', importWords(JSON.parse(readFileSync(seed, 'utf8'))))
+}
+if (!one('SELECT 1 FROM teachers LIMIT 1')) {
+  const ins = q('INSERT INTO teachers (name, title, role, bio, photo, sort) VALUES (?, ?, ?, ?, ?, ?)')
+  ins.run('张静灵', '副教授 · 中国传媒大学马来语专业教师', '课程主持', '长期从事马来语教学与马来世界文化研究。出版专著《同源异流》、马来文专著 Warisan Kebudayaan Minangkabau，译著《马来西亚诗选》；参与编撰《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。', '', 1)
+  ins.run('杨启航', '中国传媒大学马来语专业本科生', '团队成员', '获国家留学基金管理委员会资助赴马来西亚理科大学交流学习，曾受邀参加马来西亚国家广播电视台《早安马来西亚》直播访谈。', '', 2)
+}
 
-// ---------------- 会话与限流 ----------------
-const sessions = new Map() // token → { user, exp }
+// ---------------- 背词规则 ----------------
+// 盒子法:box 0–5 学习中,6 已掌握。新词:认识进 2、模糊进 1、不认识进 0;
+// 复习:认识升一格,模糊不升,不认识回 0。下次复习隔几天按盒子取
+const INTERVALS = [1, 1, 2, 4, 7, 15, 30]
+const day = (offset = 0) => new Date(Date.now() + 8 * 3600e3 + offset * 86400e3).toISOString().slice(0, 10) // 北京时间日期
+const REVIEW_MAX = 60
+
+function wordOut(w, p) {
+  const senses = JSON.parse(w.senses || '[]').filter(s => !s.check)
+  return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, senses, audio: w.audio ? AUDIO_BASE + w.audio : '', box: p && p.box != null ? p.box : -1, fav: !!(p && p.fav), wrong: (p && p.wrong) || 0 }
+}
+function streakOf(sid) {
+  const days = new Set(all('SELECT day FROM daily WHERE student_id = ? AND (new_cnt + review_cnt) > 0 AND day >= ?', sid, day(-400)).map(r => r.day))
+  const start = days.has(day()) ? 0 : -1 // 今天还没学,不算断
+  let n = 0
+  while (days.has(day(start - n))) n++
+  return { streak: n, checkedToday: days.has(day()) }
+}
+function levelsOf(sid) {
+  const rows = all(`SELECT w.level, COUNT(*) total, SUM(p.seen > 0) learned, SUM(p.box = 6) mastered
+    FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' GROUP BY w.level`, sid)
+  const by = Object.fromEntries(rows.map(r => [r.level, r]))
+  return STOPS.map(s => {
+    const r = by[s.level] || {}
+    const total = Number(r.total || 0), learned = Number(r.learned || 0)
+    return { ...s, total, learned, mastered: Number(r.mastered || 0), open: total > 0, stamped: total > 0 && learned >= total }
+  })
+}
+function currentLevel(levels) { const l = levels.find(l => l.open && !l.stamped); return l ? l.level : (levels.filter(l => l.open).pop() || levels[0]).level }
+
+function home(st) {
+  const sid = st.id, today = day()
+  const levels = levelsOf(sid)
+  const d = one('SELECT * FROM daily WHERE student_id = ? AND day = ?', sid, today) || { new_cnt: 0, review_cnt: 0 }
+  const due = one('SELECT COUNT(*) n FROM progress WHERE student_id = ? AND seen > 0 AND box < 6 AND due <= ?', sid, today).n
+  const tot = one('SELECT SUM(seen > 0) learned, SUM(box = 6) mastered, SUM(fav) fav, SUM(wrong > 0 AND box < 6) wrong FROM progress WHERE student_id = ?', sid)
+  return {
+    student: studentOut(st), levels, level: currentLevel(levels),
+    today: { goal: st.daily_new, learned: d.new_cnt, reviewed: d.review_cnt, newLeft: Math.max(st.daily_new - d.new_cnt, 0), due: Number(due) },
+    total: { learned: Number(tot.learned || 0), mastered: Number(tot.mastered || 0), fav: Number(tot.fav || 0), wrong: Number(tot.wrong || 0), words: levels.reduce((n, l) => n + l.total, 0) },
+    ...streakOf(sid)
+  }
+}
+
+const COLS = 'w.*, p.box, p.fav, p.wrong'
+// 开一组:mode = today(到期复习 + 今天剩下的新词)/ review / new(level 指定一站,10 个)/ wrong(错词重练)/ fav(收藏)
+function start(st, b) {
+  const sid = st.id, today = day()
+  const mode = ['today', 'review', 'new', 'wrong', 'fav'].includes(b.mode) ? b.mode : 'today'
+  let review = [], fresh = []
+  if (mode === 'today' || mode === 'review') review = all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.seen > 0 AND p.box < 6 AND p.due <= ? AND w.status = 'approved' ORDER BY p.due, p.box LIMIT ?`, sid, today, REVIEW_MAX)
+  if (mode === 'wrong') review = all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.wrong > 0 AND p.box < 6 AND w.status = 'approved' ORDER BY p.wrong DESC, p.last_at LIMIT 20`, sid)
+  if (mode === 'fav') review = all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.fav = 1 AND w.status = 'approved' ORDER BY p.last_at LIMIT 20`, sid)
+  if (mode === 'today' || mode === 'new') {
+    const d = one('SELECT new_cnt FROM daily WHERE student_id = ? AND day = ?', sid, today)
+    const left = mode === 'new' ? 10 : Math.max(st.daily_new - (d ? d.new_cnt : 0), 0)
+    const level = mode === 'new' ? Number(b.level) || 1 : currentLevel(levelsOf(sid))
+    if (left) fresh = all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE (p.rank IS NULL OR p.seen = 0) AND w.status = 'approved' AND w.level ${mode === 'new' ? '=' : '>='} ? ORDER BY w.rank LIMIT ?`, sid, level, left)
+  }
+  const items = [...review.map(w => ({ ...wordOut(w, w), kind: 'review' })), ...fresh.map(w => ({ ...wordOut(w, w), kind: 'new' }))]
+  // 出题用的干扰项:同一站的其他词
+  const levels = [...new Set(items.map(i => i.level))]
+  const pool = levels.length ? all(`SELECT rank, ms, senses FROM words WHERE status = 'approved' AND level IN (${levels.map(() => '?').join(',')}) ORDER BY random() LIMIT 80`, ...levels) : []
+  return { mode, items, pool: pool.map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses).find(s => !s.check) || {}).zh || '' })) }
+}
+
+function grade(st, b) {
+  const sid = st.id, today = day(), rank = Number(b.rank)
+  if (!one(`SELECT 1 FROM words WHERE rank = ? AND status = 'approved'`, rank)) throw Object.assign(new Error('没有这个词'), { code: 404 })
+  const result = ['know', 'vague', 'forgot', 'mastered'].includes(b.result) ? b.result : 'vague'
+  const p = one('SELECT * FROM progress WHERE student_id = ? AND rank = ?', sid, rank)
+  const isNew = !p || !p.seen
+  let box = p ? p.box : 0
+  if (result === 'mastered') box = 6
+  else if (result === 'know') box = isNew ? 2 : Math.min(box + 1, 6)
+  else if (result === 'vague') box = isNew ? 1 : Math.max(box, 1)
+  else box = 0
+  const due = box >= 6 ? '9999-12-31' : day(INTERVALS[box])
+  const wrong = ((p && p.wrong) || 0) + (result === 'forgot' ? 1 : 0)
+  const reviewCounted = !isNew && p.last_day !== today // 同一天同一个词只算一次复习
+  const now = new Date().toISOString()
+  tx(() => {
+    run(`INSERT INTO progress (student_id, rank, box, due, wrong, seen, first_at, last_day, last_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)
+      ON CONFLICT(student_id, rank) DO UPDATE SET box = excluded.box, due = excluded.due, wrong = excluded.wrong, seen = seen + 1,
+        first_at = CASE WHEN seen = 0 THEN excluded.first_at ELSE first_at END, last_day = excluded.last_day, last_at = excluded.last_at`, sid, rank, box, due, wrong, today, today, now)
+    run(`INSERT INTO daily (student_id, day, new_cnt, review_cnt, right_cnt) VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(student_id, day) DO UPDATE SET new_cnt = new_cnt + excluded.new_cnt, review_cnt = review_cnt + excluded.review_cnt, right_cnt = right_cnt + excluded.right_cnt`,
+      sid, today, isNew ? 1 : 0, reviewCounted ? 1 : 0, result === 'know' || result === 'mastered' ? 1 : 0)
+    run('UPDATE students SET last_active_at = ? WHERE id = ?', now, sid)
+  })
+  return { ok: true, box, due }
+}
+
+function book(st, type, page) {
+  const where = { fav: 'p.fav = 1', wrong: 'p.wrong > 0 AND p.box < 6', mastered: 'p.box = 6', learning: 'p.seen > 0 AND p.box < 6' }[type]
+  if (!where) throw Object.assign(new Error('未知单词本'), { code: 400 })
+  const n = one(`SELECT COUNT(*) n FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND w.status = 'approved' AND ${where}`, st.id).n
+  const rows = all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND w.status = 'approved' AND ${where} ORDER BY ${type === 'wrong' ? 'p.wrong DESC,' : ''} p.last_at DESC LIMIT 50 OFFSET ?`, st.id, Math.max(page, 0) * 50)
+  return { total: Number(n), words: rows.map(w => brief(wordOut(w, w))) }
+}
+const brief = o => ({ rank: o.rank, ms: o.ms, zh: o.senses.map(s => s.zh).join('；'), box: o.box, fav: o.fav, wrong: o.wrong, audio: o.audio })
+
+function stats(st) {
+  const sid = st.id
+  const rows = all('SELECT day, new_cnt, review_cnt FROM daily WHERE student_id = ? AND day >= ? ORDER BY day', sid, day(-29))
+  const by = Object.fromEntries(rows.map(r => [r.day, r]))
+  const days = Array.from({ length: 30 }, (_, i) => { const d = day(i - 29); const r = by[d] || {}; return { day: d, new: r.new_cnt || 0, review: r.review_cnt || 0 } })
+  const boxes = Array(7).fill(0)
+  for (const r of all('SELECT box, COUNT(*) n FROM progress WHERE student_id = ? AND seen > 0 GROUP BY box', sid)) boxes[r.box] = r.n
+  const studyDays = one('SELECT COUNT(*) n FROM daily WHERE student_id = ? AND (new_cnt + review_cnt) > 0', sid).n
+  return { days, boxes, studyDays, levels: levelsOf(sid), ...streakOf(sid) }
+}
+
+const studentOut = s => s ? { name: s.name, school: s.school, className: s.class_name, track: s.track, phone: s.phone, dailyNew: s.daily_new, createdAt: s.created_at } : null
+
+// ---------------- 小程序登录 ----------------
+function signToken(openid) {
+  const payload = Buffer.from(JSON.stringify({ o: openid, e: Date.now() + 30 * 86400e3 })).toString('base64url')
+  return `${payload}.${createHmac('sha256', TOKEN_KEY).update(payload).digest('base64url')}`
+}
+function readToken(req) {
+  const [payload, sig] = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').split('.')
+  if (!payload || !sig) return null
+  const want = createHmac('sha256', TOKEN_KEY).update(payload).digest('base64url')
+  if (want.length !== sig.length || !timingSafeEqual(Buffer.from(want), Buffer.from(sig))) return null
+  try { const d = JSON.parse(Buffer.from(payload, 'base64url').toString()); return d.e > Date.now() ? d.o : null } catch { return null }
+}
+async function code2openid(code) {
+  if (DEMO) return 'demo-' + (String(code || '').replace(/[^\w-]/g, '').slice(0, 40) || 'dev')
+  const u = `https://api.weixin.qq.com/sns/jscode2session?appid=${ENV.APPID}&secret=${ENV.APPSECRET}&js_code=${encodeURIComponent(String(code || ''))}&grant_type=authorization_code`
+  const d = await (await fetch(u)).json()
+  if (!d.openid) throw Object.assign(new Error('微信登录失败,请重试'), { code: 401 })
+  return d.openid
+}
+
+// ---------------- 通用 ----------------
+const sessions = new Map() // 后台会话:token → { user, exp }
 const fails = new Map()    // ip → [时间戳]
 const SESSION_MS = 12 * 3600e3
 const ip = req => (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim()
 function cookie(req, name) { const m = new RegExp(`(?:^|;\\s*)${name}=([^;]+)`).exec(req.headers.cookie || ''); return m ? m[1] : '' }
 function session(req) { const s = sessions.get(cookie(req, 'jb_admin')); return s && s.exp > Date.now() ? s : null }
 function tooMany(addr) { const t = (fails.get(addr) || []).filter(x => x > Date.now() - 10 * 60e3); fails.set(addr, t); return t.length >= 5 }
-
-// ---------------- 工具 ----------------
 const send = (res, code, data, headers = {}) => { res.writeHead(code, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers }); res.end(JSON.stringify(data)) }
 const fail = (res, code, msg) => send(res, code, { error: msg })
-async function body(req, limit = 12 * 1024 * 1024) {
+async function body(req, limit = 4096) {
   const chunks = []; let n = 0
-  for await (const c of req) { n += c.length; if (n > limit) throw new Error('内容太大'); chunks.push(c) }
+  for await (const c of req) { n += c.length; if (n > limit) throw Object.assign(new Error('内容太大'), { code: 413 }); chunks.push(c) }
   const s = Buffer.concat(chunks).toString('utf8')
   return s ? JSON.parse(s) : {}
 }
-const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
-const POS = ['名', '动', '形', '副', '代', '数', '介', '连', '叹', '短语', '方位', '其他']
+// CSV 单元格:防公式注入(= + - @ 开头的加单引号)
+const csvCell = v => { let s = String(v ?? ''); if (/^[=+\-@]/.test(s)) s = "'" + s; return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s }
 
-// 各集合可写的字段(白名单,防止随便写入)
-function clean(col, d) {
-  if (col === 'scenes') return { name: str(d.name, 30), name_ms: str(d.name_ms, 60), cover: str(d.cover, 300), order: Number(d.order) || 0, published: !!d.published }
-  if (col === 'words') return { ms: str(d.ms, 80), zh: str(d.zh, 120), pos: POS.includes(d.pos) ? d.pos : '其他', example_ms: str(d.example_ms, 300), example_zh: str(d.example_zh, 300), audio: str(d.audio, 300), sceneId: str(d.sceneId, 80), order: Number(d.order) || 0, status: d.status === 'approved' ? 'approved' : 'draft' }
-  if (col === 'teachers') return { name: str(d.name, 30), title: str(d.title, 100), role: str(d.role, 30), bio: str(d.bio, 1000), photo: str(d.photo, 300), order: Number(d.order) || 0 }
-}
-function required(col, d) {
-  if (col === 'scenes' && !d.name) return '请填写场景名称'
-  if (col === 'words' && (!d.ms || !d.zh)) return '马来语和中文释义都要填'
-  if (col === 'words' && !d.sceneId) return '请选择场景'
-  if (col === 'teachers' && !d.name) return '请填写姓名'
-  return ''
-}
-
-// 粘贴的 CSV / TSV 解析(支持引号)
-function parseTable(text) {
-  const rows = []
-  const lines = String(text).replace(/\r/g, '').split('\n').filter(l => l.trim())
-  const sep = lines[0] && lines[0].includes('\t') ? '\t' : ','
-  for (const line of lines) {
-    const cells = []; let cur = '', q = false
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i]
-      if (q) { if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++ } else if (ch === '"') q = false; else cur += ch }
-      else if (ch === '"') q = true
-      else if (ch === sep) { cells.push(cur); cur = '' }
-      else cur += ch
-    }
-    cells.push(cur)
-    rows.push(cells.map(c => c.trim()))
+// ---------------- 小程序接口 ----------------
+const appHits = new Map() // openid → [时间戳],每分钟最多 120 次
+async function appApi(req, res, p, url) {
+  if (p === '/api/app/login' && req.method === 'POST') {
+    const b = await body(req)
+    const openid = await code2openid(b.code)
+    return send(res, 200, { token: signToken(openid), student: studentOut(one('SELECT * FROM students WHERE openid = ?', openid)) })
   }
-  return rows
+  const openid = readToken(req)
+  if (!openid) return fail(res, 401, '请重新登录')
+  const hits = (appHits.get(openid) || []).filter(t => t > Date.now() - 60e3); hits.push(Date.now()); appHits.set(openid, hits)
+  if (hits.length > 120) return fail(res, 429, '操作太快了,歇一下')
+
+  if (p === '/api/app/register' && req.method === 'POST') {
+    const b = await body(req)
+    const name = str(b.name, 30), school = str(b.school, 60), className = str(b.className, 40), phone = str(b.phone, 20).replace(/[\s-]/g, '')
+    if (!name) return fail(res, 400, '请填写姓名或昵称')
+    if (!school) return fail(res, 400, '请填写学校')
+    if (!/^1\d{10}$|^\+?\d{8,15}$/.test(phone)) return fail(res, 400, '手机号格式不对')
+    if (!b.agree) return fail(res, 400, '请先阅读并同意隐私保护指引')
+    const now = new Date().toISOString()
+    run(`INSERT INTO students (openid, name, school, class_name, track, phone, created_at, last_active_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(openid) DO UPDATE SET name = excluded.name, school = excluded.school, class_name = excluded.class_name, track = excluded.track, phone = excluded.phone`,
+      openid, name, school, className, ['some', 'heritage'].includes(b.track) ? 'some' : 'zero', phone, now, now)
+    return send(res, 200, { ok: true, student: studentOut(one('SELECT * FROM students WHERE openid = ?', openid)) })
+  }
+  if (p === '/api/app/teachers') return send(res, 200, all('SELECT name, title, role, bio, photo FROM teachers ORDER BY sort, id'))
+
+  const st = one('SELECT * FROM students WHERE openid = ?', openid)
+  if (!st) return fail(res, 403, '请先注册')
+  if (p === '/api/app/home') return send(res, 200, home(st))
+  if (p === '/api/app/start' && req.method === 'POST') return send(res, 200, start(st, await body(req)))
+  if (p === '/api/app/grade' && req.method === 'POST') return send(res, 200, grade(st, await body(req)))
+  if (p === '/api/app/fav' && req.method === 'POST') {
+    const b = await body(req), rank = Number(b.rank)
+    if (!one(`SELECT 1 FROM words WHERE rank = ? AND status = 'approved'`, rank)) return fail(res, 404, '没有这个词')
+    // 没学过的词也能收藏:建一条 seen = 0 的记录,不算已学
+    run(`INSERT INTO progress (student_id, rank, box, due, fav, last_at) VALUES (?, ?, 0, ?, ?, ?) ON CONFLICT(student_id, rank) DO UPDATE SET fav = excluded.fav`, st.id, rank, day(), b.on ? 1 : 0, new Date().toISOString())
+    return send(res, 200, { ok: true })
+  }
+  if (p === '/api/app/level') {
+    const level = Number(url.searchParams.get('level')) || 1
+    const rows = all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.level = ? AND w.status = 'approved' ORDER BY w.rank`, st.id, level)
+    return send(res, 200, { stop: levelsOf(st.id).find(l => l.level === level), words: rows.map(w => { const o = wordOut(w, w); return { rank: o.rank, ms: o.ms, zh: (o.senses[0] || {}).zh || '', box: o.box, fav: o.fav } }) })
+  }
+  if (p === '/api/app/word') {
+    const w = one(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.rank = ? AND w.status = 'approved'`, st.id, Number(url.searchParams.get('rank')))
+    return w ? send(res, 200, wordOut(w, w)) : fail(res, 404, '没有这个词')
+  }
+  if (p === '/api/app/search') {
+    const k = str(url.searchParams.get('q'), 40).toLowerCase().replace(/[%_]/g, '')
+    if (!k) return send(res, 200, [])
+    const like = `%${k}%`
+    // 输入中文查释义,输入字母查马来语和词根
+    const cond = /[\u4e00-\u9fff]/.test(k) ? `EXISTS (SELECT 1 FROM json_each(w.senses) j WHERE json_extract(j.value, '$.zh') LIKE ? AND json_extract(j.value, '$.check') IS NULL)` : `(lower(w.ms) LIKE ? OR lower(w.root) LIKE ?)`
+    const rows = all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' AND ${cond}
+      ORDER BY (lower(w.ms) = ?) DESC, (lower(w.ms) LIKE ?) DESC, w.rank LIMIT 30`, st.id, ...(cond.includes('root') ? [like, like] : [like]), k, k + '%')
+    return send(res, 200, rows.map(w => brief(wordOut(w, w))))
+  }
+  if (p === '/api/app/book') return send(res, 200, book(st, url.searchParams.get('type'), Number(url.searchParams.get('page')) || 0))
+  if (p === '/api/app/stats') return send(res, 200, stats(st))
+  if (p === '/api/app/settings' && req.method === 'POST') {
+    const b = await body(req)
+    const n = [10, 20, 30, 50].includes(Number(b.dailyNew)) ? Number(b.dailyNew) : 20
+    run('UPDATE students SET daily_new = ? WHERE id = ?', n, st.id)
+    return send(res, 200, { ok: true, dailyNew: n })
+  }
+  return fail(res, 404, '接口不存在')
 }
 
-// Azure 马来语发音
-async function tts(text) {
-  if (!ENV.AZURE_TTS_KEY) throw new Error('服务器没有配置 AZURE_TTS_KEY,不能生成发音')
-  const region = ENV.AZURE_TTS_REGION || 'eastus'
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const ssml = `<speak version="1.0" xml:lang="ms-MY"><voice name="ms-MY-YasminNeural"><prosody rate="-8%">${esc(text)}</prosody></voice></speak>`
-  const r = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, { method: 'POST', headers: { 'Ocp-Apim-Subscription-Key': ENV.AZURE_TTS_KEY, 'Content-Type': 'application/ssml+xml', 'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3', 'User-Agent': 'jombelajar-admin' }, body: ssml })
-  if (!r.ok) throw new Error(`生成发音失败:HTTP ${r.status}`)
-  return Buffer.from(await r.arrayBuffer())
-}
-async function ttsWord(w) {
-  const buf = await tts(w.ms)
-  const fileID = await store.upload(`audio/words/${w._id}.mp3`, buf, 'audio/mpeg')
-  await store.update('words', w._id, { audio: fileID })
-  return fileID
-}
-
-// ---------------- 路由 ----------------
-async function api(req, res, url) {
-  const p = url.pathname
-  if (p === '/api/login' && req.method === 'POST') {
+// ---------------- 后台接口 ----------------
+async function adminApi(req, res, p, url) {
+  if (p === '/api/admin/login' && req.method === 'POST') {
     const addr = ip(req)
     if (tooMany(addr)) return fail(res, 429, '登录失败次数太多，请 10 分钟后再试')
     const b = await body(req)
@@ -238,135 +354,125 @@ async function api(req, res, url) {
     const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''
     return send(res, 200, { ok: true }, { 'set-cookie': `jb_admin=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_MS / 1000}${secure}` })
   }
-  if (p === '/api/mode') return send(res, 200, { demo: DEMO })
-  if (p === '/api/logout' && req.method === 'POST') { sessions.delete(cookie(req, 'jb_admin')); return send(res, 200, { ok: true }, { 'set-cookie': 'jb_admin=; Path=/; Max-Age=0' }) }
+  const s = session(req)
+  if (!s) return fail(res, 401, '请先登录')
+  if (p === '/api/admin/logout') { sessions.delete(cookie(req, 'jb_admin')); return send(res, 200, { ok: true }, { 'set-cookie': 'jb_admin=; Path=/; Max-Age=0' }) }
+  if (p === '/api/admin/me') return send(res, 200, { user: s.user, demo: DEMO, audioBase: AUDIO_BASE, stops: STOPS })
 
-  const me = session(req)
-  if (!me) return fail(res, 401, '请先登录')
-  if (p === '/api/me') return send(res, 200, { user: me.user, demo: DEMO, tts: !!ENV.AZURE_TTS_KEY })
-
-  // 学生(只读)+ 学习进度
-  if (p === '/api/students' || p === '/api/students.csv') {
-    const [students, progress] = await Promise.all([store.list('students'), store.list('progress')])
-    const learned = {}
-    for (const r of progress) learned[r._openid] = (learned[r._openid] || 0) + 1
-    const rows = students.map(s => ({ ...s, learned: learned[s._openid] || 0 })).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
-    if (p === '/api/students') return send(res, 200, rows)
-    const head = ['姓名', '学校', '班级', '基础', '手机号', '已学词数', '注册时间', '最近活跃']
-    const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`
-    const csv = '﻿' + [head, ...rows.map(s => [s.name, s.school, s.className, s.track === 'heritage' ? '会说一些' : '零基础', s.phone, s.learned, s.createdAt, s.lastActiveAt])].map(r => r.map(q).join(',')).join('\r\n')
-    res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="students-${new Date().toISOString().slice(0, 10)}.csv"` })
-    return res.end(csv)
-  }
-
-  // 批量导入单词:先 dryRun 预览,再正式写入
-  if (p === '/api/words/import' && req.method === 'POST') {
-    const b = await body(req)
-    const scenes = await store.list('scenes')
-    const byName = Object.fromEntries(scenes.flatMap(s => [[s.name, s._id], [s._id, s._id]]))
-    const rows = parseTable(b.text || '')
-    if (rows[0] && /^(ms|马来语)$/i.test(rows[0][0])) rows.shift() // 有表头就跳过
-    const existing = await store.list('words')
-    const key = w => `${w.sceneId}|${w.ms.toLowerCase()}`
-    const seen = new Set(existing.map(key))
-    const preview = rows.map((r, i) => {
-      const [ms, zh, pos, example_ms, example_zh, scene] = r
-      const sceneId = byName[scene] || b.defaultScene || ''
-      const w = clean('words', { ms, zh, pos, example_ms, example_zh, sceneId, status: 'draft', order: 1000 + i })
-      let error = required('words', w)
-      if (!error && seen.has(key(w))) error = '这个场景里已经有这个词'
-      if (!error) seen.add(key(w))
-      return { line: i + 1, ...w, sceneName: (scenes.find(s => s._id === sceneId) || {}).name || scene || '', error }
+  if (p === '/api/admin/overview') {
+    const today = day()
+    return send(res, 200, {
+      words: all('SELECT level, status, COUNT(*) n FROM words GROUP BY level, status'),
+      check: one(`SELECT COUNT(*) n FROM words WHERE senses LIKE '%"check":true%'`).n,
+      students: one('SELECT COUNT(*) n FROM students').n,
+      activeToday: one('SELECT COUNT(DISTINCT student_id) n FROM daily WHERE day = ?', today).n,
+      active7: one('SELECT COUNT(DISTINCT student_id) n FROM daily WHERE day >= ?', day(-6)).n,
+      learnedToday: one('SELECT COALESCE(SUM(new_cnt), 0) n FROM daily WHERE day = ?', today).n,
+      reviewedToday: one('SELECT COALESCE(SUM(review_cnt), 0) n FROM daily WHERE day = ?', today).n
     })
-    if (b.dryRun) return send(res, 200, { preview })
-    let added = 0
-    for (const w of preview.filter(x => !x.error)) { const { line, error, sceneName, ...doc } = w; await store.add('words', doc); added++ }
-    return send(res, 200, { added, skipped: preview.length - added })
   }
 
-  // 生成发音:单个 / 批量(没有录音的)
-  let m
-  if ((m = /^\/api\/words\/([^/]+)\/tts$/.exec(p)) && req.method === 'POST') {
-    const w = (await store.list('words')).find(x => x._id === decodeURIComponent(m[1]))
-    if (!w) return fail(res, 404, '单词不存在')
-    return send(res, 200, { audio: await ttsWord(w) })
+  if (p === '/api/admin/words' && req.method === 'GET') {
+    const level = Number(url.searchParams.get('level')) || 0, status = url.searchParams.get('status') || '', k = str(url.searchParams.get('q'), 40).toLowerCase().replace(/[%_]/g, '')
+    const page = Math.max(Number(url.searchParams.get('page')) || 0, 0)
+    const conds = [], args = []
+    if (level) { conds.push('level = ?'); args.push(level) }
+    if (['approved', 'pending'].includes(status)) { conds.push('status = ?'); args.push(status) }
+    if (status === 'check') conds.push(`senses LIKE '%"check":true%'`)
+    if (k) { const l = `%${k}%`; conds.push('(lower(ms) LIKE ? OR lower(root) LIKE ? OR senses LIKE ? OR rank = ?)'); args.push(l, l, l, Number(k) || -1) }
+    const where = conds.length ? 'WHERE ' + conds.join(' AND ') : ''
+    const total = one(`SELECT COUNT(*) n FROM words ${where}`, ...args).n
+    const rows = all(`SELECT * FROM words ${where} ORDER BY rank LIMIT 100 OFFSET ?`, ...args, page * 100)
+    return send(res, 200, { total, page, words: rows.map(w => ({ ...w, senses: JSON.parse(w.senses || '[]'), audioUrl: w.audio ? AUDIO_BASE + w.audio : '' })) })
   }
-  if (p === '/api/words/tts-batch' && req.method === 'POST') {
-    const b = await body(req)
-    const list = (await store.list('words')).filter(w => (!b.sceneId || w.sceneId === b.sceneId) && (b.all || !w.audio)).slice(0, 50)
-    let done = 0; const errors = []
-    for (const w of list) { try { await ttsWord(w); done++ } catch (e) { errors.push(`${w.ms}:${e.message}`) } }
-    return send(res, 200, { done, errors })
+  const wm = /^\/api\/admin\/words\/(\d+)$/.exec(p)
+  if (wm && req.method === 'PUT') {
+    const b = await body(req, 64 * 1024), rank = Number(wm[1])
+    const w = one('SELECT * FROM words WHERE rank = ?', rank)
+    if (!w) return fail(res, 404, '没有这个词')
+    const senses = Array.isArray(b.senses) ? b.senses.map(cleanSense).filter(s => s.zh) : JSON.parse(w.senses)
+    const ms = b.ms !== undefined ? str(b.ms, 80) : w.ms
+    if (!ms) return fail(res, 400, '马来语不能为空')
+    const status = b.status !== undefined ? (b.status === 'approved' ? 'approved' : 'pending') : w.status
+    if (status === 'approved' && !senses.some(s => !s.check)) return fail(res, 400, '至少要有一条审过的释义才能上架')
+    run('UPDATE words SET ms = ?, root = ?, senses = ?, status = ?, edited = 1, updated_at = ? WHERE rank = ?', ms, b.root !== undefined ? str(b.root, 80) : w.root, JSON.stringify(senses), status, new Date().toISOString(), rank)
+    return send(res, 200, { ok: true })
+  }
+  if (p === '/api/admin/words/import' && req.method === 'POST') {
+    const b = await body(req, 8 * 1024 * 1024)
+    if (!Array.isArray(b.words)) return fail(res, 400, '格式不对:要 build.py 生成的 words.json')
+    return send(res, 200, importWords(b.words, { overwriteEdited: !!b.overwriteEdited }))
   }
 
-  // 上传图片(老师照片 / 场景封面):base64
-  if (p === '/api/upload' && req.method === 'POST') {
-    const b = await body(req)
-    const ext = (extname(b.name || '').toLowerCase() || '.jpg').replace(/[^.\w]/g, '')
-    if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) return fail(res, 400, '只支持 jpg / png / webp 图片')
-    const buf = Buffer.from(String(b.data || '').replace(/^data:[^,]+,/, ''), 'base64')
-    if (buf.length > 5 * 1024 * 1024) return fail(res, 400, '图片不能超过 5MB')
-    const fileID = await store.upload(`images/${b.folder === 'scenes' ? 'scenes' : 'teachers'}/${Date.now()}-${randomBytes(3).toString('hex')}${ext}`, buf, ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg')
-    return send(res, 200, { fileID })
-  }
-  if (p === '/api/files/urls' && req.method === 'POST') {
-    const b = await body(req)
-    return send(res, 200, await store.urls((b.ids || []).filter(Boolean).slice(0, 50)))
+  if (p === '/api/admin/students' || p === '/api/admin/students.csv') {
+    const rows = all(`SELECT s.*, (SELECT COUNT(*) FROM progress p WHERE p.student_id = s.id AND p.seen > 0) learned, (SELECT COUNT(*) FROM progress p WHERE p.student_id = s.id AND p.box = 6) mastered,
+      (SELECT COUNT(*) FROM daily d WHERE d.student_id = s.id AND (d.new_cnt + d.review_cnt) > 0) days FROM students s ORDER BY s.last_active_at DESC`)
+    if (p.endsWith('.csv')) {
+      const head = ['姓名', '学校', '班级', '起点', '手机号', '已学', '已掌握', '学习天数', '注册时间', '最近活跃']
+      const lines = rows.map(r => [r.name, r.school, r.class_name, r.track === 'some' ? '会说一些' : '零基础', r.phone, r.learned, r.mastered, r.days, r.created_at, r.last_active_at].map(csvCell).join(','))
+      res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="students-${day()}.csv"`, 'cache-control': 'no-store' })
+      return res.end('﻿' + [head.join(','), ...lines].join('\n'))
+    }
+    return send(res, 200, rows.map(r => ({ id: r.id, name: r.name, school: r.school, className: r.class_name, track: r.track, phone: r.phone, learned: r.learned, mastered: r.mastered, days: r.days, createdAt: r.created_at, lastActiveAt: r.last_active_at })))
   }
 
-  // 场景 / 单词 / 老师 增删改查
-  if ((m = /^\/api\/(scenes|words|teachers)(?:\/([^/]+))?$/.exec(p))) {
-    const col = m[1], id = m[2] && decodeURIComponent(m[2])
-    if (req.method === 'GET' && !id) {
-      const rows = await store.list(col)
-      return send(res, 200, rows.sort((a, b) => (a.sceneId || '').localeCompare(b.sceneId || '') || (a.order || 0) - (b.order || 0)))
-    }
-    if (req.method === 'POST' && !id) {
-      const d = clean(col, await body(req))
-      const err = required(col, d)
-      if (err) return fail(res, 400, err)
-      return send(res, 200, { _id: await store.add(col, d) })
-    }
-    if (req.method === 'PUT' && id) {
-      const b = await body(req)
-      // 只改传进来的字段(例如只切换审核状态)
-      const full = clean(col, b)
-      const patch = Object.fromEntries(Object.entries(full).filter(([k]) => k in b))
-      if (b.partial !== true) { const err = required(col, full); if (err) return fail(res, 400, err) }
-      await store.update(col, id, patch)
-      return send(res, 200, { ok: true })
-    }
-    if (req.method === 'DELETE' && id) { await store.remove(col, id); return send(res, 200, { ok: true }) }
+  if (p === '/api/admin/teachers' && req.method === 'GET') return send(res, 200, all('SELECT * FROM teachers ORDER BY sort, id'))
+  const tm = /^\/api\/admin\/teachers(?:\/(\d+))?$/.exec(p)
+  if (tm && (req.method === 'POST' || req.method === 'PUT')) {
+    const b = await body(req, 8 * 1024 * 1024)
+    const d = { name: str(b.name, 30), title: str(b.title, 100), role: str(b.role, 30), bio: str(b.bio, 1000), photo: str(b.photo, 300), sort: Number(b.sort) || 0 }
+    if (!d.name) return fail(res, 400, '请填写姓名')
+    if (b.photoData) d.photo = savePhoto(b.photoData)
+    if (tm[1]) run('UPDATE teachers SET name = ?, title = ?, role = ?, bio = ?, photo = ?, sort = ? WHERE id = ?', d.name, d.title, d.role, d.bio, d.photo, d.sort, Number(tm[1]))
+    else run('INSERT INTO teachers (name, title, role, bio, photo, sort) VALUES (?, ?, ?, ?, ?, ?)', d.name, d.title, d.role, d.bio, d.photo, d.sort)
+    return send(res, 200, { ok: true })
   }
+  if (tm && tm[1] && req.method === 'DELETE') { run('DELETE FROM teachers WHERE id = ?', Number(tm[1])); return send(res, 200, { ok: true }) }
   return fail(res, 404, '接口不存在')
 }
 
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp3': 'audio/mpeg' }
-function file(res, path) {
+function savePhoto(dataUrl) {
+  const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(String(dataUrl))
+  if (!m) throw Object.assign(new Error('只支持 jpg / png / webp 图片'), { code: 400 })
+  const buf = Buffer.from(m[2], 'base64')
+  if (buf.length > 5 * 1024 * 1024) throw Object.assign(new Error('图片不能超过 5MB'), { code: 400 })
+  const name = `t-${randomBytes(6).toString('hex')}.${m[1] === 'jpeg' ? 'jpg' : m[1]}`
+  writeFileSync(join(DATA, 'uploads', name), buf)
+  return `/uploads/${name}`
+}
+
+// ---------------- 静态文件 ----------------
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.mp3': 'audio/mpeg' }
+function file(res, path, cache = 'no-cache') {
   if (!existsSync(path) || !statSync(path).isFile()) return false
-  res.writeHead(200, { 'content-type': TYPES[extname(path).toLowerCase()] || 'application/octet-stream', 'cache-control': 'no-cache' })
+  res.writeHead(200, { 'content-type': TYPES[extname(path).toLowerCase()] || 'application/octet-stream', 'cache-control': cache })
   res.end(readFileSync(path))
   return true
 }
+const safe = s => normalize(decodeURIComponent(s)).replace(/^(\.\.[/\\])+/, '').replace(/^[/\\]+/, '')
 
 createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x')
-  res.setHeader('x-frame-options', 'DENY')
+  const p = url.pathname
   res.setHeader('x-content-type-options', 'nosniff')
   res.setHeader('referrer-policy', 'no-referrer')
   try {
-    if (url.pathname.startsWith('/api/')) return await api(req, res, url)
-    // 演示模式的上传文件 / 种子录音(只读)
-    if (DEMO && url.pathname.startsWith('/uploads/')) { if (session(req) && file(res, join(DATA, 'uploads', normalize(url.pathname.slice(9)).replace(/^(\.\.[/\\])+/, '')))) return }
-    if (DEMO && url.pathname.startsWith('/seed-audio/')) { if (session(req) && file(res, join(HERE, '../content/audio', url.pathname.slice(12).replace(/[^\w.-]/g, '')))) return }
-    const p = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '')
-    if (file(res, join(PUBLIC, p === '/' ? 'index.html' : p))) return
+    if (p.startsWith('/api/app/')) return await appApi(req, res, p, url)
+    if (p.startsWith('/api/admin/')) return await adminApi(req, res, p, url)
+    if (p.startsWith('/api/')) return fail(res, 404, '接口不存在')
+    res.setHeader('x-frame-options', 'DENY')
+    // 老师照片(小程序也读,公开)
+    if (p.startsWith('/uploads/') && file(res, join(DATA, 'uploads', safe(p.slice(9))), 'public, max-age=86400')) return
+    // 演示模式:音频从本机目录读(DEMO_AUDIO_DIR 指向解压后的启航音频包),正式环境走 COS
+    if (DEMO && p.startsWith('/demo-audio/') && ENV.DEMO_AUDIO_DIR && file(res, join(ENV.DEMO_AUDIO_DIR, safe(p.slice(12))), 'public, max-age=86400')) return
+    if (file(res, join(PUBLIC, p === '/' ? 'index.html' : safe(p)))) return
     file(res, join(PUBLIC, 'index.html'))
   } catch (e) {
-    console.error(e)
-    if (!res.headersSent) fail(res, 500, e.message || '服务器出错')
+    const code = e instanceof SyntaxError ? 400 : (Number.isInteger(e.code) ? e.code : 500)
+    if (code === 500) console.error(e)
+    if (!res.headersSent) fail(res, code, e instanceof SyntaxError ? '请求格式不对' : (code === 500 ? '服务器出错' : e.message))
   }
 }).listen(PORT, HOST, () => {
-  console.log(`JomBelajar 后台:http://${HOST}:${PORT}`)
-  if (DEMO) console.warn('⚠ 演示模式(没有配置 APPID):数据存在 admin/data/demo.json,登录 admin / admin123。不要这样上线。')
+  console.log(`JomBelajar 背单词服务:http://${HOST}:${PORT}`)
+  if (DEMO) console.warn('⚠ 演示模式(没有配置 APPID):小程序登录不校验,后台 admin / admin123。不要这样上线。')
 })

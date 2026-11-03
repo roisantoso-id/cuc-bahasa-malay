@@ -15,7 +15,9 @@ Page({
   async onLoad() {
     try {
       const list = await vocab.teachers()
-      const withUrl = await Promise.all(list.map(async t => ({ ...t, photoUrl: await vocab.fileUrl(t.photo) })))
+      // 后台没传照片的,用包里自带的
+      const LOCAL = { '张静灵': '/pkg-me/img/zhang.jpg', '杨启航': '/pkg-me/img/yang.jpg' }
+      const withUrl = list.map((t, i) => ({ ...t, _id: i, photoUrl: t.photo ? vocab.fileUrl(t.photo) : LOCAL[t.name] || '/assets/avatar.jpg' }))
       this.setData({ lead: withUrl[0] || null, others: withUrl.slice(1) })
     } catch (e) { /* 拿不到就只显示书架和技术支持 */ }
   },

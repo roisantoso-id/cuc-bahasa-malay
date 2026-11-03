@@ -19,6 +19,7 @@ Page({
     this.setData({ busy: true, error: '' })
     try {
       await vocab.register({ ...this.data.form, agree: this.data.agree })
+      getApp().globalData.dirty = true
       wx.showToast({ title: this.data.edit ? '已保存' : '注册成功', icon: 'success' })
       setTimeout(() => (this.data.edit ? wx.navigateBack() : wx.switchTab({ url: '/pages/home/home' })), 600)
     } catch (e) {

@@ -1,0 +1,27 @@
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="加载中…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />
+  <block wx:else>
+    <view class="ticket">
+      <view class="songket" />
+      <view class="hd">
+        <view class="between"><text class="no muted small">No.{{w.rank}} · 第 {{w.level}} 站</text><view class="fav {{w.fav ? 'on' : ''}}" bindtap="fav">{{w.fav ? '★ 已收藏' : '☆ 收藏'}}</view></view>
+        <view class="row" style="margin-top:20rpx">
+          <view class="w" bindlongpress="copy">{{w.ms}}</view>
+          <say-btn src="{{w.audio}}" />
+        </view>
+        <view wx:if="{{w.root}}" class="muted small">词根 {{w.root}}</view>
+        <view class="lv row">
+          <view wx:for="{{dots}}" wx:key="index" class="lv-d {{item ? 'on' : ''}}" />
+          <text class="small muted">{{label}}{{w.wrong ? ' · 错过 ' + w.wrong + ' 次' : ''}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="card" style="margin-top:28rpx">
+      <view wx:for="{{w.senses}}" wx:key="index" class="sense">
+        <view><text class="pos">{{item.pos}}</text><text class="zh">{{item.zh}}</text></view>
+        <view wx:if="{{item.exMs}}" class="example"><view class="ms">{{item.exMs}}</view><view class="muted small">{{item.exZh}}</view></view>
+      </view>
+    </view>
+  </block>
+</view>

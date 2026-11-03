@@ -1,4 +1,4 @@
-// 学生身份:微信登录(云函数 login),没注册就去注册页
+// 学生身份:微信登录,没注册就去注册页
 const vocab = require('../api/vocab')
 
 async function ensureStudent() {

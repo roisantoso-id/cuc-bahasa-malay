@@ -1,32 +1,35 @@
-// 背单词首页:今日进度 + 生活场景
+// 旅程首页:今日车票(到期复习 + 今天的新词)+ 10 站路线(每站 500 词)
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
 
-const GOAL = 10 // 每天新学目标
-const COVERS = { 'c-welcome': 'welcome', 'c-pass': 'pass', 'c-cheer': 'cheer', 'c-loading': 'loading', 'c-study': 'study', 'c-checkin': 'checkin', 'c-fail': 'fail' }
-const HELLO = () => { const h = new Date().getHours(); return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat tengah hari' : h < 19 ? 'Selamat petang' : 'Selamat malam' }
+const greet = () => { const h = (new Date().getUTCHours() + 8) % 24; return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat tengah hari' : h < 19 ? 'Selamat petang' : 'Selamat malam' }
 
 Page({
-  data: { loading: true, error: false, student: null, ov: null, ring: 0, hello: '', next: null },
-
-  async onShow() { this.load() },
-  onPullDownRefresh() { this.load().then(() => wx.stopPullDownRefresh()) },
-
+  data: { view: 'loading', h: null, greet: '', error: '' },
+  onShow() {
+    if (getApp().globalData.dirty || !this.data.h) this.load()
+  },
+  async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
   async load() {
     try {
-      const student = await ensureStudent()
-      if (!student) return
-      const ov = await vocab.overview()
-      ov.scenes = ov.scenes.map(s => ({ ...s, img: COVERS[s.cover] ? `/assets/${COVERS[s.cover]}.jpg` : s.cover, pct: s.total ? Math.round((s.learned / s.total) * 100) : 0 }))
-      const next = ov.scenes.find(s => s.learned < s.total) || null
-      this.setData({ loading: false, error: false, student, ov, hello: HELLO(), ring: Math.min(100, Math.round((ov.learnedToday / GOAL) * 100)), goal: GOAL, next })
+      const st = await ensureStudent()
+      if (!st) return
+      const h = await vocab.home()
+      getApp().globalData.dirty = false
+      const cur = h.levels.find(l => l.level === h.level)
+      h.levels.forEach(l => { l.pct = l.total ? Math.round(l.learned / l.total * 100) : 0; l.cur = l.level === h.level })
+      this.setData({ view: 'ok', h, cur, greet: greet(), todo: h.today.due + h.today.newLeft })
     } catch (e) {
-      this.setData({ loading: false, error: true })
+      this.setData({ view: 'error', error: e.message })
     }
   },
-
-  review() { wx.navigateTo({ url: '/pkg-word/learn/learn?review=1' }) },
-  cont() { if (this.data.next) wx.navigateTo({ url: `/pkg-word/learn/learn?scene=${this.data.next._id}` }) },
-  open(e) { wx.navigateTo({ url: `/pkg-word/scene/scene?id=${e.currentTarget.dataset.id}` }) },
-  about() { wx.navigateTo({ url: '/pkg-me/about/about' }) }
+  go(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
+  start() { wx.navigateTo({ url: '/pkg-word/learn/learn?mode=today' }) },
+  more() { wx.navigateTo({ url: `/pkg-word/learn/learn?mode=new&level=${this.data.h.level}` }) },
+  stop(e) {
+    const l = e.currentTarget.dataset.l
+    if (!l.open) { wx.showToast({ title: '这一站的词表还在整理', icon: 'none' }); return }
+    wx.navigateTo({ url: `/pkg-word/stop/stop?level=${l.level}` })
+  },
+  onShareAppMessage() { return { title: '一起背马来语 5000 高频词', path: '/pages/home/home' } }
 })

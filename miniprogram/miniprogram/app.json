@@ -8,8 +8,11 @@
     {
       "root": "pkg-word",
       "pages": [
-        "scene/scene",
-        "learn/learn"
+        "learn/learn",
+        "stop/stop",
+        "book/book",
+        "search/search",
+        "word/word"
       ]
     },
     {
@@ -33,19 +36,27 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "背单词"
+        "text": "旅程"
       },
       {
         "pagePath": "pages/me/me",
-        "text": "我的"
+        "text": "护照"
       }
     ]
   },
   "usingComponents": {
     "hb-empty": "/components/hb-empty/hb-empty",
-    "audio-btn": "/components/audio-btn/audio-btn"
+    "say-btn": "/components/say-btn/say-btn"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "preloadRule": {
+    "pages/home/home": {
+      "network": "all",
+      "packages": [
+        "pkg-word"
+      ]
+    }
+  }
 }

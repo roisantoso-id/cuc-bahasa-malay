@@ -1,0 +1,11 @@
+<view class="wrap">
+  <input class="input" focus placeholder="输入马来语或中文，例如 makan / 吃" value="{{q}}" bindinput="input" confirm-type="search" />
+  <view wx:if="{{list.length}}" class="card list" style="margin-top:24rpx">
+    <view wx:for="{{list}}" wx:key="rank" class="item" data-r="{{item.rank}}" bindtap="open">
+      <say-btn src="{{item.audio}}" size="sm" />
+      <view class="item-main"><view class="ms">{{item.ms}}</view><view class="muted small one">{{item.zh}}</view></view>
+      <text class="no muted small">No.{{item.rank}}</text>
+    </view>
+  </view>
+  <hb-empty wx:elif="{{searched}}" image="empty" title="没找到" desc="5000 高频词里没有这个词，换个说法试试。" />
+</view>

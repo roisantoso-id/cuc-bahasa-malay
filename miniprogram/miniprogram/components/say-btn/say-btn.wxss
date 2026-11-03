@@ -1,0 +1,10 @@
+/* 小喇叭:纯 CSS 画,不用图标字体 */
+.say { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #e4f1ff; flex-shrink: 0; }
+.say.hover { transform: scale(.92); }
+.say-md { width: 72rpx; height: 72rpx; }
+.say-lg { width: 104rpx; height: 104rpx; }
+.say-sm { width: 56rpx; height: 56rpx; }
+.cone { width: 0; height: 0; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; border-right: 16rpx solid #2f86d6; margin-right: 4rpx; }
+.say-lg .cone { border-top-width: 18rpx; border-bottom-width: 18rpx; border-right-width: 24rpx; }
+.wave { width: 14rpx; height: 24rpx; border: 5rpx solid #2f86d6; border-left: 0; border-radius: 0 24rpx 24rpx 0; }
+.say-lg .wave { width: 20rpx; height: 36rpx; border-width: 6rpx; border-left: 0; }

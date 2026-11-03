@@ -10,7 +10,7 @@
     <view class="label">你的马来语基础</view>
     <view class="seg">
       <view class="seg-i {{form.track === 'zero' ? 'on' : ''}}" data-v="zero" bindtap="setTrack">零基础</view>
-      <view class="seg-i {{form.track === 'heritage' ? 'on' : ''}}" data-v="heritage" bindtap="setTrack">会说一些</view>
+      <view class="seg-i {{form.track === 'some' ? 'on' : ''}}" data-v="some" bindtap="setTrack">会说一些</view>
     </view>
   </view>
   <view class="field"><view class="label">手机号</view><input class="input" type="number" value="{{form.phone}}" maxlength="15" data-k="phone" bindinput="input" placeholder="用于老师联系你" /></view>

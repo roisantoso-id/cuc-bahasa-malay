@@ -1,0 +1,9 @@
+.hd { padding: 24rpx 28rpx 28rpx; }
+.w { font-size: 72rpx; font-weight: 900; line-height: 1.2; word-break: break-word; }
+.fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 999rpx; background: var(--bg); }
+.fav.on { color: #b88600; background: #fff3c4; }
+.lv { margin-top: 20rpx; gap: 10rpx; }
+.lv-d { width: 36rpx; height: 14rpx; border-radius: 8rpx; background: var(--line); }
+.lv-d.on { background: var(--green); }
+.pos { font-size: 22rpx; font-weight: 800; color: var(--ink2); background: var(--bg); padding: 2rpx 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
+.zh { font-size: 34rpx; font-weight: 900; color: var(--green-d); }

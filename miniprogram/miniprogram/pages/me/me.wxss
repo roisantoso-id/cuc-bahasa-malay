@@ -1,10 +1,36 @@
-.profile { display: flex; align-items: center; gap: 24rpx; }
-.avatar { width: 120rpx; height: 120rpx; border-radius: 50%; background: var(--green-l); flex: none; }
-.name { font-size: 36rpx; font-weight: 900; }
-.stats { display: flex; gap: 20rpx; margin-top: 28rpx; }
-.stat { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 28rpx; padding: 18rpx 0; text-align: center; box-shadow: 0 6rpx 0 var(--line); }
-.n { font-size: 44rpx; font-weight: 900; line-height: 1.2; }
-.hover-row { opacity: .6; }
-button.fb { background: transparent; border-radius: 0; margin: 0; padding: 28rpx 0; font-size: 30rpx; line-height: 1.55; text-align: left; color: var(--ink); width: 100%; }
+/* 护照:深绿封皮 + 机读码 */
+.passport { background: #1f5f3c; color: #fff; border-radius: 32rpx; padding: 28rpx; box-shadow: 0 8rpx 0 #143f28; }
+.pp-k { font-size: 20rpx; color: #ffc83d; }
+.pp-edit { font-size: 24rpx; color: #cfe9d9; }
+.pp-body { margin-top: 24rpx; align-items: flex-start; }
+.pp-photo { width: 160rpx; height: 200rpx; border-radius: 16rpx; background: #fff; flex: none; border: 4rpx solid #ffc83d; }
+.pp-l { font-size: 18rpx; color: #9fd0b2; letter-spacing: 1rpx; margin-top: 6rpx; }
+.pp-v { font-weight: 900; font-size: 32rpx; line-height: 1.3; }
+.pp-v.small { font-size: 26rpx; font-weight: 700; }
+.pp-mrz { margin-top: 24rpx; font-size: 20rpx; color: #9fd0b2; overflow: hidden; white-space: nowrap; }
+
+.nums { display: flex; gap: 16rpx; margin-top: 28rpx; }
+.nums > view { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 16rpx 0; text-align: center; }
+.n { font-size: 40rpx; font-weight: 900; line-height: 1.2; }
+.c-green { color: var(--green); } .c-blue { color: var(--blue); }
+
+.stamps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24rpx 0; justify-items: center; padding: 32rpx 12rpx; background: #fffdf6; }
+.stamps .stamp { width: 150rpx; height: 150rpx; }
+.stamps .stamp .s1 { font-size: 24rpx; }
+
+.chart { display: flex; align-items: flex-end; height: 200rpx; gap: 6rpx; margin-bottom: 12rpx; }
+.col { flex: 1; height: 100%; display: flex; align-items: flex-end; }
+.stack { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.seg { width: 100%; border-radius: 4rpx; }
+.seg.new { background: var(--green); }
+.seg.rev { background: var(--blue); }
+.key { display: inline-block; width: 18rpx; height: 18rpx; border-radius: 4rpx; margin: 0 6rpx 0 16rpx; vertical-align: middle; }
+.k-new { background: var(--green); } .k-rev { background: var(--blue); }
+
+.bx { display: flex; align-items: center; gap: 16rpx; padding: 8rpx 0; }
+.bx-l { width: 110rpx; }
+.bx-bar { flex: 1; }
+.bx-n { width: 70rpx; text-align: right; }
+.bar.thin { height: 16rpx; }
+button.fb { background: transparent; border-radius: 0; margin: 0; padding: 28rpx 0; font-size: 30rpx; line-height: 1.55; text-align: left; color: var(--ink); width: 100%; display: flex; align-items: center; gap: 20rpx; }
 button.fb::after { border: 0; }
-.avatar-txt { display: flex; align-items: center; justify-content: center; background: var(--green); color: #fff; font-size: 48rpx; font-weight: 900; }

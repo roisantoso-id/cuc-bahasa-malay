@@ -1,0 +1,23 @@
+<view class="tabs">
+  <view wx:for="{{tabs}}" wx:key="k" class="tab {{type === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="tab">{{item.t}}</view>
+</view>
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻单词本…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />
+  <hb-empty wx:elif="{{!words.length}}" image="empty" title="{{type === 'wrong' ? '没有错词，继续保持' : type === 'fav' ? '还没有收藏的词' : '这里还是空的'}}" desc="{{type === 'fav' ? '背词时点卡片右上角的「收藏」。' : ''}}" />
+  <block wx:else>
+    <view class="between head"><text class="muted small">共 {{total}} 个</text>
+      <button wx:if="{{type === 'wrong' || type === 'fav'}}" class="btn btn-main btn-sm" hover-class="hover" bindtap="practice">重练这些词</button>
+    </view>
+    <view class="card list">
+      <view wx:for="{{words}}" wx:key="rank" class="item" data-r="{{item.rank}}" bindtap="open">
+        <say-btn src="{{item.audio}}" size="sm" />
+        <view class="item-main">
+          <view class="ms">{{item.ms}}<text wx:if="{{type === 'wrong'}}" class="tag coral" style="margin-left:12rpx">错 {{item.wrong}} 次</text></view>
+          <view class="muted small one">{{item.zh}}</view>
+        </view>
+        <view class="star {{item.fav ? 'on' : ''}}" data-i="{{index}}" catchtap="toggleFav">{{item.fav ? '★' : '☆'}}</view>
+      </view>
+    </view>
+  </block>
+</view>

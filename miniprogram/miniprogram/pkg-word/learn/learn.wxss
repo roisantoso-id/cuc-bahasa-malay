@@ -1,15 +1,20 @@
 .page { height: 100vh; display: flex; flex-direction: column; padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
 .top { margin-bottom: 24rpx; }
 .top-r { display: flex; justify-content: space-between; align-items: center; margin-top: 12rpx; }
-.card-big { flex: 1; background: #fff; border: 4rpx solid var(--line); border-radius: 44rpx; box-shadow: 0 8rpx 0 var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40rpx; text-align: center; }
-.w { font-size: 96rpx; font-weight: 900; line-height: 1.15; word-break: break-word; }
-.sound { margin-top: 24rpx; font-size: 26rpx; font-weight: 800; color: var(--blue-d, #2f86d6); background: #e4f1ff; padding: 12rpx 28rpx; border-radius: 999rpx; }
-.hint { margin-top: 60rpx; color: var(--ink2); font-size: 26rpx; }
-.zh { margin-top: 48rpx; font-size: 48rpx; font-weight: 900; color: var(--green-d); }
-.pos { font-size: 24rpx; color: var(--ink2); font-weight: 500; margin-left: 12rpx; }
-.ex { margin-top: 36rpx; padding: 24rpx 28rpx; background: var(--bg); border-radius: 24rpx; text-align: left; width: 100%; box-sizing: border-box; }
-.ex-ms { font-weight: 800; font-size: 30rpx; }
-.ex-zh { color: var(--ink2); font-size: 26rpx; margin-top: 6rpx; }
+
+.wcard { flex: 1; min-height: 0; display: flex; flex-direction: column; background: #fff; border: 4rpx solid var(--ink); border-radius: 40rpx; box-shadow: 0 10rpx 0 var(--ink); overflow: hidden; }
+.wc-head { padding: 20rpx 28rpx 0; }
+.fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 999rpx; background: var(--bg); }
+.fav.on { color: #b88600; background: #fff3c4; }
+.wc-main { display: flex; flex-direction: column; align-items: center; padding: 40rpx 32rpx 24rpx; text-align: center; }
+.w { font-size: 92rpx; font-weight: 900; line-height: 1.15; word-break: break-word; }
+.root { margin-top: 10rpx; font-size: 24rpx; color: var(--ink2); }
+.say-row { margin-top: 28rpx; }
+.hint { margin-top: 80rpx; color: var(--ink2); font-size: 26rpx; }
+.senses { flex: 1; min-height: 0; padding: 0 32rpx 24rpx; box-sizing: border-box; }
+.pos { font-size: 22rpx; font-weight: 800; color: var(--ink2); background: var(--bg); padding: 2rpx 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
+.zh { font-size: 34rpx; font-weight: 900; color: var(--green-d); }
+
 .actions { margin-top: 32rpx; }
 .grades { display: flex; gap: 20rpx; }
 .g { flex: 1; text-align: center; padding: 30rpx 0; border-radius: 28rpx; color: #fff; font-size: 32rpx; font-weight: 900; }
@@ -18,11 +23,29 @@
 .g-vague { background: #f5a524; box-shadow: 0 8rpx 0 #c98410; }
 .g-know { background: var(--green); box-shadow: 0 8rpx 0 var(--green-d); }
 .master { text-align: center; margin-top: 24rpx; font-size: 24rpx; color: var(--ink2); }
-.quiz-k { font-size: 28rpx; font-weight: 900; color: var(--green-d); }
-.quiz-p { font-size: 64rpx; font-weight: 900; text-align: center; margin: 60rpx 0 50rpx; }
+
+.quiz { flex: 1; display: flex; flex-direction: column; }
+.q-k { font-size: 28rpx; font-weight: 900; color: var(--green-d); }
+.q-p { text-align: center; margin: 70rpx 0 56rpx; font-weight: 900; }
+.q-p.ms { font-size: 72rpx; }
+.q-p.zhp { font-size: 44rpx; }
+.q-listen { display: flex; flex-direction: column; align-items: center; gap: 16rpx; margin: 60rpx 0 50rpx; }
+.opt.ms { font-size: 34rpx; }
+.spell { height: 110rpx; font-size: 44rpx; font-weight: 800; text-align: center; margin-top: 10rpx; }
+.spell.ok { border-color: var(--green); background: var(--green-l); }
+.spell.bad { border-color: var(--coral); background: #ffe9e6; }
+.answer { text-align: center; margin-top: 20rpx; font-size: 30rpx; }
+.idk { text-align: center; color: var(--ink2); font-size: 26rpx; margin-top: auto; padding: 20rpx; }
+
 .done { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.done-img { width: 300rpx; height: 300rpx; display: block; margin: 0 auto; }
-.sum { display: flex; gap: 16rpx; margin: 32rpx 0 20rpx; }
+.stamp.big { width: 300rpx; height: 300rpx; margin: 0 auto 40rpx; border-width: 10rpx; }
+.stamp.big::after { inset: 14rpx; border-width: 4rpx; }
+.stamp.big .s1 { font-size: 52rpx; margin: 8rpx 0; }
+.stamp.big .s2 { font-size: 20rpx; }
+/* 盖章:从大到小落下 */
+.hit { animation: hit .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes hit { 0% { transform: scale(2.2) rotate(-30deg); opacity: 0; } 100% { transform: scale(1) rotate(-12deg); opacity: 1; } }
+.sum { display: flex; gap: 16rpx; margin: 36rpx 0 20rpx; }
 .sum > view { flex: 1; text-align: center; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 18rpx 0; font-size: 24rpx; color: var(--ink2); }
 .n { font-size: 44rpx; font-weight: 900; color: var(--ink); }
 .c-know { color: var(--green); } .c-vague { color: #f5a524; } .c-forgot { color: var(--coral); }

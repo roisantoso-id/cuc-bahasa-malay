@@ -1,2 +1,0 @@
-.w { font-size: 34rpx; }
-.detail { padding: 0 0 20rpx; border-bottom: 2rpx solid var(--line); }

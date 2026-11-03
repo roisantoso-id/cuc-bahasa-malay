@@ -1,0 +1,11 @@
+.hd { padding: 24rpx 28rpx 28rpx; }
+.chips-wrap { margin: 32rpx 0 20rpx; white-space: nowrap; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; }
+.cell { background: #fff; border: 4rpx solid var(--line); border-radius: 20rpx; padding: 14rpx 18rpx; border-left-width: 12rpx; }
+.cell.hover { opacity: .7; }
+.cell.learn { border-left-color: #f5a524; }
+.cell.good { border-left-color: var(--blue); }
+.cell.done { border-left-color: var(--green); background: var(--green-l); }
+.cell-no { font-size: 18rpx; color: var(--ink2); }
+.cell-ms { font-weight: 900; font-size: 30rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell-zh { font-size: 22rpx; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
