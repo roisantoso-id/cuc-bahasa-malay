@@ -10,6 +10,7 @@ services:
     environment:
       DOMAIN: ${DOMAIN:?请在 .env 里填 DOMAIN}
       SITE_DOMAIN: ${SITE_DOMAIN:-www.bahasa.cn}
+      APEX_DOMAIN: ${APEX_DOMAIN:-bahasa.cn}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./admin/public:/srv/admin:ro

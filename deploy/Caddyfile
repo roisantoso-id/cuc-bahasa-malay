@@ -40,3 +40,8 @@
 		file_server
 	}
 }
+
+# 不带 www 的 bahasa.cn 跳到 www
+{$APEX_DOMAIN} {
+	redir https://www.bahasa.cn{uri} permanent
+}
