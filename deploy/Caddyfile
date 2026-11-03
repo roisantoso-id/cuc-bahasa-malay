@@ -1,0 +1,23 @@
+# 背单词服务:后台网页 + 小程序接口。证书由 caddy 自动申请和续期(Let's Encrypt)
+{$DOMAIN} {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+	handle /api/* {
+		reverse_proxy api:4200
+	}
+	handle /uploads/* {
+		reverse_proxy api:4200
+	}
+	handle {
+		root * /srv/admin
+		header X-Frame-Options DENY
+		header /index.html Cache-Control no-cache
+		try_files {path} /index.html
+		file_server
+	}
+}

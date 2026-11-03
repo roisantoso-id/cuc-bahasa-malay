@@ -1,0 +1,68 @@
+# JomBelajar 背单词:后台网页 + 小程序接口 + PostgreSQL,部署在腾讯云广州轻量服务器
+#   第一次:cp .env.example .env,填好后 docker compose up -d --build
+#   更新:bash deploy/deploy-compose.sh
+services:
+  # 反向代理 + 自动 HTTPS;后台网页是静态文件,直接由 caddy 托管
+  web:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?请在 .env 里填 DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./admin/public:/srv/admin:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [api]
+
+  # 后端:小程序接口 /api/app/*、后台接口 /api/admin/*、老师照片 /uploads/*
+  api:
+    build: { context: ., dockerfile: admin/Dockerfile }
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://jombelajar:${POSTGRES_PASSWORD:?请在 .env 里填 POSTGRES_PASSWORD}@db:5432/jombelajar
+      APPID: ${APPID:-}
+      APPSECRET: ${APPSECRET:-}
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
+      AUDIO_BASE: ${AUDIO_BASE:?请在 .env 里填 AUDIO_BASE}
+    volumes:
+      - uploads:/data
+    depends_on:
+      db: { condition: service_healthy }
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: jombelajar
+      POSTGRES_USER: jombelajar
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jombelajar -d jombelajar"]
+      interval: 5s
+      retries: 20
+
+  # 每天备份一次数据库到 ./backups,保留 14 天
+  backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: db
+      PGUSER: jombelajar
+      PGDATABASE: jombelajar
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["sh", "-c", "while true; do sleep 60; pg_dump -Fc -f /backups/jombelajar-$$(date +%F).dump && find /backups -name '*.dump' -mtime +14 -delete; sleep 86340; done"]
+    depends_on:
+      db: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  uploads:
+  caddy_data:
+  caddy_config:

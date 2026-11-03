@@ -1,0 +1,6 @@
+# 只有 admin/ 和 content/vocab5000/words.json 进镜像
+*
+!admin/
+!content/vocab5000/words.json
+admin/node_modules
+admin/data
