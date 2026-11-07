@@ -4,34 +4,60 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>学什么 · {{SITE_BRAND}}</title>
-<meta name="description" content="单词、文章、视频、在线测试四个模块，分别练词汇、阅读、听力和检测。">
+<meta name="description" content="马来语 5000 个高频词，按使用频率分成十站，每站 500 个。每个词配发音、中文释义和例句，学过的词按记忆规律安排复习。">
 <!--IF_SITE_SITE_URL--><link rel="canonical" href="{{SITE_SITE_URL}}/courses/"><!--/IF_SITE_SITE_URL-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
 <script src="/js/nav.js" defer></script>
 </head>
 <body>
 <!--NAV-->
-<main class="wrap">
+<main class="wrap prose">
   <p class="crumb"><a href="/">首页</a> · 学什么</p>
   <div class="page-h">
-    <div><h1>学什么</h1><p class="muted" style="margin-top:10px;font-size:18px">四个模块，分别练词汇、阅读、听力和检测。内容由张静灵老师主持编写，持续更新。</p></div>
-    <img src="/img/study.jpg" alt="" width="520" height="520">
+    <div><h1>学什么</h1><p class="muted" style="margin-top:12px;font-size:18px">马来语最常用的 5000 个词。按使用频率排好，分成十站，一站一站背。</p></div>
+    <img src="/img/bird/study.webp" alt="" width="518" height="520">
   </div>
 
-  <div style="margin-top:24px">
-    <div class="mod"><img src="/img/study.jpg" alt="" width="520" height="520" loading="lazy"><div><h2 style="font-size:26px">单词</h2>
-      <ul><li>每组先记忆：看单词、听发音、回忆意思，再看释义和例句，按「重来 / 困难 / 良好 / 简单」打分。</li><li>FSRS 记忆算法按你的打分安排下次复习；到期的词出现在首页。</li><li>记忆完可以练拼写，拼错的会再出现。</li><li>收藏本、停止复习的词、每组数量和目标记忆保持率都可以自己管。</li></ul></div></div>
-    <div class="mod"><img src="/img/loading.jpg" alt="" width="520" height="520" loading="lazy"><div><h2 style="font-size:26px">文章</h2>
-      <ul><li>按主题分类的短文，可以搜索。</li><li>有朗读录音的文章，可以边听边读，随时拖动进度。</li></ul></div></div>
-    <div class="mod"><img src="/img/hero.jpg" alt="" width="520" height="347" loading="lazy" style="object-fit:cover"><div><h2 style="font-size:26px">视频</h2>
-      <ul><li>情景对话视频，练真实语境的听力。</li><li>自动记住看到哪里，下次接着看。</li></ul></div></div>
-    <div class="mod"><img src="/img/pass.jpg" alt="" width="520" height="520" loading="lazy"><div><h2 style="font-size:26px">在线测试</h2>
-      <ul><li>单选、判断、填空、听写四种题型。</li><li>答案自动保存，交卷自动判分，逐题看解析。</li><li>做错和没做的题自动收进错题本，重做对了就算掌握。</li></ul></div></div>
-  </div>
+  <h2>一个词里有什么</h2>
+  <ul>
+    <li>马来语单词和发音，派生词会标出词根，例如 mengikut 的词根是 ikut。</li>
+    <li>中文释义和词性。一个词有几种常见意思的，分开列出。</li>
+    <li>每个意思配一句马来语例句和中文翻译。</li>
+  </ul>
 
-  <div class="ctas" style="margin-top:36px"><a class="btn btn-main" href="/#open">打开小程序开始学</a></div>
+  <h2>每天怎么学</h2>
+  <ul>
+    <li>打开先看「今日车票」：今天要复习几个、新学几个。新词默认每天 20 个，可以改成 10、30 或 50 个。</li>
+    <li>新词先听发音、回忆意思，再翻开看释义和例句，然后打分：认识、模糊、不认识。</li>
+    <li>学过的词隔 1、2、4、7、15、30 天回来复习。复习先出题：看词选义、听音选词、看中文拼写。</li>
+    <li>答错的词自动进错词本，可以一键重练；也可以收藏，或者按中文、马来语查词。</li>
+  </ul>
+
+  <h2>十站</h2>
+  <table class="stops">
+    <thead><tr><th>站</th><th>城市</th><th class="r">词序</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>吉隆坡 Kuala Lumpur</td><td class="r">1–500</td><td class="st-on">可以学</td></tr>
+      <tr><td>2</td><td>马六甲 Melaka</td><td class="r">501–1000</td><td class="st-on">可以学</td></tr>
+      <tr><td>3</td><td>怡保 Ipoh</td><td class="r">1001–1500</td><td class="st-on">可以学</td></tr>
+      <tr><td>4</td><td>槟城 Pulau Pinang</td><td class="r">1501–2000</td><td class="st-on">可以学</td></tr>
+      <tr><td>5</td><td>金马伦 Cameron Highlands</td><td class="r">2001–2500</td><td class="st-on">可以学</td></tr>
+      <tr><td>6</td><td>关丹 Kuantan</td><td class="r">2501–3000</td><td class="st-on">可以学</td></tr>
+      <tr><td>7</td><td>瓜拉登嘉楼 Kuala Terengganu</td><td class="r">3001–3500</td><td class="st-off">整理中</td></tr>
+      <tr><td>8</td><td>哥打巴鲁 Kota Bharu</td><td class="r">3501–4000</td><td class="st-off">整理中</td></tr>
+      <tr><td>9</td><td>古晋 Kuching</td><td class="r">4001–4500</td><td class="st-off">整理中</td></tr>
+      <tr><td>10</td><td>亚庇 Kota Kinabalu</td><td class="r">4501–5000</td><td class="st-off">整理中</td></tr>
+    </tbody>
+  </table>
+  <p>一站的词都学过一遍，就在「我的护照」上盖一个章。</p>
+
+  <h2>从哪里开始</h2>
+  <ul>
+    <li>没学过马来语：从第一站开始。</li>
+    <li>会说一些马来语：可以从第三、四站开始，太简单的词直接设为已掌握。</li>
+  </ul>
+
+  <div class="ctas" style="margin-top:40px"><a class="btn btn-main" href="/#open">打开小程序</a></div>
 </main>
 <!--FOOT-->
 </body>
