@@ -136,3 +136,20 @@ button, a[data-press] { transition: scale .12s var(--ease-out), background-color
   .jb-skel { animation: none; }
   button:active { scale: 1; }
 }
+
+/* ---------- 登录页:单词流 ---------- */
+.jb-auth { background: #0B1320; }
+.jb-stream { -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, #000 55%, transparent 100%); }
+.jb-stream-row { display: flex; width: max-content; white-space: nowrap; animation: jb-drift linear infinite; font-family: var(--font-mono); line-height: 1.2; }
+.jb-stream-track { display: flex; gap: 1.6em; padding-right: 1.6em; }
+@keyframes jb-drift { from { translate: 0 0; } to { translate: -50% 0; } }
+.jb-word { position: relative; color: rgba(203, 213, 225, var(--op)); transition: color .6s var(--ease-out), text-shadow .6s var(--ease-out); }
+.jb-word::after { content: attr(data-zh); position: absolute; left: 50%; top: 100%; translate: -50% 4px; font-family: var(--font-sans); font-size: 13px; color: #FFC83D; opacity: 0; white-space: nowrap; transition: opacity .5s var(--ease-out), translate .5s var(--ease-out); }
+.jb-word.lit { color: #FFE7A3; }
+.jb-word.lit::after { opacity: .9; translate: -50% 8px; }
+.jb-auth-card { background: #fff; border-radius: 18px; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.06); animation: jb-rise .6s var(--ease-out) both; }
+.jb-login-btn { box-shadow: 0 1px 2px rgba(15,23,42,.2); }
+.jb-login-btn:not(:disabled):hover { background: #1E293B; }
+@keyframes jb-shake { 10%, 90% { translate: -1px 0; } 20%, 80% { translate: 3px 0; } 30%, 50%, 70% { translate: -5px 0; } 40%, 60% { translate: 5px 0; } }
+.jb-shake { animation: jb-shake .45s cubic-bezier(.36,.07,.19,.97) both; }
+@media (prefers-reduced-motion: reduce) { .jb-stream-row, .jb-auth-card, .jb-shake { animation: none !important; } }

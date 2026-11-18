@@ -20,7 +20,9 @@ export const BUILTIN_ROLES = [
   { code: 'viewer', name: '只读', description: '只能看,不能改', permissions: ['overview.view', 'students.view', 'words.view', 'courses.view', 'teachers.view'] }
 ]
 
-const SESSION_MS = 12 * 3600e3
+// 登录保持 10 天;每次用后台都往后顺延(滑动过期),10 天里一直有在用就不用重新输密码
+const SESSION_MS = 10 * 86400e3
+const RENEW_AFTER = 3600e3 // 离上次顺延超过 1 小时才写一次库,免得每个请求都写
 const sha = s => createHash('sha256').update(String(s)).digest('hex')
 const now = () => new Date().toISOString()
 
@@ -54,13 +56,20 @@ export function makeAdminApi(ctx) {
     }
   }
 
+  const cookieFor = (req, token) => `jb_admin=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_MS / 1000}${req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''}`
   async function session(req) {
     const t = cookie(req, 'jb_admin')
     if (!t) return null
     const r = await one(`SELECT s.expires_at, u.id, u.username, u.name, u.status, u.must_change, r.code role_code, r.name role_name, r.permissions
       FROM admin_sessions s JOIN admin_users u ON u.id = s.user_id LEFT JOIN admin_roles r ON r.id = u.role_id WHERE s.token_hash = ?`, sha(t))
     if (!r || r.expires_at < Date.now() || r.status !== 'active') return null
-    return { id: r.id, username: r.username, name: r.name, mustChange: !!r.must_change, role: { code: r.role_code, name: r.role_name }, perms: parsePerms(r), token: t }
+    // 要顺延就带上新 cookie(每个请求自己的,不能放共享变量里)
+    let renew = ''
+    if (r.expires_at < Date.now() + SESSION_MS - RENEW_AFTER) {
+      await run('UPDATE admin_sessions SET expires_at = ? WHERE token_hash = ?', Date.now() + SESSION_MS, sha(t))
+      renew = cookieFor(req, t)
+    }
+    return { renew, id: r.id, username: r.username, name: r.name, mustChange: !!r.must_change, role: { code: r.role_code, name: r.role_name }, perms: parsePerms(r), token: t }
   }
   const killSessions = uid => run('DELETE FROM admin_sessions WHERE user_id = ?', uid)
   const validPassword = pw => { if (String(pw || '').length < 8) throw bad('密码至少 8 位'); if (String(pw).length > 128) throw bad('密码太长') }
@@ -124,12 +133,12 @@ export function makeAdminApi(ctx) {
       await run('INSERT INTO admin_sessions (token_hash, user_id, created_at, expires_at, ip, ua) VALUES (?, ?, ?, ?, ?, ?)', sha(token), u.id, now(), Date.now() + SESSION_MS, addr, str(req.headers['user-agent'], 200))
       await run('UPDATE admin_users SET last_login_at = ?, last_login_ip = ? WHERE id = ?', now(), addr, u.id)
       await audit({ id: u.id, username: u.username }, req, 'login', u.username)
-      const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''
-      return send(res, 200, { ok: true }, { 'set-cookie': `jb_admin=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_MS / 1000}${secure}` })
+      return send(res, 200, { ok: true }, { 'set-cookie': cookieFor(req, token) })
     }
 
     const s = await session(req)
     if (!s) return fail(res, 401, '请先登录')
+    if (s.renew) res.setHeader('set-cookie', s.renew)
     if (p === '/api/admin/logout') {
       await run('DELETE FROM admin_sessions WHERE token_hash = ?', sha(s.token))
       return send(res, 200, { ok: true }, { 'set-cookie': 'jb_admin=; Path=/; Max-Age=0' })

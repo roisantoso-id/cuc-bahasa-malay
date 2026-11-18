@@ -91,7 +91,7 @@ docker compose logs -f api            # 看后端日志
 - 后台账号存在 `admin_users` 表，角色在 `admin_roles`，登录会话在 `admin_sessions`（只存 token 的 sha256，重启服务不掉线），操作日志在 `audit_log`。
   - 密码用 scrypt 哈希保存，至少 8 位。
   - 同一个 IP 10 分钟内输错 5 次、同一个账号 30 分钟内输错 10 次就锁定。
-  - 登录态是 HttpOnly cookie，带 `Secure`，12 小时过期；改密码后其它设备下线，停用 / 换角色后对方马上下线。
+  - 登录态是 HttpOnly cookie，带 `Secure`，保持 10 天，每次使用自动顺延（10 天不用才要重新登录）；改密码后其它设备下线，停用 / 换角色后对方马上下线。
   - 写操作检查 `Origin`，别的网站发来的请求一律拒绝。
 - 小程序 token 是服务端用 HMAC 签名的 openid，30 天过期。
   - 签名密钥在第一次启动时随机生成，存在数据库里。

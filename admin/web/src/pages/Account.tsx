@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AuthScreen } from './Login'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,14 +36,14 @@ export function PasswordForm({ onDone, forced }: { onDone?: () => void; forced?:
 export function ForcePassword() {
   const { me, refresh, logout } = useAuth()
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="jb-card w-full max-w-[380px] px-6 py-7">
+    <AuthScreen>
+      <div className="jb-auth-card px-7 py-8">
         <div className="mb-1 text-lg font-semibold">先改一个自己的密码</div>
         <p className="mb-5 text-[13px] text-text-3">{me?.user.name},你的密码是管理员设的初始密码,改完才能使用后台。</p>
         <PasswordForm forced onDone={refresh} />
         <button type="button" onClick={logout} className="mt-4 text-xs text-text-3 hover:text-foreground">退出登录</button>
       </div>
-    </div>
+    </AuthScreen>
   )
 }
 
