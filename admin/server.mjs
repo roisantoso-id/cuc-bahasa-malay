@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url'
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto'
 import mysql from 'mysql2/promise'
 import { makeAdminApi } from './admin-api.mjs'
+import { createBattle } from './battle.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -110,6 +111,7 @@ async function tx(fn) {
 let STOPS = DEFAULT_STOPS.map(s => ({ ...s, published: true })) // 启动后从 courses 表读
 async function reloadStops() { STOPS = (await all('SELECT level, city, ms, note, intro, published FROM courses ORDER BY level')).map(c => ({ ...c, intro: c.intro || '', published: !!c.published })) }
 const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
+const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels }) // 好友 PK、周榜、每周擂台（battle.mjs）
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
 const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
@@ -140,7 +142,7 @@ async function init() {
   for (let i = 0; ; i++) { // 数据库容器可能还没起来,等一会儿
     try { await pool.query('SELECT 1'); break } catch (e) { if (i >= 30) throw e; await new Promise(r => setTimeout(r, 1000)) }
   }
-  for (const q of SCHEMA) await pool.query(q)
+  for (const q of [...SCHEMA, ...battle.SCHEMA]) await pool.query(q)
   for (const [t, c, def] of COLUMNS) {
     if (!(await one('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?', t, c))) await pool.query(`ALTER TABLE ${t} ADD COLUMN ${c} ${def}`)
   }
@@ -344,6 +346,8 @@ async function appApi(req, res, p, url) {
   const st = await one('SELECT * FROM students WHERE openid = ?', openid)
   if (!st) return fail(res, 403, '请先注册')
   if (st.status === 'disabled') return fail(res, 403, '账号已停用,请联系老师')
+  const br = await battle.handle(st, p, req, url, body)
+  if (br !== undefined) return send(res, 200, br)
   if (p === '/api/app/home') return send(res, 200, await home(st))
   if (p === '/api/app/start' && req.method === 'POST') return send(res, 200, await start(st, await body(req)))
   if (p === '/api/app/grade' && req.method === 'POST') return send(res, 200, await grade(st, await body(req)))
