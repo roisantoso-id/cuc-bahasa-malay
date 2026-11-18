@@ -14,7 +14,6 @@ Component({
     go(e) {
       const i = e.currentTarget.dataset.i
       if (i === this.data.selected) return
-      wx.vibrateShort && wx.vibrateShort({ type: 'light' })
       wx.switchTab({ url: this.data.list[i].path })
     },
     mark(i) {
