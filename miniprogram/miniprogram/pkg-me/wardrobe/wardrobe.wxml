@@ -14,21 +14,21 @@
     <view class="sec"><text class="sec-t">服装</text><text class="sec-r">已解锁 {{costumeN}} / {{costumes.length}}</text></view>
     <view class="wd-grid">
       <view class="wd-it {{!mascot ? 'on' : ''}}" bindtap="pick" data-k="">
-        <image class="wd-img" src="/assets/avatar.jpg" webp mode="aspectFill" />
+        <view class="wd-box"><image class="wd-img" src="/assets/avatar.jpg" mode="aspectFill" /></view>
         <view class="wd-t">原版犀鸟</view>
       </view>
       <view wx:for="{{costumes}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}} {{mascot === item.key ? 'on' : ''}}" data-i="{{index}}" data-g="costumes" bindtap="open">
-        <image class="wd-img" src="{{item.img}}" webp mode="aspectFill" />
-        <view class="wd-t">{{item.title}}</view>
+        <view class="wd-box"><image class="wd-img" src="{{item.img}}" webp mode="aspectFit" /></view>
+        <view class="wd-t">{{item.short}}</view>
+        <view class="wd-lock">{{item.unlocked ? (mascot === item.key ? '正在穿' : '已解锁') : item.how}}</view>
         <view wx:if="{{!item.unlocked}}" class="wd-lk">未解锁</view>
-        <view wx:if="{{!item.unlocked}}" class="wd-lock">{{item.desc}}</view>
       </view>
     </view>
 
     <view class="sec"><text class="sec-t">徽章</text><text class="sec-r">已获得 {{badgeN}} / {{badges.length}}</text></view>
     <view class="wd-grid badges">
       <view wx:for="{{badges}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}}" data-i="{{index}}" data-g="badges" bindtap="open">
-        <image class="wd-img" src="{{item.img}}" webp mode="aspectFill" />
+        <view class="wd-box round"><image class="wd-img" src="{{item.img}}" webp mode="aspectFill" /></view>
         <view class="wd-t">{{item.title}}</view>
       </view>
     </view>

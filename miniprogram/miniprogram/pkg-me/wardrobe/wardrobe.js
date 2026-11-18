@@ -9,7 +9,7 @@ Page({
   async load() {
     try {
       const [r, st] = await Promise.all([vocab.achievements(), vocab.stats().catch(() => null)])
-      const costumes = r.items.filter(x => x.type === 'costume'), badges = r.items.filter(x => x.type === 'badge')
+      const costumes = r.items.filter(x => x.type === 'costume').map(x => ({ ...x, short: x.title.replace(/^([^A-Za-z]*[\u4e00-\u9fff][^A-Za-z]*?)\s+[A-Za-z].*$/, '$1'), how: (x.desc.match(/第 \d+ 站/) || [''])[0] + ' · ' + x.desc.replace(/^第 \d+ 站|通关解锁$/g, '') })), badges = r.items.filter(x => x.type === 'badge')
       const cur = costumes.find(x => x.key === r.mascot)
       this.setData({ view: 'ok', costumes, badges, mascot: r.mascot, curImg: r.mascotImg, curTitle: cur ? cur.title : '', costumeN: costumes.filter(x => x.unlocked).length, badgeN: badges.filter(x => x.unlocked).length, lv: lvOf(st && st.levels) })
       if (r.fresh && r.fresh.length) vocab.achievementsSeen().catch(() => {})
