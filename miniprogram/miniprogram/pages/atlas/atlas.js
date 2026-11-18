@@ -59,5 +59,32 @@ Page({
     setTimeout(() => this.setData({ cloud, more: cur.words.length > cloud.length, shownN: cloud.length }), 30)
   },
   pick(e) { this.show(e.currentTarget.dataset.i) },
-  open(e) { wx.navigateTo({ url: `/pkg-word/word/word?rank=${e.currentTarget.dataset.r}` }) }
+  noop() {},
+  // 点词：弹窗从这个词的位置放大出来；释义、例句、收藏状态从接口取
+  async open(e) {
+    const { r, x, y } = e.currentTarget.dataset
+    const w = this.data.cloud.find(c => c.rank === r) || {}
+    const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
+    // 弹窗居中，宽约 86vw；把缩放原点放在词的位置（换算成弹窗内坐标）
+    const popW = info.windowWidth * 0.86, popLeft = (info.windowWidth - popW) / 2
+    this.setData({ pop: { rank: r, ms: w.ms || '' }, popOn: false, popOx: Math.round(16 + x - popLeft), popOy: Math.round(y - info.windowHeight * 0.18) })
+    setTimeout(() => this.setData({ popOn: true }), 20)
+    try {
+      const d = await vocab.word(r)
+      if (this.data.pop && this.data.pop.rank === r) this.setData({ pop: { rank: r, ms: d.ms, root: d.root, audio: d.audio, fav: d.fav, senses: (d.senses || []).slice(0, 3) } })
+    } catch (err) { wx.showToast({ title: err.message, icon: 'none' }) }
+  },
+  close() {
+    if (!this.data.pop) return
+    this.setData({ popOn: false })
+    setTimeout(() => this.setData({ pop: null }), 260)
+  },
+  async fav() {
+    const p = this.data.pop
+    if (!p) return
+    const on = !p.fav
+    this.setData({ 'pop.fav': on })
+    if (on) { this.setData({ favFx: (this.data.favFx || 0) + 1, favPop: true }); setTimeout(() => this.setData({ favPop: false }), 400) }
+    try { await vocab.fav(p.rank, on); getApp().globalData.dirty = true } catch (err) { this.setData({ 'pop.fav': !on }); wx.showToast({ title: err.message, icon: 'none' }) }
+  }
 })

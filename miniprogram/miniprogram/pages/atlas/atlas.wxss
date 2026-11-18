@@ -23,3 +23,27 @@
 @keyframes drift { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-5px); opacity: 1; } }
 .hint { text-align: center; font-size: 22rpx; color: var(--ink2); margin-top: 18rpx; }
 @media (prefers-reduced-motion: reduce) { .w { animation: none; opacity: 1; } }
+
+/* 单词弹窗 */
+.mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 200; background: rgba(5,16,18,0); transition: background-color .25s; display: flex; align-items: flex-start; justify-content: center; padding-top: 18vh; }
+.mask.on { background: rgba(5,16,18,.6); }
+.pop { width: 86vw; max-height: 62vh; display: flex; flex-direction: column; border-radius: 36rpx; background: var(--ivory); color: var(--dark-ink); padding: 32rpx 32rpx 24rpx; box-sizing: border-box; transform: scale(.08); opacity: 0; transition: transform .28s cubic-bezier(.3,1.3,.5,1), opacity .2s; box-shadow: 0 30rpx 60rpx rgba(0,0,0,.45); }
+.pop.on { transform: scale(1); opacity: 1; }
+.pop-h { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.pop-ms { font-family: Georgia, serif; font-style: italic; font-weight: 700; font-size: 60rpx; color: #1f6b4e; line-height: 1.15; word-break: break-word; }
+.pop-root { font-size: 24rpx; color: rgba(10,31,34,.55); margin-top: 6rpx; }
+.pop-body { margin-top: 16rpx; max-height: 40vh; }
+.pop-s { padding: 14rpx 0; border-top: 2rpx solid rgba(10,31,34,.1); }
+.pop-zh { font-size: 30rpx; font-weight: 700; line-height: 1.4; }
+.pop-pos { font-family: Georgia, serif; font-style: italic; font-weight: 400; font-size: 22rpx; color: #b07a1c; margin-right: 10rpx; }
+.pop-ex { margin-top: 6rpx; padding-left: 16rpx; border-left: 4rpx solid rgba(233,185,97,.7); }
+.pop-exm { font-family: Georgia, serif; font-size: 27rpx; line-height: 1.45; }
+.pop-exz { font-size: 23rpx; color: rgba(10,31,34,.6); }
+.pop-f { display: flex; align-items: center; justify-content: space-between; margin-top: 18rpx; }
+.fav-wrap { position: relative; }
+.pfav { display: inline-flex; align-items: center; gap: 8rpx; height: 72rpx; padding: 0 26rpx; border-radius: 999rpx; border: 2rpx solid rgba(10,31,34,.2); font-size: 26rpx; font-weight: 700; }
+.pfav.on { border-color: #e9b961; color: #b07a1c; background: rgba(233,185,97,.15); }
+.pfav-i { width: 32rpx; height: 32rpx; }
+.pfav.popa { animation: favpop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.pop-x { height: 72rpx; line-height: 72rpx; padding: 0 26rpx; font-size: 26rpx; color: rgba(10,31,34,.6); }
