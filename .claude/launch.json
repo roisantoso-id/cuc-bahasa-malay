@@ -21,6 +21,17 @@
         "design"
       ],
       "port": 4180
+    },
+    {
+      "name": "word-atlas-malayu",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/mac/dev/word-atlas-malayu",
+        "run",
+        "dev"
+      ],
+      "port": 5188
     }
   ]
 }
