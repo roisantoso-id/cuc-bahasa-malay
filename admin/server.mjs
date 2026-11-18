@@ -16,6 +16,7 @@ import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypt
 import mysql from 'mysql2/promise'
 import { makeAdminApi } from './admin-api.mjs'
 import { createBattle } from './battle.mjs'
+import { createAvatar } from './avatar.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -94,7 +95,10 @@ const COLUMNS = [
   ['students', 'status', `VARCHAR(16) NOT NULL DEFAULT 'active'`],
   ['students', 'note', `VARCHAR(500) NOT NULL DEFAULT ''`],
   ['words', 'topic', `VARCHAR(32) NOT NULL DEFAULT ''`],
-  ['words', 'extra', 'MEDIUMTEXT'] // 例句、搭配、同义 / 反义、提示、配图(词光要用的字段),JSON
+  ['words', 'extra', 'MEDIUMTEXT'], // 例句、搭配、同义 / 反义、提示、配图(词光要用的字段),JSON
+  ['students', 'avatar', `VARCHAR(120) NOT NULL DEFAULT ''`], // 头像文件名(avatar.mjs)
+  ['students', 'avatar_ok', `TINYINT NOT NULL DEFAULT 0`], // 微信图片检测通过才给别人看
+  ['students', 'avatar_trace', `VARCHAR(64) NOT NULL DEFAULT ''`]
 ]
 // rank 在 MySQL 8 是保留字:SQL 里没带表名前缀的 rank 自动加反引号(w.rank / p.rank 这种不用)
 const mySql = sql => sql.replace(/(?<![.\w`])rank\b/g, '`rank`')
@@ -111,7 +115,8 @@ async function tx(fn) {
 let STOPS = DEFAULT_STOPS.map(s => ({ ...s, published: true })) // 启动后从 courses 表读
 async function reloadStops() { STOPS = (await all('SELECT level, city, ms, note, intro, published FROM courses ORDER BY level')).map(c => ({ ...c, intro: c.intro || '', published: !!c.published })) }
 const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
-const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels }) // 好友 PK、周榜、每周擂台（battle.mjs）
+const avatar = createAvatar({ one, run, DATA, ENV, DEMO, accessToken: () => accessToken() }) // 学生头像 + 微信图片检测(avatar.mjs)
+const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels, avatarOf: s => avatar.publicUrl(s) }) // 好友 PK、周榜、每周擂台（battle.mjs）
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
 const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
@@ -276,7 +281,7 @@ async function stats(st) {
   return { days, boxes, studyDays, levels: await levelsOf(sid), ...(await streakOf(sid)) }
 }
 
-const studentOut = s => s ? { name: s.name, school: s.school, className: s.class_name, track: s.track, phone: s.phone, dailyNew: s.daily_new, createdAt: s.created_at } : null
+const studentOut = s => s ? { avatar: avatar.urlOf(s.avatar), avatarPending: !!(s.avatar && !s.avatar_ok), name: s.name, school: s.school, className: s.class_name, track: s.track, phone: s.phone, dailyNew: s.daily_new, createdAt: s.created_at } : null
 
 // ---------------- 小程序登录 ----------------
 function signToken(openid) {
@@ -366,6 +371,7 @@ async function appApi(req, res, p, url) {
   // 删除我的资料和学习记录（隐私说明页里的按钮）：立即删除，不可恢复
   if (p === '/api/app/delete-me' && req.method === 'POST') {
     const me = await one('SELECT id FROM students WHERE openid = ?', openid)
+    if (me) avatar.rm((await one('SELECT avatar FROM students WHERE id = ?', me.id) || {}).avatar)
     if (me) for (const t of ['progress', 'daily', 'pk_entry', 'arena_entry', 'arena_try', 'students']) await run(`DELETE FROM ${t} WHERE ${t === 'students' ? 'id' : 'student_id'} = ?`, me.id)
     return send(res, 200, { ok: true })
   }
@@ -374,6 +380,7 @@ async function appApi(req, res, p, url) {
   const st = await one('SELECT * FROM students WHERE openid = ?', openid)
   if (!st) return fail(res, 403, '请先注册')
   if (st.status === 'disabled') return fail(res, 403, '账号已停用,请联系老师')
+  if (p === '/api/app/avatar' && req.method === 'POST') return send(res, 200, await avatar.upload(req, st))
   const br = await battle.handle(st, p, req, url, body)
   if (br !== undefined) return send(res, 200, br)
   if (p === '/api/app/home') return send(res, 200, await home(st))
@@ -460,6 +467,7 @@ const server = createServer(async (req, res) => {
   res.setHeader('x-content-type-options', 'nosniff')
   res.setHeader('referrer-policy', 'no-referrer')
   try {
+    if (p === '/api/wx/push') return await avatar.push(req, res, url)
     if (p.startsWith('/api/app/')) return await appApi(req, res, p, url)
     if (p.startsWith('/api/admin/')) return await admin.handle(req, res, p, url)
     if (p.startsWith('/api/')) return fail(res, 404, '接口不存在')

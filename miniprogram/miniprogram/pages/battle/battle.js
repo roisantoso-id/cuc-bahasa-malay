@@ -50,6 +50,7 @@ Page({
         vocab.arena().catch(() => null),
         vocab.pkMine().catch(() => [])
       ])
+      this.myAvatar = (h.student && h.student.avatar) || ''   // 自己的头像审核中也给自己看
       const levels = (h.levels || []).filter(l => l.open).map(l => ({ level: l.level, city: l.city }))
       let level = this.data.level
       if (!levels.some(l => l.level === level)) level = levels.some(l => l.level === h.level) ? h.level : (levels[0] ? levels[0].level : 0)
@@ -76,11 +77,11 @@ Page({
       const school = tab === 'schools'
       const list = (r.list || []).map(x => school
         ? { place: x.place, name: x.school, sub: x.members + ' 人在学', points: x.points, me: !!x.mine, mark: (x.school || '?').slice(0, 1) }
-        : { place: x.place, name: x.name, sub: x.school || '', points: x.points, me: !!x.me, av: av(x.aid) })
+        : { place: x.place, name: x.name, sub: x.school || '', points: x.points, me: !!x.me, av: (x.me && this.myAvatar) || x.avatar || av(x.aid) })
       const { rows, chase } = nearby(list)
       // 前三名上领奖台（显示顺序 2-1-3），下面只列第 4 名以后、我附近的几行
       const podium = list.length >= 3 ? [list[1], list[0], list[2]] : list.slice(0, 2).reverse()
-      const me = r.me ? { ...r.me, av: av(r.me.aid) } : null
+      const me = r.me ? { ...r.me, av: this.myAvatar || r.me.avatar || av(r.me.aid) } : null
       this.setData({ podium, board: rows.filter(x => x.place > 3), chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
     } catch (e) {
       if (seq === this.seq) this.setData({ board: [], boardLoading: false, boardNote: e.message })

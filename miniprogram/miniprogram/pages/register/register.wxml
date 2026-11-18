@@ -1,7 +1,15 @@
 <view class="wrap">
   <view class="muted small" style="margin-bottom:32rpx">以下都可以不填。填了学校和班级，老师能按班级看到大家的进度。</view>
 
-  <view class="field"><view class="label">姓名 / 昵称</view><input class="input" placeholder-class="ph" value="{{form.name}}" maxlength="30" data-k="name" bindinput="input" placeholder="怎么称呼你（选填）" /></view>
+  <!-- 头像：微信官方头像选择器（可选微信头像或相册），检测通过后同学才看得到 -->
+  <view class="av-row">
+    <button class="av-btn" open-type="chooseAvatar" bindchooseavatar="chooseAvatar">
+      <image class="av-img" src="{{avatar || '/assets/avatar.jpg'}}" mode="aspectFill" />
+      <view class="av-edit">{{avBusy ? '上传中' : '换头像'}}</view>
+    </button>
+    <view class="av-tip muted small">{{avatarPending ? '头像审核中，通过后同学才能看到' : '点头像可以换成你的微信头像'}}</view>
+  </view>
+  <view class="field"><view class="label">昵称</view><input class="input" type="nickname" placeholder-class="ph" value="{{form.name}}" maxlength="30" data-k="name" bindinput="input" bindblur="input" placeholder="怎么称呼你（可以一键填微信昵称）" /></view>
   <view class="field"><view class="label">学校</view><input class="input" placeholder-class="ph" value="{{form.school}}" maxlength="60" data-k="school" bindinput="input" placeholder="例如：中国传媒大学（选填）" /></view>
   <view class="field"><view class="label">班级</view><input class="input" placeholder-class="ph" value="{{form.className}}" maxlength="40" data-k="className" bindinput="input" placeholder="例如：马来语 2025 级（没有可不填）" /></view>
   <view class="field">

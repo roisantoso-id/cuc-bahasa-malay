@@ -3,7 +3,7 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <block wx:else>
     <view class="who">
-      <image class="av" src="/assets/avatar.jpg" mode="aspectFill" />
+      <image class="av" src="{{student.avatar || '/assets/avatar.jpg'}}" mode="aspectFill" data-url="/pages/register/register" bindtap="go" />
       <view class="item-main">
         <view class="nm">{{student.name || '同学'}}</view>
         <view class="muted small">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}} · 已盖 {{stamps}} 个章</view>

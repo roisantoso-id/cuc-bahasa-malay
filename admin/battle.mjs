@@ -9,7 +9,7 @@
 //   - 周榜：本周学习分 = 新学 ×2 + 复习 ×1 + 答对 ×1（来自 daily 表），按个人 / 同校 / 同班排；学校榜按全校总分排。
 import { randomBytes, createHash } from 'node:crypto'
 
-export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
+export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avatarOf = () => '' }) {
   const SCHEMA = [
     `CREATE TABLE IF NOT EXISTS pk (id VARCHAR(16) PRIMARY KEY, creator INT NOT NULL, level INT NOT NULL, questions MEDIUMTEXT NOT NULL, created_at VARCHAR(32), expires_at BIGINT NOT NULL, INDEX pk_creator (creator)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS pk_entry (pk_id VARCHAR(16) NOT NULL, student_id INT NOT NULL, score INT NOT NULL, correct INT NOT NULL, ms INT NOT NULL, answers TEXT, created_at VARCHAR(32), PRIMARY KEY (pk_id, student_id), INDEX pk_entry_student (student_id)) DEFAULT CHARSET = utf8mb4`,
@@ -62,7 +62,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
   }
   const nameOf = s => (s.name || '').trim() || `同学${String(s.id).padStart(4, '0').slice(-4)}`
   // aid：头像编号（小程序按它从几只犀鸟里选一只，同一个人永远一样）；以后有真头像再加 avatar 字段
-  const who = s => ({ name: nameOf(s), school: s.school || '', className: s.class_name || '', aid: s.id || 0 })
+  const who = s => ({ name: nameOf(s), school: s.school || '', className: s.class_name || '', aid: s.id || 0, avatar: avatarOf(s) })
 
   // ---------- 好友 PK ----------
   async function pkCreate(st, b) {
@@ -77,8 +77,8 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     const pk = await one('SELECT * FROM pk WHERE id = ?', id)
     if (!pk) throw Object.assign(new Error('这场 PK 不存在'), { code: 404 })
     const qs = JSON.parse(pk.questions)
-    const creator = await one('SELECT id, name, school, class_name FROM students WHERE id = ?', pk.creator)
-    const rows = await all('SELECT e.*, s.id sid, s.name, s.school, s.class_name FROM pk_entry e JOIN students s ON s.id = e.student_id WHERE e.pk_id = ? ORDER BY e.score DESC, e.ms ASC', id)
+    const creator = await one('SELECT id, name, school, class_name, avatar, avatar_ok FROM students WHERE id = ?', pk.creator)
+    const rows = await all('SELECT e.*, s.id sid, s.name, s.school, s.class_name, s.avatar, s.avatar_ok FROM pk_entry e JOIN students s ON s.id = e.student_id WHERE e.pk_id = ? ORDER BY e.score DESC, e.ms ASC', id)
     const mine = rows.find(r => r.student_id === st.id)
     return {
       id, level: pk.level, expired: pk.expires_at < Date.now(), mine: !!mine, isCreator: pk.creator === st.id,
@@ -86,7 +86,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
       // 没答过才发题（不带答案）；答过的发带答案的复盘
       questions: mine ? null : publicQ(qs),
       review: mine ? qs.map((q, i) => ({ ...q, picked: JSON.parse(mine.answers || '[]')[i] })) : null,
-      ranking: rows.map((r, i) => ({ place: i + 1, ...who({ id: r.sid, name: r.name, school: r.school, class_name: r.class_name }), score: r.score, correct: r.correct, ms: r.ms, me: r.student_id === st.id }))
+      ranking: rows.map((r, i) => ({ place: i + 1, ...who({ id: r.sid, name: r.name, school: r.school, class_name: r.class_name, avatar: r.avatar, avatar_ok: r.avatar_ok }), score: r.score, correct: r.correct, ms: r.ms, me: r.student_id === st.id }))
     }
   }
   async function pkSubmit(st, id, b) {
@@ -150,7 +150,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
   async function arenaRank(st, scope) {
     const week = weekStart()
     const cond = scope === 'school' && st.school ? 'AND s.school = ?' : ''
-    const rows = await all(`SELECT e.score, e.correct, e.ms, s.id, s.name, s.school, s.class_name FROM arena_entry e JOIN students s ON s.id = e.student_id
+    const rows = await all(`SELECT e.score, e.correct, e.ms, s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok FROM arena_entry e JOIN students s ON s.id = e.student_id
       WHERE e.week = ? ${cond} ORDER BY e.score DESC, e.ms ASC LIMIT 50`, week, ...(cond ? [st.school] : []))
     return { week, scope: cond ? 'school' : 'all', list: rows.map((r, i) => ({ place: i + 1, ...who(r), score: r.score, correct: r.correct, ms: r.ms, me: r.id === st.id })) }
   }
@@ -162,8 +162,8 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     let cond = '', args = []
     if (scope === 'school') { if (!st.school) return { week: from, scope, needProfile: true, list: [] }; cond = 'AND s.school = ?'; args = [st.school] }
     if (scope === 'class') { if (!st.school || !st.class_name) return { week: from, scope, needProfile: true, list: [] }; cond = 'AND s.school = ? AND s.class_name = ?'; args = [st.school, st.class_name] }
-    const rows = await all(`SELECT s.id, s.name, s.school, s.class_name, ${POINTS} pts, SUM(d.new_cnt) learned FROM daily d JOIN students s ON s.id = d.student_id
-      WHERE d.day >= ? ${cond} GROUP BY s.id, s.name, s.school, s.class_name HAVING pts > 0 ORDER BY pts DESC, learned DESC LIMIT 50`, from, ...args)
+    const rows = await all(`SELECT s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok, ${POINTS} pts, SUM(d.new_cnt) learned FROM daily d JOIN students s ON s.id = d.student_id
+      WHERE d.day >= ? ${cond} GROUP BY s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok HAVING pts > 0 ORDER BY pts DESC, learned DESC LIMIT 50`, from, ...args)
     const list = rows.map((r, i) => ({ place: i + 1, ...who(r), points: Number(r.pts), learned: Number(r.learned), me: r.id === st.id }))
     let me = list.find(x => x.me) || null
     if (!me) {

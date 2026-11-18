@@ -5,3 +5,10 @@
 .agree { display: flex; gap: 16rpx; align-items: flex-start; margin: 8rpx 0 12rpx; color: var(--ink2); }
 .box { width: 40rpx; height: 40rpx; flex: none; border: 2rpx solid var(--hair2); border-radius: 10rpx; text-align: center; line-height: 34rpx; color: var(--dark-ink); font-weight: 900; margin-top: 4rpx; }
 .box.on { background: var(--star); border-color: var(--star); }
+
+.av-row { display: flex; align-items: center; gap: 24rpx; margin-bottom: 32rpx; }
+.av-btn { position: relative; width: 132rpx; height: 132rpx; padding: 0; margin: 0; border-radius: 50%; background: transparent; overflow: hidden; flex: none; line-height: 1; }
+.av-btn::after { border: 0; }
+.av-img { width: 132rpx; height: 132rpx; border-radius: 50%; background: var(--ivory); }
+.av-edit { position: absolute; left: 0; right: 0; bottom: 0; height: 40rpx; line-height: 40rpx; font-size: 20rpx; text-align: center; color: #fff; background: rgba(10,31,34,.6); }
+.av-tip { flex: 1; min-width: 0; }
