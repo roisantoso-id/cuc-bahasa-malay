@@ -22,6 +22,9 @@
 .at-w.b4 { color: var(--star); font-weight: 700; }
 @keyframes at-pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
 @keyframes at-drift { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-5px); opacity: 1; } }
+/* 星星还在拼字时先把文字藏起来；拼好（formed）后再弹出来叠在星星上 */
+.at-cloud.wait .at-w { animation: none; opacity: 0; }
+.at-cloud .at-w { z-index: 1; text-shadow: 0 0 12px rgba(233,185,97,.35); }
 .at-hint { text-align: center; font-size: var(--t-caption); color: var(--ink2); margin-top: var(--s2); }
 @media (prefers-reduced-motion: reduce) { .at-w { animation: none; opacity: 1; } }
 

@@ -30,7 +30,7 @@ function layout(words, W, H) {
 }
 
 Page({
-  data: { view: 'loading', error: '', days: [], sel: 0, cur: null, cloud: [], cloudH: 420, learned: 0, more: false, shownN: 0, intoView: '' },
+  data: { view: 'loading', error: '', days: [], sel: 0, cur: null, cloud: [], cloudH: 420, W: 0, learned: 0, more: false, shownN: 0, intoView: '', skyPlay: 0, formed: false },
   onShow() {
     setTab(this, 1)
     if (getApp().globalData.dirty || !this.data.days.length) this.load()
@@ -44,7 +44,7 @@ Page({
       const sel = list.length - 1 // 默认看最近一天
       const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
       this.W = info.windowWidth - 32
-      this.setData({ view: 'ok', days: list, learned: all.length, cloudH: Math.round(Math.min(460, Math.max(320, info.windowHeight * 0.48))) })
+      this.setData({ view: 'ok', days: list, learned: all.length, W: this.W, cloudH: Math.round(Math.min(460, Math.max(320, info.windowHeight * 0.48))) })
       this.show(sel)
     } catch (e) {
       this.setData({ view: 'error', error: e.message })
@@ -54,11 +54,13 @@ Page({
     const cur = this.data.days[i]
     if (!cur) return
     const words = cur.words.slice(-MAX * 2)
-    const cloud = layout(words, this.W, this.data.cloudH).slice(0, MAX)
-    this.setData({ sel: i, cur, cloud: [], intoView: 'd' + Math.max(0, i - 1) })
-    // 先清空再放，词云每次都重新弹出来
-    setTimeout(() => this.setData({ cloud, more: cur.words.length > cloud.length, shownN: cloud.length }), 30)
+    // 星星拼完字以后文字才淡入，所以每个词的出场间隔缩短
+    const cloud = layout(words, this.W, this.data.cloudH).slice(0, MAX).map(c => ({ ...c, d: Math.round(c.d / 4) }))
+    this.setData({ sel: i, cur, cloud: [], formed: false, intoView: 'd' + Math.max(0, i - 1) })
+    // 先清空再放：星星重新旋转、重新拼字（star-cloud 拼好后触发 formed）
+    setTimeout(() => this.setData({ cloud, more: cur.words.length > cloud.length, shownN: cloud.length, skyPlay: this.data.skyPlay + 1 }), 30)
   },
+  formed() { this.setData({ formed: true }) },
   pick(e) { this.show(e.currentTarget.dataset.i) },
   noop() {},
   // 点词：弹窗从这个词的位置放大出来；释义、例句、收藏状态从接口取

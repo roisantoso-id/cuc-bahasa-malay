@@ -1,1 +1,1 @@
-{ "navigationBarTitleText": "图鉴", "enablePullDownRefresh": true }
+{ "navigationBarTitleText": "图鉴", "enablePullDownRefresh": true, "usingComponents": { "star-cloud": "/components/star-cloud/star-cloud" } }

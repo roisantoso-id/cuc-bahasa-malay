@@ -19,8 +19,9 @@
       </view>
     </scroll-view>
 
-    <!-- 词云：越熟的词越大越亮；依次弹出后轻轻浮动；点词看详情 -->
-    <view class="at-cloud" style="height:{{cloudH}}px">
+    <!-- 词云：先是漫天星星旋转，再飞过去拼成单词（star-cloud，Three.js），拼好后可点的文字淡入叠在星星上；越熟的词越大越亮 -->
+    <view class="at-cloud {{formed ? 'formed' : 'wait'}}" style="height:{{cloudH}}px">
+      <star-cloud words="{{cloud}}" width="{{W}}" height="{{cloudH}}" play="{{skyPlay}}" bind:formed="formed" />
       <view wx:for="{{cloud}}" wx:key="k" class="at-w b{{item.b}}" style="left:{{item.x}}px;top:{{item.y}}px;font-size:{{item.fs}}px;animation-delay:{{item.d}}ms, {{item.d + 500}}ms;animation-duration:.5s, {{item.dur}}s" data-r="{{item.rank}}" data-x="{{item.x}}" data-y="{{item.y}}" bindtap="open">{{item.ms}}</view>
     </view>
     <view class="at-hint">越大越亮的词记得越牢 · 点词看释义</view>

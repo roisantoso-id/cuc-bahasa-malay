@@ -1,0 +1,1 @@
+<canvas type="webgl" id="sky" class="sc-sky" style="width:{{width}}px;height:{{height}}px" disable-scroll="{{false}}"></canvas>

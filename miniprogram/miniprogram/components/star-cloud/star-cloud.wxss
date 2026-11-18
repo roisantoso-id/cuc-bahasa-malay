@@ -1,0 +1,2 @@
+/* 星空画布铺满词云面板，在文字下面，不接收点击（点击给上面的单词） */
+.sc-sky { position: absolute; left: 0; top: 0; pointer-events: none; }
