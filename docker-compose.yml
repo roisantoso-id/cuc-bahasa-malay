@@ -19,7 +19,8 @@ services:
       SITE_DOMAIN: ${SITE_DOMAIN:-www.bahasa.cn}
       APEX_DOMAIN: ${APEX_DOMAIN:-bahasa.cn}
     volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # 挂目录不挂单个文件:rsync 换掉文件后,单文件挂载还指着旧文件,reload 不生效
+      - ./deploy:/etc/caddy:ro
       - ./admin/public:/srv/admin:ro
       - ./website:/srv/website:ro
       - caddy_data:/data
