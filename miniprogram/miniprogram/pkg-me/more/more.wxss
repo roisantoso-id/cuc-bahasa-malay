@@ -1,0 +1,6 @@
+.mo-goals { flex-wrap: wrap; }
+.mo-goals .chip { flex: 1; justify-content: center; }
+.mo-list { margin-top: var(--s4); }
+button.mo-btn { width: 100%; margin: 0; padding: var(--s2) 0; background: transparent; border-radius: 0; font-size: var(--t-body); font-weight: 400; line-height: 1.5; text-align: left; color: var(--ink); }
+button.mo-btn::after { border: 0; }
+.mo-foot { margin-top: var(--s5); }

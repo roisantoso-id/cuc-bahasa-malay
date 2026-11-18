@@ -1,6 +1,19 @@
 /* 护照：只回答三个问题——记得多牢、接下来要复习多少、最近有没有坚持。星光只给「牢固」 */
-.me-who { display: flex; align-items: center; gap: var(--s3); }
-.me-av { width: 128rpx; height: 128rpx; border-radius: 50%; flex: none; background: var(--ivory); }
+/* 顶部：我的犀鸟（最重要，放最上）；右上角「···」进设置与关于，护照本身只放学习数据 */
+.me-hero { position: relative; display: flex; flex-direction: column; align-items: center; padding: var(--s4) var(--s3) var(--s4); background: var(--panel); border-radius: var(--r-lg); }
+.me-more { position: absolute; top: var(--s2); right: var(--s2); width: 72rpx; height: 72rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: rgba(243,234,214,.08); }
+.me-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--ivory); }
+.me-bird { width: 240rpx; height: 240rpx; border-radius: 50%; background: var(--ivory); border: 6rpx solid var(--star); box-sizing: border-box; }
+.me-name { margin-top: var(--s2); font-size: var(--t-title); font-weight: 700; max-width: 100%; }
+.me-ach { display: flex; width: 100%; margin-top: var(--s3); }
+.me-ach-n { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.me-ach-l { font-size: var(--t-caption); color: var(--ink2); }
+.me-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s1); margin-top: var(--s3); }
+.me-bdg { width: 64rpx; height: 64rpx; border-radius: 50%; background: var(--ivory); }
+.me-dress { margin-top: var(--s3); align-self: stretch; }
+.me-quick { display: flex; gap: var(--s2); margin-top: var(--s2); }
+.me-q { flex: 1; min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s1); padding: var(--s2) var(--s3); background: var(--panel); border-radius: var(--r-sm); }
+.me-q-l { font-size: var(--t-caption); color: var(--ink2); white-space: nowrap; }
 
 .me-c1 { background: var(--star); } .me-c2 { background: var(--ok); } .me-c3 { background: var(--bad); } .me-c4 { background: var(--hair2); }
 .me-stack { display: flex; height: 16rpx; border-radius: var(--r-pill); overflow: hidden; background: var(--hair); }
@@ -23,7 +36,3 @@
 .me-hc { height: 40rpx; border-radius: 8rpx; background: var(--hair); }
 .me-hc.l1 { background: rgba(143,192,160,.3); } .me-hc.l2 { background: rgba(143,192,160,.62); } .me-hc.l3 { background: var(--ok); }
 
-.me-links { margin-top: var(--s5); }
-button.me-fb { width: 100%; margin: 0; padding: var(--s2) 0; background: transparent; border-radius: 0; font-size: var(--t-body); font-weight: 400; line-height: 1.5; text-align: left; color: var(--ink); }
-button.me-fb::after { border: 0; }
-.me-foot { margin-top: var(--s5); }

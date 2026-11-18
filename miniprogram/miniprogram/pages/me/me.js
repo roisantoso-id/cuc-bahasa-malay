@@ -1,14 +1,12 @@
 const setTab = require('../../utils/tab')
-// 护照:学生资料 + 10 站印章 + 学习统计(连续天数、近 30 天柱状、熟练度分布)+ 设置
+// 护照：顶部我的犀鸟（换装、徽章），下面只放学习数据；设置、关于、客服都在右上角「···」里（pkg-me/more）
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
-const sfx = require('../../utils/sfx')
 
 const TRACK = { zero: '零基础', some: '会说一些' }
-const GOALS = [10, 20, 30, 50]
 
 Page({
-  data: { sfxOn: !sfx.off(), view: 'loading', student: null, s: null, goals: GOALS },
+  data: { view: 'loading', student: null, s: null, mascotImg: '', myBadges: [], costumeN: 0, badgeN: 0 },
   onShow() {
     setTab(this, 3); this.load() },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
@@ -16,7 +14,7 @@ Page({
     try {
       const student = await ensureStudent()
       if (!student) return
-      const [s, h, mem] = await Promise.all([vocab.stats(), vocab.home(), vocab.memory().catch(() => null)])
+      const [s, h, mem, ach] = await Promise.all([vocab.stats(), vocab.home(), vocab.memory().catch(() => null), vocab.achievements().catch(() => null)])
       // 近 30 天热力格：按当天新学 + 复习的量分四档
       const peak = Math.max(1, ...s.days.map(d => d.new + d.review))
       const heat = s.days.map(d => { const v = d.new + d.review; return { day: d.day, lv: v === 0 ? 0 : v / peak > 0.66 ? 3 : v / peak > 0.33 ? 2 : 1 } })
@@ -30,23 +28,13 @@ Page({
         const top = mem.next7.reduce((m, d, i) => (d.n > m.n ? { n: d.n, i } : m), { n: -1, i: 0 }).i
         memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
       }
-      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length })
+      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach) })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
-  toggleSfx(e) { sfx.setOff(!e.detail.value); this.setData({ sfxOn: e.detail.value }); if (e.detail.value) sfx.play('correct') },
-  goal() {
-    wx.showActionSheet({
-      itemList: GOALS.map(n => `每天 ${n} 个新词`),
-      success: async r => {
-        try {
-          await vocab.settings(GOALS[r.tapIndex])
-          getApp().globalData.dirty = true
-          this.setData({ 'student.dailyNew': GOALS[r.tapIndex] })
-          wx.showToast({ title: '已修改', icon: 'success' })
-        } catch (e) { wx.showToast({ title: e.message, icon: 'none' }) }
-      }
-    })
+  achData(ach) {
+    if (!ach) return {}
+    const got = ach.items.filter(x => x.unlocked)
+    return { mascotImg: ach.mascotImg || '', costumeN: got.filter(x => x.type === 'costume').length, badgeN: got.filter(x => x.type === 'badge').length, myBadges: got.filter(x => x.type === 'badge').slice(-8) }
   },
   go(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
-  privacy() { wx.navigateTo({ url: '/pkg-me/privacy/privacy' }) },
 })

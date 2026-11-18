@@ -21,6 +21,7 @@
       "root": "pkg-me",
       "pages": [
         "about/about",
+        "more/more",
         "privacy/privacy",
         "wardrobe/wardrobe"
       ]
