@@ -15,11 +15,9 @@
     </view>
     <view class="bt-acts">
       <button class="btn btn-main bt-a1" hover-class="hover" bindtap="arena">进入擂台</button>
-      <button class="btn btn-ghost bt-a2" hover-class="hover" disabled="{{busy}}" bindtap="create">{{busy ? '正在出题…' : '发起好友 PK'}}</button>
+      <button class="btn btn-ghost bt-a2" hover-class="hover" disabled="{{busy}}" bindtap="openPick">{{busy ? '正在出题…' : '发起好友 PK'}}</button>
     </view>
-    <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx">
-      <view class="bt-sel">好友 PK 考 {{levelNames[levelIdx]}}，10 题<text class="bt-sel-x">换一站 ›</text></view>
-    </picker>
+    <view class="bt-sel">好友 PK：选一站，出 10 道题，答完发给同学比</view>
 
     <!-- 周榜 -->
     <view class="sec"><text class="sec-t">周榜</text><view class="sec-x bt-more" hover-class="hover-row" bindtap="rank">完整榜单 ›</view></view>
@@ -79,3 +77,19 @@
   </block>
 </view>
 <view class="tab-pad" />
+
+<!-- 选站弹层（替换系统 picker）：从底部滑出，点哪站就直接发起 -->
+<view wx:if="{{pickOpen}}" class="bt-mask {{pickOn ? 'on' : ''}}" bindtap="closePick" catchtouchmove="noop">
+  <view class="bt-sheet {{pickOn ? 'on' : ''}}" catchtap="noop">
+    <view class="bt-sh-h"><text class="bt-sh-t">选一站来 PK</text><text class="bt-sh-x" bindtap="closePick">取消</text></view>
+    <view class="bt-sh-d">从这一站的词里随机出 10 道题</view>
+    <view class="bt-st-grid">
+      <view wx:for="{{levels}}" wx:key="level" class="bt-st {{item.level === level ? 'cur' : ''}}" hover-class="hover" data-l="{{item.level}}" bindtap="pickAndGo">
+        <view class="bt-st-n">{{item.level}}</view>
+        <view class="bt-st-c">{{item.city}}</view>
+        <view class="bt-st-p">学过 {{item.learned}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+

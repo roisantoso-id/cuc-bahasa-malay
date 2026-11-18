@@ -51,7 +51,7 @@ Page({
         vocab.pkMine().catch(() => [])
       ])
       this.myAvatar = (h.student && h.student.avatar) || ''   // 自己的头像审核中也给自己看
-      const levels = (h.levels || []).filter(l => l.open).map(l => ({ level: l.level, city: l.city }))
+      const levels = (h.levels || []).filter(l => l.open).map(l => ({ level: l.level, city: l.city, learned: l.learned || 0 }))
       let level = this.data.level
       if (!levels.some(l => l.level === level)) level = levels.some(l => l.level === h.level) ? h.level : (levels[0] ? levels[0].level : 0)
       const pks = (Array.isArray(mine) ? mine : (mine && mine.list) || []).map(p => ({ ...p, date: day(p.createdAt) })).slice(0, 5)
@@ -96,6 +96,15 @@ Page({
   togglePk() { this.setData({ showPk: !this.data.showPk }) },
   pickLevel(e) { this.setData({ level: e.currentTarget.dataset.l }) },
   pickLevelIdx(e) { const i = Number(e.detail.value); this.setData({ levelIdx: i, level: this.data.levels[i].level }) },
+  noop() {},
+  openPick() {
+    if (this.data.busy) return
+    if (!this.data.levels.length) return wx.showToast({ title: '还没有开放的站', icon: 'none' })
+    this.setData({ pickOpen: true, pickOn: false })
+    setTimeout(() => this.setData({ pickOn: true }), 20)
+  },
+  closePick() { this.setData({ pickOn: false }); setTimeout(() => this.setData({ pickOpen: false }), 240) },
+  pickAndGo(e) { this.setData({ level: e.currentTarget.dataset.l }); this.closePick(); this.create() },
   async create() {
     if (this.data.busy || !this.data.level) return
     this.setData({ busy: true })

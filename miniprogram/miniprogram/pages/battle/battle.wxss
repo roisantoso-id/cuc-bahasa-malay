@@ -23,3 +23,20 @@
 .bt-mark.sm { font-size: 30rpx; }
 .bt-pd-n { margin-top: var(--s2); font-size: 26rpx; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bt-pd-s { font-size: var(--t-caption); color: var(--ink2); }
+
+/* 选站弹层（自定义，深色，和整体一致） */
+.bt-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 300; background: rgba(5,16,18,0); transition: background-color .24s; }
+.bt-mask.on { background: rgba(5,16,18,.6); }
+.bt-sheet { position: absolute; left: 0; right: 0; bottom: 0; padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom)); border-radius: 36rpx 36rpx 0 0; background: #10292d; border-top: 2rpx solid var(--hair); transform: translateY(100%); transition: transform .26s cubic-bezier(.3,1.2,.5,1); }
+.bt-sheet.on { transform: none; }
+.bt-sh-h { display: flex; align-items: center; justify-content: space-between; }
+.bt-sh-t { font-size: 34rpx; font-weight: 800; color: var(--ivory); }
+.bt-sh-x { font-size: 26rpx; color: var(--ink2); padding: 16rpx 0 16rpx 32rpx; }
+.bt-sh-d { font-size: 24rpx; color: var(--ink2); margin: 4rpx 0 24rpx; }
+.bt-st-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16rpx; }
+.bt-st { padding: 20rpx 12rpx; border-radius: 24rpx; border: 2rpx solid var(--hair2); text-align: center; }
+.bt-st.hover { background: rgba(243,234,214,.08); }
+.bt-st.cur { border-color: var(--star); background: rgba(233,185,97,.1); }
+.bt-st-n { font-family: Georgia, serif; font-size: 40rpx; font-weight: 700; color: var(--star); line-height: 1.1; }
+.bt-st-c { font-size: 28rpx; font-weight: 700; color: var(--ivory); margin-top: 4rpx; }
+.bt-st-p { font-size: 20rpx; color: var(--ink2); margin-top: 2rpx; }
