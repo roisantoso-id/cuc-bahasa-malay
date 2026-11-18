@@ -1,0 +1,287 @@
+<!-- ======================= 方向 C · 犀鸟闯关 ======================= -->
+<style>
+.dC{--ink:#1b1d2a;--cream:#fff6e4;--cream2:#f4e7c9;--white:#fffdf7;--yellow:#ffc533;--yellow-d:#d99a00;--orange:#f2622e;--orange-d:#b9401a;--green:#18a06a;--green-d:#0e7049;--green-l:#d6f1e1;--grey:#cfc6b2;--mute:#6f6a5e;--hv:"Avenir Next","DIN Alternate","PingFang SC",sans-serif}
+.dC .phone{background:var(--cream);color:var(--ink);font-weight:500}
+.dC .nav{font-weight:800;font-size:18px}
+.dC .tab{background:var(--white);border-top:2.5px solid var(--ink);color:var(--mute);font-weight:700}
+.dC .tab a .i{width:26px;height:26px;stroke-width:2}
+.dC .tab a.on{color:var(--ink)}
+.dC .tab a.on .i{background:var(--yellow);border-radius:10px;padding:3px;width:44px;height:30px;border:2px solid var(--ink)}
+.dC .pad{padding:0 16px}
+.dC .bx{border:2.5px solid var(--ink);border-radius:18px;background:var(--white);box-shadow:0 4px 0 var(--ink)}
+.dC .btn{display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:16px;border:2.5px solid var(--ink);background:var(--green);color:#fff;font-weight:800;font-size:18px;box-shadow:0 5px 0 var(--ink)}
+.dC .btn.y{background:var(--yellow);color:var(--ink)}.dC .btn.o{background:var(--orange)}.dC .btn.w{background:var(--white);color:var(--ink)}
+.dC .hud{display:flex;gap:8px;align-items:center}
+.dC .hud span{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 10px 0 6px;border-radius:16px;border:2px solid var(--ink);background:var(--white);font-family:var(--hv);font-weight:800;font-size:15px}
+.dC .hud .i{width:20px;height:20px;stroke-width:2.2}
+.dC .hv{font-family:var(--hv);font-weight:800}
+/* 首页 */
+.dC .ban{background:var(--green);color:#fff;border:2.5px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);padding:12px 14px;display:flex;align-items:center;gap:12px}
+.dC .ban div{flex:1}.dC .ban small{font-size:12px;font-weight:700;opacity:.85;letter-spacing:.06em}
+.dC .ban b{display:block;font-size:22px;font-weight:800;line-height:1.2}
+.dC .ban .pg{height:10px;border-radius:5px;background:rgba(0,0,0,.25);margin-top:8px;overflow:hidden}
+.dC .ban .pg i{display:block;height:100%;width:28%;background:var(--yellow);border-radius:5px}
+.dC .ban a{width:44px;height:44px;border-radius:12px;border:2px solid #fff;display:flex;align-items:center;justify-content:center}
+.dC .path{position:relative;height:392px;margin-top:8px}
+.dC .nd{position:absolute;width:64px;height:64px;margin-left:-32px;border-radius:50%;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--hv);font-weight:800;font-size:20px;box-shadow:0 6px 0 var(--ink);background:var(--green);color:#fff}
+.dC .nd .i{width:30px;height:30px;stroke-width:3}
+.dC .nd.lk{background:var(--cream2);color:var(--grey);box-shadow:0 6px 0 var(--grey);border-color:var(--grey)}
+.dC .nd.cur{width:84px;height:84px;margin-left:-42px;background:var(--yellow);color:var(--ink);font-size:30px}
+.dC .nd.boss{border-radius:18px;background:var(--cream2);color:var(--grey);border-color:var(--grey);box-shadow:0 6px 0 var(--grey)}
+.dC .dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--grey);margin:-4px 0 0 -4px}
+.dC .dot.g{background:var(--green)}
+.dC .say{position:absolute;background:var(--white);border:2.5px solid var(--ink);border-radius:14px;padding:6px 12px;font-weight:800;font-size:14px;box-shadow:0 3px 0 var(--ink)}
+.dC .say::after{content:"";position:absolute;left:22px;bottom:-9px;width:14px;height:14px;background:var(--white);border-right:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:rotate(45deg)}
+.dC .mas{position:absolute;width:128px;height:128px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:#fff;box-shadow:0 4px 0 var(--ink)}
+.dC .lbl{position:absolute;font-size:12px;font-weight:700;color:var(--mute)}
+/* 词卡 */
+.dC .pgb{flex:1;height:16px;border-radius:8px;border:2px solid var(--ink);background:var(--white);margin:0 12px;position:relative}
+.dC .pgb i{display:block;height:100%;border-radius:6px 0 0 6px;background:var(--green)}
+.dC .pgb img{position:absolute;top:-10px;width:32px;height:32px;border-radius:50%;border:2px solid var(--ink);object-fit:cover;margin-left:-16px}
+.dC .card{margin:8px 16px 0;overflow:hidden}
+.dC .card .top{background:var(--yellow);padding:14px 16px 34px;border-bottom:2.5px solid var(--ink);position:relative}
+.dC .card .top .r{display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.04em}
+.dC .card .top b{display:block;font-family:var(--hv);font-size:72px;line-height:1.1;margin-top:40px;letter-spacing:-.02em}
+.dC .card .top p{font-family:var(--hv);font-weight:600;font-size:15px;opacity:.7}
+.dC .card .top a{position:absolute;right:16px;bottom:-26px;width:56px;height:56px;border-radius:50%;border:2.5px solid var(--ink);background:var(--white);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--ink)}
+.dC .card .top a .i{width:28px;height:28px;stroke-width:2.2}
+.dC .card .bt{padding:26px 16px 24px}
+.dC .tg{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:8px;border:2px solid var(--ink);font-size:13px;font-weight:800;background:var(--orange);color:#fff}
+.dC .mean{font-size:28px;font-weight:800;margin-top:8px;line-height:1.3}
+.dC .exc{margin-top:16px;background:var(--cream);border-radius:12px;padding:10px 12px}
+.dC .exc p{font-family:var(--hv);font-weight:600;font-size:18px;line-height:1.35}
+.dC .exc mark{background:var(--yellow);color:inherit;border-radius:4px;padding:0 3px}
+.dC .exc span{font-size:14px;color:var(--mute)}
+.dC .fm{margin-top:16px;font-size:14px;font-weight:700;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dC .fm em{font-style:normal;font-family:var(--hv);padding:3px 10px;border-radius:8px;background:var(--green-l);color:var(--green-d)}
+.dC .g3{position:absolute;left:16px;right:16px;bottom:48px;display:flex;gap:10px}
+.dC .g3 .btn{flex:1;flex-direction:column;gap:0;height:62px;font-size:17px;line-height:1.2}
+.dC .g3 small{font-size:11px;font-weight:700;opacity:.8}
+/* 小测 */
+.dC .combo{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 10px 0 6px;border-radius:15px;background:var(--orange);color:#fff;font-weight:800;font-size:14px;border:2px solid var(--ink)}
+.dC .combo .i{width:18px;height:18px;stroke-width:2.4}
+.dC .qc{margin:10px 16px 0;padding:36px 16px;text-align:center;position:relative}
+.dC .qc small{font-size:13px;font-weight:800;color:var(--mute)}
+.dC .qc b{display:block;font-family:var(--hv);font-size:66px;line-height:1.15;letter-spacing:-.02em}
+.dC .qc a{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--ink);font-weight:800;font-size:14px;margin-top:8px}
+.dC .o4{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 16px 0}
+.dC .o4 a{height:108px;border:2.5px solid var(--ink);border-radius:16px;background:var(--white);box-shadow:0 5px 0 var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;font-size:19px;font-weight:800;padding:0 8px;position:relative}
+.dC .o4 a.y{background:var(--green);color:#fff}
+.dC .o4 a.d{opacity:.45;box-shadow:0 5px 0 var(--grey);border-color:var(--grey)}
+.dC .o4 a.y .i{position:absolute;right:8px;top:8px;width:22px;height:22px;stroke-width:3}
+.dC .win{position:absolute;left:0;right:0;bottom:0;background:var(--green-l);border-top:2.5px solid var(--ink);padding:14px 16px 48px;display:flex;align-items:center;gap:12px}
+.dC .win img{width:76px;height:76px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;margin-top:-40px;background:#fff}
+.dC .win div{flex:1}.dC .win b{font-size:20px;font-weight:800;color:var(--green-d)}.dC .win p{font-size:13px;font-weight:700;color:var(--mute)}
+.dC .win .btn{width:112px}
+/* 图鉴 */
+.dC .sel{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 14px;font-weight:800;font-size:16px;border-radius:14px}
+.dC .ft{display:flex;gap:8px;margin-top:12px}
+.dC .ft a{flex:1;height:36px;border-radius:10px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;background:var(--white)}
+.dC .ft a.on{background:var(--ink);color:var(--yellow)}
+.dC .set{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;font-weight:800}
+.dC .set .pg{flex:1;height:12px;border-radius:6px;border:2px solid var(--ink);background:var(--white);overflow:hidden}
+.dC .set .pg i{display:block;height:100%;width:52%;background:var(--orange)}
+.dC .alb{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px;margin-top:12px}
+.dC .cd{border:2.5px solid var(--ink);border-radius:14px;background:var(--white);box-shadow:0 4px 0 var(--ink);overflow:hidden;height:146px;display:flex;flex-direction:column}
+.dC .cd .h{height:74px;display:flex;align-items:center;justify-content:center;font-family:var(--hv);font-weight:800;font-size:19px;border-bottom:2.5px solid var(--ink);position:relative}
+.dC .cd .h u{position:absolute;left:6px;top:3px;font-size:10px;text-decoration:none;opacity:.7}
+.dC .cd p{font-size:13px;font-weight:700;padding:5px 6px 0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dC .cd .s{display:flex;justify-content:center;gap:2px;margin-top:auto;padding-bottom:6px}
+.dC .cd .s .i{width:14px;height:14px;stroke-width:2;color:var(--grey)}
+.dC .cd .s .i.f{fill:var(--yellow);color:var(--ink)}
+.dC .cd.v .h{background:var(--orange);color:#fff}.dC .cd.n .h{background:var(--yellow)}.dC .cd.a .h{background:var(--green);color:#fff}.dC .cd.f .h{background:var(--ink);color:var(--yellow)}
+.dC .cd.q{background:transparent;border-style:dashed;border-color:var(--grey);box-shadow:none;align-items:center;justify-content:center;color:var(--grey);font-family:var(--hv);font-weight:800}
+.dC .cd.q b{font-size:34px;line-height:1}.dC .cd.q span{font-size:12px}
+/* 对战 */
+.dC .vs{background:var(--orange);color:#fff;padding:12px 14px 14px;position:relative;overflow:hidden}
+.dC .vs h3{font-size:24px;font-weight:800;line-height:1.2}
+.dC .vs p{font-size:13px;font-weight:700;opacity:.9}
+.dC .vs .ring{display:flex;align-items:center;justify-content:center;gap:14px;margin:10px 0 12px}
+.dC .vs .ring img,.dC .vs .ring i{width:76px;height:76px;border-radius:50%;border:2.5px solid var(--ink);background:#fff;object-fit:cover}
+.dC .vs .ring i{display:flex;align-items:center;justify-content:center;font:800 34px var(--hv);color:var(--grey);font-style:normal;border-style:dashed;background:var(--cream)}
+.dC .vs .ring b{font:italic 800 34px var(--hv);color:var(--yellow);text-shadow:2px 2px 0 var(--ink)}
+.dC .ar{background:var(--ink);color:var(--cream);margin-top:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 0 var(--yellow-d);border-color:var(--ink)}
+.dC .ar div{flex:1}.dC .ar b{font-size:18px;font-weight:800}.dC .ar p{font-size:12px;font-weight:700;opacity:.8}
+.dC .tk3{display:flex;gap:5px;margin-top:6px}
+.dC .tk3 i{width:26px;height:16px;border-radius:4px;background:var(--yellow);border:1.5px dashed var(--ink)}
+.dC .tk3 i.u{background:transparent;border-color:rgba(255,246,228,.4)}
+.dC .ar .btn{width:92px;height:46px;font-size:16px;box-shadow:0 4px 0 var(--yellow-d)}
+.dC .sgc{display:flex;border:2.5px solid var(--ink);border-radius:12px;overflow:hidden;margin-left:auto;background:var(--white)}
+.dC .sgc a{padding:0 11px;height:32px;display:flex;align-items:center;font-size:13px;font-weight:800}
+.dC .sgc a.on{background:var(--ink);color:var(--yellow)}
+.dC .pod{display:flex;align-items:flex-end;gap:8px;margin-top:10px;height:128px}
+.dC .pod div{flex:1;display:flex;flex-direction:column;align-items:center;font-size:13px;font-weight:800}
+.dC .pod div span{font-family:var(--hv);font-size:12px;color:var(--mute)}
+.dC .pod i{display:flex;align-items:flex-start;justify-content:center;width:100%;border:2.5px solid var(--ink);border-bottom:0;border-radius:12px 12px 0 0;font:800 26px var(--hv);font-style:normal;padding-top:4px;margin-top:4px}
+.dC .mine{display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;border-radius:0 0 14px 14px;border:2.5px solid var(--ink);background:var(--yellow);font-weight:800;font-size:15px}
+.dC .mine b{font-family:var(--hv);margin-left:auto}
+/* 护照 */
+.dC .me{background:var(--yellow);padding:14px;display:flex;gap:14px;align-items:center}
+.dC .me img{width:76px;height:76px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover;background:#fff}
+.dC .me b{font-size:22px;font-weight:800}.dC .me p{font-size:13px;font-weight:700}
+.dC .me .xp{height:12px;border-radius:6px;border:2px solid var(--ink);background:var(--white);margin-top:6px;overflow:hidden}
+.dC .me .xp i{display:block;height:100%;width:64%;background:var(--orange)}
+.dC .k3{display:flex;gap:10px;margin-top:14px}
+.dC .k3 div{flex:1;border-radius:14px;padding:8px 10px;border:2.5px solid var(--ink);background:var(--white)}
+.dC .k3 b{font:800 26px/1.1 var(--hv);display:flex;align-items:center;gap:4px}
+.dC .k3 span{font-size:12px;font-weight:700;color:var(--mute)}
+.dC .k3 .i{width:22px;height:22px;stroke-width:2.4;color:var(--orange)}
+.dC .hd{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;font-weight:800;font-size:17px}
+.dC .hd span{font-size:13px;color:var(--mute);font-weight:700}
+.dC .stk{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dC .stk a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--mute)}
+.dC .stk i{width:52px;height:52px;border-radius:14px;border:2.5px dashed var(--grey);display:flex;align-items:center;justify-content:center;font:800 16px var(--hv);font-style:normal;color:var(--grey)}
+.dC .stk .ok i{border:2.5px solid var(--ink);background:var(--green);color:#fff;transform:rotate(-6deg);box-shadow:0 3px 0 var(--ink)}
+.dC .stk .now i{border:2.5px solid var(--ink);background:var(--yellow);color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+.dC .stk .ok,.dC .stk .now{color:var(--ink)}
+.dC .bdg{display:flex;gap:10px}
+.dC .bdg a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:700;text-align:center}
+.dC .bdg i{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;background:var(--orange);color:#fff}
+.dC .bdg a:nth-child(2) i{background:var(--green)}.dC .bdg a:nth-child(3) i{background:var(--ink);color:var(--yellow)}
+.dC .bdg a.no{color:var(--grey)}.dC .bdg a.no i{background:transparent;border:2.5px dashed var(--grey);color:var(--grey)}
+.dC .two{display:flex;gap:10px;margin-top:16px}
+.dC .two a{flex:1;height:52px;border-radius:14px;display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:800;font-size:15px}
+.dC .two a b{margin-left:auto;font-family:var(--hv);color:var(--orange)}
+</style>
+
+<section class="dir dC" id="C">
+  <div class="dir-intro">
+    <div>
+      <h2><small>DIRECTION C</small>犀鸟闯关</h2>
+      <p>最大胆的一版：把每站 500 词切成 25 个小关，首页就是一条弯弯的闯关路，犀鸟站在你当前的关卡旁边。颜色直接取自犀鸟身上的橙、黄、墨黑和雨林绿，粗描边、实心投影，像贴纸。图鉴变成「集卡册」，每个词是一张卡，记得越牢星越多。它最能解决「功能太简单、没意思」，也最容易在微信里传开；代价是离官网的纸质编辑风最远，气质更年轻。</p>
+    </div>
+    <div>
+      <h3>借了什么</h3>
+      <ul>
+        <li>多邻国：一条路、一关一关走、连胜、每屏一个大按钮、答对有即时反馈。</li>
+        <li>百词斩：大色块、选项是大方块，单手点得准。</li>
+        <li>词光：图鉴的词频段 + 词性筛选，换成「集卡」的玩法；复习间隔仍然用 FSRS。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>配色和字体</h3>
+      <div class="sw"><span style="background:#fff6e4">米白 #fff6e4</span><span style="background:#ffc533">喙黄 #ffc533</span><span style="background:#f2622e;color:#fff">冠橙 #f2622e</span><span style="background:#18a06a;color:#fff">雨林 #18a06a</span><span style="background:#1b1d2a;color:#fff">羽黑 #1b1d2a</span></div>
+      <p>全部用粗黑体（系统苹方 / 安卓思源黑体 800 字重），马来语和数字用粗的无衬线字，不用衬线。按钮是 2.5px 描边 + 实心下沿，按下时下沿收起，WXSS 直接能写。</p>
+    </div>
+  </div>
+
+  <div class="phones">
+    <!-- C1 首页 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav"><div class="hud"><span><svg class="i" style="color:var(--orange)"><use href="#i-flame"/></svg>12 天</span><span><svg class="i" style="color:var(--yellow-d)"><use href="#i-bolt"/></svg>2460</span></div></div>
+      <div class="body"><div class="pad" style="padding-top:6px">
+        <div class="ban"><div><small>第 2 站 · № 501–1000</small><b>马六甲</b><div class="pg"><i></i></div></div><a><svg class="i"><use href="#i-list"/></svg></a></div>
+        <div class="path">
+          <i class="dot g" style="left:150px;top:42px"></i><i class="dot g" style="left:122px;top:60px"></i><i class="dot g" style="left:96px;top:80px"></i>
+          <i class="dot g" style="left:84px;top:150px"></i><i class="dot g" style="left:104px;top:172px"></i><i class="dot g" style="left:128px;top:190px"></i>
+          <i class="dot" style="left:212px;top:268px"></i><i class="dot" style="left:234px;top:286px"></i><i class="dot" style="left:254px;top:304px"></i>
+          <a class="nd" style="left:190px;top:0"><svg class="i"><use href="#i-check"/></svg></a><span class="lbl" style="left:232px;top:22px">第 6 关</span>
+          <a class="nd" style="left:76px;top:84px"><svg class="i"><use href="#i-check"/></svg></a><span class="lbl" style="left:118px;top:106px">第 7 关</span>
+          <span class="say" style="left:118px;top:150px">第 8 关 · 开始</span>
+          <a class="nd cur" style="left:172px;top:196px">8</a>
+          <a class="nd lk" style="left:284px;top:306px"><svg class="i" style="stroke-width:2"><use href="#i-lock"/></svg></a><span class="lbl" style="left:200px;top:344px">第 9 关</span>
+          <img class="mas" src="img/study.jpg" alt="犀鸟" style="left:4px;top:232px">
+          <a class="nd boss" style="left:306px;top:74px"><svg class="i" style="stroke-width:2"><use href="#i-trophy"/></svg></a><span class="lbl" style="left:274px;top:150px">站长考试</span>
+        </div>
+        <a class="btn" style="flex-direction:column;gap:0;height:62px;line-height:1.25">开始第 8 关<small style="font-size:12px;font-weight:700;opacity:.9">复习 38 · 新词 20 · 约 12 分钟</small></a>
+      </div></div>
+      <div class="tab"><a class="on"><svg class="i"><use href="#i-route"/></svg>闯关</a><a><svg class="i"><use href="#i-grid"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>C1 首页</b>：一条闯关路。每关 20 个新词加当天的复习，25 关走完考「站长考试」，过了盖章去下一站。</figcaption></figure>
+
+    <!-- C2 词卡 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav" style="padding-right:104px"><svg class="i" style="stroke-width:2.4"><use href="#i-x"/></svg><div class="pgb"><i style="width:36%"></i><img src="img/avatar.jpg" alt="" style="left:36%"></div><span class="hv" style="font-size:14px">21/58</span></div>
+      <div class="body full">
+        <div class="bx card">
+          <div class="top"><div class="r"><span>№ 0349 · 吉隆坡</span><span>复习 · 第 3 次见</span></div><b>makan</b><p>ma · kan</p><a><svg class="i"><use href="#i-sound"/></svg></a></div>
+          <div class="bt">
+            <span class="tg">动词</span>
+            <p class="mean">吃；用餐</p>
+            <div class="exc"><p>Kami <mark>makan</mark> nasi bersama-sama.</p><span>我们一起吃饭。</span></div>
+            <div class="fm">同根词 <em>makanan 食物</em><em>pemakanan 饮食</em></div>
+          </div>
+        </div>
+        <div class="g3"><a class="btn o">不认识<small>马上再来</small></a><a class="btn y">模糊<small>明天</small></a><a class="btn">认识<small>9 天后</small></a></div>
+      </div>
+    </div><figcaption><b>C2 词卡</b>：黄色是正面（词 + 发音），白色是翻开后的背面。进度条上犀鸟跟着往前走。</figcaption></figure>
+
+    <!-- C3 小测 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav" style="padding-right:104px"><svg class="i" style="stroke-width:2.4"><use href="#i-x"/></svg><div class="pgb"><i style="width:60%"></i></div><span class="combo"><svg class="i"><use href="#i-flame"/></svg>×3</span></div>
+      <div class="body full">
+        <div class="bx qc"><small>看词选义 · 6 / 10</small><b>rumah</b><a><svg class="i"><use href="#i-sound"/></svg>听一遍</a></div>
+        <div class="o4"><a class="d">学校</a><a class="y">房屋；家<svg class="i"><use href="#i-check"/></svg></a><a class="d">市场；集市</a><a class="d">商店；店铺</a></div>
+        <div class="win"><img src="img/cheer.jpg" alt="犀鸟"><div><b>答对了 +12</b><p>连对 3 题</p></div><a class="btn">继续</a></div>
+      </div>
+    </div><figcaption><b>C3 小测（看词选义）</b>：四个大方块，拇指够得着。连对有计数，答对犀鸟跳出来。</figcaption></figure>
+
+    <!-- C4 图鉴 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav">集卡册<span class="hv" style="font-size:14px;color:var(--mute);margin-left:8px">684 / 3000</span></div>
+      <div class="body"><div class="pad" style="padding-top:6px">
+        <a class="bx sel">第 1 站 · 吉隆坡 · № 1–500<svg class="i" style="transform:rotate(90deg);stroke-width:2.4"><use href="#i-right"/></svg></a>
+        <div class="ft"><a class="on">全部</a><a>名词</a><a>动词</a><a>形容词</a><a>功能词</a></div>
+        <div class="set"><span>三星卡</span><div class="pg"><i></i></div><span class="hv">260 / 500</span></div>
+        <div class="alb">
+          <div class="cd f"><div class="h"><u>0001</u>yang</div><p>……的；那个</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg></div></div>
+          <div class="cd f"><div class="h"><u>0002</u>dan</div><p>和；并且</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg></div></div>
+          <div class="cd n"><div class="h"><u>0023</u>orang</div><p>人；人们</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg></div></div>
+          <div class="cd n"><div class="h"><u>0079</u>rumah</div><p>房屋；家</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+          <div class="cd a"><div class="h"><u>0084</u>besar</div><p>大的；重大的</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+          <div class="cd a"><div class="h"><u>0090</u>baik</div><p>好的；良善的</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+          <div class="cd n"><div class="h"><u>0130</u>sekolah</div><p>学校</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+          <div class="cd v"><div class="h"><u>0310</u>pergi</div><p>去；离开</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg></div></div>
+          <div class="cd v"><div class="h"><u>0349</u>makan</div><p>吃；用餐</p><div class="s"><svg class="i f"><use href="#i-star"/></svg><svg class="i f"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+        </div>
+      </div></div>
+      <div class="tab"><a><svg class="i"><use href="#i-route"/></svg>闯关</a><a class="on"><svg class="i"><use href="#i-grid"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>C4 图鉴（新）</b>：集卡册。颜色分词性（黄名词、橙动词、绿形容词、黑功能词），星星是记得多牢，三颗星才算真正收下这张卡。</figcaption></figure>
+
+    <!-- C5 对战 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav">对战</div>
+      <div class="body"><div class="pad" style="padding-top:6px">
+        <div class="bx vs">
+          <h3>好友 PK</h3><p>同一套 10 题，看谁快又准</p>
+          <div class="ring"><img src="img/avatar.jpg" alt="我"><b>VS</b><i>?</i></div>
+          <a class="btn y"><svg class="i" style="stroke-width:2.2"><use href="#i-share"/></svg>发给微信好友</a>
+        </div>
+        <div class="bx ar"><div><b>周擂台 · 20 题</b><p>还剩 4 天 12 小时 · 最高 1640</p><div class="tk3"><i></i><i></i><i class="u"></i></div></div><a class="btn y">上场</a></div>
+        <div class="hd" style="margin:18px 0 0">周榜<div class="sgc"><a class="on">全站</a><a>本校</a><a>本班</a><a>学校</a></div></div>
+        <div class="pod">
+          <div>Mei Ling<span>1920</span><i style="height:52px;background:var(--cream2)">2</i></div>
+          <div>椰子糖<span>1960</span><i style="height:76px;background:var(--yellow)">1</i></div>
+          <div>老陈不吃辣<span>1880</span><i style="height:38px;background:var(--orange);color:#fff">3</i></div>
+        </div>
+        <div class="mine"><span class="hv">23</span>我 · 再拿 20 分超过小麦<b>1640</b></div>
+      </div></div>
+      <div class="tab"><a><svg class="i"><use href="#i-route"/></svg>闯关</a><a><svg class="i"><use href="#i-grid"/></svg>图鉴</a><a class="on"><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>C5 对战</b>：PK 放最上面，一个按钮直接发微信。擂台的三次机会画成三张票，周榜是领奖台。</figcaption></figure>
+
+    <!-- C6 护照 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap"></div>
+      <div class="nav">护照</div>
+      <div class="body"><div class="pad" style="padding-top:6px">
+        <div class="bx me"><img src="img/avatar.jpg" alt="犀鸟头像"><div style="flex:1"><b>阿澄</b><p>马来语 2 班 · 7 级旅行者</p><div class="xp"><i></i></div><p style="font-size:11px;margin-top:2px">再得 340 分升 8 级</p></div></div>
+        <div class="k3"><div><b><svg class="i"><use href="#i-flame"/></svg>12</b><span>连续天数</span></div><div><b>684</b><span>学过的词</span></div><div><b>412</b><span>三星卡</span></div></div>
+        <div class="hd">站点印章<span>1 / 10</span></div>
+        <div class="stk">
+          <a class="ok"><i>KL</i>吉隆坡</a><a class="now"><i>02</i>马六甲</a><a><i>03</i>怡保</a><a><i>04</i>槟城</a><a><i>05</i>金马伦</a>
+          <a><i>06</i>关丹</a><a><i>07</i>登嘉楼</a><a><i>08</i>哥打巴鲁</a><a><i>09</i>古晋</a><a><i>10</i>亚庇</a>
+        </div>
+        <div class="hd">徽章<span>3 / 12</span></div>
+        <div class="bdg">
+          <a><i><svg class="i"><use href="#i-flame"/></svg></i>连续 7 天</a><a><i><svg class="i"><use href="#i-check"/></svg></i>首站通关</a><a><i><svg class="i"><use href="#i-battle"/></svg></i>PK 三连胜</a><a class="no"><i><svg class="i"><use href="#i-trophy"/></svg></i>擂台前十</a><a class="no"><i><svg class="i"><use href="#i-star"/></svg></i>千词</a>
+        </div>
+        <div class="two"><a class="bx">错词本<b>31</b></a><a class="bx">收藏<b>18</b></a></div>
+      </div></div>
+      <div class="tab"><a><svg class="i"><use href="#i-route"/></svg>闯关</a><a><svg class="i"><use href="#i-grid"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a class="on"><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>C6 护照</b>：等级、连续天数、印章、徽章都在一页，像贴满贴纸的护照。</figcaption></figure>
+  </div>
+</section>

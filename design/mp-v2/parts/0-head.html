@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>马来语高频词 · 小程序改版三个方向</title>
+<style>
+/* ============ 页面外壳（不是小程序的一部分） ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --serif:"Songti SC","STSong","Noto Serif SC","Source Han Serif SC",Georgia,serif;
+  --latin:Georgia,"Times New Roman","Songti SC",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+html{background:#e9e4da}
+body{font-family:var(--sans);color:#1c2420;line-height:1.6;font-size:15px;overflow-x:hidden}
+.doc{max-width:2460px;margin:0 auto;padding:40px 32px 80px}
+.doc-head h1{font-family:var(--serif);font-size:34px;line-height:1.25;font-weight:700}
+.doc-head p{max-width:760px;color:#47524c;margin-top:10px}
+.jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.jump a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;background:#fff;color:#1c2420;text-decoration:none;font-weight:600;border:1px solid #d6cdb9}
+.dir{margin-top:56px;padding-top:36px;border-top:2px solid #1c2420}
+.dir-intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+.dir-intro h2{font-family:var(--serif);font-size:30px;line-height:1.2}
+.dir-intro h2 small{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.08em;color:#727a74;font-weight:400;margin-bottom:6px}
+.dir-intro h3{font-size:13px;color:#727a74;font-weight:600;margin-bottom:6px}
+.dir-intro p,.dir-intro li{color:#39423d;font-size:15px}
+.dir-intro ul{padding-left:18px}
+.dir-intro li{margin-bottom:4px}
+.sw{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+.sw span{display:flex;flex-direction:column;justify-content:flex-end;width:74px;height:58px;border-radius:10px;padding:5px 7px;font:11px/1.25 var(--mono);border:1px solid rgba(0,0,0,.12)}
+.phones{display:flex;flex-wrap:wrap;gap:36px 30px;margin-top:34px}
+.pw{width:375px}
+.pw figcaption{font-size:14px;color:#47524c;margin-top:12px;line-height:1.5}
+.pw figcaption b{color:#1c2420}
+.verdict{margin-top:64px;padding-top:36px;border-top:2px solid #1c2420}
+.verdict h2{font-family:var(--serif);font-size:28px;margin-bottom:14px}
+.verdict table{width:100%;border-collapse:collapse;font-size:14px;background:#fffdf8;border-radius:12px;overflow:hidden}
+.verdict th,.verdict td{text-align:left;padding:11px 14px;border-bottom:1px solid #e4dccb;vertical-align:top}
+.verdict th{background:#1c2420;color:#f7f2e8;font-weight:600}
+.verdict td:first-child{font-weight:700;white-space:nowrap}
+.verdict p{max-width:860px;margin:12px 0}
+.tag{display:inline-block;padding:1px 8px;border-radius:9px;font-size:12px;font-weight:700}
+.tag.e{background:#e3ece4;color:#1f5a43}.tag.m{background:#f5e2c7;color:#8a4a0c}.tag.h{background:#f6d9d2;color:#9b3a26}
+@media(max-width:1000px){.dir-intro{grid-template-columns:1fr}.doc{padding:24px 16px 60px}.verdict table{display:block}.verdict tr{display:block;border-bottom:1px solid #e4dccb;padding:8px 0}.verdict th{display:none}.verdict td{display:block;border:0;padding:3px 12px;white-space:normal!important}}
+@media(max-width:440px){.phones{zoom:.82}}
+@media(max-width:360px){.phones{zoom:.72}}
+
+/* ============ 手机壳和小程序公共骨架 ============ */
+.phone{position:relative;width:375px;height:812px;border-radius:46px;overflow:hidden;box-shadow:0 0 0 9px #15181a,0 0 0 10.5px #3a3f42,0 34px 60px -24px rgba(20,24,26,.55);font-family:var(--sans);font-size:15px;line-height:1.5}
+.phone *{box-sizing:border-box}
+.sb{position:absolute;left:0;right:0;top:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:12px 30px 0;font-weight:600;font-size:15px;z-index:5}
+.sb i{display:flex;gap:5px;align-items:center}
+.sb i b{display:block;width:17px;height:11px;border-radius:3px;border:1.5px solid currentColor;position:relative;opacity:.9}
+.sb i b::after{content:"";position:absolute;inset:1.5px;right:4px;background:currentColor;border-radius:1px}
+.sb i u{display:block;width:15px;height:10px;background:linear-gradient(90deg,currentColor 0 2.5px,transparent 2.5px 4px,currentColor 4px 6.5px,transparent 6.5px 8px,currentColor 8px 10.5px,transparent 10.5px 12px,currentColor 12px);-webkit-mask:linear-gradient(to top right,#000 50%,transparent 50%);mask:linear-gradient(to top right,#000 50%,transparent 50%)}
+.cap{position:absolute;right:7px;top:48px;width:87px;height:32px;border-radius:16px;border:.5px solid rgba(0,0,0,.14);background:rgba(255,255,255,.72);z-index:6;display:flex;align-items:center;justify-content:space-evenly}
+.cap::before{content:"";width:18px;height:4px;background:radial-gradient(circle,#111 1.9px,transparent 2.2px) 0 0/6.2px 4px}
+.cap::after{content:"";width:15px;height:15px;border-radius:50%;border:2.4px solid #111;box-shadow:inset 0 0 0 2.2px rgba(255,255,255,.01),inset 0 0 0 4.2px #111}
+.cap.dk{background:rgba(0,0,0,.28);border-color:rgba(255,255,255,.22)}
+.cap.dk::before{background:radial-gradient(circle,#fff 1.9px,transparent 2.2px) 0 0/6.2px 4px}
+.cap.dk::after{border-color:#fff;box-shadow:inset 0 0 0 4.2px #fff}
+.nav{position:absolute;left:0;right:0;top:44px;height:44px;display:flex;align-items:center;padding:0 16px;z-index:4}
+.body{position:absolute;left:0;right:0;top:88px;bottom:83px;overflow:hidden}
+.body.full{bottom:0}
+.tab{position:absolute;left:0;right:0;bottom:0;height:83px;display:flex;padding:0 8px 34px;z-index:4}
+.tab a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;min-height:49px}
+.tab::after,.body.full::after{content:"";position:absolute;left:50%;bottom:8px;width:134px;height:5px;border-radius:3px;margin-left:-67px;background:currentColor;opacity:.85}
+.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ms{font-family:var(--latin)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="6" r="2.4"/><path d="M8.4 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.6"/></symbol>
+  <symbol id="i-atlas" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.6 3.5 5v13.5c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5c-3.5-.4-6.5 0-8.5 1.5zM12 6.5V20"/></symbol>
+  <symbol id="i-battle" viewBox="0 0 24 24"><path d="M5 4l9.5 9.5M19 4L9.5 13.5M14.5 13.5l2 2-2.5 2.5-2-2M9.5 13.5l-2 2 2.5 2.5 2-2M17.5 17.5L20 20M6.5 17.5L4 20M5 4v3M5 4h3M19 4v3M19 4h-3"/></symbol>
+  <symbol id="i-pass" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><circle cx="12" cy="10.5" r="3.2"/><path d="M9 17h6"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4zM15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5.5l6.5 6.5L9 18.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h15M13.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c.5 3.5 5.5 5.5 5.5 11a5.5 5.5 0 0 1-11 0c0-2 1-3.5 2-4.5.3 1.5 1 2.3 2 2.5C10 9.5 10.5 6 12 3z"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v6a4 4 0 0 1-8 0zM8 6H4.5c0 3 1.5 4.5 3.7 4.8M16 6h3.5c0 3-1.5 4.5-3.7 4.8M12 14v3.5M8.5 20h7M9.5 17.5h5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 7.5L12 3.5l4 4M5 12v7.5h14V12"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M6 3.5h12v17H6zM9.5 8h5M9.5 11.5h5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.5-7.5-10A4.2 4.2 0 0 1 12 7.5 4.2 4.2 0 0 1 19.5 10c0 5.5-7.5 10-7.5 10z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8.5 6.5h11M8.5 12h11M8.5 17.5h11M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5.5 13.5H11l-1 7.5 7.5-10.5H12z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5.5" y="10.5" width="13" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c1-4 4-5.5 7.5-5.5s6.5 1.5 7.5 5.5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/></symbol>
+</svg>
+
+<div class="doc">
+<header class="doc-head">
+  <h1>「马来语高频词」小程序改版：三个方向</h1>
+  <p>每个方向 6 屏（首页、词卡、小测、图鉴、对战、护照），尺寸 375×812。三个方向的布局、密度、比喻和颜色都不同；犀鸟都在。全部能用 WXML / WXSS 做出来，只有 B 的星图和点阵用到一块 canvas。</p>
+  <nav class="jump"><a href="#A">A 旅行手账</a><a href="#B">B 词光夜航</a><a href="#C">C 犀鸟闯关</a><a href="#verdict">对比和建议</a></nav>
+</header>

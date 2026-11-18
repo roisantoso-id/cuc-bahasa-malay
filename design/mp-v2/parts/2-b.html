@@ -1,0 +1,288 @@
+<!-- ======================= 方向 B · 词光夜航 ======================= -->
+<style>
+.dB{--night:#0a1f22;--night2:#0f292d;--panel:#14353a;--line:rgba(243,234,214,.12);--ivory:#f3ead6;--iv2:#c5c9bd;--mute:#84979a;--gold:#e9b961;--sage:#8fc0a0;--coral:#e8836a;--green:#1f5a43}
+.dB .phone{background:var(--night);color:var(--ivory)}
+.dB .sb{color:var(--ivory)}
+.dB .nav{font-family:var(--serif);font-size:17px;font-weight:700}
+.dB .tab{background:var(--night);border-top:1px solid var(--line);color:var(--mute)}
+.dB .tab a.on{color:var(--gold)}
+.dB .pad{padding:0 24px}
+.dB .eb{font-size:12px;letter-spacing:.14em;color:var(--mute)}
+.dB .h1{font-family:var(--serif);font-size:27px;line-height:1.3;font-weight:700}
+.dB .pill{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:28px;background:var(--ivory);color:var(--night);font-weight:700;font-size:17px}
+.dB .pill.line{background:transparent;color:var(--ivory);border:1px solid rgba(243,234,214,.3);font-weight:500}
+.dB .gold{color:var(--gold)}
+.dB .chip{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:14px;background:var(--panel);font-size:13px;color:var(--iv2)}
+.dB .chip.t{color:var(--sage);font-family:var(--mono)}
+/* 今日 */
+.dB .ringw{position:relative;height:236px;margin-top:6px}
+.dB .ring{position:absolute;left:0;top:18px;width:200px;height:200px;border-radius:50%;background:conic-gradient(var(--gold) 0 0%,var(--panel) 0)}
+.dB .ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--night)}
+.dB .ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dB .ring b{font-family:var(--latin);font-size:76px;line-height:1;font-weight:400}
+.dB .ring span{font-size:13px;color:var(--mute);margin-top:4px}
+.dB .ringw img{position:absolute;right:-14px;bottom:0;width:150px}
+.dB .tri{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:6px}
+.dB .tri div{flex:1;padding:12px 0}
+.dB .tri b{font-family:var(--latin);font-size:24px;font-weight:400;display:block;line-height:1.2}
+.dB .tri span{font-size:12px;color:var(--mute)}
+.dB .lk{display:flex;align-items:center;gap:12px;min-height:60px;border-bottom:1px solid var(--line)}
+.dB .lk p{flex:1;font-size:15px}.dB .lk p small{display:block;font-size:12px;color:var(--mute)}
+.dB .lk canvas{border-radius:8px}
+/* 词卡 */
+.dB .bar{flex:1;height:5px;border-radius:3px;background:var(--panel);margin:0 14px;overflow:hidden}
+.dB .bar i{display:block;width:12%;height:100%;background:var(--sage);border-radius:3px}
+.dB .face{margin:10px 20px 0;height:268px;border-radius:26px;background:linear-gradient(180deg,#eadfca,#f3ead6 60%);padding:12px;position:relative}
+.dB .face div{height:100%;border:1px solid rgba(31,90,67,.35);border-radius:16px;outline:1px solid rgba(31,90,67,.18);outline-offset:-5px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--green)}
+.dB .face b{font-family:var(--latin);font-style:italic;font-weight:400;font-size:68px;line-height:1.1}
+.dB .face span{font-size:12px;color:rgba(31,90,67,.6);margin-top:12px;letter-spacing:.1em}
+.dB .face a{position:absolute;right:26px;bottom:26px;width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--ivory);display:flex;align-items:center;justify-content:center}
+.dB .back{padding:22px 24px 0}
+.dB .no{font:12px var(--mono);letter-spacing:.14em;color:var(--mute);margin-top:12px}
+.dB .def{font-size:21px;font-weight:600;margin-top:6px;line-height:1.4}
+.dB .def em{font-family:var(--serif);font-style:italic;color:var(--coral);font-size:16px;font-weight:400;margin-right:10px}
+.dB .exb{border-top:1px solid var(--line);margin-top:20px;padding-top:18px}
+.dB .exb p{font-family:var(--latin);font-size:20px;line-height:1.4}
+.dB .exb mark{background:rgba(233,185,97,.28);color:inherit;border-radius:3px;padding:0 2px}
+.dB .exb span{font-size:14px;color:var(--mute)}
+.dB .fam{margin-top:18px;font-size:14px;color:var(--iv2)}
+.dB .fam b{font-family:var(--latin);font-weight:400;color:var(--gold);font-size:16px}
+.dB .act{position:absolute;left:20px;right:20px;bottom:46px;display:flex;gap:10px}
+.dB .act a{flex:1;height:56px;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:16px;font-weight:600;border:1px solid rgba(243,234,214,.28);line-height:1.2}
+.dB .act a small{font-size:11px;font-weight:400;opacity:.65}
+.dB .act a.go{flex:1.5;background:var(--ivory);color:var(--night);border-color:var(--ivory)}
+/* 小测 */
+.dB .listen{display:flex;flex-direction:column;align-items:center;margin-top:18px}
+.dB .play{width:112px;height:112px;border-radius:50%;background:var(--ivory);color:var(--night);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 12px rgba(243,234,214,.07),0 0 0 26px rgba(243,234,214,.035)}
+.dB .play .i{width:44px;height:44px}
+.dB .wave{display:flex;gap:4px;align-items:center;height:30px;margin-top:38px}
+.dB .wave i{width:3px;border-radius:2px;background:var(--gold)}
+.dB .o{display:flex;align-items:center;gap:12px;height:60px;border-radius:16px;padding:0 18px;background:var(--night2);border:1px solid var(--line);font-size:18px;margin-top:10px}
+.dB .o small{margin-left:auto;font-size:13px}
+.dB .o.n{border-color:var(--coral);color:var(--coral)}
+.dB .o.y{border-color:var(--sage);background:rgba(143,192,160,.12);color:var(--sage)}
+.dB .o.d{opacity:.4}
+.dB .rev{position:absolute;left:0;right:0;bottom:0;padding:14px 24px 46px;background:var(--night2);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.dB .rev div{flex:1}.dB .rev b{font-family:var(--latin);font-size:22px;font-weight:400}.dB .rev p{font-size:13px;color:var(--mute)}
+.dB .rev .pill{width:108px;height:48px;font-size:16px}
+/* 图鉴 */
+.dB .sky{position:relative;height:300px;margin-top:-88px;padding-top:88px}
+.dB .sky canvas{position:absolute;left:0;top:0}
+.dB .sky .tx{position:absolute;left:24px;bottom:8px}
+.dB .sky .tx b{font-family:var(--latin);font-size:44px;font-weight:400;line-height:1;color:var(--gold)}
+.dB .sky .tx span{font-family:var(--serif);font-size:16px;margin-left:6px}
+.dB .bd{display:flex;justify-content:space-between;margin-top:14px}
+.dB .bd a{width:30px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:11px var(--mono);color:var(--mute)}
+.dB .bd a i{width:9px;height:9px;border-radius:50%;border:1.3px solid var(--mute)}
+.dB .bd a.f i{background:var(--gold);border-color:var(--gold)}
+.dB .bd a.on{color:var(--ivory)}.dB .bd a.on i{width:15px;height:15px;border-color:var(--gold);background:conic-gradient(var(--gold) 37%,transparent 0)}
+.dB .bd a.off{opacity:.4}
+.dB .leg{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:8px}
+.dB .leg i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.dB .tiles{display:flex;gap:10px;margin-top:12px}
+.dB .tile{flex:1;min-width:0}
+.dB .tile div{height:86px;border-radius:14px;background:var(--ivory);color:var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--latin);font-style:italic;font-size:22px;box-shadow:inset 0 0 0 5px var(--ivory),inset 0 0 0 6px rgba(31,90,67,.3)}
+.dB .tile.un div{background:var(--night2);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+.dB .tile p{font-size:13px;color:var(--iv2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dB .tile p em{font-style:normal;color:var(--mute);font-size:12px;margin-right:4px}
+/* 对战 */
+.dB .cd{font-family:var(--latin);font-size:46px;line-height:1.1;margin-top:6px}
+.dB .cd small{font-family:var(--sans);font-size:14px;color:var(--mute);margin:0 8px 0 3px}
+.dB .tries{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute);margin-top:10px}
+.dB .tries i{width:22px;height:6px;border-radius:3px;background:var(--gold)}
+.dB .tries i.u{background:var(--panel)}
+.dB .lad{margin-top:14px;border-top:1px solid var(--line)}
+.dB .lad div{display:flex;align-items:center;gap:12px;height:46px;border-bottom:1px solid var(--line);font-size:15px;color:var(--iv2)}
+.dB .lad u{text-decoration:none;font-family:var(--latin);width:26px;color:var(--mute);font-size:17px}
+.dB .lad span{flex:1}.dB .lad b{font-family:var(--latin);font-weight:400}
+.dB .lad .me{color:var(--night);background:var(--gold);margin:0 -24px;padding:0 24px;border:0;font-weight:700;height:52px}
+.dB .lad .me u{color:var(--night)}
+.dB .lad .gap{height:26px;font-size:12px;color:var(--mute);justify-content:center;letter-spacing:.3em}
+.dB .sg{display:flex;gap:18px;font-size:14px;color:var(--mute)}
+.dB .sg a.on{color:var(--ivory);border-bottom:2px solid var(--gold);padding-bottom:4px}
+/* 我的 */
+.dB .who{display:flex;align-items:center;gap:14px}
+.dB .who img{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid var(--ivory)}
+.dB .who b{font-family:var(--serif);font-size:22px}.dB .who p{font-size:13px;color:var(--mute)}
+.dB .lab{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;font-size:13px;color:var(--mute)}
+.dB .lab b{font-family:var(--serif);font-size:16px;color:var(--ivory)}
+.dB .mem{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:8px;gap:2px}
+.dB .memk{display:flex;gap:12px;margin-top:8px;font-size:12px;color:var(--mute);flex-wrap:wrap}
+.dB .memk b{color:var(--ivory);font-family:var(--latin);font-weight:400;font-size:15px;margin-left:4px}
+.dB .memk i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.dB .fc{display:flex;gap:8px;align-items:flex-end;height:74px;margin-top:8px}
+.dB .fc div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;font-size:11px;color:var(--mute);height:100%}
+.dB .fc i{display:block;width:100%;border-radius:4px 4px 0 0;background:var(--panel)}
+.dB .fc div:first-child i{background:var(--gold)}
+.dB .fc u{text-decoration:none;font-family:var(--latin);font-size:12px;color:var(--iv2)}
+.dB .heat{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:8px}
+.dB .heat i{aspect-ratio:1;border-radius:3px;background:var(--panel)}
+.dB .ml a{display:flex;align-items:center;height:46px;border-bottom:1px solid var(--line);font-size:16px}
+.dB .ml a span{margin-left:auto;font-size:13px;color:var(--mute)}
+</style>
+
+<section class="dir dB" id="B">
+  <div class="dir-intro">
+    <div>
+      <h2><small>DIRECTION B</small>词光夜航</h2>
+      <p>最贴近词光的一版：深色、安静、每屏只做一件事。首页就是一个数字和一个按钮；词卡是一张象牙色的卡片浮在夜色里；学会一个词，星图上亮一颗星。底色不用词光的藏青，改用官网的深蓝绿调暗，和品牌接得上。适合晚上在宿舍背词的学生，也最显「高级」；代价是气氛偏冷，游戏感最弱。</p>
+    </div>
+    <div>
+      <h3>借了什么</h3>
+      <ul>
+        <li>词光：象牙卡片 + 斜体衬线词、「学会一个，点亮一颗」的星图、图鉴按词频段和词性看、记忆牢固程度分布、未来 7 天复习量。</li>
+        <li>不背单词：深色、专注、没有多余装饰。</li>
+        <li>多邻国：排行榜只给你看「上一名差多少分」，压力来自身边的人，不是第一名。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>配色和字体</h3>
+      <div class="sw"><span style="background:#0a1f22;color:#fff">夜 #0a1f22</span><span style="background:#14353a;color:#fff">面板 #14353a</span><span style="background:#f3ead6">象牙 #f3ead6</span><span style="background:#e9b961">星光 #e9b961</span><span style="background:#8fc0a0">对 #8fc0a0</span><span style="background:#e8836a">错 #e8836a</span></div>
+      <p>马来语用 Georgia 斜体（卡面）和正体（正文），数字 Georgia，中文标题宋体，正文苹方 15px。只用纯色和细线，没有毛玻璃。星图和 500 词点阵各是一块 canvas 2d。</p>
+    </div>
+  </div>
+
+  <div class="phones">
+    <!-- B1 今日 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav">今日</div>
+      <div class="body"><div class="pad">
+        <p class="eb" style="margin-top:6px">11月18日 · 连续第 12 天</p>
+        <p class="h1">晚上好，阿澄。</p>
+        <div class="ringw"><div class="ring"><div><b>58</b><span>今天要见的词</span></div></div><img src="img/hero.webp" alt="犀鸟"></div>
+        <div class="tri"><div><b>38</b><span>先温故</span></div><div><b>20</b><span>再知新</span></div><div><b>12<small style="font-size:13px"> 分钟</small></b><span>大约</span></div></div>
+        <a class="pill" style="margin-top:18px">开始今天的航程 <svg class="i"><use href="#i-arrow"/></svg></a>
+        <div class="lk" style="margin-top:14px"><canvas id="bMini" width="112" height="88" style="width:56px;height:44px"></canvas><p>已点亮 <b class="gold ms" style="font-weight:400;font-size:18px">684</b> 颗星<small>马六甲还有 316 颗没亮</small></p><svg class="i" style="color:var(--mute)"><use href="#i-right"/></svg></div>
+        <div class="lk"><svg class="i gold"><use href="#i-sound"/></svg><p><span class="ms" style="font-size:19px">minum</span>　喝；饮用<small>今日一词 · Jangan lupa minum air.</small></p></div>
+      </div></div>
+      <div class="tab"><a class="on"><svg class="i"><use href="#i-sun"/></svg>今日</a><a><svg class="i"><use href="#i-atlas"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>B1 今日</b>：一个数字、一个按钮。圆环是今天的进度，做完变成一整圈金色。犀鸟站在旁边陪着。</figcaption></figure>
+
+    <!-- B2 词卡 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav" style="padding-right:104px"><svg class="i"><use href="#i-x"/></svg><div class="bar"><i></i></div><span class="ms" style="font-size:14px;font-weight:400">7<span style="color:var(--mute)">/58</span></span></div>
+      <div class="body full">
+        <div class="face"><div><b>belajar</b><span>点卡片翻回正面</span></div><a><svg class="i"><use href="#i-sound"/></svg></a></div>
+        <div class="back">
+          <span class="chip t">T2 马六甲</span> <span class="chip">动词</span> <span class="chip"><span style="color:var(--gold);margin-right:5px">●</span>初次见面</span>
+          <p class="no">№ 0650</p>
+          <p class="def"><em>动词</em>学习；求学</p>
+          <div class="exb"><p>Mereka <mark>belajar</mark> bahasa Melayu.</p><span>他们学习马来语。</span></div>
+          <p class="fam">词根 <b>ajar</b> 教　·　<b>mengajar</b> 教　·　<b>pelajar</b> 学生</p>
+        </div>
+        <div class="act"><a>不认识<small>1 分钟后</small></a><a>模糊<small>明天</small></a><a class="go">认识<small>4 天后再见</small></a></div>
+      </div>
+    </div><figcaption><b>B2 词卡</b>：正面只有一张象牙卡和发音；翻面后释义、例句、词根在卡片下面依次浮出来。</figcaption></figure>
+
+    <!-- B3 小测 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav" style="padding-right:104px"><svg class="i"><use href="#i-x"/></svg><div class="bar"><i style="width:30%"></i></div><span class="ms" style="font-size:14px;font-weight:400">3<span style="color:var(--mute)">/10</span></span></div>
+      <div class="body full"><div class="pad">
+        <p class="eb" style="text-align:center;margin-top:8px">听音选义</p>
+        <div class="listen"><a class="play"><svg class="i"><use href="#i-sound"/></svg></a>
+          <div class="wave"><i style="height:8px"></i><i style="height:16px"></i><i style="height:26px"></i><i style="height:12px"></i><i style="height:30px"></i><i style="height:20px"></i><i style="height:10px"></i><i style="height:22px"></i><i style="height:14px"></i><i style="height:6px"></i></div></div>
+        <div style="margin-top:16px">
+          <div class="o n">吃；用餐<small>你选的</small></div>
+          <div class="o y">喝；饮用<svg class="i" style="margin-left:auto"><use href="#i-check"/></svg></div>
+          <div class="o d">去；离开</div>
+          <div class="o d">学习；求学</div>
+        </div>
+      </div>
+        <div class="rev"><div><b>minum</b><p>已放进错词本，明天再考一次</p></div><a class="pill">继续</a></div>
+      </div>
+    </div><figcaption><b>B3 小测（听音选义）</b>：答错的样子。不批评，只告诉你正确的是哪个、什么时候再考。</figcaption></figure>
+
+    <!-- B4 图鉴 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav">图鉴</div>
+      <div class="body">
+        <div class="sky"><canvas id="bSky" width="750" height="600" style="width:375px;height:300px"></canvas><div class="tx"><p class="eb">已点亮</p><b>684</b><span>颗星 / 3000</span></div></div>
+        <div class="pad">
+          <div class="bd"><a class="f"><i></i>01</a><a class="on"><i></i>02</a><a><i></i>03</a><a><i></i>04</a><a><i></i>05</a><a><i></i>06</a><a class="off"><i></i>07</a><a class="off"><i></i>08</a><a class="off"><i></i>09</a><a class="off"><i></i>10</a></div>
+          <div class="lab" style="margin-top:6px"><b>02 马六甲 · № 501–1000</b><span>184 / 500</span></div>
+          <canvas id="bDots" width="654" height="130" style="width:327px;height:65px;margin-top:10px;display:block"></canvas>
+          <div class="leg"><span><i style="background:var(--gold)"></i>记牢</span><span><i style="background:var(--sage)"></i>学习中</span><span><i style="background:var(--panel)"></i>还没见过</span><span style="margin-left:auto;color:var(--iv2)">点一颗看词</span></div>
+          <div style="display:flex;gap:8px;margin-top:14px"><span class="chip" style="background:var(--ivory);color:var(--night)">全部</span><span class="chip">名词</span><span class="chip">动词</span><span class="chip">形容词</span><span class="chip">功能词</span></div>
+          <div class="tiles">
+            <div class="tile"><div>belajar</div><p><em>动</em>学习；求学</p></div>
+            <div class="tile"><div>kedai</div><p><em>名</em>商店；店铺</p></div>
+            <div class="tile un"><div>menulis</div><p><em>动</em>写；写作</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab"><a><svg class="i"><use href="#i-sun"/></svg>今日</a><a class="on"><svg class="i"><use href="#i-atlas"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>B4 图鉴（新）</b>：上面是整片星图，下面是这一站 500 个词的点阵，一眼看出哪里还黑着。再往下是词卡列表。</figcaption></figure>
+
+    <!-- B5 对战 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav">对战</div>
+      <div class="body"><div class="pad" style="position:relative">
+        <img src="img/welcome.webp" alt="犀鸟" style="position:absolute;right:8px;top:0;width:112px">
+        <p class="eb" style="margin-top:6px">周擂台 · 第 47 周</p>
+        <p class="cd" style="margin-top:10px">4<small>天</small>12<small>小时</small></p>
+        <p style="font-size:14px;color:var(--iv2)">20 题，取三次里最高的一次</p>
+        <div class="tries"><i></i><i></i><i class="u"></i>　还剩 2 次 · 最高 <b class="ms" style="color:var(--ivory);font-weight:400;font-size:15px;margin-left:4px">1640</b></div>
+        <div style="display:flex;gap:10px;margin-top:16px"><a class="pill" style="flex:1.4">进入擂台</a><a class="pill line" style="flex:1"><svg class="i" style="width:20px;height:20px"><use href="#i-share"/></svg>好友 PK</a></div>
+        <div class="lab" style="margin-top:22px"><b>周榜</b><div class="sg"><a class="on">全站</a><a>本校</a><a>本班</a><a>学校榜</a></div></div>
+        <div class="lad">
+          <div><u>1</u><span>椰子糖</span><b>1960</b></div>
+          <div class="gap">· · ·</div>
+          <div><u>21</u><span>Hafiz</span><b>1680</b></div>
+          <div><u>22</u><span>小麦</span><b>1660</b></div>
+          <div class="me"><u>23</u><span>阿澄（我）· 差 20 分追上小麦</span><b>1640</b></div>
+          <div><u>24</u><span>南洋的风</span><b>1620</b></div>
+        </div>
+        <div class="lab" style="margin-top:20px"><b>最近的 PK</b><span>全部战绩 ›</span></div>
+        <p style="font-size:15px;color:var(--iv2);margin-top:8px">昨天　你 <b class="ms" style="color:var(--sage);font-weight:400;font-size:18px">8 : 6</b> 小麦　<span style="color:var(--mute)">· 再来一局 ›</span></p>
+      </div></div>
+      <div class="tab"><a><svg class="i"><use href="#i-sun"/></svg>今日</a><a><svg class="i"><use href="#i-atlas"/></svg>图鉴</a><a class="on"><svg class="i"><use href="#i-battle"/></svg>对战</a><a><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>B5 对战</b>：倒计时最大。榜单只显示你上下两名，一行字告诉你差几分就能超过谁。</figcaption></figure>
+
+    <!-- B6 护照 -->
+    <figure class="pw"><div class="phone">
+      <div class="sb"><span>9:41</span><i><u></u><b></b></i></div><div class="cap dk"></div>
+      <div class="nav">护照</div>
+      <div class="body"><div class="pad">
+        <div class="who" style="margin-top:4px"><img src="img/avatar.jpg" alt="犀鸟头像"><div><b>阿澄</b><p>马来语 2 班 · 第 2 站 马六甲 · 已盖 1 个章</p></div></div>
+        <div class="lab"><b>记得多牢</b><span>已开放 3000 词</span></div>
+        <div class="mem"><i style="flex:412;background:var(--gold)"></i><i style="flex:168;background:var(--sage)"></i><i style="flex:104;background:var(--coral)"></i><i style="flex:2316;background:var(--panel)"></i></div>
+        <div class="memk"><span><i style="background:var(--gold)"></i>牢固<b>412</b></span><span><i style="background:var(--sage)"></i>熟悉<b>168</b></span><span><i style="background:var(--coral)"></i>快忘了<b>104</b></span><span><i style="background:var(--panel)"></i>没见过<b>2316</b></span></div>
+        <div class="lab"><b>未来 7 天要复习</b><span>明天最多</span></div>
+        <div class="fc"><div><u>38</u><i style="height:34px"></i>今天</div><div><u>52</u><i style="height:46px"></i>四</div><div><u>27</u><i style="height:24px"></i>五</div><div><u>31</u><i style="height:28px"></i>六</div><div><u>19</u><i style="height:17px"></i>日</div><div><u>44</u><i style="height:39px"></i>一</div><div><u>23</u><i style="height:21px"></i>二</div></div>
+        <div class="lab"><b>最近 8 周</b><span>连续 12 天</span></div>
+        <div class="heat" id="bHeat"></div>
+        <div class="ml" style="margin-top:10px"><a>错词本<span>31 个 ›</span></a><a>收藏<span>18 个 ›</span></a></div>
+      </div></div>
+      <div class="tab"><a><svg class="i"><use href="#i-sun"/></svg>今日</a><a><svg class="i"><use href="#i-atlas"/></svg>图鉴</a><a><svg class="i"><use href="#i-battle"/></svg>对战</a><a class="on"><svg class="i"><use href="#i-pass"/></svg>护照</a></div>
+    </div><figcaption><b>B6 护照</b>：不堆数字，只回答三个问题：记得多牢、接下来几天要复习多少、最近有没有坚持。</figcaption></figure>
+  </div>
+</section>
+<script>
+(function(){
+  var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+  function galaxy(id,n,lit,scale){
+    var c=document.getElementById(id),x=c.getContext('2d'),W=c.width,H=c.height;
+    x.fillStyle='#0a1f22';x.fillRect(0,0,W,H);
+    var g=x.createRadialGradient(W*.52,H*.46,0,W*.52,H*.46,W*.4);g.addColorStop(0,'rgba(233,185,97,.20)');g.addColorStop(1,'rgba(233,185,97,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+    for(var i=0;i<n;i++){
+      var t=i/n,arm=i%3,r=Math.pow(t,.6)*W*.56*scale,a=arm*2.094+t*7.2+(rnd()-.5)*.55,jx=(rnd()-.5)*W*.035,jy=(rnd()-.5)*W*.035;
+      var px=W*.52+Math.cos(a)*r+jx,py=H*.46+Math.sin(a)*r*.62+jy,on=i<lit&&rnd()>.12;
+      x.beginPath();x.arc(px,py,on?(1.5+rnd()*2):1.2,0,6.283);
+      x.fillStyle=on?'rgba(245,214,150,'+(.65+rnd()*.35)+')':'rgba(197,201,189,.34)';x.fill();
+    }
+  }
+  galaxy('bSky',3000,684,1);galaxy('bMini',420,110,.95);
+  var c=document.getElementById('bDots'),x=c.getContext('2d'),cols=50,p=c.width/cols;
+  for(var i=0;i<500;i++){var cx=(i%cols)*p+p/2,cy=Math.floor(i/cols)*p+p/2;x.beginPath();x.arc(cx,cy,p*.3,0,6.283);
+    x.fillStyle=i<118?'#e9b961':i<184?(rnd()>.25?'#8fc0a0':'#e9b961'):'#14353a';x.fill()}
+  var h=document.getElementById('bHeat'),lv=['#14353a','#2c5a55','#6d9a80','#e9b961'],s='';
+  for(var i=0;i<56;i++){var v=i>=44?(1+Math.floor(rnd()*3)):(rnd()>.4?Math.floor(rnd()*4):0);s+='<i style="background:'+lv[v]+'"></i>'}
+  h.innerHTML=s;
+  document.querySelector('.dB .ring').style.background='conic-gradient(#e9b961 0 12%,#14353a 0)';
+})();
+</script>

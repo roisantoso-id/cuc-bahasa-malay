@@ -1,0 +1,25 @@
+<section class="verdict" id="verdict">
+  <h2>对比和建议</h2>
+  <table>
+    <tr><th>方向</th><th>首页的比喻</th><th>密度</th><th>和官网的距离</th><th>开发量</th><th>最适合</th></tr>
+    <tr><td>A 旅行手账</td><td>一张今日车票 + 路线表</td><td>中，靠细线分层</td><td>最近，同一套颜色和字体</td><td>最小：换样式为主，加一页图鉴</td><td>想稳、想和官网统一</td></tr>
+    <tr><td>B 词光夜航</td><td>一个数字 + 星图</td><td>最低，每屏一件事</td><td>中，颜色接得上，气氛不同</td><td>中：两块 canvas，深色全套重做</td><td>想要词光的安静和「高级」</td></tr>
+    <tr><td>C 犀鸟闯关</td><td>一条闯关路</td><td>高，色块大</td><td>最远</td><td>最大：关卡、等级、徽章、集卡要加后端字段</td><td>想解决「太简单」、想传播</td></tr>
+  </table>
+  <p><b>建议选 A 做底，把 B 和 C 里最值钱的三样搬进来：</b>B 的「记得多牢 + 未来 7 天复习量」放进护照页，B 的星图做成图鉴页顶部的可切换视图，C 的「每站切成 25 小关」放进路线页。理由：A 和刚改好的官网是一家，犀鸟在纸色上最好看，改动主要在样式，现有页面结构基本不用动；「功能太简单」靠图鉴、FSRS 和小关来解决，不靠换一身皮。如果创始人更看重在学生之间传开，就选 C，但要接受它和官网是两种气质。</p>
+
+  <h2 style="margin-top:36px">比现在多出来的功能</h2>
+  <table>
+    <tr><th>功能</th><th>来自</th><th>做什么</th><th>难度</th></tr>
+    <tr><td>图鉴（第 4 个标签）</td><td>词光</td><td>按词频段（10 站）和词性看全部词，带记忆程度，点开就是词卡。搜索、收藏、错词本都并进来。</td><td><span class="tag e">容易</span> 词表和学习记录都有，只是新页面</td></tr>
+    <tr><td>FSRS 间隔复习</td><td>词光</td><td>评分按钮下面写「明天 / 4 天后」，每个词按自己的遗忘速度排期。</td><td><span class="tag m">中等</span> 服务器每词多存 3 个数，算法有现成开源实现</td></tr>
+    <tr><td>记忆程度 + 未来 7 天复习量</td><td>词光 / 墨墨</td><td>护照页告诉学生记得多牢、接下来几天要复习多少。</td><td><span class="tag e">容易</span> 有了 FSRS 数据后只是统计</td></tr>
+    <tr><td>星图 / 500 词点阵</td><td>词光</td><td>学会一个亮一颗，能截图分享。</td><td><span class="tag m">中等</span> 2D canvas 画点即可；词光那种 3D 星系不建议搬进小程序</td></tr>
+    <tr><td>词根家族</td><td>词光</td><td>词卡上显示同根词（ajar → belajar、mengajar、pelajar），点了能跳。</td><td><span class="tag e">容易</span> 词表里已有词根字段，需按词根建索引</td></tr>
+    <tr><td>今日一词</td><td>词光</td><td>首页一行，可分享成图。</td><td><span class="tag e">容易</span></td></tr>
+    <tr><td>每站 25 小关 + 站长考试</td><td>多邻国</td><td>把 500 词切成 20 词一关，走完考试过了才盖章。</td><td><span class="tag m">中等</span> 进度表加「关」一级，考试复用擂台出题</td></tr>
+    <tr><td>榜单显示「差几分超过上一名」</td><td>多邻国</td><td>不只看前三，看身边的人。</td><td><span class="tag e">容易</span> 榜单接口多返回前后两名</td></tr>
+    <tr><td>等级、徽章、集卡星级</td><td>多邻国 / 百词斩</td><td>只在选 C 时需要。</td><td><span class="tag h">较大</span> 新的积分规则和成就表，要防刷分</td></tr>
+  </table>
+  <p style="color:#727a74;font-size:13px">说明：图里的昵称、分数、天数都是示意数据；词、释义、例句和词序取自现有词表。犀鸟 JPG 是浅色底，在 B 的深色页面只用了透明底的两张（hero、welcome）和圆形头像；选 B 的话其余几张要重新导出透明底。</p>
+</section>

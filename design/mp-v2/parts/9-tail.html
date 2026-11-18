@@ -1,0 +1,7 @@
+</div>
+<script>
+// ?d=A 只看一个方向（截图用）
+var d=new URLSearchParams(location.search).get('d');
+if(d){document.querySelectorAll('.dir').forEach(function(s){if(s.id!==d)s.style.display='none'});document.querySelector('.doc-head').style.display='none';var v=document.getElementById('verdict');if(v)v.style.display='none';var s=document.getElementById(d);s.style.marginTop=0;s.style.borderTop=0;s.style.paddingTop=0}
+</script>
+</body></html>
