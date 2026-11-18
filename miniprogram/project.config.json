@@ -65,6 +65,10 @@
       {
         "value": "miniprogram/pkg-me/settings",
         "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-word/three",
+        "type": "folder"
       }
     ],
     "include": []
