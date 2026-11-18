@@ -10,7 +10,7 @@
     "enhance": true,
     "postcss": true,
     "minified": true,
-    "urlCheck": false
+    "urlCheck": true
   },
   "condition": {}
 }
