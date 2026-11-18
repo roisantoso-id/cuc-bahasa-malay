@@ -61,7 +61,8 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     return { answers: a, right, correct, ms: Math.round(t), score: correct * 100 + (correct ? speed * correct : 0) }
   }
   const nameOf = s => (s.name || '').trim() || `同学${String(s.id).padStart(4, '0').slice(-4)}`
-  const who = s => ({ name: nameOf(s), school: s.school || '', className: s.class_name || '' })
+  // aid：头像编号（小程序按它从几只犀鸟里选一只，同一个人永远一样）；以后有真头像再加 avatar 字段
+  const who = s => ({ name: nameOf(s), school: s.school || '', className: s.class_name || '', aid: s.id || 0 })
 
   // ---------- 好友 PK ----------
   async function pkCreate(st, b) {

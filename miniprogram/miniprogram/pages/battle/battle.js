@@ -3,6 +3,9 @@ const setTab = require('../../utils/tab')
 const vocab = require('../../api/vocab')
 
 const day = iso => (iso ? `${Number(iso.slice(5, 7))}月${Number(iso.slice(8, 10))}日` : '')
+// 犀鸟头像：按用户编号固定选一只（以后接入微信头像后换成真头像）
+const POSES = ['avatar', 'study', 'cheer', 'pass', 'welcome', 'checkin']
+const av = id => `/assets/${POSES[Math.abs(Number(id) || 0) % POSES.length]}.jpg`
 const TABS = [{ k: 'all', t: '全站' }, { k: 'school', t: '本校' }, { k: 'class', t: '本班' }, { k: 'schools', t: '学校榜' }]
 
 // 到下周一 00:00（北京时间）还有多久
@@ -31,7 +34,7 @@ function nearby(list) {
 }
 
 Page({
-  data: { view: 'loading', error: '', levels: [], level: 0, arena: null, me: null, pks: [], busy: false, showPk: false, tabs: TABS, tab: 'all', board: [], boardLoading: false, boardNote: '', chase: '', cd: { d: 0, h: 0, m: 0, week: 0 } },
+  data: { view: 'loading', error: '', levels: [], level: 0, arena: null, me: null, pks: [], busy: false, showPk: false, tabs: TABS, tab: 'all', podium: [], board: [], boardLoading: false, boardNote: '', chase: '', cd: { d: 0, h: 0, m: 0, week: 0 } },
   onShow() {
     setTab(this, 2); this.tick(); this.timer = setInterval(() => this.tick(), 30000); this.load() },
   onHide() { clearInterval(this.timer) },
@@ -70,9 +73,15 @@ Page({
       const r = tab === 'schools' ? await vocab.schools() : await vocab.rank(tab)
       if (seq !== this.seq) return
       if (r.needProfile) return this.setData({ board: [], chase: '', boardLoading: false, boardNote: `完善资料，填上学校${tab === 'class' ? '和班级' : ''}才能看` })
-      const list = (r.list || []).map(x => tab === 'schools' ? { place: x.place, name: x.school, points: x.points, me: !!x.mine } : { place: x.place, name: x.name, points: x.points, me: !!x.me })
+      const school = tab === 'schools'
+      const list = (r.list || []).map(x => school
+        ? { place: x.place, name: x.school, sub: x.members + ' 人在学', points: x.points, me: !!x.mine, mark: (x.school || '?').slice(0, 1) }
+        : { place: x.place, name: x.name, sub: x.school || '', points: x.points, me: !!x.me, av: av(x.aid) })
       const { rows, chase } = nearby(list)
-      this.setData({ board: rows, chase: tab === 'schools' ? '' : chase, boardLoading: false, boardNote: rows.length ? '' : '本周还没有人上榜', me: r.me || null })
+      // 前三名上领奖台（显示顺序 2-1-3），下面只列第 4 名以后、我附近的几行
+      const podium = [list[1], list[0], list[2]].filter(Boolean)
+      const me = r.me ? { ...r.me, av: av(r.me.aid) } : null
+      this.setData({ podium, board: rows.filter(x => x.place > 3 || x.gap), chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
     } catch (e) {
       if (seq === this.seq) this.setData({ board: [], boardLoading: false, boardNote: e.message })
     }

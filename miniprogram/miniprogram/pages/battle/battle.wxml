@@ -3,45 +3,69 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <!-- 两个入口：一行一个，右边一个动作 -->
-    <view class="entry">
-      <view class="en">
-        <view class="en-main">
-          <view class="en-t">每周擂台 <text class="en-k">第 {{cd.week}} 周</text></view>
-          <view class="en-s">20 题 · 还剩 {{arena ? arena.triesLeft : 3}} 次 · {{cd.d}} 天 {{cd.h}} 小时后结束{{arena && arena.best ? ' · 最高 ' + arena.best.score : ''}}</view>
-        </view>
-        <button class="btn btn-main btn-sm en-b" hover-class="hover" bindtap="arena">进入</button>
+    <!-- 我的本周 -->
+    <view class="mine">
+      <image class="mine-av" src="{{me.av || '/assets/avatar.jpg'}}" mode="aspectFill" />
+      <view class="mine-main">
+        <view class="mine-n">{{me.name || '我'}}</view>
+        <view class="mine-s">{{me.place ? '本周第 ' + me.place + ' 名' : '本周还没上榜'}}{{chase ? ' · ' + chase : ''}}</view>
       </view>
-      <view class="en">
-        <view class="en-main">
-          <view class="en-t">好友 PK</view>
-          <view class="en-s">10 题，发给同学比谁又快又准</view>
+      <view class="mine-p"><text class="mine-pn">{{me.points || 0}}</text><text class="mine-pu">分</text></view>
+    </view>
+
+    <!-- 两个入口：并排小卡片 -->
+    <view class="duo">
+      <view class="tile arena" hover-class="hover" bindtap="arena">
+        <image class="tile-bird" src="/assets/pass.jpg" mode="aspectFill" />
+        <view class="tile-t">每周擂台</view>
+        <view class="tile-s">20 题 · 还剩 {{arena ? arena.triesLeft : 3}} 次</view>
+        <view class="tile-s">{{cd.d}} 天 {{cd.h}} 小时后结束</view>
+        <view class="tile-go">进入 ›</view>
+      </view>
+      <view class="tile pk">
+        <image class="tile-bird" src="/assets/cheer.jpg" mode="aspectFill" />
+        <view class="tile-t">好友 PK</view>
+        <view class="tile-s">10 题，发给同学比一比</view>
+        <view class="tile-row">
+          <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx"><view class="sel">{{levelNames[levelIdx]}} ▾</view></picker>
+          <view class="tile-go go-amber {{busy ? 'dis' : ''}}" bindtap="create">{{busy ? '…' : '发起 ›'}}</view>
         </view>
-        <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx"><view class="sel">{{levelNames[levelIdx]}} ▾</view></picker>
-        <button class="btn btn-amber btn-sm en-b" hover-class="hover" bindtap="create" disabled="{{busy || !level}}" loading="{{busy}}">发起</button>
       </view>
     </view>
 
+    <!-- 周榜 -->
     <view class="between bh"><view class="h2" style="margin:0">周榜</view>
       <view class="tabs"><view wx:for="{{tabs}}" wx:key="k" class="tb {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickTab">{{item.t}}</view></view>
     </view>
-    <view class="board">
-      <view wx:if="{{boardLoading && !board.length}}" class="muted small note">正在排名…</view>
-      <view wx:elif="{{boardNote}}" class="muted small note">{{boardNote}}</view>
-      <block wx:for="{{board}}" wx:key="place">
-        <view wx:if="{{item.gap}}" class="gap">· · ·</view>
-        <view class="br {{item.me ? 'me' : ''}}">
-          <text class="br-p">{{item.place}}</text>
-          <view class="br-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
-          <text class="br-s">{{item.points}}</text>
+    <view wx:if="{{boardLoading && !podium.length}}" class="muted small note">正在排名…</view>
+    <view wx:elif="{{boardNote}}" class="muted small note">{{boardNote}}</view>
+    <block wx:else>
+      <view class="podium">
+        <view wx:for="{{podium}}" wx:key="place" class="pd p{{item.place}} {{item.me ? 'me' : ''}}">
+          <image wx:if="{{item.av}}" class="pd-av" src="{{item.av}}" mode="aspectFill" />
+          <view wx:else class="pd-av pd-mark">{{item.mark}}</view>
+          <view class="pd-n">{{item.name}}</view>
+          <view class="pd-s">{{item.points}} 分</view>
+          <view class="pd-block"><text class="pd-k">{{item.place}}</text></view>
         </view>
-      </block>
-      <view wx:if="{{chase}}" class="chase">{{chase}}</view>
-      <view class="more-r" bindtap="rank">看完整榜单 ›</view>
-    </view>
+      </view>
+      <view class="board">
+        <block wx:for="{{board}}" wx:key="place">
+          <view wx:if="{{item.gap}}" class="gap">· · ·</view>
+          <view wx:else class="br {{item.me ? 'me' : ''}}">
+            <text class="br-p">{{item.place}}</text>
+            <image wx:if="{{item.av}}" class="br-av" src="{{item.av}}" mode="aspectFill" />
+            <view wx:else class="br-av pd-mark sm">{{item.mark}}</view>
+            <view class="br-main"><view class="br-n">{{item.name}}{{item.me ? '（我）' : ''}}</view><view wx:if="{{item.sub}}" class="br-sub">{{item.sub}}</view></view>
+            <text class="br-s">{{item.points}}</text>
+          </view>
+        </block>
+        <view class="more-r" bindtap="rank">看完整榜单 ›</view>
+      </view>
+    </block>
 
     <view class="between bh"><view class="h2" style="margin:0">最近的 PK</view></view>
-    <view wx:if="{{!pks.length}}" class="muted small note">还没有 PK。选一站点「发起」，发给同学。</view>
+    <view wx:if="{{!pks.length}}" class="muted small note">还没有 PK。在上面选一站点「发起」，发给同学。</view>
     <view wx:else class="list">
       <view wx:for="{{pks}}" wx:key="id" class="item" hover-class="hover-row" data-id="{{item.id}}" bindtap="open">
         <view class="item-main">
