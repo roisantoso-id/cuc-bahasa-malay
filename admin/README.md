@@ -1,15 +1,15 @@
 # 背单词服务（admin.bahasa.cn / api.bahasa.cn）
 
-部署在腾讯云新加坡轻量服务器 43.134.55.33，用 Docker Compose 管理，配置在仓库根目录的 `docker-compose.yml`，服务器上的目录是 `/opt/jombelajar`，登录用户 `ubuntu`：
+部署在腾讯云新加坡轻量服务器（本机 SSH 别名 `jombelajar`），用 Docker Compose 管理，配置在仓库根目录的 `docker-compose.yml`，服务器上的目录是 `/opt/jombelajar`，登录用户 `ubuntu`：
 
 | 容器 | 做什么 |
 |---|---|
 | `web` | Caddy：HTTPS 证书自动申请续期；托管官网 www.bahasa.cn（`/opt/jombelajar/website`）和后台网页（`admin/public/`，由 `admin/web` 构建）；把 `/api/*`、`/uploads/*` 转给 `api` |
 | `api` | Node 后端：`admin/server.mjs`（小程序接口 `/api/app/*`、老师照片）+ `admin/admin-api.mjs`（后台接口 `/api/admin/*`） |
 
-- 单词音频在**腾讯云 COS**（`jombelajar-audio-my-1314893093`，新加坡，公有读，目录 `vocab5000/audio/`；学生在马来西亚，离新加坡最近），库里只存文件名，接口返回 `AUDIO_BASE + 文件名`。
+- 单词音频在**腾讯云 COS**（新加坡，公有读，目录 `vocab5000/audio/`；学生在马来西亚，离新加坡最近），库里只存文件名，接口返回 `AUDIO_BASE + 文件名`。
 - 词库来自 `content/vocab5000/words.json`（`build.py` 从启航的 xlsx 和音频清单生成）。第一次启动时库里没有词，会自动导入。
-- 数据库是**腾讯云 MySQL**（内网 10.3.4.2:3306，云数据库自带每日备份），连接串在 `.env` 的 `DATABASE_URL`。后端唯一的依赖是 `mysql2`。
+- 数据库是**腾讯云 MySQL**（走内网，云数据库自带每日备份），连接串在 `.env` 的 `DATABASE_URL`。后端唯一的依赖是 `mysql2`。
 - 建表在启动时自动完成；`rank` 在 MySQL 8 是保留字，代码里自动加反引号。
 
 ## 本机开发
@@ -50,7 +50,7 @@ DEMO=1 DATABASE_URL=mysql://root:dev@127.0.0.1:3306/jb DEMO_AUDIO_DIR=~/dev/delo
 ## 上线步骤
 
 1. **服务器**：腾讯云轻量，新加坡（境外，不受腾讯备案拦截），2 核 2G 起，镜像选 Docker CE 或 Ubuntu 22.04/24.04。在控制台绑定 SSH 公钥。防火墙要开 22、80、443。
-2. **DNS**（阿里云）：`www`、`admin`、`api` 和 `@` 四条 A 记录指向 43.134.55.33（bahasa.cn 已备案，备案不在腾讯云）。防火墙要放行 80 和 443。
+2. **DNS**（阿里云）：`www`、`admin`、`api` 和 `@` `words` 五条 A 记录指向服务器公网 IP（bahasa.cn 已备案）。防火墙要放行 80 和 443。
 3. **初始化**（只做一次）：
    ```bash
    ssh ubuntu@<IP> 'sudo bash -s' < deploy/server-setup.sh

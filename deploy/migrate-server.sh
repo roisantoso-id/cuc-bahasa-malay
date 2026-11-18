@@ -4,7 +4,7 @@
 # 前提：本机能用密钥登录新旧两台。旧服务器不停，搬完验证好再改 DNS。
 # 2026-11-18：因为 bahasa.cn 的备案不在腾讯云，广州机 443 被拦，搬到新加坡。
 set -euo pipefail
-OLD="${OLD:-ubuntu@81.71.143.244}"
+OLD="${OLD:?用法：OLD=用户@旧服务器 NEW=用户@新服务器 bash deploy/migrate-server.sh}"
 NEW="${NEW:?用法：NEW=ubuntu@<新服务器IP> bash deploy/migrate-server.sh}"
 DIR=/opt/jombelajar
 cd "$(dirname "$0")/.."

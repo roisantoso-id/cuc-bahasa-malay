@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# 部署背单词服务到腾讯云新加坡服务器:HOST=ubuntu@<服务器IP> bash deploy/deploy-compose.sh
+# 部署背单词服务到腾讯云新加坡服务器:bash deploy/deploy-compose.sh(默认用 ~/.ssh/config 里的别名 jombelajar,也可以 HOST=用户@IP 指定)
 # 前提:服务器已经跑过 deploy/server-setup.sh,/opt/jombelajar/.env 已经填好
 set -euo pipefail
-HOST="${HOST:-ubuntu@43.134.55.33}"
+HOST="${HOST:-jombelajar}"
 DIR=/opt/jombelajar
 cd "$(dirname "$0")/.."
 

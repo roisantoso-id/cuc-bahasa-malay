@@ -15,3 +15,6 @@ wx/
 # 后台网页构建结果(admin/web 构建出来,部署脚本会先构建)
 admin/public/
 *.tsbuildinfo
+
+# 运维记录（服务器 IP、数据库地址、账号名等），只放本机，不进公开仓库
+ops/
