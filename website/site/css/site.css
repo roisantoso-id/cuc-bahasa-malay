@@ -263,16 +263,14 @@ p{text-wrap:pretty}
 @media (max-width:860px){.entry-wrap{grid-template-columns:1fr}}
 
 /* ---------- 团队 ---------- */
-.team{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,3.5fr) minmax(0,3.5fr);gap:clamp(20px,3vw,40px);align-items:start}
-.person figure{margin-bottom:18px;overflow:hidden;border-radius:4px;background:var(--paper2)}
-.person img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:saturate(.9)}
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px);align-items:start}
+.person figure{margin-bottom:18px;overflow:hidden;border-radius:6px;background:var(--paper2)}
+.person img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 25%;filter:saturate(.9)}
 .person .role{font-size:13px;letter-spacing:.12em;color:var(--amber);font-weight:600}
 .person h3{font-size:26px;margin-top:4px}
-.person.lead h3{font-size:32px}
 .person .aff{font-size:15px;color:var(--ink2);margin-top:4px}
 .person p.bio{margin-top:12px;font-size:15px;color:var(--ink2)}
-@media (max-width:960px){.team{grid-template-columns:1fr 1fr}.person.lead{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:end}}
-@media (max-width:560px){.team{grid-template-columns:1fr}.person.lead{display:block}.person{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px}.person.lead figure{max-width:none}.person figure{margin:0}}
+@media (max-width:760px){.team{grid-template-columns:1fr;gap:28px}.person{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}.person figure{margin:0}.person h3{font-size:22px}}
 .books{margin-top:clamp(56px,7vw,88px)}
 .books-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding-bottom:16px;border-bottom:2px solid var(--ink)}
 .books-h h3{font-size:22px}
