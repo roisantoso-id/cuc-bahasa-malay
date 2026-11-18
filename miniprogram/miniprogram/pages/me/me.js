@@ -21,7 +21,7 @@ Page({
       const heat = s.days.map(d => { const v = d.new + d.review; return { day: d.day, lv: v === 0 ? 0 : v / peak > 0.66 ? 3 : v / peak > 0.33 ? 2 : 1 } })
       let memory = null, next7 = []
       if (mem) {
-        const base = Math.max(1, mem.words)
+        const base = Math.max(1, mem.strong + mem.ok + mem.weak) // 条只按学过的词算比例；没见过的单独写数字（不然学得少时整条几乎是空的）
         memory = { ...mem, pStrong: mem.strong / base * 100, pOk: mem.ok / base * 100, pWeak: mem.weak / base * 100 }
         const peak7 = Math.max(1, ...mem.next7.map(d => d.n))
         const WK = ['日', '一', '二', '三', '四', '五', '六']

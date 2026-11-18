@@ -35,7 +35,7 @@
     </view>
 
     <view wx:if="{{memory}}">
-      <view class="sec"><text class="sec-t">记得多牢</text><text class="sec-x">已开放 {{memory.words}} 词</text></view>
+      <view class="sec"><text class="sec-t">记得多牢</text><text class="sec-x">学过 {{memory.strong + memory.ok + memory.weak}} / {{memory.words}} 词</text></view>
       <view class="me-stack">
         <view class="me-sg me-c1" style="width:{{memory.pStrong}}%" />
         <view class="me-sg me-c2" style="width:{{memory.pOk}}%" />
