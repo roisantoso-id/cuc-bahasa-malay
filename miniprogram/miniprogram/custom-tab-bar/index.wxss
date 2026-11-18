@@ -6,5 +6,3 @@
 /* 选中：犀鸟头像从栏里探出来，底下一道星光色的托 */
 .it.on .t { color: #e9b961; font-weight: 700; }
 .bird { width: 76rpx; height: 76rpx; border-radius: 50%; margin-bottom: -2rpx; box-shadow: 0 0 0 4rpx #e9b961, 0 8rpx 16rpx rgba(0,0,0,.4); transform: translateY(-14rpx); background: #f3ead6; }
-.bird.hop { animation: hop .5s cubic-bezier(.3,1.7,.5,1); }
-@keyframes hop { 0% { transform: translateY(10rpx) scale(.6); } 60% { transform: translateY(-22rpx) scale(1.05); } 100% { transform: translateY(-14rpx) scale(1); } }
