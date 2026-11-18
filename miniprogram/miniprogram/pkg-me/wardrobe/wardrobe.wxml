@@ -26,22 +26,45 @@
     </view>
 
     <view class="sec"><text class="sec-t">徽章</text><text class="sec-r">已获得 {{badgeN}} / {{badges.length}}</text></view>
-    <view class="wd-grid badges">
-      <view wx:for="{{badges}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}}" data-i="{{index}}" data-g="badges" bindtap="open">
-        <view class="wd-box round"><image class="wd-img" src="{{item.img}}" webp mode="aspectFill" /></view>
-        <view class="wd-t">{{item.title}}</view>
+    <!-- 徽章按三条里程碑轨道排：打卡、词数、对战。实心金圈 = 已拿到，虚线圈 = 正在冲的下一枚 -->
+    <view wx:for="{{tracks}}" wx:for-item="t" wx:key="name" class="wd-tr">
+      <view class="wd-tr-h"><text class="wd-tr-t">{{t.name}}</text><text class="wd-tr-n {{t.hot ? 'hot' : ''}}">{{t.note}}</text></view>
+      <view class="wd-tr-a">
+        <view wx:if="{{!t.free}}" class="wd-tr-line"><view class="wd-tr-fill" style="width:{{t.pct}}%" /></view>
+        <view wx:for="{{t.nodes}}" wx:key="i" class="wd-nd" data-i="{{item.i}}" data-g="badges" bindtap="open">
+          <view class="wd-nd-c {{item.state}}"><image class="wd-nd-img" src="{{item.img}}" webp mode="aspectFill" /></view>
+          <text class="wd-nd-l {{item.state}}">{{item.label}}</text>
+        </view>
       </view>
     </view>
   </block>
 </view>
 
-<!-- 点任何一件都能放大看；解锁了可以直接换上 -->
+<!-- 弹窗：每件有自己的来历；已解锁服装撒彩纸 + 铜锣，徽章像印章砸下 + 闪光，没解锁的给目标和进度 -->
 <view wx:if="{{pv}}" class="wd-mask {{pvOn ? 'on' : ''}}" catchtouchmove="noop" bindtap="close">
   <view class="wd-pv {{pvOn ? 'on' : ''}}" catchtap="noop">
-    <image class="wd-pv-img {{pv.type === 'badge' ? 'round' : ''}}" src="{{pv.img}}" webp mode="aspectFill" />
-    <view class="wd-pv-t">{{pv.title}}</view>
-    <view class="wd-pv-d {{pv.unlocked ? 'ok' : ''}}">{{pv.unlocked ? (pv.type === 'badge' ? '已获得' : (mascot === pv.key ? '正在穿' : '已解锁')) : pv.desc}}</view>
-    <view wx:if="{{pv.type === 'costume' && pv.unlocked && mascot !== pv.key}}" class="btn btn-main wd-pv-b" hover-class="hover" data-k="{{pv.key}}" bindtap="wear">换上</view>
-    <view wx:else class="btn btn-ghost wd-pv-b" hover-class="hover" bindtap="close">{{pv.unlocked ? '好的' : '继续加油'}}</view>
+    <view class="wd-x" hover-class="hover" bindtap="close"><view class="wd-x-l" /><view class="wd-x-l r" /></view>
+    <view class="wd-pill {{pvMood}}">{{pvPill}}</view>
+    <view class="wd-pv-stage">
+      <view class="wd-nav l {{pvI > 0 ? '' : 'off'}}" hover-class="hover" data-d="-1" bindtap="step"><view class="wd-chev" /></view>
+      <view wx:for="{{[pvTick]}}" wx:key="*this" class="wd-pv-box {{pv.type === 'badge' ? 'round' : ''}} {{pvMood === 'win' ? (pv.type === 'badge' ? 'stamp' : 'hop') : 'rise'}} {{pv.unlocked ? '' : 'dim'}}">
+        <image class="wd-pv-img" src="{{pv.img}}" webp mode="{{pv.type === 'badge' ? 'aspectFill' : 'aspectFit'}}" />
+        <fx-burst wx:if="{{pv.type === 'badge' && pv.unlocked}}" fire="{{pvBurst}}" count="14" />
+      </view>
+      <view class="wd-nav r {{pvI < pvN - 1 ? '' : 'off'}}" hover-class="hover" data-d="1" bindtap="step"><view class="wd-chev" /></view>
+    </view>
+    <view class="wd-pv-t">{{pv.short || pv.title}}</view>
+    <view wx:if="{{pv.latin && pv.short !== pv.title}}" class="wd-pv-ms">{{pv.latin}}</view>
+    <view class="wd-story">{{pv.story}}</view>
+
+    <block wx:if="{{!pv.unlocked && pvGoal}}">
+      <view class="wd-pg"><view wx:for="{{[pvTick]}}" wx:key="*this" class="wd-pg-f" style="width:{{pvGoal.pct}}%" /></view>
+      <view class="wd-pg-n"><text>{{pvGoal.left}}</text><text>{{pvGoal.right}}</text></view>
+    </block>
+    <view wx:elif="{{!pv.unlocked}}" class="wd-how">{{pv.desc}}</view>
+
+    <view wx:if="{{pv.type === 'costume' && pv.unlocked && mascot !== pv.key}}" class="btn btn-main wd-pv-b" hover-class="hover" data-k="{{pv.key}}" bindtap="wear">换上它</view>
+    <view wx:elif="{{pv.type === 'costume' && !pv.unlocked && pvGoal && pvGoal.open}}" class="btn btn-main wd-pv-b" hover-class="hover" bindtap="goLearn">去学第 {{pvGoal.level}} 站</view>
   </view>
 </view>
+<fx-confetti fire="{{cf}}" count="80" />
