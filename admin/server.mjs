@@ -317,6 +317,9 @@ async function appApi(req, res, p, url) {
   if (p === '/api/app/login' && req.method === 'POST') {
     const b = await body(req)
     const openid = await code2openid(b.code)
+    // 打开就能学：第一次登录自动建学生，姓名、学校这些以后在「我的」里选填
+    const now = new Date().toISOString()
+    await run(`INSERT IGNORE INTO students (openid, name, school, class_name, track, phone, created_at, last_active_at) VALUES (?, '', '', '', 'zero', '', ?, ?)`, openid, now, now)
     return send(res, 200, { token: signToken(openid), student: studentOut(await one('SELECT * FROM students WHERE openid = ?', openid)) })
   }
   const openid = readToken(req)
@@ -327,10 +330,9 @@ async function appApi(req, res, p, url) {
   if (p === '/api/app/register' && req.method === 'POST') {
     const b = await body(req)
     const name = str(b.name, 30), school = str(b.school, 60), className = str(b.className, 40), phone = str(b.phone, 20).replace(/[\s-]/g, '')
-    if (!name) return fail(res, 400, '请填写姓名或昵称')
-    if (!school) return fail(res, 400, '请填写学校')
-    if (!/^1\d{10}$|^\+?\d{8,15}$/.test(phone)) return fail(res, 400, '手机号格式不对')
-    if (!b.agree) return fail(res, 400, '请先阅读并同意隐私保护指引')
+    // 资料全部选填；填了手机号才校验格式。只要填了任何个人资料，就要先同意隐私说明
+    if (phone && !/^1\d{10}$|^\+?\d{8,15}$/.test(phone)) return fail(res, 400, '手机号格式不对')
+    if ((name || school || className || phone) && !b.agree) return fail(res, 400, '请先阅读并同意隐私说明')
     const now = new Date().toISOString()
     await run(`INSERT INTO students (openid, name, school, class_name, track, phone, created_at, last_active_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE name = VALUES(name), school = VALUES(school), class_name = VALUES(class_name), track = VALUES(track), phone = VALUES(phone)`,

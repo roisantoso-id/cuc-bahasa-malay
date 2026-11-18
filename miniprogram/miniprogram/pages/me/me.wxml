@@ -6,13 +6,13 @@
     <view class="passport">
       <view class="pp-top between">
         <text class="no pp-k">PASPORT BAHASA · 马来语护照</text>
-        <text class="pp-edit" data-url="/pages/register/register" bindtap="go">修改资料 ›</text>
+        <text class="pp-edit" data-url="/pages/register/register" bindtap="go">{{student.name ? '修改资料' : '完善资料'}} ›</text>
       </view>
       <view class="row pp-body">
         <image class="pp-photo" src="/assets/avatar.jpg" mode="aspectFill" />
         <view class="item-main">
-          <view class="pp-l">NAMA 姓名</view><view class="pp-v">{{student.name}}</view>
-          <view class="pp-l">SEKOLAH 学校</view><view class="pp-v small">{{student.school}}{{student.className ? ' · ' + student.className : ''}}</view>
+          <view class="pp-l">NAMA 姓名</view><view class="pp-v">{{student.name || '同学'}}</view>
+          <view class="pp-l">SEKOLAH 学校</view><view class="pp-v small">{{student.school || '未填'}}{{student.className ? ' · ' + student.className : ''}}</view>
           <view class="pp-l">起点</view><view class="pp-v small">{{track}}</view>
         </view>
       </view>

@@ -6,7 +6,7 @@
     <view class="hello between">
       <view>
         <view class="hi ms">{{greet}},</view>
-        <view class="h1">{{h.student.name}}</view>
+        <view class="h1">{{h.student.name || '同学'}}</view>
       </view>
       <view class="streak {{h.checkedToday ? 'on' : ''}}">
         <view class="streak-n">{{h.streak}}</view>

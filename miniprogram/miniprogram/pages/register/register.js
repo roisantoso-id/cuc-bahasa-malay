@@ -4,12 +4,12 @@ const vocab = require('../../api/vocab')
 Page({
   data: { form: { name: '', school: '', className: '', track: 'zero', phone: '' }, agree: false, busy: false, error: '', edit: false },
   async onLoad(q) {
+    // 现在只用来完善 / 修改资料（打开小程序已自动登录），全部选填
     const me = await vocab.login().catch(() => null)
-    if (me && me.student) {
-      const s = me.student
-      this.setData({ edit: true, agree: true, form: { name: s.name, school: s.school, className: s.className, track: s.track, phone: s.phone } })
-      wx.setNavigationBarTitle({ title: '修改资料' })
-    }
+    const s = (me && me.student) || {}
+    const filled = !!(s.name || s.school || s.phone)
+    this.setData({ edit: true, agree: filled, form: { name: s.name || '', school: s.school || '', className: s.className || '', track: s.track || 'zero', phone: s.phone || '' } })
+    wx.setNavigationBarTitle({ title: filled ? '修改资料' : '完善资料' })
   },
   input(e) { this.setData({ [`form.${e.currentTarget.dataset.k}`]: e.detail.value, error: '' }) },
   setTrack(e) { this.setData({ 'form.track': e.currentTarget.dataset.v }) },
@@ -20,8 +20,8 @@ Page({
     try {
       await vocab.register({ ...this.data.form, agree: this.data.agree })
       getApp().globalData.dirty = true
-      wx.showToast({ title: this.data.edit ? '已保存' : '注册成功', icon: 'success' })
-      setTimeout(() => (this.data.edit ? wx.navigateBack() : wx.switchTab({ url: '/pages/home/home' })), 600)
+      wx.showToast({ title: '已保存', icon: 'success' })
+      setTimeout(() => wx.navigateBack(), 600)
     } catch (e) {
       this.setData({ error: e.message })
     } finally {
