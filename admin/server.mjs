@@ -420,14 +420,14 @@ async function appApi(req, res, p, url) {
   // 记得多牢 + 未来 7 天复习量（护照页）：牢固 = 已掌握或盒子 ≥ 4；熟悉 = 盒子 1–3；快忘了 = 盒子 0 或已到期；没见过 = 已上架但没学过
   // 按天的词云（图鉴）：每个词按第一次学的日期（北京时间）分组，最近 60 天，每天最多 200 个
   if (p === '/api/app/days') {
-    const rows = await all(`SELECT p.rank, p.first_at, p.box, w.ms, w.senses FROM progress p JOIN words w ON w.rank = p.rank
+    const rows = await all(`SELECT p.rank, p.first_at, p.box, w.ms, w.senses, w.audio FROM progress p JOIN words w ON w.rank = p.rank
       WHERE p.student_id = ? AND p.seen > 0 AND p.first_at IS NOT NULL AND p.first_at >= ? ORDER BY p.first_at`, st.id, new Date(Date.now() - 61 * 86400e3).toISOString())
     const byDay = new Map()
     for (const r of rows) {
       const d = new Date(new Date(r.first_at).getTime() + 8 * 3600e3).toISOString().slice(0, 10)
       if (!byDay.has(d)) byDay.set(d, [])
       const list = byDay.get(d)
-      if (list.length < 200) list.push({ rank: r.rank, ms: r.ms, zh: (JSON.parse(r.senses || '[]').find(x => !x.check) || {}).zh || '', box: r.box })
+      if (list.length < 200) list.push({ rank: r.rank, ms: r.ms, zh: (JSON.parse(r.senses || '[]').find(x => !x.check) || {}).zh || '', box: r.box, audio: r.audio ? AUDIO_BASE + r.audio : '' })
     }
     return send(res, 200, { days: [...byDay.entries()].map(([day, words]) => ({ day, words })) })
   }

@@ -1,6 +1,7 @@
 // 图鉴：按天的词云。每天学过的词（按第一次学的日期）飘在一片夜空里，越熟越大越亮；点词看详情。
 const setTab = require('../../utils/tab')
 const vocab = require('../../api/vocab')
+const audio = require('../../utils/vocab-audio')
 
 const MAX = 60 // 一朵词云最多放这么多词，再多就挤了
 const md = d => `${Number(d.slice(5, 7))}.${Number(d.slice(8, 10))}`
@@ -21,7 +22,7 @@ function layout(words, W, H) {
       if (x < 6 || y < 6 || x + ww > W - 6 || y + hh > H - 6) continue
       if (placed.some(p => x < p.x + p.w && x + ww > p.x && y < p.y + p.h && y + hh > p.y)) continue
       placed.push({ x, y, w: ww, h: hh })
-      out.push({ k: w.rank, rank: w.rank, ms: w.ms, b, fs, x: Math.round(x), y: Math.round(y), d: out.length * 45, dur: (3 + (w.rank % 5) * 0.6).toFixed(1) })
+      out.push({ k: w.rank, rank: w.rank, ms: w.ms, audio: w.audio || '', b, fs, x: Math.round(x), y: Math.round(y), d: out.length * 45, dur: (3 + (w.rank % 5) * 0.6).toFixed(1) })
       return
     }
   })
@@ -69,14 +70,17 @@ Page({
     const popW = info.windowWidth * 0.86, popLeft = (info.windowWidth - popW) / 2
     this.setData({ pop: { rank: r, ms: w.ms || '' }, popOn: false, popOx: Math.round(16 + x - popLeft), popOy: Math.round(y - info.windowHeight * 0.18) })
     setTimeout(() => this.setData({ popOn: true }), 20)
+    if (w.audio) audio.play(w.audio)   // 点词就读出来
     try {
       const d = await vocab.word(r)
+      if (!w.audio && d.audio && this.data.pop && this.data.pop.rank === r) audio.play(d.audio)
       if (this.data.pop && this.data.pop.rank === r) this.setData({ pop: { rank: r, ms: d.ms, root: d.root, audio: d.audio, fav: d.fav, senses: (d.senses || []).slice(0, 3) } })
     } catch (err) { wx.showToast({ title: err.message, icon: 'none' }) }
   },
   close() {
     if (!this.data.pop) return
     this.setData({ popOn: false })
+    audio.stop()
     setTimeout(() => this.setData({ pop: null }), 260)
   },
   async fav() {
