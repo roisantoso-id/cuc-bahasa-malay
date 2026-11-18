@@ -27,7 +27,7 @@
 
     <!-- 我：这一屏唯一的星光色 -->
     <view class="rk me">
-      <image class="rk-av" src="{{me.av || '/assets/avatar.jpg'}}" mode="aspectFill" />
+      <image class="rk-av" src="{{me.av || '/assets/avatar.jpg'}}" webp mode="aspectFill" />
       <view class="rk-main">
         <view class="rk-n">{{me.name || '我'}}</view>
         <view class="rk-sub">{{me.place ? '本周第 ' + me.place + ' 名' : '本周还没上榜'}}{{chase ? ' · ' + chase : ''}}</view>
@@ -42,7 +42,7 @@
       <view wx:if="{{podium.length >= 3}}" class="bt-podium">
         <view wx:for="{{podium}}" wx:key="place" class="bt-pd bt-p{{item.place}}">
           <view class="bt-pd-k">{{item.place}}</view>
-          <image wx:if="{{item.av}}" class="bt-pd-av" src="{{item.av}}" mode="aspectFill" />
+          <image wx:if="{{item.av}}" class="bt-pd-av" src="{{item.av}}" webp mode="aspectFill" />
           <view wx:else class="bt-pd-av bt-mark">{{item.mark}}</view>
           <view class="bt-pd-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
           <view class="bt-pd-s">{{item.points}} 分</view>
@@ -53,7 +53,7 @@
           <view wx:if="{{item.gap}}" class="rk-gap">···</view>
           <view class="rk">
             <text class="rk-p">{{item.place}}</text>
-            <image wx:if="{{item.av}}" class="rk-av" src="{{item.av}}" mode="aspectFill" />
+            <image wx:if="{{item.av}}" class="rk-av" src="{{item.av}}" webp mode="aspectFill" />
             <view wx:else class="rk-av bt-mark sm">{{item.mark}}</view>
             <view class="rk-main"><view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view><view wx:if="{{item.sub}}" class="rk-sub">{{item.sub}}</view></view>
             <text class="rk-s">{{item.points}}</text>

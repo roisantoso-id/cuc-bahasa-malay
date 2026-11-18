@@ -14,7 +14,7 @@
         <view class="me-ach-n"><text class="num">{{badgeN}}</text><text class="me-ach-l">徽章</text></view>
       </view>
       <view wx:if="{{myBadges.length}}" class="me-badges">
-        <image wx:for="{{myBadges}}" wx:key="key" class="me-bdg" src="{{item.img}}" mode="aspectFill" />
+        <image wx:for="{{myBadges}}" wx:key="key" class="me-bdg" src="{{item.img}}" webp mode="aspectFill" />
       </view>
       <view class="btn btn-main me-dress" hover-class="hover" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go">换装和徽章</view>
     </view>

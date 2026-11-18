@@ -36,7 +36,7 @@
     <view wx:else>
       <view wx:for="{{list}}" wx:key="place" class="rk {{item.me ? 'me' : ''}}">
         <text class="rk-p {{item.place < 4 ? 'top' : ''}}">{{item.place}}</text>
-        <image class="rk-av" src="{{av.of(item)}}" mode="aspectFill" />
+        <image class="rk-av" src="{{av.of(item)}}" webp mode="aspectFill" />
         <view class="rk-main">
           <view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
           <view class="rk-sub">{{item.school || '—'}}</view>

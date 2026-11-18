@@ -14,7 +14,7 @@
   <block wx:else>
     <!-- 我不在榜上时，单独一行 -->
     <view wx:if="{{me}}" class="rk me">
-      <image class="rk-av" src="{{av.of(me)}}" mode="aspectFill" />
+      <image class="rk-av" src="{{av.of(me)}}" webp mode="aspectFill" />
       <view class="rk-main"><view class="rk-n">我</view><view class="rk-sub">本周还没上榜，多学几个词就能上</view></view>
       <view class="rk-r"><text class="rk-s">{{me.points}}</text><text class="rk-x"> 分</text></view>
     </view>
@@ -36,7 +36,7 @@
     <view wx:else>
       <view wx:for="{{list}}" wx:key="place" class="rk {{item.me ? 'me' : ''}}">
         <text class="rk-p {{item.place < 4 ? 'top' : ''}}">{{item.place}}</text>
-        <image class="rk-av" src="{{av.of(item)}}" mode="aspectFill" />
+        <image class="rk-av" src="{{av.of(item)}}" webp mode="aspectFill" />
         <view class="rk-main">
           <view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
           <view class="rk-sub">{{tab === 'class' ? '' : (item.school || '—')}} {{item.className}}</view>

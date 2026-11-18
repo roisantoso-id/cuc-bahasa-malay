@@ -1,7 +1,7 @@
 <view class="wrap">
   <!-- 头像：只能用已解锁的犀鸟形象，去「换装」里选 -->
   <view class="rg-av" bindtap="wardrobe">
-    <image class="rg-av-img" src="{{avatar || '/assets/avatar.jpg'}}" mode="aspectFill" />
+    <image class="rg-av-img" src="{{avatar || '/assets/avatar.jpg'}}" webp mode="aspectFill" />
     <view class="rg-av-t">我的犀鸟形象 <text class="muted small">去换装 ›</text></view>
   </view>
 

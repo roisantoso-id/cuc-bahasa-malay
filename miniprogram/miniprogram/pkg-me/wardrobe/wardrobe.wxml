@@ -14,11 +14,11 @@
     <view class="sec"><text class="sec-t">服装</text><text class="sec-r">已解锁 {{costumeN}} / {{costumes.length}}</text></view>
     <view class="wd-grid">
       <view class="wd-it {{!mascot ? 'on' : ''}}" bindtap="pick" data-k="">
-        <image class="wd-img" src="/assets/avatar.jpg" mode="aspectFill" />
+        <image class="wd-img" src="/assets/avatar.jpg" webp mode="aspectFill" />
         <view class="wd-t">原版犀鸟</view>
       </view>
       <view wx:for="{{costumes}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}} {{mascot === item.key ? 'on' : ''}}" data-i="{{index}}" data-g="costumes" bindtap="open">
-        <image class="wd-img" src="{{item.img}}" mode="aspectFill" lazy-load />
+        <image class="wd-img" src="{{item.img}}" webp mode="aspectFill" />
         <view class="wd-t">{{item.title}}</view>
         <view wx:if="{{!item.unlocked}}" class="wd-lk">未解锁</view>
         <view wx:if="{{!item.unlocked}}" class="wd-lock">{{item.desc}}</view>
@@ -28,7 +28,7 @@
     <view class="sec"><text class="sec-t">徽章</text><text class="sec-r">已获得 {{badgeN}} / {{badges.length}}</text></view>
     <view class="wd-grid badges">
       <view wx:for="{{badges}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}}" data-i="{{index}}" data-g="badges" bindtap="open">
-        <image class="wd-img" src="{{item.img}}" mode="aspectFill" lazy-load />
+        <image class="wd-img" src="{{item.img}}" webp mode="aspectFill" />
         <view class="wd-t">{{item.title}}</view>
       </view>
     </view>
@@ -38,7 +38,7 @@
 <!-- 点任何一件都能放大看；解锁了可以直接换上 -->
 <view wx:if="{{pv}}" class="wd-mask {{pvOn ? 'on' : ''}}" catchtouchmove="noop" bindtap="close">
   <view class="wd-pv {{pvOn ? 'on' : ''}}" catchtap="noop">
-    <image class="wd-pv-img {{pv.type === 'badge' ? 'round' : ''}}" src="{{pv.img}}" mode="aspectFill" />
+    <image class="wd-pv-img {{pv.type === 'badge' ? 'round' : ''}}" src="{{pv.img}}" webp mode="aspectFill" />
     <view class="wd-pv-t">{{pv.title}}</view>
     <view class="wd-pv-d {{pv.unlocked ? 'ok' : ''}}">{{pv.unlocked ? (pv.type === 'badge' ? '已获得' : (mascot === pv.key ? '正在穿' : '已解锁')) : pv.desc}}</view>
     <view wx:if="{{pv.type === 'costume' && pv.unlocked && mascot !== pv.key}}" class="btn btn-main wd-pv-b" hover-class="hover" data-k="{{pv.key}}" bindtap="wear">换上</view>
