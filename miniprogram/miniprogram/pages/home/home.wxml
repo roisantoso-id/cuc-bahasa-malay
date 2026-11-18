@@ -3,48 +3,48 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <view class="date">{{date}} · 连续第 {{h.streak}} 天</view>
-    <view class="hi">{{greet}}，{{h.student.name || '同学'}}。</view>
+    <view class="hm-date">{{date}} · 连续第 {{h.streak}} 天</view>
+    <view class="h1">{{greet}}，{{h.student.name || '同学'}}。</view>
 
-    <view class="hero">
-      <view class="ring-box">
-        <canvas type="2d" id="ring" class="ring" />
-        <view class="ring-in">
-          <view class="big">{{todo}}</view>
-          <view class="lab">今天要见的词</view>
+    <!-- 这一屏的主角：今天要见几个词。圆环是今天的进度 -->
+    <view class="hm-hero">
+      <view class="hm-ring-box">
+        <canvas type="2d" id="ring" class="hm-ring" />
+        <view class="hm-ring-in">
+          <view class="hm-big">{{todo}}</view>
+          <view class="hm-lab">{{todo ? '今天要见的词' : '今天的航程完成了'}}</view>
         </view>
       </view>
-      <image class="bird" src="/assets/bird-hero.png" mode="aspectFit" />
+      <image class="hm-bird" src="/assets/bird-hero.png" mode="aspectFit" />
     </view>
 
     <view class="stats">
-      <view><view class="n">{{h.today.due}}</view><view class="l">先温故</view></view>
-      <view><view class="n">{{h.today.newLeft}}</view><view class="l">再知新</view></view>
-      <view><view class="n">{{mins}}<text class="u"> 分钟</text></view><view class="l">大约</view></view>
+      <view class="stat"><view class="stat-n">{{h.today.due}}</view><view class="stat-l">先温故</view></view>
+      <view class="stat"><view class="stat-n">{{h.today.newLeft}}</view><view class="stat-l">再知新</view></view>
+      <view class="stat"><view class="stat-n">{{mins}}<text class="stat-u"> 分钟</text></view><view class="stat-l">大约</view></view>
     </view>
 
-    <view class="cta">
-      <button wx:if="{{todo}}" class="btn btn-main" hover-class="hover" bindtap="start">开始今天的航程</button>
-      <block wx:else>
-        <button class="btn btn-main" hover-class="hover" disabled>今天的航程完成了</button>
-        <button class="btn btn-ghost" style="margin-top:20rpx" hover-class="hover" bindtap="more">再多学 10 个</button>
-      </block>
+    <view class="hm-cta">
+      <button wx:if="{{todo}}" class="btn btn-main btn-block" hover-class="hover" bindtap="start">开始今天的航程<text class="btn-arr">→</text></button>
+      <button wx:else class="btn btn-main btn-block" hover-class="hover" bindtap="more">再多学 10 个<text class="btn-arr">→</text></button>
     </view>
 
-    <view class="line" hover-class="hover" bindtap="atlas">
-      <view class="dots" />
-      <view class="item-main">
-        <view class="l1">已点亮 <text class="star-n">{{h.total.learned}}</text> 颗星</view>
-        <view class="muted small">{{cur.city}}还有 {{left}} 颗没亮</view>
+    <view class="list hm-list">
+      <view class="item" hover-class="hover-row" bindtap="atlas">
+        <view class="hm-dots" />
+        <view class="item-main">
+          <view>已点亮 <text class="hm-star">{{h.total.learned}}</text> 颗星</view>
+          <view class="muted small">{{cur.city}}还有 {{left}} 颗没亮</view>
+        </view>
+        <text class="arrow">›</text>
       </view>
-      <text class="arrow">›</text>
-    </view>
 
-    <view wx:if="{{wod}}" class="line wod" hover-class="hover" bindtap="playWod">
-      <view class="say-ic"><view class="cone" /><view class="wave" /></view>
-      <view class="item-main">
-        <view class="row w1"><text class="wms">{{wod.ms}}</text><text class="wzh">{{wod.zh}}</text></view>
-        <view class="muted small one">今日一词{{wod.ex ? ' · ' + wod.ex : ''}}</view>
+      <view wx:if="{{wod}}" class="item" hover-class="hover-row" bindtap="playWod">
+        <view class="hm-say"><view class="hm-cone" /><view class="hm-wave" /></view>
+        <view class="item-main">
+          <view class="hm-w1"><text class="ms hm-wms">{{wod.ms}}</text><text>{{wod.zh}}</text></view>
+          <view class="muted small one">今日一词{{wod.ex ? ' · ' + wod.ex : ''}}</view>
+        </view>
       </view>
     </view>
   </block>

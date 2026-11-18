@@ -1,16 +1,15 @@
-/* 小喇叭:纯 CSS 画。默认深色页上用（星光色线条）；tone=ivory 用在象牙卡片上 */
-.say { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(233,185,97,.16); flex-shrink: 0; }
-.say.hover { opacity: .7; }
+/* 小喇叭：纯 CSS 画。默认用在深色页上（细描边、象牙线条）；tone=ivory 放在象牙卡片上；tone=big 是听音题的大按钮 */
+.say { position: relative; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 2rpx solid rgba(243,234,214,.24); box-sizing: border-box; flex-shrink: 0; }
+.say::before { content: ''; position: absolute; left: -12rpx; right: -12rpx; top: -12rpx; bottom: -12rpx; }
+.say.hover { opacity: .6; }
 .say-md { width: 72rpx; height: 72rpx; }
 .say-lg { width: 104rpx; height: 104rpx; }
-.say-sm { width: 56rpx; height: 56rpx; }
-.cone { width: 0; height: 0; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; border-right: 16rpx solid #e9b961; margin-right: 4rpx; }
+.say-sm { width: 64rpx; height: 64rpx; }
+.cone { width: 0; height: 0; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; border-right: 16rpx solid #f3ead6; margin-right: 4rpx; }
 .say-lg .cone { border-top-width: 18rpx; border-bottom-width: 18rpx; border-right-width: 24rpx; }
-.wave { width: 14rpx; height: 24rpx; border: 5rpx solid #e9b961; border-left: 0; border-radius: 0 24rpx 24rpx 0; }
+.wave { width: 14rpx; height: 24rpx; border: 4rpx solid #f3ead6; border-left: 0; border-radius: 0 24rpx 24rpx 0; }
 .say-lg .wave { width: 20rpx; height: 36rpx; border-width: 6rpx; border-left: 0; }
-.tone-ivory { background: #1f6b4e; }
-.tone-ivory .cone { border-right-color: #f3ead6; }
-.tone-ivory .wave { border-color: #f3ead6; }
-.tone-big { background: #f3ead6; }
+.tone-ivory { background: #1f6b4e; border-color: #1f6b4e; }
+.tone-big { background: #f3ead6; border-color: #f3ead6; }
 .tone-big .cone { border-right-color: #0a1f22; }
 .tone-big .wave { border-color: #0a1f22; }

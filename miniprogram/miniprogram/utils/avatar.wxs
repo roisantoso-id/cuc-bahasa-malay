@@ -1,0 +1,9 @@
+// 排行里的头像：有真头像用真头像；没有就按用户编号固定挑一只犀鸟（和 pages/battle 里的规则一样）
+var POSES = ['avatar', 'study', 'cheer', 'pass', 'welcome', 'checkin']
+function of(item) {
+  if (!item) return '/assets/avatar.jpg'
+  if (item.avatar) return item.avatar
+  var n = Math.abs(parseInt(item.aid, 10) || 0)
+  return '/assets/' + POSES[n % POSES.length] + '.jpg'
+}
+module.exports = { of: of }

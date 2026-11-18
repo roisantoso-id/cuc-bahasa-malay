@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>马来语高频词 · 小程序统一视觉 v3（词光夜航）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#e9e4da}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#1c2420;line-height:1.6;font-size:15px;overflow-x:hidden}
+.doc{max-width:1700px;margin:0 auto;padding:40px 32px 80px}
+.doc h1{font-family:"Songti SC","STSong",serif;font-size:34px;line-height:1.25}
+.doc>p{max-width:820px;color:#47524c;margin-top:10px}
+.doc h2{font-family:"Songti SC","STSong",serif;font-size:24px;margin:48px 0 16px;padding-top:28px;border-top:2px solid #1c2420}
+.phones{display:flex;flex-wrap:wrap;gap:40px 34px;align-items:flex-start}
+.pw{width:375px}
+.pw figcaption{font-size:14px;color:#47524c;margin-top:14px;line-height:1.5}
+.pw figcaption b{color:#1c2420}
+.phone{position:relative;width:375px;border-radius:46px;overflow:hidden;background:#0a1f22;color:#f3ead6;box-shadow:0 0 0 9px #15181a,0 0 0 10.5px #3a3f42,0 34px 60px -24px rgba(20,24,26,.55)}
+.sb{position:absolute;left:0;right:0;top:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:12px 30px 0;font-weight:600;font-size:15px;z-index:5}
+.sb i{display:flex;gap:5px;align-items:center}
+.sb i b{display:block;width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.9}
+.sb i u{display:block;width:15px;height:10px;background:currentColor;clip-path:polygon(0 100%,100% 0,100% 100%)}
+.nav{position:absolute;left:0;right:0;top:44px;height:44px;line-height:44px;padding-left:16px;font-weight:600;font-size:17px}
+.capsule{position:absolute;right:7px;top:50px;width:87px;height:32px;border-radius:16px;border:.5px solid rgba(255,255,255,.25);background:rgba(0,0,0,.2)}
+.scr{position:absolute;left:0;right:0;top:88px;bottom:0;overflow:hidden;transform:translateZ(0)}
+.scr *{box-sizing:border-box}
+.scr img{display:inline-block;vertical-align:top;object-fit:cover}
+/* 模拟微信基础库 v2 的 button 默认样式，用来验证我们的按钮规则能压住它 */
+.scr button{appearance:none;border:0;font-family:inherit;cursor:pointer}
+.scr button:not([size=mini]){display:block;width:184px;margin-left:auto;margin-right:auto;padding:8px 24px;font-size:17px;font-weight:500;line-height:1.41;border-radius:4px;min-height:40px;background:#f2f2f2;color:#06ae56}
+.scr .c-tab .tb-bar{position:absolute}
+.scr .ln-below,.scr .at-pop-body{overflow:auto}
+.scr.sys{position:static;transform:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;padding:32px;border-radius:24px}
+.sys-h{font-size:12px;color:rgba(243,234,214,.64);margin-bottom:12px;letter-spacing:.04em}
+.sys-row{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(243,234,214,.12)}
+.sys-k{font-size:12px;color:rgba(243,234,214,.5);text-align:right;flex:none}
+.sys-sw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sys-c{height:72px;border-radius:8px;padding:8px;font-size:12px;line-height:1.35;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid rgba(243,234,214,.12)}
+.sys-c b{font-family:ui-monospace,Menlo,monospace;font-weight:400}
+.sys-sp{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sys-sp i{display:block;height:24px;background:#e9b961}
+.sys-sp em{font-style:normal;font-size:12px;color:rgba(243,234,214,.64);margin-right:10px}
+.sys-sp u{display:block;width:48px;height:32px;border:1px solid rgba(243,234,214,.24)}
+@media(max-width:1100px){.scr.sys{grid-template-columns:1fr}.doc{padding:24px 16px 60px}}
+@media(max-width:440px){.phones{zoom:.82}}
+/* ====== 以下由小程序 WXSS 自动换算（1rpx = 0.5px）====== */
+.scr{
+  --night: #0a1f22;
+  --panel: #14353a;
+  --panel2: #0f2a2e;
+  --ivory: #f3ead6;
+  --star: #e9b961;
+  --ok: #8fc0a0;
+  --bad: #e8836a;
+  --ink: #f3ead6;
+  --ink2: rgba(243,234,214,.64);
+  --ink3: rgba(243,234,214,.4);
+  --hair: rgba(243,234,214,.12);
+  --hair2: rgba(243,234,214,.24);
+  --dark-ink: #0a1f22;
+  --dark-ink2: rgba(10,31,34,.62);
+  --dark-hair: rgba(10,31,34,.14);
+  --leaf: #1f6b4e;
+  --star-d: #8a5c0c;
+  --bad-d: #b84a33;
+  --star-l: rgba(233,185,97,.14);
+  --ok-l: rgba(143,192,160,.14);
+  --bad-l: rgba(232,131,106,.12);
+
+  --t-display: 44px;
+  --t-title: 22px;
+  --t-section: 16px;
+  --t-body: 15px;
+  --t-caption: 12px;
+  --f-ms: Georgia, "Times New Roman", serif;
+  --f-zh: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --f-body: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+  --r-sm: 8px; --r-lg: 16px; --r-pill: 499.5px;
+
+  
+  --paper: var(--night); --paper2: var(--panel2); --card: var(--panel); --card2: var(--panel);
+  --edge: var(--hair); --line: var(--hair); --bg: var(--night);
+  --green: var(--ok); --green-hi: var(--ok); --green-d: var(--ok); --green-l: var(--ok-l);
+  --teal: var(--panel); --teal-hi: var(--panel); --teal-d: var(--panel2);
+  --amber: var(--star); --amber-hi: var(--star); --amber-d: var(--star); --amber-l: var(--star-l);
+  --coral: var(--bad); --coral-d: var(--bad); --coral-l: var(--bad-l);
+  --blue: var(--ink2); --blue-d: var(--ink2); --blue-l: var(--hair);
+  --yellow: var(--star);
+
+  background: var(--night);
+  color: var(--ink);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  font-family: var(--f-body);
+}
+.scr .wrap{ padding: var(--s3) var(--s4) 48px; }
+.scr .tab-pad{ height: calc(70px + env(safe-area-inset-bottom)); }
+.scr .row{ display: flex; align-items: center; gap: var(--s2); }
+.scr .between{ display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.scr .center{ text-align: center; }
+.scr .one{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scr .h1{ font-size: var(--t-title); font-weight: 700; line-height: 1.3; font-family: var(--f-zh); }
+.scr .h2{ font-size: var(--t-section); font-weight: 700; line-height: 1.4; margin: var(--s5) 0 var(--s2); font-family: var(--f-zh); }
+.scr .muted{ color: var(--ink2); }
+.scr .small{ font-size: var(--t-caption); }
+.scr .ms{ font-family: var(--f-ms); font-style: italic; font-weight: 400; }
+.scr .serif,.scr .no,.scr .num{ font-family: var(--f-ms); }
+.scr .num{ font-size: var(--t-title); line-height: 1.15; }
+.scr .num-xl{ font-family: var(--f-ms); font-size: var(--t-display); line-height: 1.1; }
+.scr .link{ color: var(--ivory); text-decoration: underline; }
+.scr .c-green{ color: var(--ok); }
+.scr .c-coral{ color: var(--bad); }
+.scr .c-yellow,.scr .c-amber{ color: var(--star); }
+.scr .c-blue{ color: var(--ink2); }
+.scr .sec{ display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2); margin: var(--s5) 0 var(--s2); }
+.scr .sec-t{ font-size: var(--t-section); font-weight: 700; line-height: 1.4; font-family: var(--f-zh); }
+.scr .sec-x{ font-size: var(--t-caption); color: var(--ink2); flex: none; }
+.scr .btn,.scr button.btn{ position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--s1); vertical-align: top; width: auto; min-width: 140px; height: 48px; min-height: 0; margin: 0; padding: 0 var(--s5); border-radius: var(--r-pill); font-size: var(--t-section); font-weight: 600; line-height: 1; letter-spacing: 0.5px; box-sizing: border-box; background: transparent; color: var(--ivory); transition: opacity .12s; }
+.scr .btn::after{ border: 0; }
+.scr .btn-main,.scr .btn-amber,.scr button.btn-main,.scr button.btn-amber{ color: var(--dark-ink); background: var(--ivory); }
+.scr .btn-ghost,.scr .btn-teal,.scr .btn-blue,.scr button.btn-ghost,.scr button.btn-teal,.scr button.btn-blue{ color: var(--ivory); border: 1px solid var(--hair2); }
+.scr .btn-danger,.scr button.btn-danger{ color: var(--bad); border: 1px solid var(--bad); }
+.scr .btn.hover{ opacity: .72; }
+.scr .btn[disabled],.scr button.btn[disabled]{ opacity: .4; color: var(--ivory); background: transparent; }
+.scr button.btn-main[disabled],.scr button.btn-amber[disabled]{ color: var(--dark-ink); background: var(--ivory); }
+.scr button.btn-danger[disabled]{ color: var(--bad); }
+.scr .btn-sm,.scr button.btn-sm{ height: 36px; min-width: 0; padding: 0 var(--s4); font-size: 13px; }
+.scr .btn-sm::before{ content: ''; position: absolute; left: 0; right: 0; top: -4px; bottom: -4px; }
+.scr .btn-block,.scr button.btn-block{ display: flex; width: 100%; }
+.scr .btn-arr{ font-family: var(--f-ms); font-weight: 400; }
+.scr .btn-text{ display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 var(--s4); font-size: 14px; color: var(--ink2); }
+.scr .btn-text.hover{ opacity: .6; }
+.scr .btns{ display: flex; flex-direction: column; align-items: center; gap: var(--s1); margin-top: var(--s4); }
+.scr .card{ position: relative; background: var(--panel); border-radius: var(--r-lg); padding: var(--s4); }
+.scr .card + .card{ margin-top: var(--s3); }
+.scr .card-tap.hover{ opacity: .72; }
+.scr .card-dark{ background: var(--panel2); }
+.scr .list{ border-top: 1px solid var(--hair); }
+.scr .list .item{ display: flex; align-items: center; gap: var(--s3); min-height: 52px; padding: var(--s2) 0; border-bottom: 1px solid var(--hair); box-sizing: border-box; }
+.scr .item-main{ flex: 1; min-width: 0; }
+.scr .item-x{ flex: none; font-size: 13px; color: var(--ink2); }
+.scr .arrow{ flex: none; color: var(--ink3); font-size: 16px; line-height: 1; }
+.scr .hover-row{ opacity: .6; }
+.scr .card.list{ background: transparent; padding: 0; border-radius: 0; }
+.scr .rk{ display: flex; align-items: center; gap: var(--s2); min-height: 52px; padding: var(--s2) 0; border-bottom: 1px solid var(--hair); box-sizing: border-box; }
+.scr .rk-p{ flex: none; width: 24px; text-align: center; font-family: var(--f-ms); font-size: 14px; color: var(--ink2); }
+.scr .rk-p.top{ color: var(--ivory); font-size: var(--t-section); }
+.scr .rk-av{ flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--ivory); }
+.scr .rk-main{ flex: 1; min-width: 0; }
+.scr .rk-n{ font-size: var(--t-body); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scr .rk-sub{ font-size: var(--t-caption); color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scr .rk-r{ flex: none; text-align: right; }
+.scr .rk-s{ font-family: var(--f-ms); font-size: 18px; line-height: 1.2; }
+.scr .rk-x{ font-size: var(--t-caption); color: var(--ink2); }
+.scr .rk.me{ margin: 0 calc(0px - var(--s4)); padding-left: var(--s4); padding-right: var(--s4); background: var(--star); color: var(--dark-ink); border-bottom-color: transparent; }
+.scr .rk.me .rk-p,.scr .rk.me .rk-sub,.scr .rk.me .rk-x{ color: var(--dark-ink2); }
+.scr .rk-gap{ text-align: center; color: var(--ink3); line-height: 24px; letter-spacing: 4px; border-bottom: 1px solid var(--hair); }
+.scr .stats{ display: flex; padding: var(--s3) 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.scr .stat{ flex: 1; min-width: 0; }
+.scr .stat-n{ font-family: var(--f-ms); font-size: var(--t-title); line-height: 1.2; }
+.scr .stat-u{ font-family: var(--f-body); font-size: var(--t-caption); color: var(--ink2); }
+.scr .stat-l{ font-size: var(--t-caption); color: var(--ink2); }
+.scr .stats.mid{ text-align: center; }
+.scr .tabs{ display: flex; border-bottom: 1px solid var(--hair); }
+.scr .tab{ flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; color: var(--ink2); white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; box-sizing: border-box; }
+.scr .tab.on{ color: var(--ivory); font-weight: 600; border-bottom-color: var(--ivory); }
+.scr .tab-n{ font-family: var(--f-ms); font-size: var(--t-caption); font-weight: 400; color: var(--ink2); line-height: 1.2; }
+.scr .tag{ display: inline-block; font-size: var(--t-caption); line-height: 1.5; padding: 0 var(--s2); border-radius: var(--r-pill); color: var(--ink2); border: 1px solid var(--hair2); white-space: nowrap; }
+.scr .tag.amber{ color: var(--star); border-color: rgba(233,185,97,.5); }
+.scr .tag.coral{ color: var(--bad); border-color: rgba(232,131,106,.5); }
+.scr .tag.blue,.scr .tag.gray{ color: var(--ink2); border-color: var(--hair2); }
+.scr .chips{ display: flex; gap: var(--s2); }
+.scr .chip{ flex: none; display: inline-flex; align-items: center; height: 36px; padding: 0 var(--s4); border-radius: var(--r-pill); font-size: 13px; color: var(--ink2); border: 1px solid var(--hair2); white-space: nowrap; box-sizing: border-box; }
+.scr .chip.on{ background: var(--ivory); color: var(--dark-ink); border-color: var(--ivory); font-weight: 600; }
+.scr .bar{ height: 4px; border-radius: var(--r-pill); background: var(--hair); overflow: hidden; }
+.scr .bar-in{ height: 100%; border-radius: var(--r-pill); background: var(--star); transition: width .4s; }
+.scr .opt{ position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s2); min-height: 52px; padding: var(--s2) var(--s4); margin-bottom: var(--s2); border: 1px solid var(--hair2); border-radius: var(--r-sm); box-sizing: border-box; font-size: var(--t-body); color: var(--ivory); word-break: break-word; }
+.scr .opt.ms{ font-size: 17px; }
+.scr .opt.hover{ opacity: .72; }
+.scr .opt.on{ border-color: var(--ivory); background: var(--hair); }
+.scr .opt.right{ color: var(--ok); border-color: var(--ok); background: var(--ok-l); }
+.scr .opt.right::after{ content: ''; flex: none; width: 12px; height: 6px; border-left: 2px solid var(--ok); border-bottom: 2px solid var(--ok); transform: rotate(-45deg) translateY(-2px); }
+.scr .opt.wrong{ color: var(--bad); border-color: var(--bad); background: var(--bad-l); }
+.scr .opt.wrong::after{ content: '你选的'; flex: none; font-size: var(--t-caption); font-family: var(--f-body); font-style: normal; color: var(--bad); }
+.scr .opt.dim{ opacity: .4; }
+.scr .field{ margin-bottom: var(--s4); }
+.scr .label{ font-size: var(--t-caption); color: var(--ink2); margin-bottom: var(--s1); }
+.scr .input{ height: 48px; padding: 0 var(--s3); border: 1px solid var(--hair2); border-radius: var(--r-sm); background: transparent; color: var(--ivory); font-size: var(--t-body); box-sizing: border-box; }
+.scr .input-focus{ border-color: var(--ivory); }
+.scr .ph{ color: var(--ink3); }
+.scr .err{ color: var(--bad); font-size: var(--t-caption); margin-top: var(--s1); }
+.scr .sense{ padding: var(--s3) 0; border-top: 1px solid var(--hair); }
+.scr .sense:first-child{ border-top: 0; }
+.scr .pos{ font-family: var(--f-ms); font-style: italic; font-size: var(--t-caption); color: var(--ink2); margin-right: var(--s2); }
+.scr .example{ margin-top: var(--s1); padding-left: var(--s3); border-left: 1px solid var(--hair2); }
+.scr .res{ text-align: center; padding: var(--s3) 0 var(--s4); }
+.scr .res-bird{ display: block; width: 88px; height: 88px; border-radius: 50%; margin: 0 auto var(--s3); background: var(--ivory); }
+.scr .res-n{ font-family: var(--f-ms); font-size: var(--t-display); line-height: 1.1; color: var(--star); }
+.scr .res-u{ font-family: var(--f-body); font-size: var(--t-body); color: var(--ink2); }
+.scr .sheet{ background: var(--ivory); color: var(--dark-ink); border-radius: var(--r-lg); padding: var(--s4); box-sizing: border-box; }
+.scr .stamp{ width: 66px; height: 66px; border-radius: 50%; border: 1px solid var(--star); color: var(--star); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; box-sizing: border-box; text-align: center; line-height: 1.2; flex: none; }
+.scr .stamp .s1{ font-size: 13px; font-weight: 700; font-family: var(--f-zh); }
+.scr .stamp .s2{ font-size: 10px; }
+.scr .stamp.off{ border-color: var(--hair2); color: var(--ink2); border-style: dashed; }
+.scr .songket{ height: 1px; background: var(--hair); }
+.scr .ticket{ position: relative; border-bottom: 1px solid var(--hair); }
+.scr .ticket-cut{ border-top: 1px dashed var(--hair2); }
+.scr .tile{ padding: var(--s2) 0; text-align: center; }
+.scr .tile .n{ font-family: var(--f-ms); font-size: var(--t-title); line-height: 1.2; }
+.scr .tile.hover{ opacity: .72; }
+.scr .medal{ width: 24px; flex: none; text-align: center; font-family: var(--f-ms); font-size: 14px; color: var(--ink2); }
+.scr .medal.m1,.scr .medal.m2,.scr .medal.m3{ color: var(--ivory); font-size: var(--t-section); }
+
+.scr.p-home .hm-date{ font-size: var(--t-caption); color: var(--ink2); margin-bottom: var(--s1); }
+.scr.p-home .hm-hero{ position: relative; height: 208px; margin-top: var(--s3); }
+.scr.p-home .hm-ring-box{ position: relative; width: 192px; height: 192px; }
+.scr.p-home .hm-ring{ width: 192px; height: 192px; }
+.scr.p-home .hm-ring-in{ position: absolute; left: 0; top: 0; width: 192px; height: 192px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.scr.p-home .hm-big{ font-family: var(--f-ms); font-size: 64px; line-height: 1.1; }
+.scr.p-home .hm-lab{ font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-home .hm-bird{ position: absolute; right: -12px; bottom: 0; width: 160px; height: 208px; }
+.scr.p-home .hm-cta{ margin: var(--s4) 0 var(--s3); }
+.scr.p-home .hm-list{ border-top: 0; }
+.scr.p-home .hm-dots{ width: 36px; height: 36px; border-radius: 50%; flex: none; border: 1px solid var(--hair2); box-sizing: border-box; background: radial-gradient(circle at 30% 35%, var(--ivory) 0 2px, transparent 2.5px), radial-gradient(circle at 62% 28%, var(--ivory) 0 1.5px, transparent 2px), radial-gradient(circle at 70% 66%, var(--ivory) 0 2.5px, transparent 3px), radial-gradient(circle at 35% 72%, var(--ink3) 0 1.5px, transparent 2px); }
+.scr.p-home .hm-star{ font-family: var(--f-ms); font-size: 18px; }
+.scr.p-home .hm-say{ width: 36px; height: 36px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid var(--hair2); box-sizing: border-box; }
+.scr.p-home .hm-cone{ width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 8px solid var(--ivory); margin-right: 2px; }
+.scr.p-home .hm-wave{ width: 7px; height: 12px; border: 2px solid var(--ivory); border-left: 0; border-radius: 0 12px 12px 0; }
+.scr.p-home .hm-w1{ display: flex; align-items: baseline; gap: var(--s2); }
+.scr.p-home .hm-wms{ font-size: 18px; }
+
+.scr.p-atlas .at-head{ padding-bottom: var(--s2); }
+.scr.p-atlas .at-u{ font-size: var(--t-body); color: var(--ink2); }
+.scr.p-atlas .at-days{ width: 100%; white-space: nowrap; }
+.scr.p-atlas .at-days-in{ display: inline-flex; gap: var(--s1); padding: 0 var(--s4); }
+.scr.p-atlas .at-dy{ display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 56px; height: 44px; padding: 0 var(--s2); border-radius: var(--r-sm); box-sizing: border-box; }
+.scr.p-atlas .at-dy-t{ font-size: 13px; line-height: 1.3; color: var(--ink2); }
+.scr.p-atlas .at-dy-d{ font-family: var(--f-ms); font-size: 11px; line-height: 1.3; color: var(--ink3); }
+.scr.p-atlas .at-dy.on{ background: var(--ivory); }
+.scr.p-atlas .at-dy.on .at-dy-t{ color: var(--dark-ink); font-weight: 600; }
+.scr.p-atlas .at-dy.on .at-dy-d{ color: var(--dark-ink2); }
+.scr.p-atlas .at-cloud{ position: relative; margin: var(--s2) var(--s4) 0; border-radius: var(--r-lg); background: var(--panel2); overflow: hidden; }
+.scr.p-atlas .at-w{ position: absolute; white-space: nowrap; font-family: var(--f-ms); font-style: italic; line-height: 1.2; padding: 2px 4px; opacity: 0; animation-name: at-pop, at-drift; animation-timing-function: cubic-bezier(.3,1.5,.5,1), ease-in-out; animation-fill-mode: both, none; animation-iteration-count: 1, infinite; animation-direction: normal, alternate; }
+.scr.p-atlas .at-w.b0{ color: rgba(243,234,214,.5); }
+.scr.p-atlas .at-w.b1{ color: rgba(243,234,214,.72); }
+.scr.p-atlas .at-w.b2{ color: var(--ivory); }
+.scr.p-atlas .at-w.b3{ color: var(--ivory); }
+.scr.p-atlas .at-w.b4{ color: var(--star); font-weight: 700; }
+@keyframes at-pop{ from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes at-drift{ from { transform: translateY(0); opacity: 1; } to { transform: translateY(-5px); opacity: 1; } }
+.scr.p-atlas .at-hint{ text-align: center; font-size: var(--t-caption); color: var(--ink2); margin-top: var(--s2); }
+@media (prefers-reduced-motion: reduce){.scr.p-atlas .at-w{ animation: none; opacity: 1; }
+}
+.scr.p-atlas .at-mask{ position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 200; background: rgba(5,16,18,0); transition: background-color .25s; display: flex; align-items: flex-start; justify-content: center; padding-top: 130.3px; }
+.scr.p-atlas .at-mask.on{ background: rgba(5,16,18,.72); }
+.scr.p-atlas .at-pop{ width: 322.5px; max-height: 448.9px; display: flex; flex-direction: column; padding-bottom: var(--s2); transform: scale(.08); opacity: 0; transition: transform .28s cubic-bezier(.3,1.3,.5,1), opacity .2s; }
+.scr.p-atlas .at-pop.on{ transform: scale(1); opacity: 1; }
+.scr.p-atlas .at-pop-h{ display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.scr.p-atlas .at-pop-ms{ font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: 32px; color: var(--leaf); line-height: 1.15; word-break: break-word; }
+.scr.p-atlas .at-pop-root{ font-size: var(--t-caption); color: var(--dark-ink2); margin-top: var(--s1); }
+.scr.p-atlas .at-pop-body{ margin-top: var(--s2); max-height: 289.6px; }
+.scr.p-atlas .at-pop-s{ padding: var(--s2) 0; border-top: 1px solid var(--dark-hair); }
+.scr.p-atlas .at-pop-zh{ font-size: var(--t-body); font-weight: 600; line-height: 1.4; }
+.scr.p-atlas .at-pop-pos{ font-family: var(--f-ms); font-style: italic; font-weight: 400; font-size: var(--t-caption); color: var(--star-d); margin-right: var(--s1); }
+.scr.p-atlas .at-pop-ex{ margin-top: var(--s1); padding-left: var(--s2); border-left: 1px solid var(--dark-hair); }
+.scr.p-atlas .at-pop-exm{ font-family: var(--f-ms); font-size: 14px; line-height: 1.45; }
+.scr.p-atlas .at-pop-exz{ font-size: var(--t-caption); color: var(--dark-ink2); }
+.scr.p-atlas .at-pop-f{ display: flex; align-items: center; justify-content: space-between; margin-top: var(--s1); padding-top: var(--s1); border-top: 1px solid var(--dark-hair); }
+.scr.p-atlas .at-fav-wrap{ position: relative; }
+.scr.p-atlas .at-fav{ display: inline-flex; align-items: center; gap: var(--s1); height: 44px; padding-right: var(--s3); font-size: 13px; font-weight: 600; }
+.scr.p-atlas .at-fav.on{ color: var(--star-d); }
+.scr.p-atlas .at-fav-i{ width: 18px; height: 18px; }
+.scr.p-atlas .at-fav.popa{ animation: at-favpop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes at-favpop{ 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.scr.p-atlas .at-pop-x{ height: 44px; line-height: 44px; padding-left: var(--s3); font-size: 13px; color: var(--dark-ink2); }
+
+.scr.p-battle .bt-hero{ position: relative; display: flex; align-items: flex-end; min-height: 140px; }
+.scr.p-battle .bt-hero-l{ flex: 1; min-width: 0; position: relative; z-index: 1; }
+.scr.p-battle .bt-cd{ white-space: nowrap; margin: var(--s1) 0; }
+.scr.p-battle .bt-u{ font-size: var(--t-body); color: var(--ink2); }
+.scr.p-battle .bt-bird{ flex: none; width: 132px; height: 136px; margin-right: -8px; }
+.scr.p-battle .bt-acts{ display: flex; gap: var(--s2); margin-top: var(--s4); }
+.scr.p-battle .bt-acts .btn{ min-width: 0; padding: 0 var(--s3); }
+.scr.p-battle .bt-a1{ flex: 1.2; }
+.scr.p-battle .bt-a2{ flex: 1; }
+.scr.p-battle .bt-sel{ display: flex; align-items: center; justify-content: space-between; min-height: 44px; font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-battle .bt-sel-x{ color: var(--ivory); }
+.scr.p-battle .bt-more{ display: flex; align-items: center; min-height: 44px; margin: -14px 0; padding-left: var(--s4); }
+.scr.p-battle .bt-note{ padding: var(--s4) 0; }
+.scr.p-battle .bt-podium{ display: flex; align-items: flex-end; gap: var(--s2); padding: var(--s4) 0 var(--s3); border-bottom: 1px solid var(--hair); }
+.scr.p-battle .bt-pd{ flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.scr.p-battle .bt-pd-k{ font-family: var(--f-ms); font-size: 14px; color: var(--ink2); line-height: 1.2; margin-bottom: var(--s1); }
+.scr.p-battle .bt-pd-av{ width: 48px; height: 48px; border-radius: 50%; background: var(--ivory); }
+.scr.p-battle .bt-p1 .bt-pd-av{ width: 64px; height: 64px; }
+.scr.p-battle .bt-p1 .bt-pd-k{ color: var(--ivory); font-size: var(--t-section); }
+.scr.p-battle .bt-mark{ display: flex; align-items: center; justify-content: center; font-family: var(--f-zh); font-size: 20px; font-weight: 700; color: var(--dark-ink); }
+.scr.p-battle .bt-mark.sm{ font-size: 15px; }
+.scr.p-battle .bt-pd-n{ margin-top: var(--s2); font-size: 13px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scr.p-battle .bt-pd-s{ font-size: var(--t-caption); color: var(--ink2); }
+
+.scr.p-me .me-who{ display: flex; align-items: center; gap: var(--s3); }
+.scr.p-me .me-av{ width: 64px; height: 64px; border-radius: 50%; flex: none; background: var(--ivory); }
+.scr.p-me .me-c1{ background: var(--star); }
+.scr.p-me .me-c2{ background: var(--ok); }
+.scr.p-me .me-c3{ background: var(--bad); }
+.scr.p-me .me-c4{ background: var(--hair2); }
+.scr.p-me .me-stack{ display: flex; height: 8px; border-radius: var(--r-pill); overflow: hidden; background: var(--hair); }
+.scr.p-me .me-sg{ height: 100%; }
+.scr.p-me .me-legend{ display: flex; margin-top: var(--s3); }
+.scr.p-me .me-lg{ flex: 1; min-width: 0; }
+.scr.p-me .me-lg-l{ display: flex; align-items: center; gap: var(--s1); font-size: var(--t-caption); color: var(--ink2); white-space: nowrap; }
+.scr.p-me .me-d{ display: inline-block; width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.scr.p-me .me-bars{ display: flex; gap: var(--s2); height: 120px; }
+.scr.p-me .me-bc{ flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.scr.p-me .me-bn{ font-family: var(--f-ms); font-size: var(--t-caption); color: var(--ink2); height: 20px; }
+.scr.p-me .me-bt{ flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.scr.p-me .me-bf{ width: 100%; border-radius: 4px; background: var(--hair2); }
+.scr.p-me .me-bf.today{ background: var(--ivory); }
+.scr.p-me .me-bl{ font-size: var(--t-caption); color: var(--ink2); height: 24px; line-height: 24px; }
+.scr.p-me .me-bl.today{ color: var(--ivory); }
+.scr.p-me .me-heat{ display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: var(--s1); }
+.scr.p-me .me-hc{ height: 20px; border-radius: 4px; background: var(--hair); }
+.scr.p-me .me-hc.l1{ background: rgba(143,192,160,.3); }
+.scr.p-me .me-hc.l2{ background: rgba(143,192,160,.62); }
+.scr.p-me .me-hc.l3{ background: var(--ok); }
+.scr.p-me .me-links{ margin-top: var(--s5); }
+.scr.p-me button.me-fb{ width: 100%; margin: 0; padding: var(--s2) 0; background: transparent; border-radius: 0; font-size: var(--t-body); font-weight: 400; line-height: 1.5; text-align: left; color: var(--ink); }
+.scr.p-me button.me-fb::after{ border: 0; }
+.scr.p-me .me-foot{ margin-top: var(--s5); }
+
+.scr.p-learn .ln-page{ height: 724px; display: flex; flex-direction: column; padding: var(--s3) var(--s4) calc(var(--s4) + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.scr.p-learn .ln-top{ margin-bottom: var(--s3); flex: none; }
+.scr.p-learn .ln-top-r{ display: flex; justify-content: space-between; align-items: center; margin-top: var(--s1); font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-learn .ln-grow{ flex: 1; }
+.scr.p-learn .ln-card{ position: relative; flex: none; height: 200px; border-radius: var(--r-lg); background: var(--ivory); padding: var(--s2); box-sizing: border-box; will-change: transform; }
+.scr.p-learn .ln-card-in{ height: 100%; border: 1px solid var(--dark-hair); border-radius: var(--r-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 var(--s3); box-sizing: border-box; }
+.scr.p-learn .ln-w{ font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; word-break: break-word; text-align: center; color: var(--leaf); }
+.scr.p-learn .ln-card-hint{ margin-top: var(--s2); font-size: var(--t-caption); color: var(--dark-ink2); }
+.scr.p-learn .ln-say{ position: absolute; right: var(--s4); bottom: var(--s4); }
+.scr.p-learn .ln-card.flipped{ height: 104px; }
+.scr.p-learn .ln-card.flipped .ln-w{ font-size: 32px; padding: 0 48px; }
+.scr.p-learn .ln-card.flipped .ln-say{ bottom: 50%; transform: translateY(50%); }
+.scr.p-learn .ln-below{ flex: 1; min-height: 0; margin-top: var(--s2); box-sizing: border-box; }
+.scr.p-learn .ln-meta{ display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.scr.p-learn .ln-meta-t{ flex: 1; min-width: 0; font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-learn .ln-fav-wrap{ position: relative; flex: none; }
+.scr.p-learn .ln-fav{ display: inline-flex; align-items: center; gap: var(--s1); height: 44px; padding-left: var(--s3); font-size: 13px; color: var(--ink2); }
+.scr.p-learn .ln-fav.on{ color: var(--ivory); }
+.scr.p-learn .ln-fav-i{ width: 18px; height: 18px; }
+.scr.p-learn .ln-fav.pop{ animation: ln-favpop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes ln-favpop{ 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.scr.p-learn .ln-sn{ padding: var(--s2) 0; border-top: 1px solid var(--hair); }
+.scr.p-learn .ln-mean{ font-family: var(--f-zh); font-size: var(--t-section); font-weight: 700; line-height: 1.4; }
+.scr.p-learn .ln-ex-ms{ font-family: var(--f-ms); font-size: 14px; line-height: 1.45; }
+.scr.p-learn .ln-hit{ background: var(--hair2); border-radius: 3px; padding: 0 3px; }
+.scr.p-learn .ln-root{ padding: var(--s2) 0; border-top: 1px solid var(--hair); font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-learn .ln-root-w{ font-size: 14px; color: var(--ivory); }
+.scr.p-learn .ln-actions{ margin-top: var(--s2); flex: none; }
+.scr.p-learn .ln-birds{ display: flex; gap: var(--s2); padding-top: var(--s2); border-top: 1px solid var(--hair); }
+.scr.p-learn .ln-bd{ flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: var(--s1) 0; border-radius: var(--r-sm); transition: transform .18s, background-color .18s; }
+.scr.p-learn .ln-bd img{ width: 44px; height: 44px; border-radius: 50%; background: var(--ivory); transition: transform .18s; }
+.scr.p-learn .ln-bd-t{ margin-top: var(--s1); font-size: 14px; font-weight: 600; }
+.scr.p-learn .ln-gh{ font-size: var(--t-caption); color: var(--ink2); line-height: 1.3; }
+.scr.p-learn .ln-bd.hover{ opacity: .72; }
+.scr.p-learn .ln-bd.on{ background: var(--hair); transform: translateY(-4px); }
+.scr.p-learn .ln-bd.on img{ transform: scale(1.18); animation: ln-hop .5s ease-in-out infinite alternate; }
+@keyframes ln-hop{ from { transform: scale(1.18) translateY(0); } to { transform: scale(1.18) translateY(-4px); } }
+.scr.p-learn .ln-card.fly-know{ transform: translate(140%, -10px) rotate(22deg) !important; opacity: 0; }
+.scr.p-learn .ln-card.fly-forgot{ transform: translate(-140%, -10px) rotate(-22deg) !important; opacity: 0; }
+.scr.p-learn .ln-card.fly-vague{ transform: translate(0, -120%) !important; opacity: 0; }
+.scr.p-learn .ln-badge{ position: absolute; top: var(--s4); z-index: 2; padding: 0 var(--s2); border-radius: 4px; font-size: 14px; font-weight: 700; line-height: 1.6; border: 2px solid; transform: rotate(-8deg); background: var(--ivory); }
+.scr.p-learn .ln-badge.know{ left: var(--s4); color: var(--leaf); }
+.scr.p-learn .ln-badge.forgot{ right: var(--s4); color: var(--bad-d); transform: rotate(8deg); }
+.scr.p-learn .ln-badge.vague{ left: 50%; margin-left: -28px; color: var(--star-d); transform: none; }
+.scr.p-learn .ln-quiz{ flex: 1; display: flex; flex-direction: column; padding-bottom: 80px; }
+.scr.p-learn .ln-q-k{ font-size: var(--t-caption); color: var(--ink2); text-align: center; }
+.scr.p-learn .ln-q-p{ text-align: center; margin: var(--s5) 0; }
+.scr.p-learn .ln-q-p.ms{ font-size: var(--t-display); line-height: 1.15; }
+.scr.p-learn .ln-q-p.zhp{ font-family: var(--f-zh); font-size: var(--t-title); font-weight: 700; }
+.scr.p-learn .ln-q-listen{ display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin: var(--s4) 0 var(--s5); }
+.scr.p-learn .ln-q-ring{ width: 132px; height: 132px; border-radius: 50%; border: 1px solid var(--hair); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+.scr.p-learn .ln-q-ring say-btn{ transform: scale(1.6); }
+.scr.p-learn .ln-q-cloze{ margin: var(--s4) 0 var(--s5); padding: var(--s3) 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.scr.p-learn .ln-cl-ms{ font-family: var(--f-ms); font-size: 18px; line-height: 1.6; margin-bottom: var(--s1); }
+.scr.p-learn .ln-cl-gap{ display: inline-block; min-width: 70px; padding: 0 var(--s1); border-bottom: 1px solid var(--ivory); font-style: italic; text-align: center; }
+.scr.p-learn .ln-spell{ height: 56px; font-family: var(--f-ms); font-style: italic; font-size: var(--t-title); text-align: center; }
+.scr.p-learn .ln-spell.ok{ border-color: var(--ok); background: var(--ok-l); }
+.scr.p-learn .ln-spell.bad{ border-color: var(--bad); background: var(--bad-l); }
+.scr.p-learn .ln-answer{ text-align: center; margin-top: var(--s3); }
+.scr.p-learn .ln-fb{ position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom)); background: var(--panel); }
+.scr.p-learn .ln-fb-w{ font-size: 20px; line-height: 1.2; }
+.scr.p-learn .ln-fb-l{ font-size: var(--t-caption); color: var(--ink2); }
+.scr.p-learn .ln-fb-l.ok{ color: var(--ok); }
+.scr.p-learn button.ln-fb-b{ flex: none; min-width: 100px; }
+.scr.p-learn .ln-done{ flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.scr.p-learn .ln-stamp{ width: 132px; height: 132px; margin: 0 auto var(--s5); }
+.scr.p-learn .ln-stamp .s1{ font-size: var(--t-title); margin: var(--s1) 0; }
+.scr.p-learn .ln-stamp .s2{ font-size: 11px; letter-spacing: 1px; }
+.scr.p-learn .ln-sum{ margin: var(--s4) 0 var(--s3); }
+
+.scr.p-rank .rp-wrap{ padding-top: 0; }
+.scr.p-rank .rp-rule{ padding: var(--s3) 0; border-bottom: 1px solid var(--hair); }
+
+.scr .c-say .say{ position: relative; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid rgba(243,234,214,.24); box-sizing: border-box; flex-shrink: 0; }
+.scr .c-say .say::before{ content: ''; position: absolute; left: -6px; right: -6px; top: -6px; bottom: -6px; }
+.scr .c-say .say.hover{ opacity: .6; }
+.scr .c-say .say-md{ width: 36px; height: 36px; }
+.scr .c-say .say-lg{ width: 52px; height: 52px; }
+.scr .c-say .say-sm{ width: 32px; height: 32px; }
+.scr .c-say .cone{ width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 8px solid #f3ead6; margin-right: 2px; }
+.scr .c-say .say-lg .cone{ border-top-width: 9px; border-bottom-width: 9px; border-right-width: 12px; }
+.scr .c-say .wave{ width: 7px; height: 12px; border: 2px solid #f3ead6; border-left: 0; border-radius: 0 12px 12px 0; }
+.scr .c-say .say-lg .wave{ width: 10px; height: 18px; border-width: 3px; border-left: 0; }
+.scr .c-say .tone-ivory{ background: #1f6b4e; border-color: #1f6b4e; }
+.scr .c-say .tone-big{ background: #f3ead6; border-color: #f3ead6; }
+.scr .c-say .tone-big .cone{ border-right-color: #0a1f22; }
+.scr .c-say .tone-big .wave{ border-color: #0a1f22; }
+
+.scr .c-empty .empty{ display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 16px 24px; }
+.scr .c-empty .img{ width: 88px; height: 88px; border-radius: 50%; background: #f3ead6; }
+.scr .c-empty .t{ font-size: 16px; font-weight: 700; line-height: 1.4; margin-top: 12px; color: #f3ead6; font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif; }
+.scr .c-empty .d{ font-size: 12px; line-height: 1.6; color: rgba(243,234,214,.64); margin-top: 4px; max-width: 260px; }
+.scr .c-empty .act{ margin-top: 16px; display: flex; flex-direction: column; align-items: center; }
+
+.scr .c-burst{ position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.scr .c-burst .burst{ position: relative; }
+.scr .c-burst .p{ position: absolute; left: 0; top: 0; opacity: 0; animation: fly .8s cubic-bezier(.15,.7,.3,1) forwards; }
+@keyframes fly{
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(.2) rotate(0deg); }
+  65% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--r)); }
+}
+
+.scr .c-tab .tb-bar{ position: fixed; left: 0; right: 0; bottom: 0; z-index: 99; display: flex; padding: 4px 8px calc(4px + env(safe-area-inset-bottom)); background: #0a1f22; border-top: 1px solid rgba(243,234,214,.12); }
+.scr .c-tab .it{ flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 52px; }
+.scr .c-tab .ic{ width: 44px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.scr .c-tab .svg{ width: 22px; height: 22px; opacity: .8; }
+.scr .c-tab .bird{ width: 32px; height: 32px; border-radius: 50%; background: #f3ead6; border: 1px solid #e9b961; box-sizing: border-box; }
+.scr .c-tab .t{ font-size: 11px; line-height: 1.4; color: rgba(243,234,214,.64); letter-spacing: 0.5px; }
+.scr .c-tab .it.on .t{ color: #e9b961; }
+
+</style></head><body><div class="doc">
+<h1>马来语高频词 · 小程序统一视觉 v3</h1>
+<p>方向 B「词光夜航」落到全站：一套字号、间距、圆角、颜色和按钮。下面每一屏的样式都是从小程序里真实的 WXSS 换算出来的（不是另画的图），数据是示例。</p>
+<h2>设计系统</h2>
+
+<div class="scr sys">
+  <div class="sys-col">
+    <div class="sys-h">字号 · 5 级</div>
+    <div class="sys-row"><span class="num-xl">58</span><span class="sys-k">display 88 · Georgia · 大数字</span></div>
+    <div class="sys-row"><span class="ms" style="font-size:44px;font-weight:700">belajar</span><span class="sys-k">display 88 · Georgia 斜体 · 马来语词</span></div>
+    <div class="sys-row"><span class="h1">晚上好，阿澄。</span><span class="sys-k">title 44 · 宋体 · 页面标题</span></div>
+    <div class="sys-row"><span class="num">1640</span><span class="sys-k">title 44 · Georgia · 中号数字</span></div>
+    <div class="sys-row"><span class="sec-t">记得多牢</span><span class="sys-k">section 32 · 宋体 · 小节标题</span></div>
+    <div class="sys-row"><span>已点亮 684 颗星</span><span class="sys-k">body 30 · 苹方 · 正文</span></div>
+    <div class="sys-row"><span class="muted small">马六甲还有 316 颗没亮</span><span class="sys-k">caption 24 · 说明</span></div>
+  </div>
+  <div class="sys-col">
+    <div class="sys-h">颜色 · 角色</div>
+    <div class="sys-sw">
+      <div class="sys-c" style="background:#0a1f22;color:#f3ead6"><b>#0a1f22</b>夜 · 页面底</div><div class="sys-c" style="background:#14353a;color:#f3ead6"><b>#14353a</b>面板 · 少用</div><div class="sys-c" style="background:#f3ead6;color:#0a1f22"><b>#f3ead6</b>象牙 · 字 / 词卡 / 主按钮</div><div class="sys-c" style="background:#e9b961;color:#0a1f22"><b>#e9b961</b>星光 · 每屏一处</div><div class="sys-c" style="background:#8fc0a0;color:#0a1f22"><b>#8fc0a0</b>对</div><div class="sys-c" style="background:#e8836a;color:#0a1f22"><b>#e8836a</b>错</div>
+    </div>
+    <div class="sys-h" style="margin-top:24px">间距 8 / 16 / 24 / 32 / 48 · 圆角 16 / 32 / 胶囊 · 细线</div>
+    <div class="sys-sp"><i style="width:4px"></i><em>8</em><i style="width:8px"></i><em>16</em><i style="width:12px"></i><em>24</em><i style="width:16px"></i><em>32</em><i style="width:24px"></i><em>48</em><u style="border-radius:8px"></u><em>16</em><u style="border-radius:16px"></u><em>32</em><u style="border-radius:99px"></u><em>胶囊</em></div>
+    <div class="sys-h" style="margin-top:24px">标签 · 切换 · 进度</div>
+    <div class="row" style="flex-wrap:wrap"><span class="tag">动词</span><span class="tag amber">初次见面</span><span class="tag coral">错 3 次</span><span class="chip on">零基础</span><span class="chip">会说一些</span></div>
+    <div class="tabs" style="margin-top:12px"><div class="tab on">全部<span class="tab-n">500</span></div><div class="tab">没学<span class="tab-n">316</span></div><div class="tab">在学<span class="tab-n">92</span></div><div class="tab">熟悉<span class="tab-n">60</span></div><div class="tab">掌握<span class="tab-n">32</span></div></div>
+    <div class="bar" style="margin-top:16px"><div class="bar-in" style="width:38%"></div></div>
+  </div>
+  <div class="sys-col">
+    <div class="sys-h">按钮 · 宽度跟着字走</div>
+    <div class="row" style="flex-wrap:wrap;row-gap:12px"><button class="btn btn-main">进入擂台</button><button class="btn btn-ghost">发起好友 PK</button></div>
+    <div class="row" style="margin-top:12px"><button class="btn btn-main btn-sm">重练这些词</button><button class="btn btn-ghost btn-sm">修改资料</button><button class="btn btn-danger btn-sm">删除记录</button><span class="btn-text">文字按钮</span></div>
+    <div style="margin-top:12px"><button class="btn btn-main btn-block">开始今天的航程<span class="btn-arr">→</span></button></div>
+    <div class="sys-k" style="margin-top:6px">撑满一行只给这一屏唯一的主操作</div>
+    <div class="sys-h" style="margin-top:24px">列表行 · 排行行 · 一排数字</div>
+    <div class="list"><div class="item"><div class="item-main">错词本</div><span class="item-x">31 个</span><span class="arrow">›</span></div></div>
+    <div class="rk "><span class="rk-p top">2</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/study.jpg"><div class="rk-main"><div class="rk-n">Hafiz</div><div class="rk-sub">云南民族大学</div></div><div class="rk-r"><div class="rk-s">1880</div><div class="rk-x">新学 210</div></div></div>
+    <div style="padding:0 16px"><div class="rk me"><span class="rk-p ">5</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/avatar.jpg"><div class="rk-main"><div class="rk-n">阿澄（我）</div><div class="rk-sub">中国传媒大学</div></div><div class="rk-r"><div class="rk-s">1640</div><div class="rk-x">新学 160</div></div></div></div>
+    <div class="stats" style="border-top:0"><div class="stat"><div class="stat-n">38</div><div class="stat-l">先温故</div></div><div class="stat"><div class="stat-n">20</div><div class="stat-l">再知新</div></div><div class="stat"><div class="stat-n">15<span class="stat-u"> 分钟</span></div><div class="stat-l">大约</div></div></div>
+  </div>
+</div>
+<h2>关键页面</h2>
+<div class="phones">
+
+<figure class="pw" id="home">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">今日</div><div class="capsule"></div>
+    <div class="scr p-home">
+<div class="wrap">
+  <div class="hm-date">11月18日 · 连续第 12 天</div>
+  <div class="h1">晚上好，阿澄。</div>
+  <div class="hm-hero">
+    <div class="hm-ring-box">
+      <svg class="hm-ring" viewBox="0 0 192 192"><circle cx="96" cy="96" r="88" fill="none" stroke="rgba(243,234,214,.12)" stroke-width="8"/><circle cx="96" cy="96" r="88" fill="none" stroke="#e9b961" stroke-width="8" stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="400" transform="rotate(-90 96 96)"/></svg>
+      <div class="hm-ring-in"><div class="hm-big">58</div><div class="hm-lab">今天要见的词</div></div>
+    </div>
+    <img class="hm-bird" src="../../miniprogram/miniprogram/assets/bird-hero.png" style="object-fit:contain">
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">38</div><div class="stat-l">先温故</div></div>
+    <div class="stat"><div class="stat-n">20</div><div class="stat-l">再知新</div></div>
+    <div class="stat"><div class="stat-n">15<span class="stat-u"> 分钟</span></div><div class="stat-l">大约</div></div>
+  </div>
+  <div class="hm-cta"><button class="btn btn-main btn-block">开始今天的航程<span class="btn-arr">→</span></button></div>
+  <div class="list hm-list">
+    <div class="item"><div class="hm-dots"></div><div class="item-main"><div>已点亮 <span class="hm-star">684</span> 颗星</div><div class="muted small">马六甲还有 316 颗没亮</div></div><span class="arrow">›</span></div>
+    <div class="item"><div class="hm-say"><div class="hm-cone"></div><div class="hm-wave"></div></div><div class="item-main"><div class="hm-w1"><span class="ms hm-wms">minum</span><span>喝；饮用</span></div><div class="muted small one">今日一词 · Jangan lupa minum air.</div></div></div>
+  </div>
+</div><div class="c-tab"><div class="tb-bar"><div class="it on"><div class="ic"><img class="bird" src="../../miniprogram/miniprogram/assets/checkin.jpg"></div><span class="t">今日</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/atlas.svg"></div><span class="t">图鉴</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/battle.svg"></div><span class="t">对战</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/passport.svg"></div><span class="t">护照</span></div></div></div></div>
+  </div>
+  <figcaption><b>今日</b>：一个数字、一个撑满的主按钮。星光只给圆环进度。下面两行是列表行，不是卡片。</figcaption>
+</figure>
+
+<figure class="pw" id="front">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">今日车票</div><div class="capsule"></div>
+    <div class="scr p-learn">
+<div class="ln-page">
+  <div class="ln-top"><div class="bar"><div class="bar-in" style="width:12%"></div></div><div class="ln-top-r"><span class="no">7 / 58</span><span>新词</span></div></div>
+  <div class="ln-card"><div class="ln-card-in"><div class="ln-w">belajar</div><div class="ln-card-hint">点卡片翻看释义</div></div><div class="ln-say"><span class="c-say"><span class="say say-md tone-ivory"><span class="cone"></span><span class="wave"></span></span></span></div></div>
+  <div class="ln-grow"></div>
+  <div class="ln-actions"><button class="btn btn-main btn-block">看释义</button></div>
+</div></div>
+  </div>
+  <figcaption><b>词卡正面</b>：只有词和发音，一个主按钮。</figcaption>
+</figure>
+
+<figure class="pw" id="card">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">今日车票</div><div class="capsule"></div>
+    <div class="scr p-learn">
+<div class="ln-page">
+  <div class="ln-top"><div class="bar"><div class="bar-in" style="width:12%"></div></div><div class="ln-top-r"><span class="no">7 / 58</span><span>新词</span></div></div>
+  <div class="ln-card flipped"><div class="ln-card-in"><div class="ln-w">belajar</div></div><div class="ln-say"><span class="c-say"><span class="say say-md tone-ivory"><span class="cone"></span><span class="wave"></span></span></span></div></div>
+  <div class="ln-below">
+    <div class="ln-meta"><div class="ln-meta-t one"><span class="no">№ 650</span> · T2 · 动词 · 初次见面</div><div class="ln-fav-wrap"><div class="ln-fav"><img class="ln-fav-i" src="../../miniprogram/miniprogram/assets/fx/star-line.svg">收藏</div></div></div>
+    <div class="ln-sn"><div class="ln-mean"><span class="pos">动词</span>学习；求学</div><div class="example"><div class="ln-ex-ms">Mereka <span class="ln-hit">belajar</span> bahasa Melayu.</div><div class="muted small">他们学习马来语。</div></div></div>
+    <div class="ln-sn"><div class="ln-mean"><span class="pos">动词</span>受教；学到教训</div><div class="example"><div class="ln-ex-ms">Kita <span class="ln-hit">belajar</span> daripada kesilapan.</div><div class="muted small">我们从错误中学习。</div></div></div>
+    <div class="ln-root">词根 <span class="serif ln-root-w">ajar</span></div>
+  </div>
+  
+<div class="ln-actions"><div class="ln-birds">
+  <div class="ln-bd"><img src="../../miniprogram/miniprogram/assets/fail.jpg"><div class="ln-bd-t">← 不认识</div><div class="ln-gh">1 天后</div></div>
+  <div class="ln-bd"><img src="../../miniprogram/miniprogram/assets/loading.jpg"><div class="ln-bd-t">↑ 模糊</div><div class="ln-gh">1 天后</div></div>
+  <div class="ln-bd "><img src="../../miniprogram/miniprogram/assets/cheer.jpg" style="animation:none"><div class="ln-bd-t">认识 →</div><div class="ln-gh">2 天后</div></div>
+</div><div class="btn-text">太简单了，设为已掌握</div></div>
+</div></div>
+  </div>
+  <figcaption><b>词卡翻开</b>：一行说明代替一排标签；三只犀鸟打分，没有边框；也可以左右上滑。</figcaption>
+</figure>
+
+<figure class="pw" id="quiz">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">今日车票</div><div class="capsule"></div>
+    <div class="scr p-learn">
+<div class="ln-page">
+  <div class="ln-top"><div class="bar"><div class="bar-in" style="width:30%"></div></div><div class="ln-top-r"><span class="no">3 / 10</span><span>小练习</span></div></div>
+  <div class="ln-quiz">
+    <div class="ln-q-k">听音选义</div>
+    <div class="ln-q-listen"><div class="ln-q-ring"><span style="transform:scale(1.6);display:inline-flex"><span class="c-say"><span class="say say-lg tone-big"><span class="cone"></span><span class="wave"></span></span></span></span></div><div class="muted small">没听清就再点一下</div></div>
+    <div class="ln-opts">
+      <div class="opt wrong">吃；用餐</div><div class="opt right">喝；饮用</div><div class="opt dim">去；离开</div><div class="opt dim">学习；求学</div>
+    </div>
+  </div>
+  <div class="ln-fb"><div class="item-main"><div class="ms ln-fb-w one">minum</div><div class="ln-fb-l">已放进错词本，明天再考一次</div></div><button class="btn btn-main ln-fb-b">继续</button></div>
+</div></div>
+  </div>
+  <figcaption><b>小测答错</b>：不批评，只标出对的是哪个；底部面板告诉你什么时候再考。</figcaption>
+</figure>
+
+<figure class="pw" id="atlas">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">图鉴</div><div class="capsule"></div>
+    <div class="scr p-atlas">
+<div class="at-page">
+  <div class="wrap at-head"><div><span class="num-xl">684</span><span class="at-u"> 个词已点亮</span></div><div class="muted small">第 6 天 · 11月18日 · 34 个词</div></div>
+  <div class="at-days" style="overflow:hidden"><div class="at-days-in" style="transform:translateX(-150px)"><div class="at-dy "><div class="at-dy-t">全部</div><div class="at-dy-d">6 天</div></div><div class="at-dy "><div class="at-dy-t">第 1 天</div><div class="at-dy-d">11.13</div></div><div class="at-dy "><div class="at-dy-t">第 2 天</div><div class="at-dy-d">11.14</div></div><div class="at-dy "><div class="at-dy-t">第 3 天</div><div class="at-dy-d">11.15</div></div><div class="at-dy "><div class="at-dy-t">第 4 天</div><div class="at-dy-d">11.16</div></div><div class="at-dy "><div class="at-dy-t">第 5 天</div><div class="at-dy-d">11.17</div></div><div class="at-dy on"><div class="at-dy-t">第 6 天</div><div class="at-dy-d">11.18</div></div></div></div>
+  <div class="at-cloud" data-cloud style="height:347px"></div>
+  <div class="at-hint">越大越亮的词记得越牢 · 点词看释义</div>
+  
+</div><div class="c-tab"><div class="tb-bar"><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/today.svg"></div><span class="t">今日</span></div><div class="it on"><div class="ic"><img class="bird" src="../../miniprogram/miniprogram/assets/study.jpg"></div><span class="t">图鉴</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/battle.svg"></div><span class="t">对战</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/passport.svg"></div><span class="t">护照</span></div></div></div></div>
+  </div>
+  <figcaption><b>图鉴</b>：按天切换是一行（可左右滑），词云是这一屏唯一的面板。</figcaption>
+</figure>
+
+<figure class="pw" id="pop">
+  <div class="phone" style="height:812px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">图鉴</div><div class="capsule"></div>
+    <div class="scr p-atlas">
+<div class="at-page">
+  <div class="wrap at-head"><div><span class="num-xl">684</span><span class="at-u"> 个词已点亮</span></div><div class="muted small">第 6 天 · 11月18日 · 34 个词</div></div>
+  <div class="at-days" style="overflow:hidden"><div class="at-days-in" style="transform:translateX(-150px)"><div class="at-dy "><div class="at-dy-t">全部</div><div class="at-dy-d">6 天</div></div><div class="at-dy "><div class="at-dy-t">第 1 天</div><div class="at-dy-d">11.13</div></div><div class="at-dy "><div class="at-dy-t">第 2 天</div><div class="at-dy-d">11.14</div></div><div class="at-dy "><div class="at-dy-t">第 3 天</div><div class="at-dy-d">11.15</div></div><div class="at-dy "><div class="at-dy-t">第 4 天</div><div class="at-dy-d">11.16</div></div><div class="at-dy "><div class="at-dy-t">第 5 天</div><div class="at-dy-d">11.17</div></div><div class="at-dy on"><div class="at-dy-t">第 6 天</div><div class="at-dy-d">11.18</div></div></div></div>
+  <div class="at-cloud" data-cloud style="height:347px"></div>
+  <div class="at-hint">越大越亮的词记得越牢 · 点词看释义</div>
+  <div class="at-mask on"><div class="sheet at-pop on">
+    <div class="at-pop-h"><div class="at-pop-ms">kedai</div><span class="c-say"><span class="say say-md tone-ivory"><span class="cone"></span><span class="wave"></span></span></span></div>
+    <div class="at-pop-root">词根 kedai</div>
+    <div class="at-pop-body">
+      <div class="at-pop-s"><div class="at-pop-zh"><span class="at-pop-pos">名词</span>商店；店铺</div><div class="at-pop-ex"><div class="at-pop-exm">Saya pergi ke kedai buku.</div><div class="at-pop-exz">我去书店。</div></div></div>
+      <div class="at-pop-s"><div class="at-pop-zh"><span class="at-pop-pos">名词</span>小吃店；茶室</div><div class="at-pop-ex"><div class="at-pop-exm">Kami minum di kedai kopi.</div><div class="at-pop-exz">我们在咖啡店喝东西。</div></div></div>
+    </div>
+    <div class="at-pop-f"><div class="at-fav-wrap"><div class="at-fav on"><img class="at-fav-i" src="../../miniprogram/miniprogram/assets/fx/star-amber.svg">已收藏</div></div><div class="at-pop-x">收起</div></div>
+  </div></div>
+</div><div class="c-tab"><div class="tb-bar"><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/today.svg"></div><span class="t">今日</span></div><div class="it on"><div class="ic"><img class="bird" src="../../miniprogram/miniprogram/assets/study.jpg"></div><span class="t">图鉴</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/battle.svg"></div><span class="t">对战</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/passport.svg"></div><span class="t">护照</span></div></div></div></div>
+  </div>
+  <figcaption><b>点词弹层</b>：象牙色弹层，从词的位置放大出来；收藏会炸星星。</figcaption>
+</figure>
+
+<figure class="pw" id="battle">
+  <div class="phone" style="height:1260px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">对战</div><div class="capsule"></div>
+    <div class="scr p-battle">
+<div class="wrap">
+  <div class="bt-hero">
+    <div class="bt-hero-l"><div class="muted small">每周擂台 · 第 47 周 · 距结束</div><div class="bt-cd"><span class="num-xl">4</span><span class="bt-u"> 天 </span><span class="num-xl">12</span><span class="bt-u"> 小时</span></div><div class="muted small">20 题，取三次里最高的一次</div><div class="muted small">本周还剩 2 次机会</div></div>
+    <img class="bt-bird" src="../../miniprogram/miniprogram/assets/bird-welcome.png" style="object-fit:contain">
+  </div>
+  <div class="bt-acts"><button class="btn btn-main bt-a1">进入擂台</button><button class="btn btn-ghost bt-a2">发起好友 PK</button></div>
+  <div class="bt-sel">好友 PK 考 第2站，10 题<span class="bt-sel-x">换一站 ›</span></div>
+  <div class="sec"><span class="sec-t">周榜</span><div class="sec-x bt-more">完整榜单 ›</div></div>
+  <div class="tabs"><div class="tab on">全站</div><div class="tab">本校</div><div class="tab">本班</div><div class="tab">学校榜</div></div>
+  <div class="rk me"><img class="rk-av" src="../../miniprogram/miniprogram/assets/avatar.jpg"><div class="rk-main"><div class="rk-n">阿澄</div><div class="rk-sub">本周第 23 名 · 差 20 分追上 小麦</div></div><div class="rk-r"><span class="rk-s">1640</span><span class="rk-x"> 分</span></div></div>
+  <div class="bt-podium">
+    <div class="bt-pd bt-p2"><div class="bt-pd-k">2</div><img class="bt-pd-av" src="../../miniprogram/miniprogram/assets/study.jpg"><div class="bt-pd-n">Hafiz</div><div class="bt-pd-s">1880 分</div></div><div class="bt-pd bt-p1"><div class="bt-pd-k">1</div><img class="bt-pd-av" src="../../miniprogram/miniprogram/assets/cheer.jpg"><div class="bt-pd-n">椰子糖</div><div class="bt-pd-s">1960 分</div></div><div class="bt-pd bt-p3"><div class="bt-pd-k">3</div><img class="bt-pd-av" src="../../miniprogram/miniprogram/assets/pass.jpg"><div class="bt-pd-n">南洋的风</div><div class="bt-pd-s">1820 分</div></div>
+  </div>
+  <div class="bt-board">
+    <div class="rk-gap">···</div>
+    <div class="rk"><span class="rk-p">21</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/welcome.jpg"><div class="rk-main"><div class="rk-n">Aina</div><div class="rk-sub">北京外国语大学</div></div><span class="rk-s">1680</span></div><div class="rk"><span class="rk-p">22</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/checkin.jpg"><div class="rk-main"><div class="rk-n">小麦</div><div class="rk-sub">中国传媒大学</div></div><span class="rk-s">1660</span></div><div class="rk"><span class="rk-p">23</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/avatar.jpg"><div class="rk-main"><div class="rk-n">阿澄（我）</div><div class="rk-sub">中国传媒大学</div></div><span class="rk-s">1640</span></div><div class="rk"><span class="rk-p">24</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/study.jpg"><div class="rk-main"><div class="rk-n">榴莲不臭</div><div class="rk-sub">广东外语外贸大学</div></div><span class="rk-s">1620</span></div>
+  </div>
+  <div class="sec"><span class="sec-t">最近的 PK</span></div>
+  <div class="list">
+    <div class="item"><div class="item-main"><div>第2站 · 我发起</div><div class="muted small">11月17日 · 3 人参加 · 答对 8/10</div></div><div class="rk-r"><span class="rk-s">812</span><span class="rk-x"> 分</span></div><span class="arrow">›</span></div>
+    <div class="item"><div class="item-main"><div>第1站 · 应战</div><div class="muted small">11月15日 · 2 人参加 · 答对 6/10</div></div><div class="rk-r"><span class="rk-s">604</span><span class="rk-x"> 分</span></div><span class="arrow">›</span></div>
+  </div>
+</div><div class="tab-pad"></div><div class="c-tab"><div class="tb-bar"><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/today.svg"></div><span class="t">今日</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/atlas.svg"></div><span class="t">图鉴</span></div><div class="it on"><div class="ic"><img class="bird" src="../../miniprogram/miniprogram/assets/pass.jpg"></div><span class="t">对战</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/passport.svg"></div><span class="t">护照</span></div></div></div></div>
+  </div>
+  <figcaption><b>对战</b>：倒计时 + 两个按钮；周榜带头像，星光色那一行永远是「我」。</figcaption>
+</figure>
+
+<figure class="pw" id="me">
+  <div class="phone" style="height:1140px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">护照</div><div class="capsule"></div>
+    <div class="scr p-me">
+<div class="wrap">
+  <div class="me-who"><img class="me-av" src="../../miniprogram/miniprogram/assets/avatar.jpg"><div class="item-main"><div class="h1 one">阿澄</div><div class="muted small one">中国传媒大学 · 马来语 2 班 · 已盖 1 个章</div></div><div class="btn btn-ghost btn-sm">修改资料</div></div>
+  <div class="sec"><span class="sec-t">记得多牢</span><span class="sec-x">已开放 3000 词</span></div>
+  <div class="me-stack"><div class="me-sg me-c1" style="width:13.7%"></div><div class="me-sg me-c2" style="width:5.6%"></div><div class="me-sg me-c3" style="width:3.5%"></div></div>
+  <div class="me-legend"><div class="me-lg"><div class="num">412</div><div class="me-lg-l"><span class="me-d me-c1"></span>牢固</div></div><div class="me-lg"><div class="num">168</div><div class="me-lg-l"><span class="me-d me-c2"></span>熟悉</div></div><div class="me-lg"><div class="num">104</div><div class="me-lg-l"><span class="me-d me-c3"></span>快忘了</div></div><div class="me-lg"><div class="num">2316</div><div class="me-lg-l"><span class="me-d me-c4"></span>没见过</div></div></div>
+  <div class="sec"><span class="sec-t">未来 7 天要复习</span><span class="sec-x">最多：四</span></div>
+  <div class="me-bars"><div class="me-bc"><div class="me-bn">38</div><div class="me-bt"><div class="me-bf today" style="height:73%"></div></div><div class="me-bl today">今天</div></div><div class="me-bc"><div class="me-bn">52</div><div class="me-bt"><div class="me-bf " style="height:100%"></div></div><div class="me-bl ">四</div></div><div class="me-bc"><div class="me-bn">27</div><div class="me-bt"><div class="me-bf " style="height:52%"></div></div><div class="me-bl ">五</div></div><div class="me-bc"><div class="me-bn">31</div><div class="me-bt"><div class="me-bf " style="height:60%"></div></div><div class="me-bl ">六</div></div><div class="me-bc"><div class="me-bn">19</div><div class="me-bt"><div class="me-bf " style="height:37%"></div></div><div class="me-bl ">日</div></div><div class="me-bc"><div class="me-bn">44</div><div class="me-bt"><div class="me-bf " style="height:85%"></div></div><div class="me-bl ">一</div></div><div class="me-bc"><div class="me-bn">23</div><div class="me-bt"><div class="me-bf " style="height:44%"></div></div><div class="me-bl ">二</div></div></div>
+  <div class="sec"><span class="sec-t">最近 30 天</span><span class="sec-x">连续 12 天 · 共学 24 天</span></div>
+  <div class="me-heat"><div class="me-hc l0"></div><div class="me-hc l1"></div><div class="me-hc l2"></div><div class="me-hc l3"></div><div class="me-hc l2"></div><div class="me-hc l1"></div><div class="me-hc l0"></div><div class="me-hc l3"></div><div class="me-hc l2"></div><div class="me-hc l1"></div><div class="me-hc l0"></div><div class="me-hc l3"></div><div class="me-hc l2"></div><div class="me-hc l1"></div><div class="me-hc l1"></div><div class="me-hc l0"></div><div class="me-hc l2"></div><div class="me-hc l2"></div><div class="me-hc l3"></div><div class="me-hc l3"></div><div class="me-hc l0"></div><div class="me-hc l1"></div><div class="me-hc l2"></div><div class="me-hc l3"></div><div class="me-hc l0"></div><div class="me-hc l3"></div><div class="me-hc l1"></div><div class="me-hc l2"></div><div class="me-hc l1"></div><div class="me-hc l1"></div></div>
+  <div class="list me-links">
+    <div class="item"><div class="item-main">错词本</div><span class="item-x">31 个</span><span class="arrow">›</span></div><div class="item"><div class="item-main">收藏</div><span class="item-x">18 个</span><span class="arrow">›</span></div><div class="item"><div class="item-main">每天新词</div><span class="item-x">20 个</span><span class="arrow">›</span></div><div class="item"><div class="item-main">关于老师</div><span class="arrow">›</span></div><div class="item"><div class="item-main">意见反馈 / 单词报错</div><span class="arrow">›</span></div><div class="item"><div class="item-main">联系客服</div><span class="arrow">›</span></div><div class="item"><div class="item-main">隐私说明</div><span class="arrow">›</span></div>
+  </div>
+  <div class="muted small center me-foot">JomBelajar · 张静灵老师主持编写</div>
+</div><div class="tab-pad"></div><div class="c-tab"><div class="tb-bar"><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/today.svg"></div><span class="t">今日</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/atlas.svg"></div><span class="t">图鉴</span></div><div class="it "><div class="ic"><img class="svg" src="../../miniprogram/miniprogram/assets/tab/battle.svg"></div><span class="t">对战</span></div><div class="it on"><div class="ic"><img class="bird" src="../../miniprogram/miniprogram/assets/cheer.jpg"></div><span class="t">护照</span></div></div></div></div>
+  </div>
+  <figcaption><b>护照</b>：记得多牢、接下来复习多少、最近有没有坚持；下面是设置行。</figcaption>
+</figure>
+
+<figure class="pw" id="rank">
+  <div class="phone" style="height:1010px">
+    <div class="sb"><span>9:41</span><i><u></u><b></b></i></div>
+    <div class="nav">完整榜单</div><div class="capsule"></div>
+    <div class="scr p-rank">
+<div class="wrap rp-wrap">
+  <div class="tabs"><div class="tab on">全站</div><div class="tab">本校</div><div class="tab">本班</div><div class="tab">学校榜</div></div>
+  <div class="muted small rp-rule">本周（11月16日 起）· 新学 2 分 · 复习 1 分 · 答对 1 分</div>
+  <div class="rk "><span class="rk-p top">1</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/cheer.jpg"><div class="rk-main"><div class="rk-n">椰子糖</div><div class="rk-sub">北京外国语大学 马来语 1 班</div></div><div class="rk-r"><div class="rk-s">1960</div><div class="rk-x">新学 240</div></div></div>
+  <div class="rk "><span class="rk-p top">2</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/study.jpg"><div class="rk-main"><div class="rk-n">Hafiz</div><div class="rk-sub">云南民族大学</div></div><div class="rk-r"><div class="rk-s">1880</div><div class="rk-x">新学 210</div></div></div>
+  <div class="rk "><span class="rk-p top">3</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/pass.jpg"><div class="rk-main"><div class="rk-n">南洋的风</div><div class="rk-sub">广西民族大学 2024 级</div></div><div class="rk-r"><div class="rk-s">1820</div><div class="rk-x">新学 230</div></div></div>
+  <div class="rk "><span class="rk-p ">4</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/welcome.jpg"><div class="rk-main"><div class="rk-n">Aina</div><div class="rk-sub">北京外国语大学</div></div><div class="rk-r"><div class="rk-s">1790</div><div class="rk-x">新学 180</div></div></div>
+  <div class="rk me"><span class="rk-p ">5</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/avatar.jpg"><div class="rk-main"><div class="rk-n">阿澄（我）</div><div class="rk-sub">中国传媒大学 马来语 2 班</div></div><div class="rk-r"><div class="rk-s">1640</div><div class="rk-x">新学 160</div></div></div>
+  <div class="rk "><span class="rk-p ">6</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/checkin.jpg"><div class="rk-main"><div class="rk-n">小麦</div><div class="rk-sub">中国传媒大学 马来语 2 班</div></div><div class="rk-r"><div class="rk-s">1620</div><div class="rk-x">新学 150</div></div></div>
+  <div class="rk "><span class="rk-p ">7</span><img class="rk-av" src="../../miniprogram/miniprogram/assets/study.jpg"><div class="rk-main"><div class="rk-n">榴莲不臭</div><div class="rk-sub">广东外语外贸大学</div></div><div class="rk-r"><div class="rk-s">1580</div><div class="rk-x">新学 170</div></div></div>
+</div>
+<div class="c-empty" style="border-top:1px solid rgba(243,234,214,.12);margin-top:16px"><div class="empty"><img class="img" src="../../miniprogram/miniprogram/assets/empty.jpg"><div class="t">还不知道你在哪个班</div><div class="d">完善资料，填上学校和班级就能看。（空状态长这样）</div><div class="act"><button class="btn btn-main">完善资料</button></div></div></div></div>
+  </div>
+  <figcaption><b>完整榜单 + 空状态</b>：分包里的排行行和对战页是同一个零件。</figcaption>
+</figure>
+</div></div>
+<script>
+// 词云：和 pages/atlas/atlas.js 同一个螺旋摆放
+const WORDS='belajar kedai minum makan pergi rumah buku air jalan kawan sekolah guru besar kecil baru lama cantik hari malam pagi kerja main tidur duduk lihat dengar cakap tulis baca beli jual masuk keluar datang'.split(' ').map((ms,i)=>({ms,rank:600+i,box:[6,6,4,4,4,2,2,2,2,2,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0][i]}))
+const level=b=>b>=6?4:b>=4?3:b>=2?2:b>=1?1:0
+function layout(words,W,H){const placed=[],out=[];words.slice().sort((a,b)=>b.box-a.box||a.rank-b.rank).forEach((w,i)=>{const b=level(w.box),fs=Math.round((i<3?22:14)+b*3),ww=w.ms.length*fs*.56+10,hh=fs*1.35;for(let t=0;t<900;t++){const a=t*.32,r=2.2*a,x=W/2+Math.cos(a)*r*1.5-ww/2,y=H/2+Math.sin(a)*r-hh/2;if(x<6||y<6||x+ww>W-6||y+hh>H-6)continue;if(placed.some(p=>x<p.x+p.w&&x+ww>p.x&&y<p.y+p.h&&y+hh>p.y))continue;placed.push({x,y,w:ww,h:hh});out.push({ms:w.ms,b,fs,x:Math.round(x),y:Math.round(y)});return}});return out}
+document.querySelectorAll('[data-cloud]').forEach(el=>{el.innerHTML=layout(WORDS,343,347).map(c=>'<div class="at-w b'+c.b+'" style="left:'+c.x+'px;top:'+c.y+'px;font-size:'+c.fs+'px;animation:none;opacity:1">'+c.ms+'</div>').join('')})
+</script></body></html>

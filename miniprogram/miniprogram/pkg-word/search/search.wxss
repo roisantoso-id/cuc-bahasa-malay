@@ -1,1 +1,2 @@
-.one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-list { margin-top: var(--s3); border-top: 0; }
+.sr-ms { font-size: var(--t-section); line-height: 1.3; }

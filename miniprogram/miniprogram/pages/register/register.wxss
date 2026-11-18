@@ -1,14 +1,12 @@
-.hero { width: 260rpx; height: 260rpx; display: block; margin: 0 auto; }
-.seg { display: flex; background: var(--panel2); border: 2rpx solid var(--hair); border-radius: 24rpx; padding: 8rpx; }
-.seg-i { flex: 1; text-align: center; padding: 18rpx 0; border-radius: 18rpx; font-weight: 800; color: var(--ink2); }
-.seg-i.on { background: var(--ivory); color: var(--dark-ink); }
-.agree { display: flex; gap: 16rpx; align-items: flex-start; margin: 8rpx 0 12rpx; color: var(--ink2); }
-.box { width: 40rpx; height: 40rpx; flex: none; border: 2rpx solid var(--hair2); border-radius: 10rpx; text-align: center; line-height: 34rpx; color: var(--dark-ink); font-weight: 900; margin-top: 4rpx; }
-.box.on { background: var(--star); border-color: var(--star); }
-
-.av-row { display: flex; align-items: center; gap: 24rpx; margin-bottom: 32rpx; }
-.av-btn { position: relative; width: 132rpx; height: 132rpx; padding: 0; margin: 0; border-radius: 50%; background: transparent; overflow: hidden; flex: none; line-height: 1; }
-.av-btn::after { border: 0; }
-.av-img { width: 132rpx; height: 132rpx; border-radius: 50%; background: var(--ivory); }
-.av-edit { position: absolute; left: 0; right: 0; bottom: 0; height: 40rpx; line-height: 40rpx; font-size: 20rpx; text-align: center; color: #fff; background: rgba(10,31,34,.6); }
-.av-tip { flex: 1; min-width: 0; }
+/* 资料：一列输入框，一个主按钮 */
+.rg-av-row { display: flex; align-items: center; gap: var(--s3); margin-bottom: var(--s5); }
+button.rg-av-btn { position: relative; width: 128rpx; height: 128rpx; min-height: 0; padding: 0; margin: 0; border-radius: 50%; background: transparent; overflow: hidden; flex: none; line-height: 1; }
+.rg-av-btn::after { border: 0; }
+.rg-av-img { width: 128rpx; height: 128rpx; border-radius: 50%; background: var(--ivory); }
+.rg-av-edit { position: absolute; left: 0; right: 0; bottom: 0; height: 40rpx; line-height: 40rpx; font-size: 20rpx; text-align: center; color: var(--ivory); background: rgba(10,31,34,.72); }
+.rg-chip { height: 88rpx; }
+.rg-agree { display: flex; gap: var(--s2); align-items: flex-start; min-height: 88rpx; padding: var(--s1) 0; color: var(--ink2); box-sizing: border-box; }
+.rg-box { width: 40rpx; height: 40rpx; flex: none; display: flex; align-items: center; justify-content: center; border: 2rpx solid var(--hair2); border-radius: 8rpx; box-sizing: border-box; margin-top: 2rpx; }
+.rg-box.on { background: var(--ivory); border-color: var(--ivory); }
+.rg-tick { width: 20rpx; height: 10rpx; border-left: 4rpx solid var(--dark-ink); border-bottom: 4rpx solid var(--dark-ink); transform: rotate(-45deg) translateY(-2rpx); }
+.rg-save { margin-top: var(--s4); }

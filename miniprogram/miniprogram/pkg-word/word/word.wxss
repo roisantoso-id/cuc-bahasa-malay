@@ -1,15 +1,15 @@
-.hd { padding: 24rpx 28rpx 28rpx; }
-.w { font-size: 72rpx; font-weight: 700; font-style: italic; line-height: 1.2; word-break: break-word; font-family: Georgia, "Times New Roman", serif; }
-.fav { font-size: 26rpx; font-weight: 700; color: var(--ink2); padding: 8rpx 20rpx; border-radius: 999rpx; border: 2rpx solid var(--hair2); }
-.fav.on { color: var(--star); border-color: var(--star); }
-.lv { margin-top: 20rpx; gap: 10rpx; }
-.lv-d { width: 36rpx; height: 12rpx; border-radius: 8rpx; background: var(--hair); }
-.lv-d.on { background: var(--star); }
-.pos { font-size: 24rpx; font-weight: 700; color: var(--ink2); border: 2rpx solid var(--hair2); padding: 0 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
-.zh { font-size: 34rpx; font-weight: 700; color: var(--ivory); }
-
-.fav-wrap { position: relative; }
-.fav { display: inline-flex; align-items: center; gap: 8rpx; }
-.fav-i { width: 30rpx; height: 30rpx; }
-.fav.pop { animation: favpop .4s cubic-bezier(.3,1.6,.5,1); }
-@keyframes favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+/* 单词详情：大斜体词 + 发音，下面是释义。星光只给熟练度那几格 */
+.wd-fav-wrap { position: relative; flex: none; }
+.wd-fav { display: inline-flex; align-items: center; gap: var(--s1); height: 88rpx; padding-left: var(--s3); font-size: 26rpx; color: var(--ink2); }
+.wd-fav.on { color: var(--ivory); }
+.wd-fav-i { width: 36rpx; height: 36rpx; }
+.wd-fav.pop { animation: wd-favpop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes wd-favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.wd-head { display: flex; align-items: center; gap: var(--s3); margin: var(--s2) 0 var(--s1); }
+.wd-w { min-width: 0; font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; word-break: break-word; }
+.wd-lv { display: flex; align-items: center; gap: var(--s1); margin-top: var(--s3); }
+.wd-lv-d { width: 32rpx; height: 8rpx; border-radius: var(--r-pill); background: var(--hair); }
+.wd-lv-d.on { background: var(--star); }
+.wd-lv-t { margin-left: var(--s1); }
+.wd-senses { margin-top: var(--s4); border-top: 2rpx solid var(--hair); }
+.wd-zh { font-family: var(--f-zh); font-size: var(--t-section); font-weight: 700; line-height: 1.4; }

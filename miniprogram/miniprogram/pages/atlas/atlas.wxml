@@ -1,49 +1,49 @@
-<view class="page">
+<view class="at-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在点亮星星…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <hb-empty wx:elif="{{!days.length}}" image="study" title="还没有学过的词" desc="去「今日」开始学，学过的词会按天出现在这里。" />
 
   <block wx:else>
-    <view class="wrap head">
-      <view class="lit"><text class="lit-n">{{learned}}</text><text class="lit-u"> 个词已点亮</text></view>
-      <view class="cap">{{cur.label}} · {{cur.date}} · {{cur.words.length}} 个词{{more ? '（显示前 ' + shownN + ' 个）' : ''}}</view>
+    <view class="wrap at-head">
+      <view><text class="num-xl">{{learned}}</text><text class="at-u"> 个词已点亮</text></view>
+      <view class="muted small">{{cur.label}} · {{cur.date}} · {{cur.words.length}} 个词{{more ? '（显示前 ' + shownN + ' 个）' : ''}}</view>
     </view>
 
-    <!-- 按天切换：全部 / 第 1 天 / 第 2 天 … -->
-    <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="days" scroll-into-view="{{intoView}}">
-      <view class="days-in">
-        <view wx:for="{{days}}" wx:key="key" id="d{{index}}" class="dy {{sel === index ? 'on' : ''}}" data-i="{{index}}" bindtap="pick">
-          <view class="dy-t">{{item.label}}</view>
-          <view class="dy-d">{{item.short}}</view>
+    <!-- 按天切换：全部 / 第 1 天 / 第 2 天 … 一行，左右滑 -->
+    <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="at-days" scroll-into-view="{{intoView}}">
+      <view class="at-days-in">
+        <view wx:for="{{days}}" wx:key="key" id="d{{index}}" class="at-dy {{sel === index ? 'on' : ''}}" data-i="{{index}}" bindtap="pick">
+          <view class="at-dy-t">{{item.label}}</view>
+          <view class="at-dy-d">{{item.short}}</view>
         </view>
       </view>
     </scroll-view>
 
     <!-- 词云：越熟的词越大越亮；依次弹出后轻轻浮动；点词看详情 -->
-    <view class="cloud" style="height:{{cloudH}}px">
-      <view wx:for="{{cloud}}" wx:key="k" class="w b{{item.b}}" style="left:{{item.x}}px;top:{{item.y}}px;font-size:{{item.fs}}px;animation-delay:{{item.d}}ms, {{item.d + 500}}ms;animation-duration:.5s, {{item.dur}}s" data-r="{{item.rank}}" data-x="{{item.x}}" data-y="{{item.y}}" bindtap="open">{{item.ms}}</view>
+    <view class="at-cloud" style="height:{{cloudH}}px">
+      <view wx:for="{{cloud}}" wx:key="k" class="at-w b{{item.b}}" style="left:{{item.x}}px;top:{{item.y}}px;font-size:{{item.fs}}px;animation-delay:{{item.d}}ms, {{item.d + 500}}ms;animation-duration:.5s, {{item.dur}}s" data-r="{{item.rank}}" data-x="{{item.x}}" data-y="{{item.y}}" bindtap="open">{{item.ms}}</view>
     </view>
-    <view class="hint">越大越亮的词记得越牢 · 点词看释义</view>
+    <view class="at-hint">越大越亮的词记得越牢 · 点词看释义</view>
   </block>
 
   <!-- 单词弹窗：从点的那个词的位置放大出来，点空白处缩回去 -->
-  <view wx:if="{{pop}}" class="mask {{popOn ? 'on' : ''}}" bindtap="close" catchtouchmove="noop">
-    <view class="pop {{popOn ? 'on' : ''}}" style="transform-origin:{{popOx}}px {{popOy}}px" catchtap="noop">
-      <view class="pop-h">
-        <view class="pop-ms">{{pop.ms}}</view>
+  <view wx:if="{{pop}}" class="at-mask {{popOn ? 'on' : ''}}" bindtap="close" catchtouchmove="noop">
+    <view class="sheet at-pop {{popOn ? 'on' : ''}}" style="transform-origin:{{popOx}}px {{popOy}}px" catchtap="noop">
+      <view class="at-pop-h">
+        <view class="at-pop-ms">{{pop.ms}}</view>
         <say-btn src="{{pop.audio}}" size="md" tone="ivory" />
       </view>
-      <view wx:if="{{pop.root}}" class="pop-root">词根 {{pop.root}}</view>
-      <scroll-view scroll-y class="pop-body">
-        <view wx:for="{{pop.senses}}" wx:key="index" class="pop-s">
-          <view class="pop-zh"><text wx:if="{{item.pos}}" class="pop-pos">{{item.pos}}</text>{{item.zh}}</view>
-          <view wx:if="{{item.exMs}}" class="pop-ex"><view class="pop-exm">{{item.exMs}}</view><view class="pop-exz">{{item.exZh}}</view></view>
+      <view wx:if="{{pop.root}}" class="at-pop-root">词根 {{pop.root}}</view>
+      <scroll-view scroll-y class="at-pop-body">
+        <view wx:for="{{pop.senses}}" wx:key="index" class="at-pop-s">
+          <view class="at-pop-zh"><text wx:if="{{item.pos}}" class="at-pop-pos">{{item.pos}}</text>{{item.zh}}</view>
+          <view wx:if="{{item.exMs}}" class="at-pop-ex"><view class="at-pop-exm">{{item.exMs}}</view><view class="at-pop-exz">{{item.exZh}}</view></view>
         </view>
-        <view wx:if="{{!pop.senses}}" class="muted small">正在加载释义…</view>
+        <view wx:if="{{!pop.senses}}" class="at-pop-exz">正在加载释义…</view>
       </scroll-view>
-      <view class="pop-f">
-        <view class="fav-wrap"><view class="pfav {{pop.fav ? 'on' : ''}} {{favPop ? 'popa' : ''}}" bindtap="fav"><image class="pfav-i" src="/assets/fx/{{pop.fav ? 'star-amber' : 'star-line'}}.svg" />{{pop.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
-        <view class="pop-x" bindtap="close">收起</view>
+      <view class="at-pop-f">
+        <view class="at-fav-wrap"><view class="at-fav {{pop.fav ? 'on' : ''}} {{favPop ? 'popa' : ''}}" bindtap="fav"><image class="at-fav-i" src="/assets/fx/{{pop.fav ? 'star-amber' : 'star-line'}}.svg" />{{pop.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
+        <view class="at-pop-x" bindtap="close">收起</view>
       </view>
     </view>
   </view>

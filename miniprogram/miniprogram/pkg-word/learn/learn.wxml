@@ -1,105 +1,104 @@
-<view class="page">
+<view class="ln-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在准备单词…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
   <hb-empty wx:elif="{{view === 'empty'}}" image="cheer" title="这里暂时没有要学的词" desc="到期的词会自动出现在复习里。"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
 
   <block wx:elif="{{view === 'card' || view === 'quiz'}}">
-    <view class="top">
+    <view class="ln-top">
       <view class="bar"><view class="bar-in" style="width:{{idx / total * 100}}%" /></view>
-      <view class="top-r"><text class="muted small no">{{idx}} / {{total}}</text>
-        <text wx:if="{{view === 'quiz' && !quiz.graded}}" class="tag">小练习</text>
-        <text wx:else class="tag {{card.kind === 'review' ? 'blue' : ''}}">{{card.again ? '再来一次' : card.kind === 'review' ? '复习' : '新词'}}</text>
+      <view class="ln-top-r"><text class="no">{{idx}} / {{total}}</text>
+        <text wx:if="{{view === 'quiz' && !quiz.graded}}">小练习</text>
+        <text wx:else>{{card.again ? '再来一次' : card.kind === 'review' ? '复习' : '新词'}}</text>
       </view>
     </view>
 
     <!-- 词卡:象牙色卡片,正面只有词和发音 -->
     <block wx:if="{{view === 'card'}}">
       <!-- 手势：左滑不认识、右滑认识、上滑模糊；卡片跟手倾斜，松手过线就飞出去 -->
-      <view class="wcard {{flipped ? 'small' : ''}} {{fly ? 'fly-' + fly : ''}}" style="transform: translate({{dx}}px, {{dy < 0 ? dy : dy * 0.25}}px) rotate({{dx / 18}}deg); transition: {{drag ? 'none' : 'transform .28s ease, opacity .28s'}};" bindtap="flip" bindtouchstart="tStart" bindtouchmove="tMove" bindtouchend="tEnd" bindtouchcancel="tEnd">
-        <view class="swipe-badge {{hint}}" wx:if="{{hint}}">{{hint === 'know' ? '认识' : hint === 'forgot' ? '不认识' : '模糊'}}</view>
-        <view class="wc-in">
-          <view class="w">{{card.ms}}</view>
-          <view wx:if="{{!flipped}}" class="wc-hint">点卡片翻看释义</view>
+      <view class="ln-card {{flipped ? 'flipped' : ''}} {{fly ? 'fly-' + fly : ''}}" style="transform: translate({{dx}}px, {{dy < 0 ? dy : dy * 0.25}}px) rotate({{dx / 18}}deg); transition: {{drag ? 'none' : 'transform .28s ease, opacity .28s'}};" bindtap="flip" bindtouchstart="tStart" bindtouchmove="tMove" bindtouchend="tEnd" bindtouchcancel="tEnd">
+        <view class="ln-badge {{hint}}" wx:if="{{hint}}">{{hint === 'know' ? '认识' : hint === 'forgot' ? '不认识' : '模糊'}}</view>
+        <view class="ln-card-in">
+          <view class="ln-w">{{card.ms}}</view>
+          <view wx:if="{{!flipped}}" class="ln-card-hint">点卡片翻看释义</view>
         </view>
-        <view class="wc-say"><say-btn src="{{card.audio}}" size="md" tone="ivory" /></view>
+        <view class="ln-say"><say-btn src="{{card.audio}}" size="md" tone="ivory" /></view>
       </view>
-      <scroll-view wx:if="{{flipped}}" scroll-y class="below">
-        <view class="tags">
-          <text class="tag gray">{{card.level ? 'T' + card.level : '词卡'}} · No.{{card.rank}}</text>
-          <text wx:if="{{card.senses[0].pos}}" class="tag gray">{{card.senses[0].pos}}</text>
-          <text class="tag amber">{{card.first ? '初次见面' : card.again ? '再来一次' : '第 ' + (card.seen || 2) + ' 次见'}}</text>
-          <view class="fav-wrap"><text class="fav {{card.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" catchtap="fav">{{card.fav ? '已收藏' : '收藏'}}</text><fx-burst fire="{{favFx}}" /></view>
+      <scroll-view wx:if="{{flipped}}" scroll-y class="ln-below">
+        <!-- 一行说明代替一排标签；右边是收藏 -->
+        <view class="ln-meta">
+          <view class="ln-meta-t one"><text class="no">№ {{card.rank}}</text>{{card.level ? ' · T' + card.level : ''}}{{card.senses[0].pos ? ' · ' + card.senses[0].pos : ''}} · {{card.first ? '初次见面' : card.again ? '再来一次' : '第 ' + (card.seen || 2) + ' 次见'}}</view>
+          <view class="ln-fav-wrap"><view class="ln-fav {{card.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" catchtap="fav"><image class="ln-fav-i" src="/assets/fx/{{card.fav ? 'star-amber' : 'star-line'}}.svg" />{{card.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
         </view>
-        <view wx:for="{{card.senses}}" wx:key="index" class="sn">
-          <view class="mean"><text class="pos">{{item.pos}}</text>{{item.zh}}</view>
-          <view wx:if="{{item.exMs}}" class="ex">
-            <view class="ex-ms"><text wx:for="{{item.parts}}" wx:for-item="p" wx:key="index" class="{{p.hit ? 'hit' : ''}}">{{p.t}}</text></view>
-            <view class="ex-zh">{{item.exZh}}</view>
+        <view wx:for="{{card.senses}}" wx:key="index" class="ln-sn">
+          <view class="ln-mean"><text class="pos">{{item.pos}}</text>{{item.zh}}</view>
+          <view wx:if="{{item.exMs}}" class="example">
+            <view class="ln-ex-ms"><text wx:for="{{item.parts}}" wx:for-item="p" wx:key="index" class="{{p.hit ? 'ln-hit' : ''}}">{{p.t}}</text></view>
+            <view class="muted small">{{item.exZh}}</view>
           </view>
         </view>
-        <view wx:if="{{card.root}}" class="root">词根 <text class="root-w">{{card.root}}</text></view>
+        <view wx:if="{{card.root}}" class="ln-root">词根 <text class="serif ln-root-w">{{card.root}}</text></view>
       </scroll-view>
-      <view wx:else class="grow" />
+      <view wx:else class="ln-grow" />
     </block>
 
     <!-- 题 -->
-    <view wx:else class="quiz">
-      <view class="q-k">{{quiz.type === 'ms2zh' ? '看词选义' : quiz.type === 'listen' ? '听音选义' : quiz.type === 'zh2ms' ? '看义选词' : quiz.type === 'cloze' ? '选词填空' : '拼写'}}</view>
-      <view wx:if="{{quiz.type === 'listen'}}" class="q-listen"><view class="q-ring"><say-btn src="{{quiz.word.audio}}" size="lg" tone="big" /></view><view class="muted small">没听清就再点一下</view></view>
-      <view wx:elif="{{quiz.type === 'cloze'}}" class="q-cloze"><view class="cl-ms">{{quiz.cloze.before}}<text class="cl-gap">{{picked ? quiz.answer : '＿＿＿'}}</text>{{quiz.cloze.after}}</view><view class="muted small">{{quiz.cloze.zh}}</view></view>
-      <view wx:else class="q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}">{{quiz.prompt}}</view>
+    <view wx:else class="ln-quiz">
+      <view class="ln-q-k">{{quiz.type === 'ms2zh' ? '看词选义' : quiz.type === 'listen' ? '听音选义' : quiz.type === 'zh2ms' ? '看义选词' : quiz.type === 'cloze' ? '选词填空' : '拼写'}}</view>
+      <view wx:if="{{quiz.type === 'listen'}}" class="ln-q-listen"><view class="ln-q-ring"><say-btn src="{{quiz.word.audio}}" size="lg" tone="big" /></view><view class="muted small">没听清就再点一下</view></view>
+      <view wx:elif="{{quiz.type === 'cloze'}}" class="ln-q-cloze"><view class="ln-cl-ms">{{quiz.cloze.before}}<text class="ln-cl-gap">{{picked ? quiz.answer : '＿＿＿'}}</text>{{quiz.cloze.after}}</view><view class="muted small">{{quiz.cloze.zh}}</view></view>
+      <view wx:else class="ln-q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}">{{quiz.prompt}}</view>
 
       <block wx:if="{{quiz.type === 'spell'}}">
-        <input class="input spell {{picked ? (picked === quiz.answer ? 'ok' : 'bad') : ''}}" placeholder-class="ph" value="{{typed}}" placeholder="{{quiz.hint}}" focus confirm-type="done" bindinput="typing" bindconfirm="checkSpell" disabled="{{!!picked}}" />
-        <view wx:if="{{picked && picked !== quiz.answer}}" class="answer">正确答案：<text class="ms">{{quiz.answer}}</text></view>
+        <input class="input ln-spell {{picked ? (picked === quiz.answer ? 'ok' : 'bad') : ''}}" placeholder-class="ph" value="{{typed}}" placeholder="{{quiz.hint}}" focus confirm-type="done" bindinput="typing" bindconfirm="checkSpell" disabled="{{!!picked}}" />
+        <view wx:if="{{picked && picked !== quiz.answer}}" class="ln-answer">正确答案：<text class="ms">{{quiz.answer}}</text></view>
         <view class="btns"><button class="btn btn-main" hover-class="hover" bindtap="checkSpell" disabled="{{!!picked}}">确定</button></view>
       </block>
-      <view wx:else class="opts">
+      <view wx:else class="ln-opts">
         <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type === 'zh2ms' || quiz.type === 'cloze' ? 'ms' : ''}} {{picked && item !== quiz.answer && picked !== item ? 'dim' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
       </view>
-      <view wx:if="{{quiz.graded && !picked}}" class="idk" bindtap="dontKnow">想不起来</view>
-      <view class="grow" />
+      <view wx:if="{{quiz.graded && !picked}}" class="btn-text" hover-class="hover" bindtap="dontKnow">想不起来</view>
+      <view class="ln-grow" />
     </view>
 
     <!-- 题目底部反馈条 -->
-    <view wx:if="{{view === 'quiz' && picked}}" class="fb">
-      <view class="item-main"><view class="fb-w">{{quiz.word.ms}}</view><view class="fb-l {{fbOk ? 'ok' : ''}}">{{fbLine}}</view></view>
-      <button class="btn btn-main fb-b" hover-class="hover" bindtap="cont">继续</button>
+    <view wx:if="{{view === 'quiz' && picked}}" class="ln-fb">
+      <view class="item-main"><view class="ms ln-fb-w one">{{quiz.word.ms}}</view><view class="ln-fb-l {{fbOk ? 'ok' : ''}}">{{fbLine}}</view></view>
+      <button class="btn btn-main ln-fb-b" hover-class="hover" bindtap="cont">继续</button>
     </view>
 
-    <view wx:if="{{view === 'card'}}" class="actions">
+    <view wx:if="{{view === 'card'}}" class="ln-actions">
       <block wx:if="{{flipped}}">
         <!-- 三只犀鸟：拖向哪边哪只放大；也可以直接点 -->
-        <view class="birds">
-          <view class="bd {{hint === 'forgot' ? 'on' : ''}}" hover-class="hover" data-r="forgot" bindtap="grade"><image src="/assets/fail.jpg" mode="aspectFill" /><view class="bd-t">← 不认识</view><view class="gh">{{card.hints.forgot}}</view></view>
-          <view class="bd {{hint === 'vague' ? 'on' : ''}}" hover-class="hover" data-r="vague" bindtap="grade"><image src="/assets/loading.jpg" mode="aspectFill" /><view class="bd-t">↑ 模糊</view><view class="gh">{{card.hints.vague}}</view></view>
-          <view class="bd {{hint === 'know' ? 'on' : ''}}" hover-class="hover" data-r="know" bindtap="grade"><image src="/assets/cheer.jpg" mode="aspectFill" /><view class="bd-t">认识 →</view><view class="gh">{{card.hints.know}}</view></view>
+        <view class="ln-birds">
+          <view class="ln-bd {{hint === 'forgot' ? 'on' : ''}}" hover-class="hover" data-r="forgot" bindtap="grade"><image src="/assets/fail.jpg" mode="aspectFill" /><view class="ln-bd-t">← 不认识</view><view class="ln-gh">{{card.hints.forgot}}</view></view>
+          <view class="ln-bd {{hint === 'vague' ? 'on' : ''}}" hover-class="hover" data-r="vague" bindtap="grade"><image src="/assets/loading.jpg" mode="aspectFill" /><view class="ln-bd-t">↑ 模糊</view><view class="ln-gh">{{card.hints.vague}}</view></view>
+          <view class="ln-bd {{hint === 'know' ? 'on' : ''}}" hover-class="hover" data-r="know" bindtap="grade"><image src="/assets/cheer.jpg" mode="aspectFill" /><view class="ln-bd-t">认识 →</view><view class="ln-gh">{{card.hints.know}}</view></view>
         </view>
-        <view wx:if="{{card.kind === 'new'}}" class="master" data-r="mastered" bindtap="grade">太简单了，设为已掌握</view>
+        <view wx:if="{{card.kind === 'new'}}" class="btn-text" hover-class="hover" data-r="mastered" bindtap="grade">太简单了，设为已掌握</view>
       </block>
-      <button wx:else class="btn btn-main" hover-class="hover" bindtap="flip">看释义</button>
+      <button wx:else class="btn btn-main btn-block" hover-class="hover" bindtap="flip">看释义</button>
     </view>
   </block>
 
   <!-- 结束:盖章 -->
-  <view wx:elif="{{view === 'done'}}" class="done">
-    <view class="stamp big">
+  <view wx:elif="{{view === 'done'}}" class="ln-done">
+    <view class="stamp ln-stamp">
       <text class="s2 no">JOMBELAJAR</text>
       <text class="s1">{{stop ? stop.city : '完成'}}</text>
       <text class="s2 no">{{date}}</text>
     </view>
     <view class="h1 center">这一程走完了</view>
-    <view wx:if="{{streak}}" class="muted center">已经连续学了 {{streak}} 天</view>
-    <view class="sum">
-      <view><view class="n c-know">{{stats.know}}</view>认识</view>
-      <view><view class="n c-vague">{{stats.vague}}</view>模糊</view>
-      <view><view class="n c-forgot">{{stats.forgot}}</view>不认识</view>
-      <view><view class="n">{{stats.mastered}}</view>已掌握</view>
+    <view wx:if="{{streak}}" class="muted small center">已经连续学了 {{streak}} 天</view>
+    <view class="stats mid ln-sum">
+      <view class="stat"><view class="stat-n c-green">{{stats.know}}</view><view class="stat-l">认识</view></view>
+      <view class="stat"><view class="stat-n">{{stats.vague}}</view><view class="stat-l">模糊</view></view>
+      <view class="stat"><view class="stat-n c-coral">{{stats.forgot}}</view><view class="stat-l">不认识</view></view>
+      <view class="stat"><view class="stat-n">{{stats.mastered}}</view><view class="stat-l">已掌握</view></view>
     </view>
     <view wx:if="{{stop}}" class="muted small center">{{stop.city}}站：已学 {{stop.learned}} / {{stop.total}}。模糊和不认识的词会排进后面的复习。</view>
     <view class="btns">
       <button class="btn btn-main" hover-class="hover" bindtap="again">{{left ? '继续今天的' : '再学 10 个'}}</button>
-      <button class="btn btn-ghost" hover-class="hover" bindtap="back">回到路线</button>
+      <view class="btn-text" hover-class="hover" bindtap="back">回到路线</view>
     </view>
   </view>
 </view>

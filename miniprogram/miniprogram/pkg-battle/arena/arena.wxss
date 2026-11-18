@@ -1,8 +1,6 @@
 @import '../common.wxss';
-.hero .h1 { color: var(--ivory); }
-.bird-r { width: 128rpx; height: 128rpx; border-radius: 50%; flex-shrink: 0; border: 6rpx solid rgba(243,234,214,.25); }
-.rules { display: flex; flex-wrap: wrap; gap: 14rpx; margin: 24rpx 0 16rpx; }
-.label-k { font-weight: 900; }
-.tile .n.sm { font-size: 32rpx; line-height: 1.65; }
-.go { margin-top: 32rpx; }
-.rk { margin-top: 28rpx; }
+/* 擂台：规则一句话、我的最好成绩、一个主按钮、排名 */
+.ar-head { display: flex; align-items: center; gap: var(--s3); }
+.ar-bird { flex: none; width: 128rpx; height: 128rpx; border-radius: 50%; background: var(--ivory); }
+.ar-best { margin: var(--s4) 0; }
+.ar-time { font-size: var(--t-section); line-height: 1.65; }

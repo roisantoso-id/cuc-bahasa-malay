@@ -1,23 +1,13 @@
-/* 对战分包共用：排行行、复盘行、成绩头 */
-.full { width: 100%; margin-top: 12rpx; }
-.list .item { min-height: 88rpx; }
-.list .item.me { margin: 0 -16rpx; padding-left: 16rpx; padding-right: 16rpx; border-radius: 24rpx; background: var(--amber-l); border: 2rpx solid var(--star); }
-.nm { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.right { flex-shrink: 0; text-align: right; }
-.sc { font-size: 36rpx; font-weight: 700; line-height: 1.2; font-family: Georgia, serif; }
-.qno { width: 44rpx; flex-shrink: 0; color: var(--ink2); font-size: 24rpx; }
-.item-main { word-break: break-word; }
-.pz { font-weight: 800; }
-.ok { color: var(--green); }
-.res { padding-top: 36rpx; }
-.bird { width: 200rpx; height: 200rpx; border-radius: 50%; display: block; margin: 0 auto 12rpx; }
-.bird.sm { width: 160rpx; height: 160rpx; }
-.big { font-size: 96rpx; font-weight: 700; line-height: 1.15; color: var(--star); font-family: Georgia, serif; }
-.unit { font-size: 30rpx; color: var(--ink2); }
-.tiles { display: flex; gap: 18rpx; margin-top: 30rpx; }
-.tiles .tile { flex: 1; min-width: 0; }
-/* 分段切换：等分，每格 88rpx 高 */
-.seg { display: flex; gap: 12rpx; padding: 8rpx; border-radius: 30rpx; background: var(--panel2); border: 2rpx solid var(--hair); }
-.seg-i { flex: 1; min-width: 0; height: 88rpx; line-height: 88rpx; text-align: center; border-radius: 24rpx; font-size: 28rpx; font-weight: 800; color: var(--ink2); }
-.seg-i.on { color: var(--dark-ink); background: var(--ivory); }
+/* 对战分包共用（前缀 bx-）：答题复盘行。排行行、成绩头、一排数字都用全局的 .rk / .res / .stats */
+.bx-rv { display: flex; align-items: flex-start; gap: var(--s2); padding: var(--s3) 0; border-bottom: 2rpx solid var(--hair); }
+.bx-no { flex: none; width: 48rpx; font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); text-align: center; }
+.bx-main { flex: 1; min-width: 0; word-break: break-word; }
+.bx-q { font-size: var(--t-body); font-weight: 600; }
+.bx-q.ms { font-size: var(--t-section); font-weight: 400; }
+.bx-a { font-size: var(--t-caption); color: var(--ink2); }
+.bx-a .ms { font-size: 28rpx; }
+.bx-a.ok { color: var(--ok); }
+.bx-mark { flex: none; width: 48rpx; text-align: right; font-size: var(--t-caption); color: var(--ok); line-height: 72rpx; }
+.bx-mark.bad { color: var(--bad); }
+.bx-note { padding: var(--s3) 0; }
+.bx-list { border-top: 2rpx solid var(--hair); }

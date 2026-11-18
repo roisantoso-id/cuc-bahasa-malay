@@ -1,59 +1,49 @@
+<wxs src="../../utils/avatar.wxs" module="av" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在摆擂台…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <view class="card card-dark hero">
-      <view class="between">
-        <view class="item-main">
-          <view class="h1">每周擂台</view>
-          <view class="muted small">本周（{{week}} 起）· {{a.players}} 人参加</view>
+    <view class="ar-head">
+      <view class="item-main">
+        <view class="h1">每周擂台</view>
+        <view class="muted small">本周（{{week}} 起）· {{a.players}} 人参加</view>
+        <view class="muted small">{{a.total}} 题 · 每周 3 次机会 · 取最好成绩</view>
+      </view>
+      <image class="ar-bird" src="/assets/study.jpg" mode="aspectFill" />
+    </view>
+
+    <view wx:if="{{a.best}}" class="stats ar-best">
+      <view class="stat"><view class="stat-n c-amber">{{a.best.score}}<text class="stat-u"> 分</text></view><view class="stat-l">本周最好</view></view>
+      <view class="stat"><view class="stat-n">{{a.best.correct}}<text class="stat-u"> / {{a.total}}</text></view><view class="stat-l">答对</view></view>
+      <view class="stat"><view class="stat-n ar-time">{{bestTime}}</view><view class="stat-l">用时</view></view>
+    </view>
+    <view wx:else class="stats ar-best"><view class="muted small">还没打过。题目来自前三站，答对越多、用时越短，分越高。</view></view>
+
+    <button class="btn btn-main btn-block" hover-class="hover" bindtap="play" disabled="{{!a.triesLeft}}">{{a.triesLeft ? '开始打擂台（还剩 ' + a.triesLeft + ' 次）' : '本周机会已用完，下周一再来'}}</button>
+
+    <view class="sec"><text class="sec-t">擂台排名</text><text class="sec-x">每周一更新</text></view>
+    <view class="tabs">
+      <view class="tab {{scope === 'all' ? 'on' : ''}}" data-k="all" bindtap="pickScope">全站</view>
+      <view class="tab {{scope === 'school' ? 'on' : ''}}" data-k="school" bindtap="pickScope">本校</view>
+    </view>
+    <hb-empty wx:if="{{rankView === 'loading'}}" image="loading" title="正在排名…" />
+    <hb-empty wx:elif="{{rankView === 'error'}}" image="fail" title="{{rankError || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="loadRank">再试一次</button></hb-empty>
+    <hb-empty wx:elif="{{noSchool}}" image="empty" title="还不知道你在哪个学校" desc="完善资料，填上学校就能看本校排名。">
+      <button class="btn btn-main" hover-class="hover" bindtap="profile">完善资料</button>
+    </hb-empty>
+    <hb-empty wx:elif="{{!list.length}}" image="empty" title="本周还没有人打擂台" desc="第一个上榜的就是你。" />
+    <view wx:else>
+      <view wx:for="{{list}}" wx:key="place" class="rk {{item.me ? 'me' : ''}}">
+        <text class="rk-p {{item.place < 4 ? 'top' : ''}}">{{item.place}}</text>
+        <image class="rk-av" src="{{av.of(item)}}" mode="aspectFill" />
+        <view class="rk-main">
+          <view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
+          <view class="rk-sub">{{item.school || '—'}}</view>
         </view>
-        <image class="bird-r" src="/assets/study.jpg" mode="aspectFill" />
-      </view>
-      <view class="rules">
-        <text class="tag amber">{{a.total}} 题</text>
-        <text class="tag amber">每周一更新</text>
-        <text class="tag amber">每周 3 次机会</text>
-        <text class="tag amber">取最好成绩</text>
-      </view>
-      <view class="muted small">题目来自前三站，答对越多、用时越短，分越高。</view>
-    </view>
-
-    <view class="card">
-      <view class="label-k">我的本周最好</view>
-      <view wx:if="{{a.best}}" class="tiles">
-        <view class="tile"><view class="n">{{a.best.score}}</view><view class="muted small">分</view></view>
-        <view class="tile"><view class="n">{{a.best.correct}}/{{a.total}}</view><view class="muted small">答对</view></view>
-        <view class="tile"><view class="n sm">{{bestTime}}</view><view class="muted small">用时</view></view>
-      </view>
-      <view wx:else class="muted small">还没打过，本周有 3 次机会。</view>
-      <button class="btn btn-amber go" hover-class="hover" bindtap="play" disabled="{{!a.triesLeft}}">{{a.triesLeft ? '开始打擂台（还剩 ' + a.triesLeft + ' 次）' : '本周机会已用完，下周一再来'}}</button>
-    </view>
-
-    <view class="h2">擂台排名</view>
-    <view class="seg">
-      <view class="seg-i {{scope === 'all' ? 'on' : ''}}" data-k="all" bindtap="pickScope">全站</view>
-      <view class="seg-i {{scope === 'school' ? 'on' : ''}}" data-k="school" bindtap="pickScope">本校</view>
-    </view>
-    <view class="rk">
-      <hb-empty wx:if="{{rankView === 'loading'}}" image="loading" title="正在排名…" />
-      <hb-empty wx:elif="{{rankView === 'error'}}" image="fail" title="{{rankError || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="loadRank">再试一次</button></hb-empty>
-      <hb-empty wx:elif="{{noSchool}}" image="empty" title="还不知道你在哪个学校" desc="完善资料，填上学校就能看本校排名。">
-        <view class="btns full"><button class="btn btn-main" hover-class="hover" bindtap="profile">完善资料</button></view>
-      </hb-empty>
-      <hb-empty wx:elif="{{!list.length}}" image="empty" title="本周还没有人打擂台" desc="第一个上榜的就是你。" />
-      <view wx:else class="card list">
-        <view wx:for="{{list}}" wx:key="place" class="item {{item.me ? 'me' : ''}}">
-          <view class="medal {{item.place > 3 ? 'mn' : 'm' + item.place}}">{{item.place}}</view>
-          <view class="item-main">
-            <view class="nm">{{item.name}}<text wx:if="{{item.me}}" class="tag" style="margin-left:10rpx">我</text></view>
-            <view class="muted small one">{{item.school || '—'}}</view>
-          </view>
-          <view class="right">
-            <view class="sc">{{item.score}}</view>
-            <view class="muted small">{{item.correct}}/{{a.total}} · {{item.time}}</view>
-          </view>
+        <view class="rk-r">
+          <view class="rk-s">{{item.score}}</view>
+          <view class="rk-x">{{item.correct}}/{{a.total}} · {{item.time}}</view>
         </view>
       </view>
     </view>

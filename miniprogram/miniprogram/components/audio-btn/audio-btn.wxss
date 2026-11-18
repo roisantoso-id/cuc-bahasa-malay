@@ -1,5 +1,5 @@
-.ab { display: inline-flex; align-items: center; gap: 10rpx; padding: 8rpx 18rpx 8rpx 8rpx; border-radius: 999rpx; background: #e4f1ff; color: #2f86d6; font-size: 24rpx; font-weight: 800; vertical-align: middle; }
-.ab-hover { opacity: .7; }
-.ic { width: 44rpx; height: 44rpx; border-radius: 50%; background: #4aa8ff; display: flex; align-items: center; justify-content: center; }
-.tri { width: 0; height: 0; border-left: 16rpx solid #fff; border-top: 10rpx solid transparent; border-bottom: 10rpx solid transparent; margin-left: 4rpx; }
+.ab { display: inline-flex; align-items: center; gap: 8rpx; min-height: 72rpx; padding: 0 24rpx 0 8rpx; border-radius: 999rpx; border: 2rpx solid rgba(243,234,214,.24); color: #f3ead6; font-size: 24rpx; vertical-align: middle; box-sizing: border-box; }
+.ab-hover { opacity: .6; }
+.ic { width: 48rpx; height: 48rpx; border-radius: 50%; background: #f3ead6; display: flex; align-items: center; justify-content: center; }
+.tri { width: 0; height: 0; border-left: 16rpx solid #0a1f22; border-top: 10rpx solid transparent; border-bottom: 10rpx solid transparent; margin-left: 4rpx; }
 .lb { line-height: 1; }

@@ -1,27 +1,19 @@
-.date { font-size: 26rpx; color: var(--ink2); margin-top: 8rpx; }
-.hi { font-size: 48rpx; font-weight: 800; margin-top: 8rpx; font-family: "Songti SC", "STSong", -apple-system, "PingFang SC", serif; }
-.hero { position: relative; margin-top: 24rpx; height: 440rpx; }
-.ring-box { position: relative; width: 400rpx; height: 400rpx; }
-.ring { width: 400rpx; height: 400rpx; }
-.ring-in { position: absolute; left: 0; top: 0; width: 400rpx; height: 400rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.big { font-size: 140rpx; line-height: 1.1; font-family: Georgia, "Times New Roman", serif; color: var(--ivory); }
-.lab { font-size: 26rpx; color: var(--ink2); }
-.bird { position: absolute; right: -30rpx; top: 0; width: 360rpx; height: 440rpx; }
-.stats { display: flex; padding: 28rpx 0; border-top: 2rpx solid var(--hair); border-bottom: 2rpx solid var(--hair); }
-.stats > view { flex: 1; }
-.stats .n { font-size: 48rpx; font-family: Georgia, serif; line-height: 1.2; }
-.stats .u { font-size: 26rpx; color: var(--ink2); font-family: -apple-system, "PingFang SC", sans-serif; }
-.stats .l { font-size: 26rpx; color: var(--ink2); }
-.cta { margin: 36rpx 0 12rpx; }
-.line { display: flex; align-items: center; gap: 24rpx; padding: 28rpx 0; min-height: 120rpx; box-sizing: border-box; border-bottom: 2rpx solid var(--hair); }
-.line.hover { opacity: .7; }
-.dots { width: 72rpx; height: 72rpx; border-radius: 50%; flex: none; background: radial-gradient(circle at 30% 35%, var(--star) 0 4rpx, transparent 5rpx), radial-gradient(circle at 62% 28%, var(--star) 0 3rpx, transparent 4rpx), radial-gradient(circle at 70% 66%, var(--star) 0 5rpx, transparent 6rpx), radial-gradient(circle at 35% 72%, rgba(243,234,214,.4) 0 3rpx, transparent 4rpx), rgba(243,234,214,.06); }
-.l1 { font-size: 30rpx; }
-.star-n { font-family: Georgia, serif; font-size: 40rpx; color: var(--star); }
-.say-ic { width: 72rpx; height: 72rpx; flex: none; display: flex; align-items: center; justify-content: center; }
-.cone { width: 0; height: 0; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; border-right: 16rpx solid var(--star); margin-right: 4rpx; }
-.wave { width: 14rpx; height: 24rpx; border: 5rpx solid var(--star); border-left: 0; border-radius: 0 24rpx 24rpx 0; }
-.w1 { align-items: baseline; }
-.wms { font-family: Georgia, serif; font-size: 38rpx; }
-.wzh { font-size: 28rpx; }
-.one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 今日：一个数字、一个按钮。星光只给圆环的进度 */
+.hm-date { font-size: var(--t-caption); color: var(--ink2); margin-bottom: var(--s1); }
+.hm-hero { position: relative; height: 416rpx; margin-top: var(--s3); }
+.hm-ring-box { position: relative; width: 384rpx; height: 384rpx; }
+.hm-ring { width: 384rpx; height: 384rpx; }
+.hm-ring-in { position: absolute; left: 0; top: 0; width: 384rpx; height: 384rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+/* 全站唯一比 --t-display 还大的字：首页圆环里的数 */
+.hm-big { font-family: var(--f-ms); font-size: 128rpx; line-height: 1.1; }
+.hm-lab { font-size: var(--t-caption); color: var(--ink2); }
+.hm-bird { position: absolute; right: -24rpx; bottom: 0; width: 320rpx; height: 416rpx; }
+.hm-cta { margin: var(--s4) 0 var(--s3); }
+.hm-list { border-top: 0; }
+.hm-dots { width: 72rpx; height: 72rpx; border-radius: 50%; flex: none; border: 2rpx solid var(--hair2); box-sizing: border-box; background: radial-gradient(circle at 30% 35%, var(--ivory) 0 4rpx, transparent 5rpx), radial-gradient(circle at 62% 28%, var(--ivory) 0 3rpx, transparent 4rpx), radial-gradient(circle at 70% 66%, var(--ivory) 0 5rpx, transparent 6rpx), radial-gradient(circle at 35% 72%, var(--ink3) 0 3rpx, transparent 4rpx); }
+.hm-star { font-family: var(--f-ms); font-size: 36rpx; }
+.hm-say { width: 72rpx; height: 72rpx; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; border: 2rpx solid var(--hair2); box-sizing: border-box; }
+.hm-cone { width: 0; height: 0; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; border-right: 16rpx solid var(--ivory); margin-right: 4rpx; }
+.hm-wave { width: 14rpx; height: 24rpx; border: 4rpx solid var(--ivory); border-left: 0; border-radius: 0 24rpx 24rpx 0; }
+.hm-w1 { display: flex; align-items: baseline; gap: var(--s2); }
+.hm-wms { font-size: 36rpx; }

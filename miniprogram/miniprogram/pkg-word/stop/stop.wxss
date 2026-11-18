@@ -1,12 +1,15 @@
-.hd { padding: 24rpx 28rpx 28rpx; }
-.chips-wrap { margin: 32rpx 0 20rpx; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; }
-.cell { background: var(--panel2); border: 2rpx solid var(--hair); border-radius: 22rpx; padding: 14rpx 18rpx; min-width: 0; }
-.cell.hover { opacity: .7; }
-.cell.learn { border-color: var(--ok); background: var(--panel); }
-.cell.good { border-color: rgba(233,185,97,.5); background: var(--panel); }
-.cell.done { background: var(--ivory); border-color: var(--ivory); }
-.cell.done .cell-ms { color: var(--dark-ink); } .cell.done .cell-zh, .cell.done .cell-no { color: rgba(10,31,34,.6); }
-.cell-no { font-size: 22rpx; color: var(--ink2); }
-.cell-ms { font-weight: 700; font-size: 30rpx; font-family: Georgia, serif; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cell-zh { font-size: 24rpx; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 一站的词表：标题 + 一个主按钮 + 筛选 + 两列词 */
+.st-head { display: flex; align-items: flex-start; gap: var(--s3); }
+.st-note { margin-top: var(--s1); }
+button.st-go { margin-top: var(--s4); }
+.st-tabs { margin-top: var(--s4); }
+.st-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--s4); }
+.st-cell { display: flex; align-items: center; gap: var(--s2); min-width: 0; min-height: 104rpx; border-bottom: 2rpx solid var(--hair); box-sizing: border-box; }
+.st-ms { font-size: var(--t-section); line-height: 1.3; }
+/* 熟练度：没学 = 空心，在学 = 绿，熟悉 = 象牙，掌握 = 星光 */
+.st-dot { flex: none; width: 12rpx; height: 12rpx; border-radius: 50%; border: 2rpx solid var(--hair2); box-sizing: border-box; }
+.st-cell.learn .st-dot { background: var(--ok); border-color: var(--ok); }
+.st-cell.good .st-dot { background: var(--ivory); border-color: var(--ivory); }
+.st-cell.done .st-dot { background: var(--star); border-color: var(--star); }
+.st-cell.none .st-ms { color: var(--ink2); }
+.st-none { padding: var(--s5) 0; }

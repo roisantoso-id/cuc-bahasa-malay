@@ -1,64 +1,63 @@
-<view class="page">
-  <!-- 学术背书:深色带 -->
-  <view class="band">
-    <view class="title">做这门课的人</view>
-    
-    <view class="prof" wx:if="{{lead}}">
-      <image class="photo" src="{{lead.photoUrl}}" mode="aspectFill" />
-      <view class="pt">
-        <view class="name">{{lead.name}}</view>
-        <view class="role">{{lead.role ? lead.role + ' · ' : ''}}{{lead.title}}</view>
+<view class="wrap ab-top">
+  <view class="h1">做这门课的人</view>
+
+  <!-- 主持编写的老师 -->
+  <view class="ab-prof" wx:if="{{lead}}">
+    <image class="ab-photo" src="{{lead.photoUrl}}" mode="aspectFill" />
+    <view class="item-main">
+      <view class="ab-name">{{lead.name}}</view>
+      <view class="muted small">{{lead.role ? lead.role + ' · ' : ''}}{{lead.title}}</view>
+    </view>
+  </view>
+  <view class="ab-bio" wx:if="{{lead}}">{{lead.bio}}</view>
+
+  <view class="sec"><text class="sec-t">著作</text><text class="sec-x">左右滑 · 点封面看大图</text></view>
+</view>
+<scroll-view scroll-x class="ab-shelf" enhanced show-scrollbar="{{false}}">
+  <view class="ab-books">
+    <view wx:for="{{books}}" wx:key="img" class="ab-book" data-i="{{index}}" bindtap="preview">
+      <image src="/pkg-me/img/{{item.img}}.jpg" mode="aspectFill" class="ab-cover" lazy-load />
+      <view class="ab-bt">{{item.title}}</view>
+      <view class="muted small">{{item.role}} · {{item.pub}}</view>
+    </view>
+  </view>
+</scroll-view>
+
+<view class="wrap ab-rest">
+  <view class="sec"><text class="sec-t">研发团队</text></view>
+  <view class="ab-team">
+    <view wx:for="{{others}}" wx:key="_id" class="ab-person">
+      <image class="rk-av ab-avatar" src="{{item.photoUrl}}" mode="aspectFill" />
+      <view class="item-main">
+        <view class="ab-pn">{{item.name}}</view>
+        <view class="muted small">{{item.role ? item.role + ' · ' : ''}}{{item.title}}</view>
+        <view class="ab-pd">{{item.bio}}</view>
       </view>
     </view>
-    <view class="bio" wx:if="{{lead}}">{{lead.bio}}</view>
-
-    <scroll-view scroll-x class="shelf" enhanced show-scrollbar="{{false}}">
-      <view class="books">
-        <view wx:for="{{books}}" wx:key="img" class="book" data-i="{{index}}" bindtap="preview">
-          <image src="/pkg-me/img/{{item.img}}.jpg" mode="aspectFill" class="cover" lazy-load />
-          <text class="brole">{{item.role}}</text>
-          <view class="bt">{{item.title}}</view>
-          <view class="bp">{{item.pub}}</view>
-        </view>
+    <view class="ab-person">
+      <image class="rk-av ab-avatar" src="/pkg-me/img/santoso.jpg" mode="aspectFill" />
+      <view class="item-main">
+        <view class="ab-pn">Santoso</view>
+        <view class="muted small">技术支持 · JobTalent AI 创始人</view>
+        <view class="ab-pd">负责 JomBelajar 网站、小程序和后端的架构与部署。曾在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维与 DevOps，在 GE 医疗负责首款 AI 驱动 CT 的 DevOps 与 AI 部署。</view>
       </view>
-    </scroll-view>
+    </view>
   </view>
 
-  <view class="wrap">
-    <view class="h2">研发团队</view>
-    <view wx:for="{{others}}" wx:key="_id" class="card person">
-      <image class="avatar" src="{{item.photoUrl}}" mode="aspectFill" />
-      <view class="item-main">
-        <view class="pn">{{item.name}}</view>
-        <view class="pr">{{item.role ? item.role + ' · ' : ''}}{{item.title}}</view>
-        <view class="pd">{{item.bio}}</view>
-      </view>
-    </view>
-    <view class="live card" bindtap="previewLive">
-      <image src="/pkg-me/img/rtm-live.jpg" mode="widthFix" class="live-img" />
-      <view class="muted small" style="padding:16rpx 4rpx 0">RTM《早安马来西亚》直播访谈现场（2026 年 4 月 28 日）</view>
-    </view>
-
-    <view class="card person">
-      <image class="avatar" src="/pkg-me/img/santoso.jpg" mode="aspectFill" />
-      <view class="item-main">
-        <view class="pn">Santoso</view>
-        <view class="pr">技术支持 · JobTalent AI 创始人</view>
-        <view class="pd">负责 JomBelajar 网站、小程序和后端的架构与部署。曾在阿里巴巴（雅加达）做企业云服务技术支持，在友邦保险做云平台运维与 DevOps，在 GE 医疗负责首款 AI 驱动 CT 的 DevOps 与 AI 部署。</view>
-      </view>
-    </view>
-
-    <view class="h2">媒体报道</view>
-    <view class="card list">
-      <view class="item" data-url="https://www.youtube.com/watch?v=W1hjFnL5-jY" bindtap="copyLink">
-        <view class="item-main"><view class="ms">Berita RTM《早安马来西亚》</view><view class="muted small">Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</view></view>
-        <text class="link small">复制链接</text>
-      </view>
-      <view class="item" data-url="https://www.youtube.com/watch?v=hRMBC_EC-uE" bindtap="copyLink">
-        <view class="item-main"><view class="ms">NST Online《新海峡时报》</view><view class="muted small">Bahasa Melayu thrives in China!</view></view>
-        <text class="link small">复制链接</text>
-      </view>
-    </view>
-    <view class="muted small center" style="margin-top:32rpx">JomBelajar · 张静灵老师主持编写</view>
+  <view class="sec"><text class="sec-t">媒体报道</text></view>
+  <view class="ab-live" bindtap="previewLive">
+    <image src="/pkg-me/img/rtm-live.jpg" mode="widthFix" class="ab-live-img" />
+    <view class="muted small ab-live-cap">RTM《早安马来西亚》直播访谈现场（2026 年 4 月 28 日）</view>
   </view>
+  <view class="list">
+    <view class="item" hover-class="hover-row" data-url="https://www.youtube.com/watch?v=W1hjFnL5-jY" bindtap="copyLink">
+      <view class="item-main"><view>Berita RTM《早安马来西亚》</view><view class="muted small">Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</view></view>
+      <text class="item-x">复制链接</text>
+    </view>
+    <view class="item" hover-class="hover-row" data-url="https://www.youtube.com/watch?v=hRMBC_EC-uE" bindtap="copyLink">
+      <view class="item-main"><view>NST Online《新海峡时报》</view><view class="muted small">Bahasa Melayu thrives in China!</view></view>
+      <text class="item-x">复制链接</text>
+    </view>
+  </view>
+  <view class="muted small center ab-foot">JomBelajar · 张静灵老师主持编写</view>
 </view>

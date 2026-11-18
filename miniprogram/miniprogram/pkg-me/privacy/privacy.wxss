@@ -1,5 +1,4 @@
-.doc { padding: 36rpx 32rpx 44rpx; }
-.doc .h2 { font-size: 30rpx; margin: 40rpx 0 12rpx; }
-.p { font-size: 28rpx; line-height: 1.75; color: var(--ink); margin-bottom: 14rpx; }
-.b { font-weight: 800; }
-.doc .btn { margin-top: 24rpx; }
+/* 隐私说明：一篇文字，不套卡片 */
+.pv-p { font-size: 28rpx; line-height: 1.75; color: var(--ink2); margin-bottom: var(--s2); }
+.pv-b { color: var(--ivory); font-weight: 600; }
+button.pv-btn { margin-top: var(--s1); }

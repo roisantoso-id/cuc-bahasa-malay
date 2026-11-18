@@ -2,34 +2,36 @@
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻词表…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />
   <block wx:else>
-    <view class="ticket head">
-      <view class="songket" />
-      <view class="hd">
-        <view class="between">
-          <view><view class="h1">{{stop.city}}</view><view class="ms muted">{{stop.ms}}</view></view>
-          <view wx:if="{{stop.stamped}}" class="stamp"><text class="s1">{{stop.city}}</text><text class="s2">已盖章</text></view>
-          <view wx:else class="stamp off"><text class="s1">{{stop.learned}}</text><text class="s2">/ {{stop.total}}</text></view>
+    <view class="st-head">
+      <view class="item-main">
+        <view class="h1">{{stop.city}}</view>
+        <view class="ms muted">{{stop.ms}}</view>
+        <view class="muted small st-note">{{stop.note}} · 第 {{(stop.level - 1) * 500 + 1}}–{{stop.level * 500}} 个高频词</view>
+      </view>
+      <view wx:if="{{stop.stamped}}" class="stamp"><text class="s1">{{stop.city}}</text><text class="s2">已盖章</text></view>
+      <view wx:else class="stamp off"><text class="s1 no">{{stop.learned}}</text><text class="s2 no">/ {{stop.total}}</text></view>
+    </view>
+    <button wx:if="{{counts.none}}" class="btn btn-main st-go" hover-class="hover" bindtap="learn">学这一站的 10 个新词<text class="btn-arr">→</text></button>
+
+    <!-- 筛选：五格等分，一行，不换行 -->
+    <view class="tabs st-tabs">
+      <view class="tab {{filter === 'all' ? 'on' : ''}}" data-f="all" bindtap="setFilter">全部<text class="tab-n">{{counts.all}}</text></view>
+      <view class="tab {{filter === 'none' ? 'on' : ''}}" data-f="none" bindtap="setFilter">没学<text class="tab-n">{{counts.none}}</text></view>
+      <view class="tab {{filter === 'learn' ? 'on' : ''}}" data-f="learn" bindtap="setFilter">在学<text class="tab-n">{{counts.learn}}</text></view>
+      <view class="tab {{filter === 'good' ? 'on' : ''}}" data-f="good" bindtap="setFilter">熟悉<text class="tab-n">{{counts.good}}</text></view>
+      <view class="tab {{filter === 'done' ? 'on' : ''}}" data-f="done" bindtap="setFilter">掌握<text class="tab-n">{{counts.done}}</text></view>
+    </view>
+
+    <!-- 两列词表：没有盒子，前面一个小点表示熟练度 -->
+    <view class="st-grid">
+      <view wx:for="{{words}}" wx:key="rank" class="st-cell {{item.st}}" hover-class="hover-row" data-r="{{item.rank}}" bindtap="open">
+        <view class="st-dot" />
+        <view class="item-main">
+          <view class="ms st-ms one">{{item.ms}}</view>
+          <view class="muted small one">{{item.zh}}</view>
         </view>
-        <view class="muted small" style="margin-top:12rpx">{{stop.note}} · 第 {{(stop.level - 1) * 500 + 1}}–{{stop.level * 500}} 个高频词</view>
-        <button wx:if="{{counts.none}}" class="btn btn-main" style="margin-top:24rpx" hover-class="hover" bindtap="learn">学这一站的 10 个新词</button>
       </view>
     </view>
-
-    <view class="chips-wrap"><view class="chips">
-      <view class="chip {{filter === 'all' ? 'on' : ''}}" data-f="all" bindtap="setFilter">全部 {{counts.all}}</view>
-      <view class="chip {{filter === 'none' ? 'on' : ''}}" data-f="none" bindtap="setFilter">没学 {{counts.none}}</view>
-      <view class="chip {{filter === 'learn' ? 'on' : ''}}" data-f="learn" bindtap="setFilter">在学 {{counts.learn}}</view>
-      <view class="chip {{filter === 'good' ? 'on' : ''}}" data-f="good" bindtap="setFilter">熟悉 {{counts.good}}</view>
-      <view class="chip {{filter === 'done' ? 'on' : ''}}" data-f="done" bindtap="setFilter">掌握 {{counts.done}}</view>
-    </view></view>
-
-    <view class="grid">
-      <view wx:for="{{words}}" wx:key="rank" class="cell {{item.st}}" hover-class="hover" data-r="{{item.rank}}" bindtap="open">
-        <view class="no cell-no">{{item.rank}}</view>
-        <view class="cell-ms">{{item.ms}}</view>
-        <view class="cell-zh">{{item.zh}}</view>
-      </view>
-    </view>
-    <view wx:if="{{!words.length}}" class="muted center" style="padding:40rpx">这一类还没有词</view>
+    <view wx:if="{{!words.length}}" class="muted small center st-none">这一类还没有词</view>
   </block>
 </view>

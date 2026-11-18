@@ -1,7 +1,5 @@
 @import '../common.wxss';
-.invite { padding: 40rpx 30rpx 36rpx; }
-.invite .bird { border: 6rpx solid rgba(243,234,214,.25); }
-.who { color: var(--ivory); margin-top: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 14rpx; margin: 24rpx 0 18rpx; }
-.go { margin-top: 36rpx; }
-.tip { margin-top: 28rpx; }
+/* 好友 PK：邀请页居中一只犀鸟、一个按钮；结果页是成绩头 + 排名 + 复盘 */
+.pk-invite { text-align: center; padding-top: var(--s5); }
+.pk-facts { margin: var(--s3) 0 var(--s1); font-size: var(--t-body); }
+.pk-tip { margin-top: var(--s2); }

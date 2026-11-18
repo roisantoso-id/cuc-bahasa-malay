@@ -1,10 +1,7 @@
-.tabs { display: flex; background: var(--night); border-bottom: 2rpx solid var(--hair); position: sticky; top: 0; z-index: 2; }
-.tab { flex: 1; text-align: center; padding: 26rpx 0; font-weight: 700; color: var(--ink2); border-bottom: 4rpx solid transparent; }
-.tab.on { color: var(--star); border-bottom-color: var(--star); }
-.head { margin-bottom: 20rpx; }
-.one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.star { font-size: 40rpx; color: var(--hair2); padding: 0 8rpx; min-width: 64rpx; text-align: center; }
-.star.on { color: var(--star); }
-
-.star { display: flex; align-items: center; justify-content: center; min-width: 88rpx; min-height: 88rpx; }
-.star-i { width: 40rpx; height: 40rpx; }
+/* 单词本：顶上文字切换，下面一列词 */
+.bk-tabs { position: sticky; top: 0; z-index: 2; background: var(--night); padding: 0 var(--s4); }
+.bk-wrap { padding-top: 0; }
+.bk-head { min-height: 104rpx; }
+.bk-ms { font-size: var(--t-section); line-height: 1.3; }
+.bk-star { flex: none; display: flex; align-items: center; justify-content: flex-end; width: 88rpx; height: 88rpx; }
+.bk-star-i { width: 40rpx; height: 40rpx; }

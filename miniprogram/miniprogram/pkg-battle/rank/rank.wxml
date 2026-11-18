@@ -1,43 +1,47 @@
-<view class="wrap">
-  <view class="seg">
-    <view wx:for="{{tabs}}" wx:key="k" class="seg-i {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pick">{{item.t}}</view>
+<wxs src="../../utils/avatar.wxs" module="av" />
+<view class="wrap rp-wrap">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="k" class="tab {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pick">{{item.t}}</view>
   </view>
-  <view class="h2 t">本周（{{week || '周一'}} 起）</view>
-  <view class="muted small rule">新学 1 个词 2 分，复习 1 个 1 分，答对 1 题 1 分</view>
+  <view class="muted small rp-rule">本周（{{week || '周一'}} 起）· 新学 2 分 · 复习 1 分 · 答对 1 分</view>
 
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在排名…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <hb-empty wx:elif="{{needProfile}}" image="empty" title="还不知道你在哪个{{tab === 'class' ? '班' : '学校'}}" desc="完善资料，填上学校{{tab === 'class' ? '和班级' : ''}}就能看。">
-    <view class="btns full"><button class="btn btn-main" hover-class="hover" bindtap="profile">完善资料</button></view>
+    <button class="btn btn-main" hover-class="hover" bindtap="profile">完善资料</button>
   </hb-empty>
 
   <block wx:else>
-    <view wx:if="{{me}}" class="card">
-      <view class="item-main"><view class="nm">我 · {{me.points}} 分</view><view class="muted small">本周还没上榜，多学几个词就能上</view></view>
+    <!-- 我不在榜上时，单独一行 -->
+    <view wx:if="{{me}}" class="rk me">
+      <image class="rk-av" src="{{av.of(me)}}" mode="aspectFill" />
+      <view class="rk-main"><view class="rk-n">我</view><view class="rk-sub">本周还没上榜，多学几个词就能上</view></view>
+      <view class="rk-r"><text class="rk-s">{{me.points}}</text><text class="rk-x"> 分</text></view>
     </view>
     <hb-empty wx:if="{{!list.length}}" image="empty" title="本周还没有人上榜" desc="每周一重新算。" />
 
     <!-- 学校榜 -->
-    <view wx:elif="{{tab === 'schools'}}" class="card list">
-      <view wx:for="{{list}}" wx:key="school" class="item {{item.mine ? 'me' : ''}}">
-        <view class="medal {{item.place > 3 ? 'mn' : 'm' + item.place}}">{{item.place}}</view>
-        <view class="item-main">
-          <view class="nm">{{item.school}}<text wx:if="{{item.mine}}" class="tag" style="margin-left:10rpx">我校</text></view>
-          <view class="muted small">{{item.members}} 人学习</view>
+    <view wx:elif="{{tab === 'schools'}}">
+      <view wx:for="{{list}}" wx:key="school" class="rk {{item.mine ? 'me' : ''}}">
+        <text class="rk-p {{item.place < 4 ? 'top' : ''}}">{{item.place}}</text>
+        <view class="rk-main">
+          <view class="rk-n">{{item.school}}{{item.mine ? '（我校）' : ''}}</view>
+          <view class="rk-sub">{{item.members}} 人学习</view>
         </view>
-        <view class="right"><view class="sc">{{item.points}}</view><view class="muted small">分</view></view>
+        <view class="rk-r"><text class="rk-s">{{item.points}}</text><text class="rk-x"> 分</text></view>
       </view>
     </view>
 
     <!-- 个人榜 -->
-    <view wx:else class="card list">
-      <view wx:for="{{list}}" wx:key="place" class="item {{item.me ? 'me' : ''}}">
-        <view class="medal {{item.place > 3 ? 'mn' : 'm' + item.place}}">{{item.place}}</view>
-        <view class="item-main">
-          <view class="nm">{{item.name}}<text wx:if="{{item.me}}" class="tag" style="margin-left:10rpx">我</text></view>
-          <view class="muted small one">{{tab === 'class' ? '' : (item.school || '—')}} {{item.className}}</view>
+    <view wx:else>
+      <view wx:for="{{list}}" wx:key="place" class="rk {{item.me ? 'me' : ''}}">
+        <text class="rk-p {{item.place < 4 ? 'top' : ''}}">{{item.place}}</text>
+        <image class="rk-av" src="{{av.of(item)}}" mode="aspectFill" />
+        <view class="rk-main">
+          <view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
+          <view class="rk-sub">{{tab === 'class' ? '' : (item.school || '—')}} {{item.className}}</view>
         </view>
-        <view class="right"><view class="sc">{{item.points}}</view><view class="muted small">新学 {{item.learned}}</view></view>
+        <view class="rk-r"><view class="rk-s">{{item.points}}</view><view class="rk-x">新学 {{item.learned}}</view></view>
       </view>
     </view>
   </block>

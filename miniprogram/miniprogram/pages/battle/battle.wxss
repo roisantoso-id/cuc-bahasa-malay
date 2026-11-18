@@ -1,82 +1,25 @@
-.hero { position: relative; display: flex; align-items: flex-start; min-height: 360rpx; }
-.hero-l { flex: 1; min-width: 0; padding-top: 8rpx; position: relative; z-index: 1; }
-.k { font-size: 26rpx; color: var(--ink2); }
-.cd { margin-top: 12rpx; white-space: nowrap; }
-.cd-n { font-family: Georgia, serif; font-size: 88rpx; line-height: 1.1; }
-.cd-u { font-size: 28rpx; color: var(--ink2); }
-.rule { font-size: 28rpx; margin-top: 8rpx; }
-.tries { display: flex; flex-wrap: wrap; align-items: center; gap: 12rpx 16rpx; margin-top: 16rpx; }
-.tr-bars { display: flex; gap: 8rpx; }
-.tr { width: 40rpx; height: 12rpx; border-radius: 6rpx; background: rgba(243,234,214,.16); }
-.tr.on { background: var(--star); }
-.tr-t { font-size: 26rpx; color: var(--ink2); }
-.tr-b { color: var(--star); font-family: Georgia, serif; font-size: 30rpx; }
-.bird { position: absolute; right: -24rpx; top: 0; width: 280rpx; height: 300rpx; }
-.acts { display: flex; gap: 20rpx; margin-top: 16rpx; }
-.a1 { flex: 1.3; } .a2 { flex: 1; padding: 0 16rpx; }
-.pk { margin-top: 24rpx; }
-.lvs { margin: 20rpx 0 24rpx; }
-.lv { min-height: 88rpx; line-height: 64rpx; box-sizing: border-box; }
-.bh { margin-top: 48rpx; margin-bottom: 8rpx; flex-wrap: wrap; }
-.tabs { display: flex; gap: 8rpx; }
-.tb { min-height: 88rpx; line-height: 88rpx; padding: 0 14rpx; font-size: 28rpx; color: var(--ink2); border-bottom: 4rpx solid transparent; box-sizing: border-box; }
-.tb.on { color: var(--star); border-bottom-color: var(--star); }
-.board { border-top: 2rpx solid var(--hair); }
-.gap { text-align: center; color: var(--ink2); line-height: 48rpx; letter-spacing: 6rpx; }
-.note { padding: 28rpx 0; }
-.more-r { text-align: right; color: var(--ink2); font-size: 26rpx; padding: 24rpx 0; min-height: 88rpx; box-sizing: border-box; }
-.t { font-weight: 700; }
-.score { font-size: 40rpx; font-family: Georgia, serif; flex-shrink: 0; }
-.hover-row { opacity: .7; }
+/* 对战：倒计时 + 一个主按钮；下面是周榜（带头像）和最近的 PK。星光只给「我」那一行 */
+.bt-hero { position: relative; display: flex; align-items: flex-end; min-height: 280rpx; }
+.bt-hero-l { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.bt-cd { white-space: nowrap; margin: var(--s1) 0; }
+.bt-u { font-size: var(--t-body); color: var(--ink2); }
+.bt-bird { flex: none; width: 264rpx; height: 272rpx; margin-right: -16rpx; }
+.bt-acts { display: flex; gap: var(--s2); margin-top: var(--s4); }
+.bt-acts .btn { min-width: 0; padding: 0 var(--s3); }
+.bt-a1 { flex: 1.2; }
+.bt-a2 { flex: 1; }
+.bt-sel { display: flex; align-items: center; justify-content: space-between; min-height: 88rpx; font-size: var(--t-caption); color: var(--ink2); }
+.bt-sel-x { color: var(--ivory); }
+.bt-more { display: flex; align-items: center; min-height: 88rpx; margin: -28rpx 0; padding-left: var(--s4); }
+.bt-note { padding: var(--s4) 0; }
 
-
-/* 2026-11-18 第二版：我的本周 + 并排入口 + 领奖台 + 带头像的榜单 */
-.mine { display: flex; align-items: center; gap: 22rpx; padding: 24rpx 26rpx; margin-top: 8rpx; border-radius: 32rpx; background: linear-gradient(135deg, #17424a, #0f2c31); border: 2rpx solid var(--hair); }
-.mine-av { width: 104rpx; height: 104rpx; border-radius: 50%; flex: none; background: var(--ivory); box-shadow: 0 0 0 4rpx var(--star); }
-.mine-main { flex: 1; min-width: 0; }
-.mine-n { font-size: 32rpx; font-weight: 800; color: var(--ivory); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mine-s { font-size: 24rpx; color: var(--star); margin-top: 6rpx; }
-.mine-p { flex: none; text-align: right; }
-.mine-pn { font-family: Georgia, serif; font-size: 52rpx; font-weight: 700; color: var(--ivory); }
-.mine-pu { font-size: 24rpx; color: var(--ink2); margin-left: 4rpx; }
-
-.duo { display: flex; align-items: stretch; gap: 20rpx; margin-top: 24rpx; }
-.dc { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24rpx 22rpx 22rpx; border-radius: 32rpx; border: 2rpx solid var(--hair); text-align: left; }
-.dc.hover { opacity: .85; }
-.dc.arena { background: linear-gradient(160deg, #3b3220, #1a2a26 75%); }
-.dc.pk { background: linear-gradient(160deg, #1f4a3c, #12312f 75%); }
-.dc-bird { position: absolute; right: 18rpx; top: 18rpx; width: 72rpx; height: 72rpx; border-radius: 50%; background: var(--ivory); }
-.dc-t { font-size: 32rpx; font-weight: 800; color: var(--ivory); line-height: 72rpx; padding-right: 80rpx; }
-.dc-s { font-size: 22rpx; color: var(--ink2); margin-top: 4rpx; line-height: 1.5; }
-.dc-row { display: flex; align-items: center; gap: 12rpx; margin-top: auto; padding-top: 20rpx; }
-.dc-go { align-self: flex-start; display: inline-flex; align-items: center; height: 64rpx; padding: 0 26rpx; margin-top: auto; border-radius: 999rpx; background: var(--ivory); color: var(--dark-ink); font-size: 26rpx; font-weight: 800; }
-.dc-row .dc-go { margin-top: 0; }
-.dc .go-amber { background: var(--star); }
-.dc-go.dis { opacity: .5; }
-.dc .sel { font-size: 24rpx; color: var(--ivory); height: 64rpx; line-height: 64rpx; padding: 0 16rpx; border-radius: 999rpx; border: 2rpx solid var(--hair2); white-space: nowrap; }
-
-.podium { display: flex; align-items: flex-end; justify-content: center; gap: 16rpx; margin-top: 24rpx; }
-.pd { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
-.pd-av { width: 96rpx; height: 96rpx; border-radius: 50%; background: var(--ivory); box-shadow: 0 0 0 4rpx #a7b0aa; }
-.p1 .pd-av { width: 112rpx; height: 112rpx; box-shadow: 0 0 0 5rpx var(--star); }
-.p3 .pd-av { box-shadow: 0 0 0 4rpx #c98a5a; }
-.pd-mark { display: flex; align-items: center; justify-content: center; font-size: 40rpx; font-weight: 800; color: var(--dark-ink); }
-.pd-n { margin-top: 12rpx; font-size: 26rpx; font-weight: 700; color: var(--ivory); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pd-s { font-size: 22rpx; color: var(--ink2); }
-.pd-block { width: 100%; margin-top: 12rpx; border-radius: 18rpx 18rpx 0 0; background: rgba(243,234,214,.08); display: flex; align-items: flex-start; justify-content: center; padding-top: 10rpx; }
-.p1 .pd-block { height: 88rpx; background: linear-gradient(180deg, rgba(233,185,97,.35), rgba(233,185,97,.08)); }
-.p2 .pd-block { height: 64rpx; }
-.p3 .pd-block { height: 48rpx; }
-.pd-k { font-family: Georgia, serif; font-size: 36rpx; font-weight: 700; color: var(--ivory); }
-.pd.me .pd-n { color: var(--star); }
-
-.board { margin-top: 0; border-top: 2rpx solid var(--hair); }
-.br { display: flex; align-items: center; gap: 18rpx; padding: 16rpx 12rpx; min-height: 104rpx; border-bottom: 2rpx solid var(--hair); }
-.br.me { border: 2rpx solid var(--star); border-radius: 24rpx; background: rgba(233,185,97,.08); }
-.br-p { width: 44rpx; text-align: center; font-family: Georgia, serif; color: var(--ink2); font-size: 28rpx; flex: none; }
-.br-av { width: 72rpx; height: 72rpx; border-radius: 50%; flex: none; background: var(--ivory); }
-.pd-mark.sm { font-size: 30rpx; }
-.br-main { flex: 1; min-width: 0; }
-.br-n { font-size: 28rpx; font-weight: 700; color: var(--ivory); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.br-sub { font-size: 22rpx; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.br-s { font-family: Georgia, serif; font-size: 32rpx; font-weight: 700; color: var(--ivory); flex: none; }
+.bt-podium { display: flex; align-items: flex-end; gap: var(--s2); padding: var(--s4) 0 var(--s3); border-bottom: 2rpx solid var(--hair); }
+.bt-pd { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.bt-pd-k { font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); line-height: 1.2; margin-bottom: var(--s1); }
+.bt-pd-av { width: 96rpx; height: 96rpx; border-radius: 50%; background: var(--ivory); }
+.bt-p1 .bt-pd-av { width: 128rpx; height: 128rpx; }
+.bt-p1 .bt-pd-k { color: var(--ivory); font-size: var(--t-section); }
+.bt-mark { display: flex; align-items: center; justify-content: center; font-family: var(--f-zh); font-size: 40rpx; font-weight: 700; color: var(--dark-ink); }
+.bt-mark.sm { font-size: 30rpx; }
+.bt-pd-n { margin-top: var(--s2); font-size: 26rpx; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bt-pd-s { font-size: var(--t-caption); color: var(--ink2); }

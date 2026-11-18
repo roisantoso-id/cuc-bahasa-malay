@@ -3,77 +3,76 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <!-- 我的本周 -->
-    <view class="mine">
-      <image class="mine-av" src="{{me.av || '/assets/avatar.jpg'}}" mode="aspectFill" />
-      <view class="mine-main">
-        <view class="mine-n">{{me.name || '我'}}</view>
-        <view class="mine-s">{{me.place ? '本周第 ' + me.place + ' 名' : '本周还没上榜'}}{{chase ? ' · ' + chase : ''}}</view>
+    <!-- 这一屏的主角：本周擂台还剩多久，一个主按钮 -->
+    <view class="bt-hero">
+      <view class="bt-hero-l">
+        <view class="muted small">每周擂台 · 第 {{cd.week}} 周 · 距结束</view>
+        <view class="bt-cd"><text class="num-xl">{{cd.d}}</text><text class="bt-u"> 天 </text><text class="num-xl">{{cd.h}}</text><text class="bt-u"> 小时</text></view>
+        <view class="muted small">20 题，取三次里最高的一次</view>
+        <view class="muted small">本周还剩 {{arena ? arena.triesLeft : 3}} 次机会</view>
       </view>
-      <view class="mine-p"><text class="mine-pn">{{me.points || 0}}</text><text class="mine-pu">分</text></view>
+      <image class="bt-bird" src="/assets/bird-welcome.png" mode="aspectFit" />
     </view>
-
-    <!-- 两个入口：并排小卡片 -->
-    <view class="duo">
-      <view class="dc arena" hover-class="hover" bindtap="arena">
-        <image class="dc-bird" src="/assets/pass.jpg" mode="aspectFill" />
-        <view class="dc-t">每周擂台</view>
-        <view class="dc-s">20 题 · 还剩 {{arena ? arena.triesLeft : 3}} 次</view>
-        <view class="dc-s">{{cd.d}} 天 {{cd.h}} 小时后结束</view>
-        <view class="dc-go">进入 ›</view>
-      </view>
-      <view class="dc pk">
-        <image class="dc-bird" src="/assets/cheer.jpg" mode="aspectFill" />
-        <view class="dc-t">好友 PK</view>
-        <view class="dc-s">10 题</view>
-        <view class="dc-s">发给同学比一比</view>
-        <view class="dc-row">
-          <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx"><view class="sel">{{levelNames[levelIdx]}} ▾</view></picker>
-          <view class="dc-go go-amber {{busy ? 'dis' : ''}}" bindtap="create">{{busy ? '…' : '发起 ›'}}</view>
-        </view>
-      </view>
+    <view class="bt-acts">
+      <button class="btn btn-main bt-a1" hover-class="hover" bindtap="arena">进入擂台</button>
+      <button class="btn btn-ghost bt-a2" hover-class="hover" disabled="{{busy}}" bindtap="create">{{busy ? '正在出题…' : '发起好友 PK'}}</button>
     </view>
+    <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx">
+      <view class="bt-sel">好友 PK 考 {{levelNames[levelIdx]}}，10 题<text class="bt-sel-x">换一站 ›</text></view>
+    </picker>
 
     <!-- 周榜 -->
-    <view class="between bh"><view class="h2" style="margin:0">周榜</view>
-      <view class="tabs"><view wx:for="{{tabs}}" wx:key="k" class="tb {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickTab">{{item.t}}</view></view>
+    <view class="sec"><text class="sec-t">周榜</text><view class="sec-x bt-more" hover-class="hover-row" bindtap="rank">完整榜单 ›</view></view>
+    <view class="tabs">
+      <view wx:for="{{tabs}}" wx:key="k" class="tab {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickTab">{{item.t}}</view>
     </view>
-    <view wx:if="{{boardLoading && !podium.length}}" class="muted small note">正在排名…</view>
-    <view wx:elif="{{boardNote}}" class="muted small note">{{boardNote}}</view>
+
+    <!-- 我：这一屏唯一的星光色 -->
+    <view class="rk me">
+      <image class="rk-av" src="{{me.av || '/assets/avatar.jpg'}}" mode="aspectFill" />
+      <view class="rk-main">
+        <view class="rk-n">{{me.name || '我'}}</view>
+        <view class="rk-sub">{{me.place ? '本周第 ' + me.place + ' 名' : '本周还没上榜'}}{{chase ? ' · ' + chase : ''}}</view>
+      </view>
+      <view class="rk-r"><text class="rk-s">{{me.points || 0}}</text><text class="rk-x"> 分</text></view>
+    </view>
+
+    <view wx:if="{{boardLoading && !podium.length}}" class="muted small bt-note">正在排名…</view>
+    <view wx:elif="{{boardNote}}" class="muted small bt-note">{{boardNote}}</view>
     <block wx:else>
-      <view wx:if="{{podium.length >= 3}}" class="podium">
-        <view wx:for="{{podium}}" wx:key="place" class="pd p{{item.place}} {{item.me ? 'me' : ''}}">
-          <image wx:if="{{item.av}}" class="pd-av" src="{{item.av}}" mode="aspectFill" />
-          <view wx:else class="pd-av pd-mark">{{item.mark}}</view>
-          <view class="pd-n">{{item.name}}</view>
-          <view class="pd-s">{{item.points}} 分</view>
-          <view class="pd-block"><text class="pd-k">{{item.place}}</text></view>
+      <!-- 前三名：只有头像、名字、分数，第一名大一圈 -->
+      <view wx:if="{{podium.length >= 3}}" class="bt-podium">
+        <view wx:for="{{podium}}" wx:key="place" class="bt-pd bt-p{{item.place}}">
+          <view class="bt-pd-k">{{item.place}}</view>
+          <image wx:if="{{item.av}}" class="bt-pd-av" src="{{item.av}}" mode="aspectFill" />
+          <view wx:else class="bt-pd-av bt-mark">{{item.mark}}</view>
+          <view class="bt-pd-n">{{item.name}}{{item.me ? '（我）' : ''}}</view>
+          <view class="bt-pd-s">{{item.points}} 分</view>
         </view>
       </view>
-      <view class="board">
+      <view class="bt-board">
         <block wx:for="{{board}}" wx:key="place">
-          <view wx:if="{{item.gap}}" class="gap">· · ·</view>
-          <view class="br {{item.me ? 'me' : ''}}">
-            <text class="br-p">{{item.place}}</text>
-            <image wx:if="{{item.av}}" class="br-av" src="{{item.av}}" mode="aspectFill" />
-            <view wx:else class="br-av pd-mark sm">{{item.mark}}</view>
-            <view class="br-main"><view class="br-n">{{item.name}}{{item.me ? '（我）' : ''}}</view><view wx:if="{{item.sub}}" class="br-sub">{{item.sub}}</view></view>
-            <text class="br-s">{{item.points}}</text>
+          <view wx:if="{{item.gap}}" class="rk-gap">···</view>
+          <view class="rk">
+            <text class="rk-p">{{item.place}}</text>
+            <image wx:if="{{item.av}}" class="rk-av" src="{{item.av}}" mode="aspectFill" />
+            <view wx:else class="rk-av bt-mark sm">{{item.mark}}</view>
+            <view class="rk-main"><view class="rk-n">{{item.name}}{{item.me ? '（我）' : ''}}</view><view wx:if="{{item.sub}}" class="rk-sub">{{item.sub}}</view></view>
+            <text class="rk-s">{{item.points}}</text>
           </view>
         </block>
-        <view class="more-r" bindtap="rank">看完整榜单 ›</view>
       </view>
     </block>
 
-    <view class="between bh"><view class="h2" style="margin:0">最近的 PK</view></view>
-    <view wx:if="{{!pks.length}}" class="muted small note">还没有 PK。在上面选一站点「发起」，发给同学。</view>
+    <view class="sec"><text class="sec-t">最近的 PK</text></view>
+    <view wx:if="{{!pks.length}}" class="muted small bt-note">还没有 PK。点上面的「发起好友 PK」，答完发给同学。</view>
     <view wx:else class="list">
       <view wx:for="{{pks}}" wx:key="id" class="item" hover-class="hover-row" data-id="{{item.id}}" bindtap="open">
         <view class="item-main">
-          <view class="row"><text class="t">第{{item.level}}站</text><text class="tag {{item.isCreator ? 'amber' : 'blue'}}">{{item.isCreator ? '我发起' : '应战'}}</text></view>
+          <view>第{{item.level}}站 · {{item.isCreator ? '我发起' : '应战'}}</view>
           <view class="muted small">{{item.date}} · {{item.players}} 人参加 · 答对 {{item.correct}}/10</view>
         </view>
-        <view class="score">{{item.score}}<text class="muted small"> 分</text></view>
+        <view class="rk-r"><text class="rk-s">{{item.score}}</text><text class="rk-x"> 分</text></view>
         <text class="arrow">›</text>
       </view>
     </view>
