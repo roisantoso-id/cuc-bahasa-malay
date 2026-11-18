@@ -1,5 +1,5 @@
 // 成就与犀鸟形象：学生达成条件后服务器自动解锁、永久记录；学生只能在已解锁的犀鸟形象里选头像（不能自己上传图片）。
-// 图片放在官网静态目录 website/site/mascot/<key>.jpg（www.bahasa.cn/mascot/…），原图在 design/mascot/。
+// 图片放在官网静态目录 website/site/mascot/<key>.webp（WebP，360px；旧 .jpg 留着兼容）（www.bahasa.cn/mascot/…），原图在 design/mascot/。
 // 判定规则：
 //   - 十站：这一站的词全部学过（levelsOf 的 stamped）→ 解锁这一站的男、女两套服装
 //   - 打卡：历史最长连续天数 ≥ 3 / 7 / 30 / 100
@@ -31,8 +31,8 @@ export function createAchievements({ all, one, run, day, levelsOf, weekStart }) 
   B('battle-arena-top10', '擂台前十', '每周擂台进入全站前十'); B('battle-school-1', '学校榜第一', '所在学校拿到周榜第一')
   for (const n of [100, 500, 1000, 3000, 5000]) B('words-' + n, `学会 ${n} 个词`, `累计学过 ${n} 个词`)
   const BY = Object.fromEntries(ITEMS.map(x => [x.key, x]))
-  const out = (x, at) => ({ key: x.key, type: x.type, title: x.title, desc: x.desc, img: IMG + x.key + '.jpg', unlocked: !!at, at: at || '' })
-  const imgOf = key => (key && BY[key] && BY[key].type === 'costume' ? IMG + key + '.jpg' : '')
+  const out = (x, at) => ({ key: x.key, type: x.type, title: x.title, desc: x.desc, img: IMG + x.key + '.webp', unlocked: !!at, at: at || '' })
+  const imgOf = key => (key && BY[key] && BY[key].type === 'costume' ? IMG + key + '.webp' : '')
 
   const SCHEMA = [`CREATE TABLE IF NOT EXISTS achievements (student_id INT NOT NULL, \`key\` VARCHAR(64) NOT NULL, at VARCHAR(32), seen TINYINT NOT NULL DEFAULT 0, PRIMARY KEY (student_id, \`key\`)) DEFAULT CHARSET = utf8mb4`]
 

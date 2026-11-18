@@ -1,0 +1,5 @@
+<!-- 头像外一圈学习进度（当前站学了多少），顶上一个 L1…L10 等级小标 -->
+<view class="la" style="width:{{size}}rpx;height:{{size}}rpx;background:conic-gradient(#e9b961 {{pct * 3.6}}deg, rgba(243,234,214,.14) 0)">
+  <image class="la-img" src="{{src || '/assets/avatar.jpg'}}" mode="aspectFill" />
+  <view wx:if="{{level}}" class="la-lv">L{{level}}</view>
+</view>

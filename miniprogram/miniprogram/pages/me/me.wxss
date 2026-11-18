@@ -3,7 +3,7 @@
 .me-hero { position: relative; display: flex; flex-direction: column; align-items: center; padding: var(--s4) var(--s3) var(--s4); background: var(--panel); border-radius: var(--r-lg); }
 .me-more { position: absolute; top: var(--s2); right: var(--s2); width: 72rpx; height: 72rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: rgba(243,234,214,.08); }
 .me-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--ivory); }
-.me-bird { width: 240rpx; height: 240rpx; border-radius: 50%; background: var(--ivory); border: 6rpx solid var(--star); box-sizing: border-box; }
+.me-bird { margin-top: var(--s2); }
 .me-name { margin-top: var(--s2); font-size: var(--t-title); font-weight: 700; max-width: 100%; }
 .me-ach { display: flex; width: 100%; margin-top: var(--s3); }
 .me-ach-n { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }

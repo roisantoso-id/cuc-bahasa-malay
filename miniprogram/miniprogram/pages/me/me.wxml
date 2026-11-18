@@ -4,8 +4,9 @@
   <block wx:else>
     <view class="me-hero">
       <view class="me-more" hover-class="hover" data-url="/pkg-me/more/more" bindtap="go"><text class="me-dot" /><text class="me-dot" /><text class="me-dot" /></view>
-      <image class="me-bird" src="{{mascotImg || student.avatar || '/assets/avatar.jpg'}}" mode="aspectFill" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go" />
+      <view class="me-bird" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><lv-avatar src="{{mascotImg || student.avatar}}" size="{{240}}" level="{{lv.level}}" pct="{{lv.pct}}" /></view>
       <view class="me-name one">{{student.name || '同学'}}</view>
+      <view class="muted small one">L{{lv.level}} {{lv.name}} · 这一站 {{lv.pct}}%</view>
       <view class="muted small one">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}}</view>
       <view class="me-ach">
         <view class="me-ach-n"><text class="num">{{stamps}}</text><text class="me-ach-l">印章</text></view>

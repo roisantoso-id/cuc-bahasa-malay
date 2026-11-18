@@ -2,6 +2,7 @@ const setTab = require('../../utils/tab')
 // 护照：顶部我的犀鸟（换装、徽章），下面只放学习数据；设置、关于、客服都在右上角「···」里（pkg-me/more）
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
+const lvOf = require('../../utils/level')
 
 const TRACK = { zero: '零基础', some: '会说一些' }
 
@@ -28,9 +29,10 @@ Page({
         const top = mem.next7.reduce((m, d, i) => (d.n > m.n ? { n: d.n, i } : m), { n: -1, i: 0 }).i
         memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
       }
-      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach) })
+      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv: this.lvData(s.levels) })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
+  lvData(levels) { const v = lvOf(levels); const l = (levels || []).find(x => x.level === v.level); return { ...v, name: l ? (l.city || l.name || '') : '' } },
   achData(ach) {
     if (!ach) return {}
     const got = ach.items.filter(x => x.unlocked)

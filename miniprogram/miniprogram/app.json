@@ -74,7 +74,8 @@
     "hb-empty": "/components/hb-empty/hb-empty",
     "say-btn": "/components/say-btn/say-btn",
     "fx-burst": "/components/fx-burst/fx-burst",
-    "fx-confetti": "/components/fx-confetti/fx-confetti"
+    "fx-confetti": "/components/fx-confetti/fx-confetti",
+    "lv-avatar": "/components/lv-avatar/lv-avatar"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

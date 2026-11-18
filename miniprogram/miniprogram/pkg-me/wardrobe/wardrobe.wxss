@@ -1,12 +1,24 @@
 .wd-now { display: flex; align-items: center; gap: 24rpx; padding: 24rpx 0 8rpx; }
-.wd-now-img { width: 160rpx; height: 160rpx; border-radius: 50%; background: var(--ivory); flex: none; box-shadow: 0 0 0 4rpx var(--star); }
 .wd-now-t { font-size: 34rpx; font-weight: 800; color: var(--ivory); margin-bottom: 6rpx; }
 .wd-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24rpx 16rpx; margin-top: 16rpx; }
 .wd-it { display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .wd-img { width: 100%; aspect-ratio: 1; height: auto; border-radius: 24rpx; background: var(--ivory); box-sizing: border-box; }
 .wd-it.on .wd-img { box-shadow: 0 0 0 5rpx var(--star); }
-.wd-it.lock .wd-img { opacity: .28; filter: grayscale(1); }
+.wd-it { position: relative; }
+.wd-it.lock .wd-img { opacity: .82; }
+.wd-lk { position: absolute; top: 10rpx; right: 10rpx; padding: 0 12rpx; height: 34rpx; line-height: 34rpx; border-radius: 999rpx; background: rgba(10,31,34,.78); color: var(--ivory); font-size: 20rpx; }
 .wd-t { margin-top: 10rpx; font-size: 24rpx; color: var(--ivory); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wd-it.lock .wd-t { color: var(--ink2); }
 .wd-lock { font-size: 20rpx; color: var(--ink2); text-align: center; line-height: 1.35; margin-top: 2rpx; }
 .badges .wd-img { border-radius: 50%; }
+
+.wd-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 300; display: flex; align-items: center; justify-content: center; background: rgba(5,16,18,0); transition: background-color .22s; }
+.wd-mask.on { background: rgba(5,16,18,.72); }
+.wd-pv { width: 560rpx; padding: 40rpx 40rpx 36rpx; border-radius: 36rpx; background: #10292d; border: 2rpx solid var(--hair); display: flex; flex-direction: column; align-items: center; transform: scale(.86); opacity: 0; transition: transform .3s cubic-bezier(.3,1.4,.5,1), opacity .2s; }
+.wd-pv.on { transform: none; opacity: 1; }
+.wd-pv-img { width: 420rpx; height: 420rpx; border-radius: 32rpx; background: var(--ivory); }
+.wd-pv-img.round { border-radius: 50%; }
+.wd-pv-t { margin-top: 28rpx; font-size: 36rpx; font-weight: 800; color: var(--ivory); text-align: center; }
+.wd-pv-d { margin-top: 8rpx; font-size: 26rpx; color: var(--ink2); text-align: center; }
+.wd-pv-d.ok { color: var(--star); }
+.wd-pv-b { margin-top: 32rpx; align-self: stretch; }
