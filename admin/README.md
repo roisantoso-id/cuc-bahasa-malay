@@ -4,8 +4,8 @@
 
 | 容器 | 做什么 |
 |---|---|
-| `web` | Caddy：HTTPS 证书自动申请续期；托管官网 www.bahasa.cn（`/opt/jombelajar/website`）和后台网页（`admin/public/`）；把 `/api/*`、`/uploads/*` 转给 `api` |
-| `api` | Node 后端（`admin/server.mjs`）：小程序接口 `/api/app/*`、后台接口 `/api/admin/*`、老师照片 |
+| `web` | Caddy：HTTPS 证书自动申请续期；托管官网 www.bahasa.cn（`/opt/jombelajar/website`）和后台网页（`admin/public/`，由 `admin/web` 构建）；把 `/api/*`、`/uploads/*` 转给 `api` |
+| `api` | Node 后端：`admin/server.mjs`（小程序接口 `/api/app/*`、老师照片）+ `admin/admin-api.mjs`（后台接口 `/api/admin/*`） |
 
 - 单词音频在**腾讯云 COS**（`jombelajar-audio-my-1314893093`，新加坡，公有读，目录 `vocab5000/audio/`；学生在马来西亚，离新加坡最近），库里只存文件名，接口返回 `AUDIO_BASE + 文件名`。
 - 词库来自 `content/vocab5000/words.json`（`build.py` 从启航的 xlsx 和音频清单生成）。第一次启动时库里没有词，会自动导入。
@@ -22,7 +22,10 @@ cd admin && npm install
 DEMO=1 DATABASE_URL=mysql://root:dev@127.0.0.1:3306/jb DEMO_AUDIO_DIR=~/dev/deloy/马来语5000高频词_音频 node server.mjs
 ```
 
-- 后台：http://127.0.0.1:4200 ，账号 `admin`，密码 `admin123`。
+- 后台接口：http://127.0.0.1:4200 ，账号 `admin`，密码 `admin123`。
+- 后台网页（React + shadcn/ui + Tailwind，源码在 `admin/web`）：另开一个终端 `npm --prefix admin/web install && npm --prefix admin/web run dev`，打开 http://localhost:5190 （`/api` 自动转给 4200）。
+- 要看有数据的页面：`DATABASE_URL=… node admin/scripts/seed-demo.mjs` 造 40 个演示学生（只认本机数据库）。
+- 改完网页 `npm --prefix admin/web run build`，结果在 `admin/public`（不进 git，部署脚本会先构建）。
 - 小程序：`miniprogram/miniprogram/config.js` 里 `vocabApi` 填 `http://127.0.0.1:4200`。开发者工具里不校验合法域名（`project.config.json` 已经关了 urlCheck）。
 - `DEMO=1` 是演示模式：小程序登录不校验微信，后台 admin / admin123。线上不要加。线上没填 APPID 或管理员密码时，对应的登录直接不可用，不会退回演示模式。
 - `DEMO_AUDIO_DIR` 指向本机的音频目录。不填也行，只是没有声音。
@@ -67,12 +70,29 @@ docker compose logs -f api            # 看后端日志
 # 数据库在腾讯云 MySQL：备份和恢复在云数据库控制台做
 ```
 
+## 后台页面和权限
+
+| 页面 | 做什么 |
+|---|---|
+| 概览 | 学生数、今天在学、今天学了多少词、待复核释义；14 天趋势；各站上架进度；近 7 天学得最多；最近操作 |
+| 学生 | 搜索、按活跃 / 起点 / 停用筛选、导出 CSV；右侧面板看 30 天学习、每站进度、记忆盒子、错词，改资料、写老师备注、停用账号（停用后小程序打不开学习页） |
+| 单词 | 按站 / 状态 / 主题筛选；批量上架下架；编辑词条、义项（中英释义、例句、待复核）、更多例句、词光扩展字段（搭配、同族、同义、反义、提示、配图）；导入（先检查再写入）；导出词光格式 |
+| 课程 | 10 站旅程：改站名、马来语名、一句话、介绍；开放 / 关闭（关闭后不发这一站的新词） |
+| 老师 | 小程序「关于我们」的老师介绍和照片 |
+| 后台账号 | 每人一个账号；新建（生成初始密码，第一次登录必须改）、换角色、停用、重置密码、删除 |
+| 角色权限 | 内置：超级管理员、内容编辑、任课老师、只读；可以自建角色，按 16 项权限勾选 |
+| 操作日志 | 登录、失败登录、所有修改，谁、什么时候、改了什么 |
+
+- 第一次启动时，库里没有后台账号，就用 `.env` 的 `ADMIN_USER` / `ADMIN_PASSWORD_HASH` 建一个超级管理员。之后在「后台账号」里加人，不用再改 `.env`。
+- 至少要留一个能用的超级管理员；不能停用、删除自己，不能改自己的角色；不是超级管理员的人不能动超级管理员账号，也不能把自己没有的权限给别人。
+
 ## 安全
 
-- 后台只有一个管理员账号。
-  - 密码用 scrypt 哈希保存。
-  - 同一个 IP 10 分钟内输错 5 次就锁定。
-  - 登录态是 HttpOnly cookie，带 `Secure`，12 小时过期。
+- 后台账号存在 `admin_users` 表，角色在 `admin_roles`，登录会话在 `admin_sessions`（只存 token 的 sha256，重启服务不掉线），操作日志在 `audit_log`。
+  - 密码用 scrypt 哈希保存，至少 8 位。
+  - 同一个 IP 10 分钟内输错 5 次、同一个账号 30 分钟内输错 10 次就锁定。
+  - 登录态是 HttpOnly cookie，带 `Secure`，12 小时过期；改密码后其它设备下线，停用 / 换角色后对方马上下线。
+  - 写操作检查 `Origin`，别的网站发来的请求一律拒绝。
 - 小程序 token 是服务端用 HMAC 签名的 openid，30 天过期。
   - 签名密钥在第一次启动时随机生成，存在数据库里。
   - 每个用户每分钟最多请求 120 次。

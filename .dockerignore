@@ -4,3 +4,5 @@
 !content/vocab5000/words.json
 admin/node_modules
 admin/data
+# 后台网页的源码只在本机构建,构建结果 admin/public 由 Caddy 托管
+admin/web

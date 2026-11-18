@@ -11,3 +11,7 @@ backups/
 # 小程序上传密钥，绝不提交
 wx/
 *.key
+
+# 后台网页构建结果(admin/web 构建出来,部署脚本会先构建)
+admin/public/
+*.tsbuildinfo

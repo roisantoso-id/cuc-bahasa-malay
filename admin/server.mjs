@@ -14,6 +14,7 @@ import { join, dirname, extname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto'
 import mysql from 'mysql2/promise'
+import { makeAdminApi } from './admin-api.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -52,7 +53,8 @@ function checkPassword(pw, stored) {
 }
 
 // ---------------- 旅程:10 站,每站 500 词 ----------------
-const STOPS = [
+// 默认的 10 站:第一次启动写进 courses 表,之后在后台「课程」里改
+const DEFAULT_STOPS = [
   { level: 1, city: '吉隆坡', ms: 'Kuala Lumpur', note: '双子塔下出发' },
   { level: 2, city: '马六甲', ms: 'Melaka', note: '老街和娘惹糕' },
   { level: 3, city: '怡保', ms: 'Ipoh', note: '白咖啡的家乡' },
@@ -77,7 +79,21 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS students (id INT AUTO_INCREMENT PRIMARY KEY, openid VARCHAR(64) NOT NULL UNIQUE, name VARCHAR(60), school VARCHAR(120), class_name VARCHAR(80), track VARCHAR(16), phone VARCHAR(32), daily_new INT NOT NULL DEFAULT 20, created_at VARCHAR(32), last_active_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
   `CREATE TABLE IF NOT EXISTS progress (student_id INT NOT NULL, \`rank\` INT NOT NULL, box INT NOT NULL DEFAULT 0, due VARCHAR(10), wrong INT NOT NULL DEFAULT 0, seen INT NOT NULL DEFAULT 0, fav TINYINT NOT NULL DEFAULT 0, first_at VARCHAR(32), last_day VARCHAR(10), last_at VARCHAR(32), PRIMARY KEY (student_id, \`rank\`), INDEX progress_due (student_id, due)) DEFAULT CHARSET = utf8mb4`,
   `CREATE TABLE IF NOT EXISTS daily (student_id INT NOT NULL, day VARCHAR(10) NOT NULL, new_cnt INT NOT NULL DEFAULT 0, review_cnt INT NOT NULL DEFAULT 0, right_cnt INT NOT NULL DEFAULT 0, PRIMARY KEY (student_id, day)) DEFAULT CHARSET = utf8mb4`,
-  `CREATE TABLE IF NOT EXISTS teachers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60), title VARCHAR(200), role VARCHAR(60), bio TEXT, photo VARCHAR(300), sort INT NOT NULL DEFAULT 0) DEFAULT CHARSET = utf8mb4`
+  `CREATE TABLE IF NOT EXISTS teachers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60), title VARCHAR(200), role VARCHAR(60), bio TEXT, photo VARCHAR(300), sort INT NOT NULL DEFAULT 0) DEFAULT CHARSET = utf8mb4`,
+  // 课程 = 旅程的 10 站;published = 0 时小程序里不出现,也不发这一站的新词
+  `CREATE TABLE IF NOT EXISTS courses (level INT PRIMARY KEY, city VARCHAR(40) NOT NULL, ms VARCHAR(60) NOT NULL DEFAULT '', note VARCHAR(120) NOT NULL DEFAULT '', intro TEXT, published TINYINT NOT NULL DEFAULT 1, updated_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
+  // 后台账号、角色(permissions 是 JSON 数组,超级管理员是 ["*"])、登录会话(只存 token 的 sha256)、操作日志
+  `CREATE TABLE IF NOT EXISTS admin_roles (id INT AUTO_INCREMENT PRIMARY KEY, code VARCHAR(32) NOT NULL UNIQUE, name VARCHAR(40) NOT NULL, description VARCHAR(200) NOT NULL DEFAULT '', permissions TEXT, builtin TINYINT NOT NULL DEFAULT 0, created_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS admin_users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(40) NOT NULL UNIQUE, name VARCHAR(40) NOT NULL DEFAULT '', password_hash VARCHAR(200) NOT NULL, role_id INT, status VARCHAR(16) NOT NULL DEFAULT 'active', must_change TINYINT NOT NULL DEFAULT 0, last_login_at VARCHAR(32), last_login_ip VARCHAR(64), created_at VARCHAR(32), updated_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS admin_sessions (token_hash CHAR(64) PRIMARY KEY, user_id INT NOT NULL, created_at VARCHAR(32), expires_at BIGINT NOT NULL, ip VARCHAR(64), ua VARCHAR(200), INDEX admin_sessions_user (user_id)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS audit_log (id BIGINT AUTO_INCREMENT PRIMARY KEY, at VARCHAR(32) NOT NULL, user_id INT, username VARCHAR(40) NOT NULL DEFAULT '', action VARCHAR(40) NOT NULL, target VARCHAR(120) NOT NULL DEFAULT '', detail TEXT, ip VARCHAR(64), INDEX audit_at (at)) DEFAULT CHARSET = utf8mb4`
+]
+// 旧表加列:MySQL 5.7 没有 ADD COLUMN IF NOT EXISTS,先查 information_schema
+const COLUMNS = [
+  ['students', 'status', `VARCHAR(16) NOT NULL DEFAULT 'active'`],
+  ['students', 'note', `VARCHAR(500) NOT NULL DEFAULT ''`],
+  ['words', 'topic', `VARCHAR(32) NOT NULL DEFAULT ''`],
+  ['words', 'extra', 'MEDIUMTEXT'] // 例句、搭配、同义 / 反义、提示、配图(词光要用的字段),JSON
 ]
 // rank 在 MySQL 8 是保留字:SQL 里没带表名前缀的 rank 自动加反引号(w.rank / p.rank 这种不用)
 const mySql = sql => sql.replace(/(?<![.\w`])rank\b/g, '`rank`')
@@ -91,10 +107,13 @@ async function tx(fn) {
   const c = await pool.getConnection()
   try { await c.beginTransaction(); const r = await fn(helpers(c)); await c.commit(); return r } catch (e) { await c.rollback(); throw e } finally { c.release() }
 }
+let STOPS = DEFAULT_STOPS.map(s => ({ ...s, published: true })) // 启动后从 courses 表读
+async function reloadStops() { STOPS = (await all('SELECT level, city, ms, note, intro, published FROM courses ORDER BY level')).map(c => ({ ...c, intro: c.intro || '', published: !!c.published })) }
+const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
 const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
-const cleanSense = s => { const o = { pos: str(s.pos, 20), zh: str(s.zh, 200), exMs: str(s.exMs, 400), exZh: str(s.exZh, 400) }; if (s.check) o.check = true; return o }
+const cleanSense = s => { const o = { pos: str(s.pos, 20), zh: str(s.zh, 200), exMs: str(s.exMs, 400), exZh: str(s.exZh, 400) }; const en = str(s.en, 200); if (en) o.en = en; if (s.check) o.check = true; return o }
 
 // 导入词库(content/vocab5000/words.json 的格式)。后台改过的词(edited=1)默认不覆盖
 async function importWords(list, { overwriteEdited = false } = {}) {
@@ -122,6 +141,12 @@ async function init() {
     try { await pool.query('SELECT 1'); break } catch (e) { if (i >= 30) throw e; await new Promise(r => setTimeout(r, 1000)) }
   }
   for (const q of SCHEMA) await pool.query(q)
+  for (const [t, c, def] of COLUMNS) {
+    if (!(await one('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?', t, c))) await pool.query(`ALTER TABLE ${t} ADD COLUMN ${c} ${def}`)
+  }
+  for (const s of DEFAULT_STOPS) await run('INSERT IGNORE INTO courses (level, city, ms, note, intro, published, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?)', s.level, s.city, s.ms, s.note, '', new Date().toISOString())
+  await reloadStops()
+  await admin.bootstrap({ ADMIN_USER, ADMIN_HASH })
   const k = await one('SELECT v FROM meta WHERE k = ?', 'token_key')
   TOKEN_KEY = k ? k.v : randomBytes(32).toString('hex')
   if (!k) await run('INSERT IGNORE INTO meta (k, v) VALUES (?, ?)', 'token_key', TOKEN_KEY)
@@ -154,17 +179,17 @@ async function streakOf(sid) {
   while (days.has(day(start - n))) n++
   return { streak: n, checkedToday: days.has(day()) }
 }
-async function levelsOf(sid) {
+async function levelsOf(sid, all_ = false) {
   const rows = await all(`SELECT w.level, COUNT(*) total, SUM(CASE WHEN p.seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN p.box = 6 THEN 1 ELSE 0 END) mastered
     FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' GROUP BY w.level`, sid)
   const by = Object.fromEntries(rows.map(r => [r.level, r]))
-  return STOPS.map(s => {
+  return STOPS.filter(s => all_ || s.published).map(s => {
     const r = by[s.level] || {}
     const total = Number(r.total || 0), learned = Number(r.learned || 0)
     return { ...s, total, learned, mastered: Number(r.mastered || 0), open: total > 0, stamped: total > 0 && learned >= total }
   })
 }
-function currentLevel(levels) { const l = levels.find(l => l.open && !l.stamped); return l ? l.level : (levels.filter(l => l.open).pop() || levels[0]).level }
+function currentLevel(levels) { const l = levels.find(l => l.open && !l.stamped); return l ? l.level : ((levels.filter(l => l.open).pop() || levels[0]) || { level: 1 }).level }
 
 async function home(st) {
   const sid = st.id, today = day()
@@ -193,7 +218,7 @@ async function start(st, b) {
     const d = await one('SELECT new_cnt FROM daily WHERE student_id = ? AND day = ?', sid, today)
     const left = mode === 'new' ? 10 : Math.max(st.daily_new - (d ? d.new_cnt : 0), 0)
     const level = mode === 'new' ? Number(b.level) || 1 : currentLevel(await levelsOf(sid))
-    if (left) fresh = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE (p.rank IS NULL OR p.seen = 0) AND w.status = 'approved' AND w.level ${mode === 'new' ? '=' : '>='} ? ORDER BY w.rank LIMIT ?`, sid, level, left)
+    if (left) fresh = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE (p.rank IS NULL OR p.seen = 0) AND w.status = 'approved' AND w.level ${mode === 'new' ? '=' : '>='} ? AND w.level IN (?) ORDER BY w.rank LIMIT ?`, sid, level, openLevels().length ? openLevels() : [0], left)
   }
   const items = [...review.map(w => ({ ...wordOut(w, w), kind: 'review' })), ...fresh.map(w => ({ ...wordOut(w, w), kind: 'new' }))]
   // 出题用的干扰项:同一站的其他词
@@ -273,13 +298,8 @@ async function code2openid(code) {
 }
 
 // ---------------- 通用 ----------------
-const sessions = new Map() // 后台会话:token → { user, exp }
-const fails = new Map()    // ip → [时间戳]
-const SESSION_MS = 12 * 3600e3
 const ip = req => (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim()
 function cookie(req, name) { const m = new RegExp(`(?:^|;\\s*)${name}=([^;]+)`).exec(req.headers.cookie || ''); return m ? m[1] : '' }
-function session(req) { const s = sessions.get(cookie(req, 'jb_admin')); return s && s.exp > Date.now() ? s : null }
-function tooMany(addr) { const t = (fails.get(addr) || []).filter(x => x > Date.now() - 10 * 60e3); fails.set(addr, t); return t.length >= 5 }
 const send = (res, code, data, headers = {}) => { res.writeHead(code, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers }); res.end(JSON.stringify(data)) }
 const fail = (res, code, msg) => send(res, code, { error: msg })
 async function body(req, limit = 4096) {
@@ -321,6 +341,7 @@ async function appApi(req, res, p, url) {
 
   const st = await one('SELECT * FROM students WHERE openid = ?', openid)
   if (!st) return fail(res, 403, '请先注册')
+  if (st.status === 'disabled') return fail(res, 403, '账号已停用,请联系老师')
   if (p === '/api/app/home') return send(res, 200, await home(st))
   if (p === '/api/app/start' && req.method === 'POST') return send(res, 200, await start(st, await body(req)))
   if (p === '/api/app/grade' && req.method === 'POST') return send(res, 200, await grade(st, await body(req)))
@@ -364,94 +385,8 @@ async function appApi(req, res, p, url) {
   return fail(res, 404, '接口不存在')
 }
 
-// ---------------- 后台接口 ----------------
-async function adminApi(req, res, p, url) {
-  if (p === '/api/admin/login' && req.method === 'POST') {
-    const addr = ip(req)
-    if (tooMany(addr)) return fail(res, 429, '登录失败次数太多，请 10 分钟后再试')
-    const b = await body(req)
-    if (!ADMIN_HASH || b.user !== ADMIN_USER || !checkPassword(b.password, ADMIN_HASH)) { fails.get(addr).push(Date.now()); return fail(res, 401, '账号或密码不对') }
-    const token = randomBytes(32).toString('hex')
-    sessions.set(token, { user: ADMIN_USER, exp: Date.now() + SESSION_MS })
-    const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''
-    return send(res, 200, { ok: true }, { 'set-cookie': `jb_admin=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_MS / 1000}${secure}` })
-  }
-  const s = session(req)
-  if (!s) return fail(res, 401, '请先登录')
-  if (p === '/api/admin/logout') { sessions.delete(cookie(req, 'jb_admin')); return send(res, 200, { ok: true }, { 'set-cookie': 'jb_admin=; Path=/; Max-Age=0' }) }
-  if (p === '/api/admin/me') return send(res, 200, { user: s.user, demo: DEMO, audioBase: AUDIO_BASE, stops: STOPS })
-
-  if (p === '/api/admin/overview') {
-    const today = day()
-    return send(res, 200, {
-      words: await all('SELECT level, status, COUNT(*) n FROM words GROUP BY level, status'),
-      check: (await one(`SELECT COUNT(*) n FROM words WHERE senses LIKE '%"check":true%'`)).n,
-      students: (await one('SELECT COUNT(*) n FROM students')).n,
-      activeToday: (await one('SELECT COUNT(DISTINCT student_id) n FROM daily WHERE day = ?', today)).n,
-      active7: (await one('SELECT COUNT(DISTINCT student_id) n FROM daily WHERE day >= ?', day(-6))).n,
-      learnedToday: (await one('SELECT COALESCE(SUM(new_cnt), 0) n FROM daily WHERE day = ?', today)).n,
-      reviewedToday: (await one('SELECT COALESCE(SUM(review_cnt), 0) n FROM daily WHERE day = ?', today)).n
-    })
-  }
-
-  if (p === '/api/admin/words' && req.method === 'GET') {
-    const level = Number(url.searchParams.get('level')) || 0, status = url.searchParams.get('status') || '', k = str(url.searchParams.get('q'), 40).toLowerCase().replace(/[%_]/g, '')
-    const page = Math.max(Number(url.searchParams.get('page')) || 0, 0)
-    const conds = [], args = []
-    if (level) { conds.push('level = ?'); args.push(level) }
-    if (['approved', 'pending'].includes(status)) { conds.push('status = ?'); args.push(status) }
-    if (status === 'check') conds.push(`senses LIKE '%"check":true%'`)
-    if (k) { const l = `%${k}%`; conds.push('(lower(ms) LIKE ? OR lower(root) LIKE ? OR senses LIKE ? OR rank = ?)'); args.push(l, l, l, Number(k) || -1) }
-    const where = conds.length ? 'WHERE ' + conds.join(' AND ') : ''
-    const total = (await one(`SELECT COUNT(*) n FROM words ${where}`, ...args)).n
-    const rows = await all(`SELECT * FROM words ${where} ORDER BY rank LIMIT 100 OFFSET ?`, ...args, page * 100)
-    return send(res, 200, { total, page, words: rows.map(w => ({ ...w, senses: JSON.parse(w.senses || '[]'), audioUrl: w.audio ? AUDIO_BASE + w.audio : '' })) })
-  }
-  const wm = /^\/api\/admin\/words\/(\d+)$/.exec(p)
-  if (wm && req.method === 'PUT') {
-    const b = await body(req, 64 * 1024), rank = Number(wm[1])
-    const w = await one('SELECT * FROM words WHERE rank = ?', rank)
-    if (!w) return fail(res, 404, '没有这个词')
-    const senses = Array.isArray(b.senses) ? b.senses.map(cleanSense).filter(s => s.zh) : JSON.parse(w.senses)
-    const ms = b.ms !== undefined ? str(b.ms, 80) : w.ms
-    if (!ms) return fail(res, 400, '马来语不能为空')
-    const status = b.status !== undefined ? (b.status === 'approved' ? 'approved' : 'pending') : w.status
-    if (status === 'approved' && !senses.some(s => !s.check)) return fail(res, 400, '至少要有一条审过的释义才能上架')
-    await run('UPDATE words SET ms = ?, root = ?, senses = ?, status = ?, edited = 1, updated_at = ? WHERE rank = ?', ms, b.root !== undefined ? str(b.root, 80) : w.root, JSON.stringify(senses), status, new Date().toISOString(), rank)
-    return send(res, 200, { ok: true })
-  }
-  if (p === '/api/admin/words/import' && req.method === 'POST') {
-    const b = await body(req, 8 * 1024 * 1024)
-    if (!Array.isArray(b.words)) return fail(res, 400, '格式不对:要 build.py 生成的 words.json')
-    return send(res, 200, await importWords(b.words, { overwriteEdited: !!b.overwriteEdited }))
-  }
-
-  if (p === '/api/admin/students' || p === '/api/admin/students.csv') {
-    const rows = await all(`SELECT s.*, (SELECT COUNT(*) FROM progress p WHERE p.student_id = s.id AND p.seen > 0) learned, (SELECT COUNT(*) FROM progress p WHERE p.student_id = s.id AND p.box = 6) mastered,
-      (SELECT COUNT(*) FROM daily d WHERE d.student_id = s.id AND (d.new_cnt + d.review_cnt) > 0) days FROM students s ORDER BY s.last_active_at DESC`)
-    if (p.endsWith('.csv')) {
-      const head = ['姓名', '学校', '班级', '起点', '手机号', '已学', '已掌握', '学习天数', '注册时间', '最近活跃']
-      const lines = rows.map(r => [r.name, r.school, r.class_name, r.track === 'some' ? '会说一些' : '零基础', r.phone, r.learned, r.mastered, r.days, r.created_at, r.last_active_at].map(csvCell).join(','))
-      res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="students-${day()}.csv"`, 'cache-control': 'no-store' })
-      return res.end('﻿' + [head.join(','), ...lines].join('\n'))
-    }
-    return send(res, 200, rows.map(r => ({ id: r.id, name: r.name, school: r.school, className: r.class_name, track: r.track, phone: r.phone, learned: r.learned, mastered: r.mastered, days: r.days, createdAt: r.created_at, lastActiveAt: r.last_active_at })))
-  }
-
-  if (p === '/api/admin/teachers' && req.method === 'GET') return send(res, 200, await all('SELECT * FROM teachers ORDER BY sort, id'))
-  const tm = /^\/api\/admin\/teachers(?:\/(\d+))?$/.exec(p)
-  if (tm && (req.method === 'POST' || req.method === 'PUT')) {
-    const b = await body(req, 8 * 1024 * 1024)
-    const d = { name: str(b.name, 30), title: str(b.title, 100), role: str(b.role, 30), bio: str(b.bio, 1000), photo: str(b.photo, 300), sort: Number(b.sort) || 0 }
-    if (!d.name) return fail(res, 400, '请填写姓名')
-    if (b.photoData) d.photo = savePhoto(b.photoData)
-    if (tm[1]) await run('UPDATE teachers SET name = ?, title = ?, role = ?, bio = ?, photo = ?, sort = ? WHERE id = ?', d.name, d.title, d.role, d.bio, d.photo, d.sort, Number(tm[1]))
-    else await run('INSERT INTO teachers (name, title, role, bio, photo, sort) VALUES (?, ?, ?, ?, ?, ?)', d.name, d.title, d.role, d.bio, d.photo, d.sort)
-    return send(res, 200, { ok: true })
-  }
-  if (tm && tm[1] && req.method === 'DELETE') { await run('DELETE FROM teachers WHERE id = ?', Number(tm[1])); return send(res, 200, { ok: true }) }
-  return fail(res, 404, '接口不存在')
-}
+// ---------------- 后台接口(admin-api.mjs) ----------------
+const admin = makeAdminApi({ all, one, run, tx, body, send, fail, str, ip, cookie, day, csvCell, importWords, cleanSense, savePhoto: d => savePhoto(d), levelsOf, streakOf, reloadStops, hashPassword, checkPassword, AUDIO_BASE, DEMO })
 
 function savePhoto(dataUrl) {
   const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(String(dataUrl))
@@ -480,7 +415,7 @@ const server = createServer(async (req, res) => {
   res.setHeader('referrer-policy', 'no-referrer')
   try {
     if (p.startsWith('/api/app/')) return await appApi(req, res, p, url)
-    if (p.startsWith('/api/admin/')) return await adminApi(req, res, p, url)
+    if (p.startsWith('/api/admin/')) return await admin.handle(req, res, p, url)
     if (p.startsWith('/api/')) return fail(res, 404, '接口不存在')
     res.setHeader('x-frame-options', 'DENY')
     // 老师照片(小程序也读,公开)

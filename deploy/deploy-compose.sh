@@ -6,6 +6,10 @@ HOST="${HOST:-ubuntu@43.134.55.33}"
 DIR=/opt/jombelajar
 cd "$(dirname "$0")/.."
 
+# 后台网页(React + shadcn)先在本机构建到 admin/public,再一起传上去
+npm --prefix admin/web ci --no-audit --no-fund
+npm --prefix admin/web run build
+
 ssh "$HOST" "mkdir -p $DIR/deploy $DIR/content/vocab5000"
 rsync -az --delete --exclude node_modules/ --exclude data/ admin/ "$HOST:$DIR/admin/"
 rsync -az docker-compose.yml .dockerignore "$HOST:$DIR/"

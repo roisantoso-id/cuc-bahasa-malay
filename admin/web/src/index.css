@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* 后台配色:照全局 admin-ui(冷白底、白卡片、细浅线、近黑主按钮、亮蓝选中;状态只有绿 / 橙 / 红) */
+:root {
+  --background: #F6F7F9;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #0F172A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F3F6;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F3F6;
+  --muted-foreground: #64748B;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #E8EBF0;
+  --input: #E2E6EC;
+  --ring: #2563EB;
+  --radius: 10px;
+  --blue: #2563EB; --blue-bg: #EEF3FF; --blue-line: #C7D7FE;
+  --ok: #16A34A; --ok-bg: #E6F4EA;
+  --warn: #B45309; --warn-bg: #FEF3C7;
+  --bad: #DC2626; --bad-bg: #FEF2F2;
+  --text-2: #475569; --text-3: #64748B; --text-4: #94A3B8;
+  --row-line: #F1F3F6; --row-hover: #F8FAFF;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-blue: var(--blue); --color-blue-bg: var(--blue-bg); --color-blue-line: var(--blue-line);
+  --color-ok: var(--ok); --color-ok-bg: var(--ok-bg);
+  --color-warn: var(--warn); --color-warn-bg: var(--warn-bg);
+  --color-bad: var(--bad); --color-bad-bg: var(--bad-bg);
+  --color-text-2: var(--text-2); --color-text-3: var(--text-3); --color-text-4: var(--text-4);
+  --color-row-line: var(--row-line); --color-row-hover: var(--row-hover);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  * { border-color: var(--border); min-width: 0; }
+  html, body { overflow-x: hidden; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  .num { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+}
+
+/* 卡片阴影:几乎看不见 */
+.jb-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.04); }
+/* 紧凑表格:行高 48 左右,行间浅线,悬停浅蓝,整行可点 */
+.jb-table { width: 100%; border-collapse: collapse; table-layout: auto; }
+.jb-table th { font-size: 12px; font-weight: 500; color: var(--text-3); background: #FAFBFC; text-align: left; padding: 9px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.jb-table td { font-size: 13px; padding: 10px 16px; border-bottom: 1px solid var(--row-line); vertical-align: middle; }
+.jb-table tr:last-child td { border-bottom: 0; }
+.jb-table tbody tr[data-click] { cursor: pointer; }
+.jb-table tbody tr[data-click]:hover td, .jb-table tbody tr[data-click]:focus-visible td { background: var(--row-hover); outline: none; }
+.jb-table td.r, .jb-table th.r { text-align: right; }
+.jb-table td.nw { white-space: nowrap; }
+
+/* 手机上:面板头的小链接、表格里的小图标按钮都至少 36px 高 */
+@media (max-width: 639px) {
+  .jb-head-link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 4px; }
+  .jb-table td, .jb-table th { padding-left: 12px; padding-right: 12px; }
+}
