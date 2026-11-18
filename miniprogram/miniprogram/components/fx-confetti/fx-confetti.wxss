@@ -1,0 +1,3 @@
+/* 满屏彩纸：盖在页面最上层，不挡点击 */
+:host { position: fixed; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none; z-index: 400; }
+.cf { width: 100%; height: 100%; display: block; }

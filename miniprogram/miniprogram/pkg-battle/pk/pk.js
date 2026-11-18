@@ -1,6 +1,7 @@
 // 好友 PK：没答过 → 看谁发起的、接受挑战；答过 → 排名 + 我的复盘 + 邀请同学
 // 从分享卡片冷启动也能直接打开：vocab.pk 里会自动微信登录。
 const vocab = require('../../api/vocab')
+const sfx = require('../../utils/sfx')
 const { fmtMs, review } = require('../util')
 
 Page({
@@ -22,6 +23,13 @@ Page({
       const my = ranking.find(r => r.me) || null
       const view = pk.mine ? 'done' : pk.expired ? 'expired' : 'invite'
       this.setData({ view, pk, my, ranking, list: review(pk.review) })
+      // 刚答完回到结果页时放一次：第一名（且不止一个人）是胜利音效 + 彩纸，否则完成音效
+      if (view === 'done' && !this.celebrated) {
+        this.celebrated = true
+        const win = my && my.place === 1 && ranking.length >= 2
+        sfx.play(win ? 'win' : 'complete')
+        if (win) setTimeout(() => this.setData({ cfFire: (this.data.cfFire || 0) + 1 }), 150)
+      }
       wx.setNavigationBarTitle({ title: view === 'done' ? 'PK 结果' : '好友 PK' })
     } catch (e) {
       if (this.data.view !== 'done' && this.data.view !== 'invite') this.setData({ view: 'error', error: e.message })

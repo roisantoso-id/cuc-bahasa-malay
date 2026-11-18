@@ -2,6 +2,7 @@ const setTab = require('../../utils/tab')
 // 今日：一个数字、一个按钮。圆环是今天的进度，犀鸟站在旁边陪着
 const vocab = require('../../api/vocab')
 const audio = require('../../utils/vocab-audio')
+const sfx = require('../../utils/sfx')
 const { ensureStudent } = require('../../utils/student')
 const { draw } = require('../../utils/canvas')
 
@@ -33,6 +34,7 @@ Page({
     const u = this.fresh.shift()
     if (!u) return this.setData({ unlock: null })
     this.setData({ unlock: u, ulMore: this.fresh.length })
+    sfx.play('unlock')
     setTimeout(() => this.setData({ ulFx: (this.data.ulFx || 0) + 1 }), 120)
   },
   ulNext() { this.showUnlock() },

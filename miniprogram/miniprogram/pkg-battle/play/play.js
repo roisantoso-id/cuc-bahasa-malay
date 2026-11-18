@@ -3,6 +3,7 @@
 //   ?kind=arena    答完交卷，在本页显示成绩和复盘
 // 对错由服务器判，答题时不显示对错：点一个选项就锁住，停 0.4 秒进下一题。
 const vocab = require('../../api/vocab')
+const sfx = require('../../utils/sfx')
 const audio = require('../../utils/vocab-audio')
 const { fmtMs, KIND, review } = require('../util')
 
@@ -63,6 +64,7 @@ Page({
   pick(e) {
     if (this.locked) return
     this.locked = true
+    sfx.play('tap')   // 对战里不当场揭晓对错，只给一声轻响
     const k = Number(e.currentTarget.dataset.k)
     this.answers[this.data.i] = k
     this.setData({ picked: k })
@@ -85,6 +87,9 @@ Page({
       }
       const r = await vocab.arenaSubmit(this.answers, this.ms)
       getApp().globalData.dirty = true
+      const top = r.place && r.place <= 10
+      sfx.play(top ? 'win' : 'complete')
+      setTimeout(() => this.setData({ cfFire: (this.data.cfFire || 0) + 1 }), 150)
       this.setData({
         view: 'result',
         result: { ...r, lastTime: fmtMs(r.last.ms), total: this.qs.length },

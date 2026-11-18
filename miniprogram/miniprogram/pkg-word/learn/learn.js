@@ -5,6 +5,7 @@
 //   结束:给这一站盖章(今天第一次学完还算打卡)
 const vocab = require('../../api/vocab')
 const audio = require('../../utils/vocab-audio')
+const sfx = require('../../utils/sfx')
 
 const QUIZ_EVERY = 5
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1])
@@ -121,6 +122,7 @@ Page({
     const card = this.data.card, on = !card.fav
     this.setData({ 'card.fav': on })
     if (on) {   // 收藏时炸一圈小星星，按钮弹一下
+      sfx.play('star')
       this.setData({ favFx: (this.data.favFx || 0) + 1, favPop: true })
       wx.vibrateShort && wx.vibrateShort({ type: 'light' })
       setTimeout(() => this.setData({ favPop: false }), 400)
@@ -129,7 +131,8 @@ Page({
   },
 
   async grade(e) { return this.record(e.currentTarget.dataset.r) },
-  async record(result) {
+  async record(result, silent) {
+    if (!silent) sfx.play(result === 'forgot' ? 'swipe-forgot' : result === 'vague' ? 'swipe-vague' : 'swipe-know')
     if (this.data.busy) return
     const card = this.data.card
     this.setData({ busy: true, [`stats.${result}`]: this.data.stats[result] + 1 })
@@ -175,12 +178,16 @@ Page({
   dontKnow() { if (!this.data.picked) { this.setData({ picked: '__skip' }); this.after(false) } },
   after(ok) {
     const quiz = this.data.quiz
+    // 连对：答对 +1，答错清零；连对 3 题以上出「连对 ×N」并换成上行琶音
+    this.combo = ok ? (this.combo || 0) + 1 : 0
+    if (ok && this.combo >= 3) { sfx.play('combo'); this.setData({ combo: this.combo, comboPop: true }); setTimeout(() => this.setData({ comboPop: false }), 450) }
+    else { sfx.play(ok ? 'correct' : 'wrong'); if (!ok) this.setData({ combo: 0 }) }
     if (quiz.type !== 'listen') audio.play(quiz.word.audio)
     const h = hintsOf(quiz.word)
     this.setData({ fbLine: !quiz.graded ? '小练习，不记分' : ok ? `答对了，${h.know}再见` : `已放进错词本，${h.forgot}再考一次`, fbOk: ok })
     this.pending = () => {
       if (!quiz.graded) return this.nextPractice()
-      if (ok) return this.record('know')
+      if (ok) return this.record('know', true)
       // 答错:翻开卡片看一眼,再记不认识 / 模糊
       this.setData({ view: 'card', card: prep(quiz.word), flipped: true, wrongShown: true })
     }
@@ -207,7 +214,15 @@ Page({
   },
 
   async finish() {
-    this.setData({ view: 'done' })
+    // 结算：铜锣 + 彩纸 + 经验值从 0 滚上去
+    const st = this.data.stats
+    const xp = st.know * 10 + st.mastered * 10 + st.vague * 5 + st.forgot * 2
+    this.setData({ view: 'done', xp: 0, xpTo: xp })
+    sfx.play('complete')
+    setTimeout(() => this.setData({ cfFire: (this.data.cfFire || 0) + 1 }), 150)
+    const t0 = Date.now()
+    const tick = () => { const k = Math.min(1, (Date.now() - t0) / 1100); this.setData({ xp: Math.round(xp * (1 - Math.pow(1 - k, 3))) }); if (k < 1) this.xpT = setTimeout(tick, 33) }
+    this.xpT = setTimeout(tick, 400)
     try {
       const h = await vocab.home()
       getApp().globalData.dirty = true

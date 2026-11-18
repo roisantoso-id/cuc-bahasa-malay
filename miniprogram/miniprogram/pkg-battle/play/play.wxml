@@ -67,3 +67,5 @@
     </view>
   </block>
 </view>
+
+<fx-confetti fire="{{cfFire}}" />

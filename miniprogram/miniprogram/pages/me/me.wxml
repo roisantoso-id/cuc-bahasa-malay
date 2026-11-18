@@ -44,6 +44,7 @@
       <view class="item" hover-class="hover-row" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><view class="item-main">错词本</view><text class="item-x">{{total.wrong}} 个</text><text class="arrow">›</text></view>
       <view class="item" hover-class="hover-row" data-url="/pkg-word/book/book?type=fav" bindtap="go"><view class="item-main">收藏</view><text class="item-x">{{total.fav}} 个</text><text class="arrow">›</text></view>
       <view class="item" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><view class="item-main">我的犀鸟 · 换装和徽章</view><text class="arrow">›</text></view>
+      <view class="item"><view class="item-main">音效</view><switch checked="{{sfxOn}}" color="#e9b961" bindchange="toggleSfx" /></view>
       <view class="item" hover-class="hover-row" bindtap="goal"><view class="item-main">每天新词</view><text class="item-x">{{student.dailyNew}} 个</text><text class="arrow">›</text></view>
       <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于老师</view><text class="arrow">›</text></view>
       <button class="item me-fb" hover-class="hover-row" open-type="feedback"><view class="item-main">意见反馈 / 单词报错</view><text class="arrow">›</text></button>

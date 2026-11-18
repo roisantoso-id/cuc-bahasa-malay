@@ -5,8 +5,9 @@
 
   <block wx:elif="{{view === 'card' || view === 'quiz'}}">
     <view class="ln-top">
-      <view class="bar"><view class="bar-in" style="width:{{idx / total * 100}}%" /></view>
+      <view class="bar ln-pbar"><view class="bar-in ln-pin" style="width:{{idx / total * 100}}%"><view wx:for="{{[idx]}}" wx:key="*this" class="ln-shine" /></view></view>
       <view class="ln-top-r"><text class="no">{{idx}} / {{total}}</text>
+        <text wx:if="{{combo >= 3}}" class="ln-combo {{comboPop ? 'pop' : ''}}"><text class="ln-flame" />连对 ×{{combo}}</text>
         <text wx:if="{{view === 'quiz' && !quiz.graded}}">小练习</text>
         <text wx:else>{{card.again ? '再来一次' : card.kind === 'review' ? '复习' : '新词'}}</text>
       </view>
@@ -61,7 +62,8 @@
     </view>
 
     <!-- 题目底部反馈条 -->
-    <view wx:if="{{view === 'quiz' && picked}}" class="ln-fb">
+    <view wx:if="{{view === 'quiz' && picked}}" class="ln-fb {{fbOk ? 'ok' : 'bad'}}">
+      <image class="ln-fb-bird" src="/assets/{{fbOk ? 'cheer' : 'fail'}}.jpg" mode="aspectFill" />
       <view class="item-main"><view class="ms ln-fb-w one">{{quiz.word.ms}}</view><view class="ln-fb-l {{fbOk ? 'ok' : ''}}">{{fbLine}}</view></view>
       <button class="btn btn-main ln-fb-b" hover-class="hover" bindtap="cont">继续</button>
     </view>
@@ -82,14 +84,15 @@
 
   <!-- 结束:盖章 -->
   <view wx:elif="{{view === 'done'}}" class="ln-done">
-    <view class="stamp ln-stamp">
+    <view class="stamp ln-stamp ln-stampin">
       <text class="s2 no">JOMBELAJAR</text>
       <text class="s1">{{stop ? stop.city : '完成'}}</text>
       <text class="s2 no">{{date}}</text>
     </view>
-    <view class="h1 center">这一程走完了</view>
+    <view class="h1 center ln-pop" style="animation-delay:.15s">这一程走完了</view>
+    <view class="ln-xp ln-pop" style="animation-delay:.3s"><text class="ln-xp-n">+{{xp}}</text><text class="ln-xp-u"> 经验</text></view>
     <view wx:if="{{streak}}" class="muted small center">已经连续学了 {{streak}} 天</view>
-    <view class="stats mid ln-sum">
+    <view class="stats mid ln-sum ln-pop" style="animation-delay:.5s">
       <view class="stat"><view class="stat-n c-green">{{stats.know}}</view><view class="stat-l">认识</view></view>
       <view class="stat"><view class="stat-n">{{stats.vague}}</view><view class="stat-l">模糊</view></view>
       <view class="stat"><view class="stat-n c-coral">{{stats.forgot}}</view><view class="stat-l">不认识</view></view>
@@ -102,3 +105,4 @@
     </view>
   </view>
 </view>
+<fx-confetti fire="{{cfFire}}" />

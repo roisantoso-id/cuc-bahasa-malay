@@ -2,12 +2,13 @@ const setTab = require('../../utils/tab')
 // 护照:学生资料 + 10 站印章 + 学习统计(连续天数、近 30 天柱状、熟练度分布)+ 设置
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
+const sfx = require('../../utils/sfx')
 
 const TRACK = { zero: '零基础', some: '会说一些' }
 const GOALS = [10, 20, 30, 50]
 
 Page({
-  data: { view: 'loading', student: null, s: null, goals: GOALS },
+  data: { sfxOn: !sfx.off(), view: 'loading', student: null, s: null, goals: GOALS },
   onShow() {
     setTab(this, 3); this.load() },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
@@ -32,6 +33,7 @@ Page({
       this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
+  toggleSfx(e) { sfx.setOff(!e.detail.value); this.setData({ sfxOn: e.detail.value }); if (e.detail.value) sfx.play('correct') },
   goal() {
     wx.showActionSheet({
       itemList: GOALS.map(n => `每天 ${n} 个新词`),
