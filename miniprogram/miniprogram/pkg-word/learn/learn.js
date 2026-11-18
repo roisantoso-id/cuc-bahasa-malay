@@ -120,6 +120,11 @@ Page({
   async fav() {
     const card = this.data.card, on = !card.fav
     this.setData({ 'card.fav': on })
+    if (on) {   // 收藏时炸一圈小星星，按钮弹一下
+      this.setData({ favFx: (this.data.favFx || 0) + 1, favPop: true })
+      wx.vibrateShort && wx.vibrateShort({ type: 'light' })
+      setTimeout(() => this.setData({ favPop: false }), 400)
+    }
     vocab.fav(card.rank, on).catch(() => this.setData({ 'card.fav': !on }))
   },
 

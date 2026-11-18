@@ -28,7 +28,7 @@
           <text class="tag gray">{{card.level ? 'T' + card.level : '词卡'}} · No.{{card.rank}}</text>
           <text wx:if="{{card.senses[0].pos}}" class="tag gray">{{card.senses[0].pos}}</text>
           <text class="tag amber">{{card.first ? '初次见面' : card.again ? '再来一次' : '第 ' + (card.seen || 2) + ' 次见'}}</text>
-          <text class="fav {{card.fav ? 'on' : ''}}" catchtap="fav">{{card.fav ? '已收藏' : '收藏'}}</text>
+          <view class="fav-wrap"><text class="fav {{card.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" catchtap="fav">{{card.fav ? '已收藏' : '收藏'}}</text><fx-burst fire="{{favFx}}" /></view>
         </view>
         <view wx:for="{{card.senses}}" wx:key="index" class="sn">
           <view class="mean"><text class="pos">{{item.pos}}</text>{{item.zh}}</view>

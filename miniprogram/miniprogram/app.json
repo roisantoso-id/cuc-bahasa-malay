@@ -69,7 +69,8 @@
   },
   "usingComponents": {
     "hb-empty": "/components/hb-empty/hb-empty",
-    "say-btn": "/components/say-btn/say-btn"
+    "say-btn": "/components/say-btn/say-btn",
+    "fx-burst": "/components/fx-burst/fx-burst"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

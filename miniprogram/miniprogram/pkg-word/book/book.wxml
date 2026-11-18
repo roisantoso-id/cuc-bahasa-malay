@@ -16,7 +16,7 @@
           <view class="ms">{{item.ms}}<text wx:if="{{type === 'wrong'}}" class="tag coral" style="margin-left:12rpx">错 {{item.wrong}} 次</text></view>
           <view class="muted small one">{{item.zh}}</view>
         </view>
-        <view class="star {{item.fav ? 'on' : ''}}" data-i="{{index}}" catchtap="toggleFav">{{item.fav ? '★' : '☆'}}</view>
+        <view class="star {{item.fav ? 'on' : ''}}" data-i="{{index}}" catchtap="toggleFav"><image class="star-i" src="/assets/fx/{{item.fav ? 'star-amber' : 'star-line'}}.svg" /></view>
       </view>
     </view>
   </block>

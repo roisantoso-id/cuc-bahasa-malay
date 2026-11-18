@@ -1,0 +1,9 @@
+/* 放在要炸开的元素里（父元素要 position: relative），fire 每加 1 就炸一次 */
+:host { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.burst { position: relative; }
+.p { position: absolute; left: 0; top: 0; opacity: 0; animation: fly .8s cubic-bezier(.15,.7,.3,1) forwards; }
+@keyframes fly {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(.2) rotate(0deg); }
+  65% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--r)); }
+}

@@ -1,0 +1,1 @@
+<view class="burst" aria-hidden="true"><image wx:for="{{parts}}" wx:key="id" class="p" src="{{item.src}}" style="width:{{item.s}}px;height:{{item.s}}px;--tx:{{item.x}}px;--ty:{{item.y}}px;--r:{{item.r}}deg;animation-delay:{{item.d}}ms" /></view>

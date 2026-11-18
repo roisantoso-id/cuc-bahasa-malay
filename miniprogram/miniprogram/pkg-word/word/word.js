@@ -16,6 +16,7 @@ Page({
   async fav() {
     const on = !this.data.w.fav
     this.setData({ 'w.fav': on })
+    if (on) { this.setData({ favFx: (this.data.favFx || 0) + 1, favPop: true }); wx.vibrateShort && wx.vibrateShort({ type: 'light' }); setTimeout(() => this.setData({ favPop: false }), 400) }
     try { await vocab.fav(this.data.w.rank, on); getApp().globalData.dirty = true } catch (e) { this.setData({ 'w.fav': !on }) }
   },
   copy() { wx.setClipboardData({ data: this.data.w.ms }) }

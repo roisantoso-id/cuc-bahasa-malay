@@ -7,3 +7,9 @@
 .lv-d.on { background: var(--star); }
 .pos { font-size: 24rpx; font-weight: 700; color: var(--ink2); border: 2rpx solid var(--hair2); padding: 0 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
 .zh { font-size: 34rpx; font-weight: 700; color: var(--ivory); }
+
+.fav-wrap { position: relative; }
+.fav { display: inline-flex; align-items: center; gap: 8rpx; }
+.fav-i { width: 30rpx; height: 30rpx; }
+.fav.pop { animation: favpop .4s cubic-bezier(.3,1.6,.5,1); }
+@keyframes favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }

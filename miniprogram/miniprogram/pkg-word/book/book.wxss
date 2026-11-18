@@ -5,3 +5,6 @@
 .one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .star { font-size: 40rpx; color: var(--hair2); padding: 0 8rpx; min-width: 64rpx; text-align: center; }
 .star.on { color: var(--star); }
+
+.star { display: flex; align-items: center; justify-content: center; min-width: 88rpx; min-height: 88rpx; }
+.star-i { width: 40rpx; height: 40rpx; }
