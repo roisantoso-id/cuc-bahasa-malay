@@ -14,10 +14,10 @@
 
     <!-- 词卡:象牙色卡片,正面只有词和发音 -->
     <block wx:if="{{view === 'card'}}">
-      <view class="wcard" bindtap="flip">
+      <view class="wcard {{flipped ? 'small' : ''}}" bindtap="flip">
         <view class="wc-in">
           <view class="w">{{card.ms}}</view>
-          <view class="wc-hint">{{flipped ? '词卡' : '点卡片翻看释义'}}</view>
+          <view wx:if="{{!flipped}}" class="wc-hint">点卡片翻看释义</view>
         </view>
         <view class="wc-say"><say-btn src="{{card.audio}}" size="md" tone="ivory" /></view>
       </view>

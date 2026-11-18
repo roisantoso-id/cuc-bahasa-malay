@@ -9,18 +9,23 @@
 .w { font-size: 96rpx; font-style: italic; font-weight: 700; line-height: 1.15; word-break: break-word; text-align: center; font-family: Georgia, "Times New Roman", serif; color: #1f6b4e; }
 .wc-hint { margin-top: 20rpx; font-size: 26rpx; color: rgba(10,31,34,.55); }
 .wc-say { position: absolute; right: 40rpx; bottom: 40rpx; }
-.below { flex: 1; min-height: 0; margin-top: 24rpx; box-sizing: border-box; }
+/* 翻开后卡片收矮，把位置让给释义和例句，一屏看完 */
+.wcard.small { height: 210rpx; }
+.wcard.small .w { font-size: 72rpx; }
+.wcard.small .wc-say { right: 32rpx; bottom: 50%; transform: translateY(50%); }
+.below { flex: 1; min-height: 0; margin-top: 18rpx; box-sizing: border-box; }
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 12rpx; }
 .fav { margin-left: auto; font-size: 26rpx; font-weight: 700; color: var(--ink2); padding: 8rpx 22rpx; border-radius: 999rpx; border: 2rpx solid var(--hair2); }
 .fav.on { color: var(--star); border-color: var(--star); }
-.sn { margin-top: 24rpx; }
-.mean { font-size: 38rpx; font-weight: 700; font-family: "Songti SC", "STSong", -apple-system, "PingFang SC", serif; }
-.pos { font-size: 26rpx; font-style: italic; color: var(--star); margin-right: 14rpx; font-family: Georgia, serif; font-weight: 400; }
-.ex { margin-top: 16rpx; padding-top: 16rpx; border-top: 2rpx solid var(--hair); }
-.ex-ms { font-family: Georgia, serif; font-size: 34rpx; line-height: 1.5; }
+.sn { margin-top: 16rpx; padding-bottom: 14rpx; border-bottom: 2rpx solid var(--hair); }
+.sn:last-of-type { border-bottom: 0; }
+.mean { font-size: 30rpx; line-height: 1.4; font-weight: 700; font-family: "Songti SC", "STSong", -apple-system, "PingFang SC", serif; }
+.pos { font-size: 22rpx; font-style: italic; color: var(--star); margin-right: 14rpx; font-family: Georgia, serif; font-weight: 400; }
+.ex { margin-top: 6rpx; padding-left: 18rpx; border-left: 4rpx solid rgba(233,185,97,.45); }
+.ex-ms { font-family: Georgia, serif; font-size: 28rpx; line-height: 1.45; }
 .ex-ms .hit { background: rgba(233,185,97,.28); color: var(--ivory); border-radius: 6rpx; padding: 0 6rpx; }
-.ex-zh { font-size: 26rpx; color: var(--ink2); margin-top: 4rpx; }
-.root { margin-top: 28rpx; font-size: 26rpx; color: var(--ink2); padding-bottom: 16rpx; }
+.ex-zh { font-size: 24rpx; color: var(--ink2); margin-top: 2rpx; line-height: 1.4; }
+.root { margin-top: 16rpx; font-size: 26rpx; color: var(--ink2); padding-bottom: 16rpx; }
 .root-w { color: var(--star); font-family: Georgia, serif; font-size: 30rpx; }
 
 /* 打分：深色描边，认识 = 象牙实心 */
