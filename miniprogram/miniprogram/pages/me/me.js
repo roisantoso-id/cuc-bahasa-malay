@@ -29,10 +29,22 @@ Page({
         const top = mem.next7.reduce((m, d, i) => (d.n > m.n ? { n: d.n, i } : m), { n: -1, i: 0 }).i
         memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
       }
-      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv: this.lvData(s.levels) })
+      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv: this.lvData(s.levels), goal: this.goalData(ach, s.levels) })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
   lvData(levels) { const v = lvOf(levels); const l = (levels || []).find(x => x.level === v.level); return { ...v, name: l ? (l.city || l.name || '') : '' } },
+  // 下一个目标：当前这一站学完能解锁的服装（都解锁了就指向下一枚还没拿的徽章）
+  goalData(ach, levels) {
+    if (!ach) return null
+    const v = lvOf(levels), l = (levels || []).find(x => x.level === v.level)
+    const cs = ach.items.filter(x => x.type === 'costume' && x.level === v.level && !x.unlocked)
+    if (cs.length && l) {
+      const left = Math.max(0, l.total - l.learned)
+      return { imgs: cs.map(x => x.img), title: `学完${l.city || ''}站，解锁 ${cs.length} 套新衣服`, sub: `还差 ${left} 个词 · ${cs.map(x => x.title.replace(/\s+[A-Za-z].*$/, '')).join('、')}` }
+    }
+    const b = ach.items.find(x => x.type === 'badge' && !x.unlocked)
+    return b ? { imgs: [b.img], title: '下一枚徽章：' + b.title, sub: b.desc } : null
+  },
   achData(ach) {
     if (!ach) return {}
     const got = ach.items.filter(x => x.unlocked)

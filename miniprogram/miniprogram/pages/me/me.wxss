@@ -1,19 +1,29 @@
 /* 护照：只回答三个问题——记得多牢、接下来要复习多少、最近有没有坚持。星光只给「牢固」 */
-/* 顶部：我的犀鸟（最重要，放最上）；右上角「···」进设置与关于，护照本身只放学习数据 */
-.me-hero { position: relative; display: flex; flex-direction: column; align-items: center; padding: var(--s4) var(--s3) var(--s4); background: var(--panel); border-radius: var(--r-lg); }
-.me-more { position: absolute; top: var(--s2); right: var(--s2); width: 72rpx; height: 72rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: rgba(243,234,214,.08); }
+/* 顶部：头像在左、身份和这一站进度在右；「下一个目标」= 这一站学完能解锁的两套衣服；底下一行四个数（错词本、收藏可点） */
+.me-hero { position: relative; padding: var(--s3); background: var(--panel); border-radius: var(--r-lg); }
+.me-more { position: absolute; top: var(--s2); right: var(--s2); width: 64rpx; height: 64rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: rgba(243,234,214,.08); z-index: 2; }
 .me-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--ivory); }
-.me-bird { margin-top: var(--s2); }
-.me-name { margin-top: var(--s2); font-size: var(--t-title); font-weight: 700; max-width: 100%; }
-.me-ach { display: flex; width: 100%; margin-top: var(--s3); }
-.me-ach-n { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
-.me-ach-l { font-size: var(--t-caption); color: var(--ink2); }
-.me-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s1); margin-top: var(--s3); }
-.me-bdg { width: 64rpx; height: 64rpx; border-radius: 50%; background: var(--ivory); }
-.me-dress { margin-top: var(--s3); align-self: stretch; }
-.me-quick { display: flex; gap: var(--s2); margin-top: var(--s2); }
-.me-q { flex: 1; min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s1); padding: var(--s2) var(--s3); background: var(--panel); border-radius: var(--r-sm); }
-.me-q-l { font-size: var(--t-caption); color: var(--ink2); white-space: nowrap; }
+.me-top { display: flex; align-items: center; gap: var(--s3); padding-right: 64rpx; }
+.me-id { flex: 1; min-width: 0; }
+.me-name { font-size: var(--t-title); font-weight: 700; font-family: var(--f-zh); line-height: 1.3; }
+.me-sub { font-size: var(--t-caption); color: var(--ink2); margin-top: 4rpx; }
+.me-lv { display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--s2); font-size: var(--t-caption); }
+.me-lv-t { color: var(--star); font-weight: 600; }
+.me-lv-p { color: var(--ink2); font-family: var(--f-ms); }
+.me-lv-bar { height: 10rpx; margin-top: 8rpx; border-radius: var(--r-pill); background: var(--hair); overflow: hidden; }
+.me-lv-f { height: 100%; border-radius: var(--r-pill); background: var(--star); min-width: 10rpx; }
+.me-goal { display: flex; align-items: center; gap: var(--s2); margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-sm); background: rgba(10,31,34,.55); }
+.me-goal-imgs { display: flex; flex: none; }
+.me-goal-box { width: 88rpx; height: 88rpx; border-radius: 16rpx; background: #f8f1e9; display: flex; align-items: center; justify-content: center; border: 3rpx solid var(--panel); box-sizing: border-box; }
+.me-goal-box + .me-goal-box { margin-left: -20rpx; }
+.me-goal-img { width: 80rpx; height: 80rpx; }
+.me-goal-m { flex: 1; min-width: 0; }
+.me-goal-t { font-size: 28rpx; font-weight: 600; color: var(--ivory); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.me-goal-x { font-size: var(--t-caption); color: var(--ink2); margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.me-stats { display: flex; margin-top: var(--s3); }
+.me-st { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.me-st + .me-st { border-left: 2rpx solid var(--hair); }
+.me-st-l { font-size: var(--t-caption); color: var(--ink2); white-space: nowrap; }
 
 .me-c1 { background: var(--star); } .me-c2 { background: var(--ok); } .me-c3 { background: var(--bad); } .me-c4 { background: var(--hair2); }
 .me-stack { display: flex; height: 16rpx; border-radius: var(--r-pill); overflow: hidden; background: var(--hair); }

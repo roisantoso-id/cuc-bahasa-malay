@@ -2,26 +2,36 @@
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻护照…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <block wx:else>
+    <!-- 顶部：左边头像（进度圈 + L 等级），右边名字和这一站进度；下面一条「下一个目标」（这一站能解锁的两套衣服），再一行四个数 -->
     <view class="me-hero">
       <view class="me-more" hover-class="hover" data-url="/pkg-me/more/more" bindtap="go"><text class="me-dot" /><text class="me-dot" /><text class="me-dot" /></view>
-      <view class="me-bird" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><lv-avatar src="{{mascotImg || student.avatar}}" size="{{240}}" level="{{lv.level}}" pct="{{lv.pct}}" /></view>
-      <view class="me-name one">{{student.name || '同学'}}</view>
-      <view class="muted small one">L{{lv.level}} {{lv.name}} · 这一站 {{lv.pct}}%</view>
-      <view class="muted small one">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}}</view>
-      <view class="me-ach">
-        <view class="me-ach-n"><text class="num">{{stamps}}</text><text class="me-ach-l">印章</text></view>
-        <view class="me-ach-n"><text class="num">{{costumeN}}</text><text class="me-ach-l">服装</text></view>
-        <view class="me-ach-n"><text class="num">{{badgeN}}</text><text class="me-ach-l">徽章</text></view>
+      <view class="me-top" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go">
+        <lv-avatar src="{{mascotImg || student.avatar}}" size="{{176}}" level="{{lv.level}}" pct="{{lv.pct}}" />
+        <view class="me-id">
+          <view class="me-name one">{{student.name || '同学'}}</view>
+          <view class="me-sub one">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}}</view>
+          <view class="me-lv"><text class="me-lv-t">L{{lv.level}} · {{lv.name}}站</text><text class="me-lv-p">{{lv.pct}}%</text></view>
+          <view class="me-lv-bar"><view class="me-lv-f" style="width:{{lv.pct}}%" /></view>
+        </view>
       </view>
-      <view wx:if="{{myBadges.length}}" class="me-badges">
-        <image wx:for="{{myBadges}}" wx:key="key" class="me-bdg" src="{{item.img}}" webp mode="aspectFill" />
-      </view>
-      <view class="btn btn-main me-dress" hover-class="hover" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go">换装和徽章</view>
-    </view>
 
-    <view class="me-quick">
-      <view class="me-q" hover-class="hover" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><text class="num">{{total.wrong}}</text><text class="me-q-l">错词本 ›</text></view>
-      <view class="me-q" hover-class="hover" data-url="/pkg-word/book/book?type=fav" bindtap="go"><text class="num">{{total.fav}}</text><text class="me-q-l">收藏 ›</text></view>
+      <view wx:if="{{goal}}" class="me-goal" hover-class="hover" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go">
+        <view class="me-goal-imgs">
+          <view wx:for="{{goal.imgs}}" wx:key="*this" class="me-goal-box"><image class="me-goal-img" src="{{item}}" webp mode="aspectFit" /></view>
+        </view>
+        <view class="me-goal-m">
+          <view class="me-goal-t">{{goal.title}}</view>
+          <view class="me-goal-x">{{goal.sub}}</view>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+
+      <view class="me-stats">
+        <view class="me-st" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><text class="num">{{stamps}}</text><text class="me-st-l">印章</text></view>
+        <view class="me-st" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><text class="num">{{badgeN}}</text><text class="me-st-l">徽章</text></view>
+        <view class="me-st" hover-class="hover" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><text class="num">{{total.wrong}}</text><text class="me-st-l">错词本 ›</text></view>
+        <view class="me-st" hover-class="hover" data-url="/pkg-word/book/book?type=fav" bindtap="go"><text class="num">{{total.fav}}</text><text class="me-st-l">收藏 ›</text></view>
+      </view>
     </view>
 
     <view wx:if="{{memory}}">
