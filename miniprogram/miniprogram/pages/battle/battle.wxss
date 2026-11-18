@@ -1,27 +1,31 @@
 /* 对战：倒计时 + 一个主按钮；下面是周榜（带头像）和最近的 PK。星光只给「我」那一行 */
-.bt-hero { position: relative; display: flex; align-items: flex-end; min-height: 280rpx; }
-.bt-hero-l { flex: 1; min-width: 0; position: relative; z-index: 1; }
-.bt-cd { white-space: nowrap; margin: var(--s1) 0; }
-.bt-u { font-size: var(--t-body); color: var(--ink2); }
-.bt-bird { flex: none; width: 264rpx; height: 272rpx; margin-right: -16rpx; }
-.bt-acts { display: flex; gap: var(--s2); margin-top: var(--s4); }
-.bt-acts .btn { min-width: 0; padding: 0 var(--s3); }
+.bt-hero { padding: var(--s3); border-radius: var(--r-lg); background: var(--panel); }
+.bt-top { display: flex; align-items: center; gap: var(--s2); }
+.bt-bird { flex: none; width: 150rpx; height: 156rpx; margin: -12rpx 0 -12rpx -8rpx; }
+.bt-hero-l { flex: 1; min-width: 0; }
+.bt-k { font-size: var(--t-caption); color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt-hl { color: var(--star); font-weight: 700; }
+.bt-cd { display: flex; align-items: baseline; gap: 6rpx; margin: 4rpx 0; white-space: nowrap; }
+.bt-num { font-family: var(--f-ms); font-size: 64rpx; font-weight: 700; line-height: 1.1; color: var(--ivory); }
+.bt-u { font-size: 26rpx; color: var(--ink2); margin-right: 10rpx; }
+.bt-acts { display: flex; gap: var(--s2); margin-top: var(--s3); }
+.bt-acts .btn { min-width: 0; padding: 0 var(--s3); height: 84rpx; line-height: 84rpx; font-size: 28rpx; }
 .bt-a1 { flex: 1.2; }
 .bt-a2 { flex: 1; }
-.bt-sel { display: flex; align-items: center; justify-content: space-between; min-height: 88rpx; font-size: var(--t-caption); color: var(--ink2); }
-.bt-sel-x { color: var(--ivory); }
 .bt-more { display: flex; align-items: center; min-height: 88rpx; margin: -28rpx 0; padding-left: var(--s4); }
 .bt-note { padding: var(--s4) 0; }
 
-.bt-podium { display: flex; align-items: flex-end; gap: var(--s2); padding: var(--s4) 0 var(--s3); border-bottom: 2rpx solid var(--hair); }
+.bt-podium { display: flex; align-items: flex-end; gap: var(--s2); padding: var(--s2) 0 var(--s2); border-bottom: 2rpx solid var(--hair); }
 .bt-pd { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
 .bt-pd-k { font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); line-height: 1.2; margin-bottom: var(--s1); }
-.bt-pd-av { width: 96rpx; height: 96rpx; border-radius: 50%; background: var(--ivory); }
-.bt-p1 .bt-pd-av { width: 128rpx; height: 128rpx; }
+.bt-pd-av { width: 80rpx; height: 80rpx; border-radius: 50%; background: var(--ivory); box-sizing: border-box; }
+.bt-pd.mine .bt-pd-av { border: 4rpx solid var(--star); }
+.bt-pd.mine .bt-pd-n { color: var(--star); }
+.bt-p1 .bt-pd-av { width: 104rpx; height: 104rpx; }
 .bt-p1 .bt-pd-k { color: var(--ivory); font-size: var(--t-section); }
 .bt-mark { display: flex; align-items: center; justify-content: center; font-family: var(--f-zh); font-size: 40rpx; font-weight: 700; color: var(--dark-ink); }
 .bt-mark.sm { font-size: 30rpx; }
-.bt-pd-n { margin-top: var(--s2); font-size: 26rpx; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bt-pd-n { margin-top: var(--s1); font-size: 26rpx; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bt-pd-s { font-size: var(--t-caption); color: var(--ink2); }
 
 /* 选站弹层（自定义，深色，和整体一致） */
@@ -40,3 +44,10 @@
 .bt-st-n { font-family: Georgia, serif; font-size: 40rpx; font-weight: 700; color: var(--star); line-height: 1.1; }
 .bt-st-c { font-size: 28rpx; font-weight: 700; color: var(--ivory); margin-top: 4rpx; }
 .bt-st-p { font-size: 20rpx; color: var(--ink2); margin-top: 2rpx; }
+
+/* 一屏看完：小节间距收紧 */
+.bt-page { padding-top: var(--s2); }
+.bt-page .sec { margin: var(--s3) 0 var(--s1); }
+.bt-page .bt-note { padding: var(--s2) 0; }
+.bt-page .rk.me { min-height: 88rpx; padding-top: var(--s1); padding-bottom: var(--s1); margin-top: var(--s2); }
+.bt-page .rk.me .rk-av { width: 64rpx; height: 64rpx; }

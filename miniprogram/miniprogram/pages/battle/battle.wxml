@@ -1,23 +1,23 @@
-<view class="wrap">
+<view class="wrap bt-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在摆擂台…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <!-- 这一屏的主角：本周擂台还剩多久，一个主按钮 -->
+    <!-- 顶部一块：擂台倒计时 + 剩几次 + 两个按钮，犀鸟缩小放左边 -->
     <view class="bt-hero">
-      <view class="bt-hero-l">
-        <view class="muted small">每周擂台 · 第 {{cd.week}} 周 · 距结束</view>
-        <view class="bt-cd"><text class="num-xl">{{cd.d}}</text><text class="bt-u"> 天 </text><text class="num-xl">{{cd.h}}</text><text class="bt-u"> 小时</text></view>
-        <view class="muted small">20 题，取三次里最高的一次</view>
-        <view class="muted small">本周还剩 {{arena ? arena.triesLeft : 3}} 次机会</view>
+      <view class="bt-top">
+        <image class="bt-bird" src="/assets/bird-welcome.png" mode="aspectFit" />
+        <view class="bt-hero-l">
+          <view class="bt-k">每周擂台 · 第 {{cd.week}} 周 · 距结束</view>
+          <view class="bt-cd"><text class="bt-num">{{cd.d}}</text><text class="bt-u">天</text><text class="bt-num">{{cd.h}}</text><text class="bt-u">小时</text></view>
+          <view class="bt-k">20 题取三次最高 · 本周还剩 <text class="bt-hl">{{arena ? arena.triesLeft : 3}}</text> 次</view>
+        </view>
       </view>
-      <image class="bt-bird" src="/assets/bird-welcome.png" mode="aspectFit" />
+      <view class="bt-acts">
+        <button class="btn btn-main bt-a1" hover-class="hover" bindtap="arena">进入擂台</button>
+        <button class="btn btn-ghost bt-a2" hover-class="hover" disabled="{{busy}}" bindtap="openPick">{{busy ? '正在出题…' : '发起好友 PK'}}</button>
+      </view>
     </view>
-    <view class="bt-acts">
-      <button class="btn btn-main bt-a1" hover-class="hover" bindtap="arena">进入擂台</button>
-      <button class="btn btn-ghost bt-a2" hover-class="hover" disabled="{{busy}}" bindtap="openPick">{{busy ? '正在出题…' : '发起好友 PK'}}</button>
-    </view>
-    <view class="bt-sel">好友 PK：选一站，出 10 道题，答完发给同学比</view>
 
     <!-- 周榜 -->
     <view class="sec"><text class="sec-t">周榜</text><view class="sec-x bt-more" hover-class="hover-row" bindtap="rank">完整榜单 ›</view></view>
