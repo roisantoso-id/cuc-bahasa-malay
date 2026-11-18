@@ -31,3 +31,16 @@
 .wc-pos { opacity: .7; }
 .more { margin: 28rpx 0 0; height: 96rpx; line-height: 96rpx; text-align: center; border: 2rpx solid var(--hair2); border-radius: 999rpx; color: var(--ivory); font-weight: 700; }
 .more.hover { opacity: .7; }
+
+/* 2026-11-18 词典式列表（替换原来的三列卡片） */
+.dict { border-top: 2rpx solid var(--hair); }
+.dr { display: flex; align-items: center; gap: 18rpx; min-height: 88rpx; padding: 0 6rpx; border-bottom: 2rpx solid var(--hair); }
+.dr.hover { background: rgba(243,234,214,.05); }
+.dr-img { width: 64rpx; height: 64rpx; border-radius: 12rpx; flex: none; }
+.dr-no { width: 64rpx; flex: none; font-family: Georgia, serif; font-size: 22rpx; color: var(--ink2); }
+.dr-ms { width: 200rpx; flex: none; font-family: Georgia, serif; font-style: italic; font-weight: 700; font-size: 32rpx; color: var(--ivory); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dr-zh { flex: 1; min-width: 0; font-size: 26rpx; color: rgba(243,234,214,.75); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dr-dot { width: 14rpx; height: 14rpx; border-radius: 50%; flex: none; background: rgba(243,234,214,.18); }
+.dr.learn .dr-dot { background: var(--ok); }
+.dr.done .dr-dot { background: var(--star); }
+.dr.none .dr-ms { color: rgba(243,234,214,.55); }
