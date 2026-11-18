@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/battle/battle",
     "pages/me/me",
     "pages/register/register"
   ],
@@ -20,23 +21,36 @@
       "pages": [
         "about/about"
       ]
+    },
+    {
+      "root": "pkg-battle",
+      "pages": [
+        "play/play",
+        "pk/pk",
+        "rank/rank",
+        "arena/arena"
+      ]
     }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#fafaf7",
+    "navigationBarBackgroundColor": "#f7f1e6",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "JomBelajar",
-    "backgroundColor": "#fafaf7"
+    "backgroundColor": "#f4ede0"
   },
   "tabBar": {
-    "color": "#8a9097",
-    "selectedColor": "#2fae66",
-    "backgroundColor": "#ffffff",
+    "color": "#6b7470",
+    "selectedColor": "#1f6b4e",
+    "backgroundColor": "#fffdf8",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/home/home",
         "text": "旅程"
+      },
+      {
+        "pagePath": "pages/battle/battle",
+        "text": "对战"
       },
       {
         "pagePath": "pages/me/me",
@@ -56,6 +70,12 @@
       "network": "all",
       "packages": [
         "pkg-word"
+      ]
+    },
+    "pages/battle/battle": {
+      "network": "all",
+      "packages": [
+        "pkg-battle"
       ]
     }
   }

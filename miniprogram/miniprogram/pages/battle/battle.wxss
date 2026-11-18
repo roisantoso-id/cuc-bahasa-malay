@@ -1,0 +1,16 @@
+.hero .h1 { color: #fff; }
+/* 选站：胶囊换行，不横滑；每个至少 88rpx 高 */
+.lvs { display: flex; flex-wrap: wrap; gap: 18rpx; margin: 28rpx 0 8rpx; }
+.lv { min-height: 88rpx; line-height: 88rpx; padding: 0 28rpx; box-sizing: border-box; color: var(--ink); }
+.lv.on { color: #fff; }
+.go { margin-top: 32rpx; }
+.tiles { display: flex; gap: 18rpx; margin-top: 20rpx; }
+.tiles .tile { flex: 1; min-width: 0; }
+.pts { font-weight: 800; }
+.pts .n { font-size: 56rpx; font-weight: 900; color: var(--green); }
+.rk { flex-shrink: 0; }
+.none { padding: 12rpx 0; }
+.list .item { min-height: 88rpx; }
+.t { font-weight: 900; }
+.score { font-size: 40rpx; font-weight: 900; flex-shrink: 0; }
+.hover-row { opacity: .7; }

@@ -10,6 +10,18 @@ const QUIZ_EVERY = 5
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1])
 const zhOf = w => (w.senses[0] || {}).zh || ''
 const norm = s => String(s || '').toLowerCase().replace(/[^a-z]/g, '')
+// 例句补全：在例句里找到和这个词完全一样的那个词，挖成空。找不到（例句里是变形，比如 menulis）就不出这种题
+const clozeOf = w => {
+  for (const s of w.senses || []) {
+    if (!s.exMs) continue
+    const parts = s.exMs.split(/(\s+)/)
+    const i = parts.findIndex(t => norm(t) === norm(w.ms))
+    if (i < 0) continue
+    const t = parts[i], pre = (t.match(/^[^A-Za-z]+/) || [''])[0], suf = (t.match(/[^A-Za-z]+$/) || [''])[0]   // 标点留在空格外面
+    return { before: parts.slice(0, i).join('') + pre, after: suf + parts.slice(i + 1).join(''), zh: s.exZh || '' }
+  }
+  return null
+}
 const TITLES = { today: '今日车票', review: '复习', new: '新词', wrong: '错词重练', fav: '收藏重练' }
 const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 10).replace('-', '.')
 
@@ -75,14 +87,16 @@ Page({
   // 题型:熟练度低先认(看词选义 / 听音选词),高了要会写(看义选词 / 拼写)
   makeQuiz(w, graded) {
     const box = Math.max(w.box, 0)
-    const types = box >= 3 ? ['spell', 'zh2ms', 'listen'] : box >= 1 ? ['ms2zh', 'listen', 'zh2ms'] : ['ms2zh', 'listen']
-    const type = types[(w.rank + this.data.idx) % types.length]
+    const types = box >= 3 ? ['spell', 'cloze', 'zh2ms', 'listen'] : box >= 1 ? ['ms2zh', 'listen', 'cloze', 'zh2ms'] : ['ms2zh', 'listen']
+    let type = types[(w.rank + this.data.idx) % types.length]
+    const cloze = type === 'cloze' ? clozeOf(w) : null
+    if (type === 'cloze' && !cloze) type = 'zh2ms'   // 例句里找不到原词就换成看义选词
     const others = shuffle(this.pool.filter(x => x.rank !== w.rank && x.zh && norm(x.ms) !== norm(w.ms))).slice(0, 3)
-    const toZh = type === 'ms2zh' || type === 'listen'
+    const toZh = type === 'ms2zh' || type === 'listen'   // cloze 和 zh2ms 一样选马来语词
     const answer = toZh ? zhOf(w) : w.ms
     const options = shuffle([{ rank: w.rank, ms: w.ms, zh: zhOf(w) }, ...others]).map(x => (toZh ? x.zh : x.ms))
     if (type === 'listen') setTimeout(() => audio.play(w.audio), 200)
-    return { type, graded, word: w, answer, options, prompt: type === 'ms2zh' ? w.ms : type === 'listen' ? '' : zhOf(w), hint: type === 'spell' ? w.ms[0] + '…' : '' }
+    return { type, graded, word: w, answer, options, prompt: type === 'ms2zh' ? w.ms : type === 'listen' ? '' : zhOf(w), hint: type === 'spell' ? w.ms[0] + '…' : '', cloze }
   },
   replay() { audio.play(this.data.quiz.word.audio) },
   pick(e) {

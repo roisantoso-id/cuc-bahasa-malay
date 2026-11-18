@@ -53,6 +53,17 @@ module.exports = {
   stats: () => call('/stats'),
   settings: dailyNew => post('/settings', { dailyNew }),
   teachers: () => call('/teachers'),
+  // 对战与排行（admin/battle.mjs）
+  pkCreate: level => post('/pk', { level }),
+  pk: id => call('/pk/' + id),
+  pkSubmit: (id, answers, ms) => post('/pk/' + id + '/submit', { answers, ms }),
+  pkMine: () => call('/pk/mine'),
+  arena: () => call('/arena'),
+  arenaStart: () => post('/arena/start'),
+  arenaSubmit: (answers, ms) => post('/arena/submit', { answers, ms }),
+  arenaRank: scope => call('/arena/rank?' + qs({ scope })),
+  rank: scope => call('/rank?' + qs({ scope })),
+  schools: () => call('/rank/schools'),
   // 后台上传的照片是 /uploads/… 相对地址
   fileUrl: p => (p && p[0] === '/' && !p.startsWith('/pkg-') ? config.vocabApi.replace(/\/$/, '') + p : p || '')
 }

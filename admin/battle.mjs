@@ -5,7 +5,7 @@
 //   - 题目在服务器生成并保存，发给小程序时去掉答案；交卷后服务器判分，不信任客户端的对错。
 //   - 题型：看词选义、看义选词、听音选词，每题 4 个选项，干扰项取同一站的词。
 //   - 好友 PK：发起人先答，再分享给别人；同一题目每人只算第一次；7 天过期。
-//   - 擂台：每周一（北京时间）一套 20 题，取前三站的词；每人每周最多 3 次，算最好成绩。
+//   - 擂台：每周一（北京时间）一套 20 题，取前三站的词；每人每周最多开始 3 次（点开始就算一次，这时才发题），算最好成绩。
 //   - 周榜：本周学习分 = 新学 ×2 + 复习 ×1 + 答对 ×1（来自 daily 表），按个人 / 同校 / 同班排；学校榜按全校总分排。
 import { randomBytes, createHash } from 'node:crypto'
 
@@ -14,6 +14,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     `CREATE TABLE IF NOT EXISTS pk (id VARCHAR(16) PRIMARY KEY, creator INT NOT NULL, level INT NOT NULL, questions MEDIUMTEXT NOT NULL, created_at VARCHAR(32), expires_at BIGINT NOT NULL, INDEX pk_creator (creator)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS pk_entry (pk_id VARCHAR(16) NOT NULL, student_id INT NOT NULL, score INT NOT NULL, correct INT NOT NULL, ms INT NOT NULL, answers TEXT, created_at VARCHAR(32), PRIMARY KEY (pk_id, student_id), INDEX pk_entry_student (student_id)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS arena (week VARCHAR(10) PRIMARY KEY, questions MEDIUMTEXT NOT NULL, created_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
+    `CREATE TABLE IF NOT EXISTS arena_try (week VARCHAR(10) NOT NULL, student_id INT NOT NULL, n INT NOT NULL DEFAULT 0, PRIMARY KEY (week, student_id)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS arena_entry (week VARCHAR(10) NOT NULL, student_id INT NOT NULL, score INT NOT NULL, correct INT NOT NULL, ms INT NOT NULL, tries INT NOT NULL DEFAULT 1, created_at VARCHAR(32), updated_at VARCHAR(32), PRIMARY KEY (week, student_id), INDEX arena_rank (week, score)) DEFAULT CHARSET = utf8mb4`
   ]
   const PK_N = 10, ARENA_N = 20, ARENA_TRIES = 3, PK_DAYS = 7
@@ -111,19 +112,29 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     await run('INSERT IGNORE INTO arena (week, questions, created_at) VALUES (?, ?, ?)', week, JSON.stringify(qs), new Date().toISOString())
     return JSON.parse((await one('SELECT questions FROM arena WHERE week = ?', week)).questions)
   }
+  // 开始一次 = 用掉一次机会，这时才发题（只看题不答也算一次，免得先偷看再来打）
+  const startedOf = async (week, sid) => ((await one('SELECT n FROM arena_try WHERE week = ? AND student_id = ?', week, sid)) || { n: 0 }).n
   async function arenaGet(st) {
     const week = weekStart()
     const qs = await arenaQuestions(week)
     const mine = await one('SELECT score, correct, ms, tries FROM arena_entry WHERE week = ? AND student_id = ?', week, st.id)
     const players = (await one('SELECT COUNT(*) n FROM arena_entry WHERE week = ?', week)).n
-    const tries = mine ? mine.tries : 0
-    return { week, total: qs.length, triesLeft: Math.max(0, ARENA_TRIES - tries), best: mine || null, players, questions: tries < ARENA_TRIES ? publicQ(qs) : null }
+    const started = await startedOf(week, st.id)
+    return { week, total: qs.length, triesLeft: Math.max(0, ARENA_TRIES - started), best: mine || null, players, questions: null }
+  }
+  async function arenaStart(st) {
+    const week = weekStart()
+    const qs = await arenaQuestions(week)
+    if (await startedOf(week, st.id) >= ARENA_TRIES) throw Object.assign(new Error('本周 3 次机会已经用完'), { code: 400 })
+    await run('INSERT INTO arena_try (week, student_id, n) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE n = n + 1', week, st.id)
+    return { week, total: qs.length, triesLeft: ARENA_TRIES - await startedOf(week, st.id), questions: publicQ(qs) }
   }
   async function arenaSubmit(st, b) {
     const week = weekStart()
     const qs = await arenaQuestions(week)
     const mine = await one('SELECT * FROM arena_entry WHERE week = ? AND student_id = ?', week, st.id)
-    if (mine && mine.tries >= ARENA_TRIES) throw Object.assign(new Error('本周 3 次机会已经用完'), { code: 400 })
+    const started = await startedOf(week, st.id)
+    if (started <= (mine ? mine.tries : 0)) throw Object.assign(new Error('请先点「开始」再交卷'), { code: 400 })
     const r = judge(qs, b.answers, b.ms), now = new Date().toISOString()
     if (!mine) await run('INSERT INTO arena_entry (week, student_id, score, correct, ms, tries, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?)', week, st.id, r.score, r.correct, r.ms, now, now)
     else if (r.score > mine.score || (r.score === mine.score && r.ms < mine.ms)) await run('UPDATE arena_entry SET score = ?, correct = ?, ms = ?, tries = tries + 1, updated_at = ? WHERE week = ? AND student_id = ?', r.score, r.correct, r.ms, now, week, st.id)
@@ -131,9 +142,9 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     const best = await one('SELECT score, correct, ms, tries FROM arena_entry WHERE week = ? AND student_id = ?', week, st.id)
     const place = (await one('SELECT COUNT(*) n FROM arena_entry WHERE week = ? AND (score > ? OR (score = ? AND ms < ?))', week, best.score, best.score, best.ms)).n + 1
     // 还有机会时只告诉对错，不给正确答案（同一套题，不然下一次就能满分）；三次用完才公布答案
-    const done = best.tries >= ARENA_TRIES
+    const done = started >= ARENA_TRIES
     const review = qs.map((q, i) => (done ? { ...q, picked: r.answers[i], right: r.right[i] } : { ...publicQ([q])[0], picked: r.answers[i], right: r.right[i] }))
-    return { last: { score: r.score, correct: r.correct, ms: r.ms }, best, place, triesLeft: Math.max(0, ARENA_TRIES - best.tries), review }
+    return { last: { score: r.score, correct: r.correct, ms: r.ms }, best, place, triesLeft: Math.max(0, ARENA_TRIES - started), review }
   }
   async function arenaRank(st, scope) {
     const week = weekStart()
@@ -175,6 +186,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels }) {
     if (m && !m[2] && req.method === 'GET') return pkGet(st, m[1])
     if (m && m[2] && req.method === 'POST') return pkSubmit(st, m[1], await body(req))
     if (p === '/api/app/arena' && req.method === 'GET') return arenaGet(st)
+    if (p === '/api/app/arena/start' && req.method === 'POST') return arenaStart(st)
     if (p === '/api/app/arena/submit' && req.method === 'POST') return arenaSubmit(st, await body(req))
     if (p === '/api/app/arena/rank') return arenaRank(st, url.searchParams.get('scope'))
     if (p === '/api/app/rank') return rank(st, url.searchParams.get('scope'))

@@ -1,0 +1,3 @@
+@import '../common.wxss';
+.t { margin: 32rpx 0 6rpx; }
+.rule { margin-bottom: 24rpx; }

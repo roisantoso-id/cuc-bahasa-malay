@@ -1,0 +1,77 @@
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在出题…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}">
+    <view class="btns full">
+      <button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="back">返回</button>
+    </view>
+  </hb-empty>
+  <hb-empty wx:elif="{{view === 'submitting'}}" image="loading" title="正在交卷…" desc="用时 {{time}} 秒" />
+  <hb-empty wx:elif="{{view === 'submitError'}}" image="fail" title="{{error || '交卷失败'}}" desc="答案还在，可以再交一次。">
+    <view class="btns full">
+      <button class="btn btn-main" hover-class="hover" bindtap="submit">再交一次</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="back">返回</button>
+    </view>
+  </hb-empty>
+
+  <!-- 答题 -->
+  <block wx:elif="{{view === 'play'}}">
+    <view class="top">
+      <view class="bar"><view class="bar-in" style="width:{{(i + 1) / total * 100}}%" /></view>
+      <view class="between top-r">
+        <text class="no">{{i + 1}} / {{total}}</text>
+        <text class="clock no">{{time}} 秒</text>
+      </view>
+    </view>
+
+    <view class="card qcard">
+      <view class="tag {{q.type === 'audio2ms' ? 'blue' : ''}}">{{q.kind}}</view>
+      <view wx:if="{{q.type === 'audio2ms'}}" class="listen">
+        <view class="play" hover-class="hover" bindtap="replay"><view class="cone" /><view class="wave" /></view>
+        <view class="muted small">没听清就再点一下</view>
+      </view>
+      <view wx:else class="prompt {{q.type === 'ms2zh' ? 'ms' : ''}}">{{q.prompt}}</view>
+    </view>
+
+    <view class="opts">
+      <view wx:for="{{q.options}}" wx:key="index" class="opt {{picked === index ? 'on' : ''}} {{q.type === 'ms2zh' ? '' : 'ms'}}" hover-class="{{picked === -1 ? 'hover' : 'none'}}" data-k="{{index}}" bindtap="pick">{{item}}</view>
+    </view>
+    <view class="muted small center">选了就不能改，对错交卷后再看</view>
+  </block>
+
+  <!-- 擂台成绩 -->
+  <block wx:elif="{{view === 'result'}}">
+    <view class="card res center">
+      <image class="bird" src="/assets/{{result.last.correct === result.total ? 'cheer' : 'pass'}}.jpg" mode="aspectFill" />
+      <view class="big">{{result.last.score}}<text class="unit"> 分</text></view>
+      <view class="muted">答对 {{result.last.correct}}/{{result.total}} · 用时 {{result.lastTime}}</view>
+      <view class="tiles">
+        <view class="tile"><view class="n">{{result.best.score}}</view><view class="muted small">本周最好</view></view>
+        <view class="tile"><view class="n">{{result.place}}</view><view class="muted small">全站名次</view></view>
+        <view class="tile"><view class="n">{{result.triesLeft}}</view><view class="muted small">剩余次数</view></view>
+      </view>
+    </view>
+    <view class="btns">
+      <button wx:if="{{result.triesLeft > 0}}" class="btn btn-amber" hover-class="hover" bindtap="again">再打一次</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="toArena">看擂台排名</button>
+    </view>
+
+    <view class="h2">这次的答题</view>
+    <view wx:if="{{result.triesLeft > 0}}" class="muted small note">3 次机会用完后公布正确答案。</view>
+    <view class="card list">
+      <view wx:for="{{list}}" wx:key="no" class="item">
+        <view class="qno no">{{item.no}}</view>
+        <view class="item-main">
+          <view class="row wrap-row">
+            <text wx:if="{{item.type === 'audio2ms'}}" class="muted small">听音</text>
+            <text wx:else class="{{item.type === 'ms2zh' ? 'ms' : 'pz'}}">{{item.prompt}}</text>
+          </view>
+          <view class="small">我选：<text class="{{item.type === 'ms2zh' ? '' : 'ms'}}">{{item.pickedText || '没答'}}</text></view>
+          <view wx:if="{{!item.ok && item.answerText}}" class="small ok">答案：<text class="{{item.type === 'ms2zh' ? '' : 'ms'}}">{{item.answerText}}</text></view>
+        </view>
+        <say-btn wx:if="{{item.audio}}" src="{{item.audio}}" size="md" />
+        <text class="tag {{item.ok ? '' : 'coral'}}">{{item.ok ? '对' : '错'}}</text>
+      </view>
+    </view>
+  </block>
+</view>

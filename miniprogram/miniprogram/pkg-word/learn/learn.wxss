@@ -2,30 +2,30 @@
 .top { margin-bottom: 24rpx; }
 .top-r { display: flex; justify-content: space-between; align-items: center; margin-top: 12rpx; }
 
-.wcard { flex: 1; min-height: 0; display: flex; flex-direction: column; background: #fff; border: 4rpx solid var(--ink); border-radius: 40rpx; box-shadow: 0 10rpx 0 var(--ink); overflow: hidden; }
+.wcard { flex: 1; min-height: 0; display: flex; flex-direction: column; background: linear-gradient(180deg, var(--card), var(--card2)); border-radius: 44rpx; box-shadow: inset 0 4rpx 0 #fff, 0 14rpx 0 var(--edge), 0 34rpx 50rpx -20rpx rgba(90,70,30,.45); overflow: hidden; }
 .wc-head { padding: 20rpx 28rpx 0; }
 .fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 999rpx; background: var(--bg); }
-.fav.on { color: #b88600; background: #fff3c4; }
+.fav.on { color: var(--amber-d); background: var(--amber-l); }
 .wc-main { display: flex; flex-direction: column; align-items: center; padding: 40rpx 32rpx 24rpx; text-align: center; }
-.w { font-size: 92rpx; font-weight: 900; line-height: 1.15; word-break: break-word; }
+.w { font-size: 92rpx; font-weight: 900; line-height: 1.15; word-break: break-word; font-family: Georgia, serif; color: var(--teal); text-shadow: 0 4rpx 0 rgba(18,63,69,.12); }
 .root { margin-top: 10rpx; font-size: 24rpx; color: var(--ink2); }
 .say-row { margin-top: 28rpx; }
 .hint { margin-top: 80rpx; color: var(--ink2); font-size: 26rpx; }
 .senses { flex: 1; min-height: 0; padding: 0 32rpx 24rpx; box-sizing: border-box; }
 .pos { font-size: 22rpx; font-weight: 800; color: var(--ink2); background: var(--bg); padding: 2rpx 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
-.zh { font-size: 34rpx; font-weight: 900; color: var(--green-d); }
+.zh { font-size: 34rpx; font-weight: 900; color: var(--green); }
 
 .actions { margin-top: 32rpx; }
 .grades { display: flex; gap: 20rpx; }
-.g { flex: 1; text-align: center; padding: 30rpx 0; border-radius: 28rpx; color: #fff; font-size: 32rpx; font-weight: 900; }
+.g { flex: 1; text-align: center; padding: 30rpx 0; border-radius: 30rpx; color: #fff; font-size: 32rpx; font-weight: 900; transition: transform .08s, box-shadow .08s; }
 .g.hover { transform: translateY(6rpx); box-shadow: none !important; }
-.g-forgot { background: var(--coral); box-shadow: 0 8rpx 0 #d94a3a; }
-.g-vague { background: #f5a524; box-shadow: 0 8rpx 0 #c98410; }
-.g-know { background: var(--green); box-shadow: 0 8rpx 0 var(--green-d); }
+.g-forgot { background: linear-gradient(180deg, #ea7a69, var(--coral)); box-shadow: inset 0 4rpx 0 rgba(255,255,255,.25), 0 10rpx 0 var(--coral-d), 0 20rpx 26rpx -10rpx rgba(168,64,47,.5); }
+.g-vague { color: #4a2a08; background: linear-gradient(180deg, var(--amber-hi), var(--amber)); box-shadow: inset 0 4rpx 0 rgba(255,255,255,.4), 0 10rpx 0 var(--amber-d), 0 20rpx 26rpx -10rpx rgba(176,106,34,.5); }
+.g-know { background: linear-gradient(180deg, var(--green-hi), var(--green)); box-shadow: inset 0 4rpx 0 rgba(255,255,255,.28), 0 10rpx 0 var(--green-d), 0 20rpx 26rpx -10rpx rgba(19,69,49,.5); }
 .master { text-align: center; margin-top: 24rpx; font-size: 24rpx; color: var(--ink2); }
 
 .quiz { flex: 1; display: flex; flex-direction: column; }
-.q-k { font-size: 28rpx; font-weight: 900; color: var(--green-d); }
+.q-k { font-size: 28rpx; font-weight: 900; color: var(--green); }
 .q-p { text-align: center; margin: 70rpx 0 56rpx; font-weight: 900; }
 .q-p.ms { font-size: 72rpx; }
 .q-p.zhp { font-size: 44rpx; }
@@ -46,6 +46,11 @@
 .hit { animation: hit .5s cubic-bezier(.2, 1.6, .4, 1) both; }
 @keyframes hit { 0% { transform: scale(2.2) rotate(-30deg); opacity: 0; } 100% { transform: scale(1) rotate(-12deg); opacity: 1; } }
 .sum { display: flex; gap: 16rpx; margin: 36rpx 0 20rpx; }
-.sum > view { flex: 1; text-align: center; background: #fff; border: 4rpx solid var(--line); border-radius: 24rpx; padding: 18rpx 0; font-size: 24rpx; color: var(--ink2); }
+.sum > view { flex: 1; text-align: center; background: linear-gradient(180deg, #fff, var(--card2)); border-radius: 26rpx; box-shadow: inset 0 3rpx 0 #fff, 0 8rpx 0 var(--edge), 0 16rpx 22rpx -12rpx rgba(90,70,30,.3); padding: 18rpx 0; font-size: 24rpx; color: var(--ink2); }
 .n { font-size: 44rpx; font-weight: 900; color: var(--ink); }
 .c-know { color: var(--green); } .c-vague { color: #f5a524; } .c-forgot { color: var(--coral); }
+
+/* 例句补全 */
+.q-cloze { margin: 24rpx 0 36rpx; padding: 28rpx; border-radius: 28rpx; background: var(--card); box-shadow: inset 0 3rpx 0 #fff, 0 8rpx 0 var(--edge); }
+.cl-ms { font-family: Georgia, serif; font-size: 36rpx; line-height: 1.6; margin-bottom: 10rpx; }
+.cl-gap { display: inline-block; min-width: 140rpx; padding: 0 12rpx; border-bottom: 4rpx solid var(--amber); color: var(--green); font-weight: 900; text-align: center; }

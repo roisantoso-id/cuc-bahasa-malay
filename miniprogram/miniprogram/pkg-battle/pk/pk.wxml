@@ -1,0 +1,75 @@
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在打开 PK…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}">
+    <view class="btns full">
+      <button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="home">去对战首页</button>
+    </view>
+  </hb-empty>
+  <hb-empty wx:elif="{{view === 'expired'}}" image="empty" title="这场 PK 已经过期了" desc="PK 发起后 7 天内有效。">
+    <view class="btns full"><button class="btn btn-amber" hover-class="hover" bindtap="home">自己发起一场</button></view>
+  </hb-empty>
+
+  <!-- 没答过：接受挑战 -->
+  <block wx:elif="{{view === 'invite'}}">
+    <view class="card card-dark center invite">
+      <image class="bird" src="/assets/welcome.jpg" mode="aspectFill" />
+      <view class="muted small">{{pk.isCreator ? '你发起的 PK' : '邀请你来 PK'}}</view>
+      <view class="h1 who">{{pk.creator ? pk.creator.name : '同学'}}</view>
+      <view wx:if="{{pk.creator && (pk.creator.school || pk.creator.className)}}" class="muted small">{{pk.creator.school}} {{pk.creator.className}}</view>
+      <view class="facts">
+        <text class="tag amber">第{{pk.level}}站</text>
+        <text class="tag amber">10 题</text>
+        <text class="tag amber">{{ranking.length}} 人已参加</text>
+      </view>
+      <view class="muted small">答对越多、用时越短，分越高。每人只算第一次。</view>
+      <button class="btn btn-amber go" hover-class="hover" bindtap="play">{{pk.isCreator ? '开始答题' : '接受挑战'}}</button>
+    </view>
+    <view wx:if="{{pk.isCreator}}" class="muted small center tip">先自己答一遍，再发给同学。</view>
+  </block>
+
+  <!-- 答过：结果 -->
+  <block wx:else>
+    <view class="card center res">
+      <image class="bird sm" src="/assets/{{my && my.place === 1 ? 'cheer' : 'pass'}}.jpg" mode="aspectFill" />
+      <view class="muted small">第{{pk.level}}站 · {{ranking.length}} 人参加</view>
+      <view class="big">{{my ? my.score : 0}}<text class="unit"> 分</text></view>
+      <view class="muted">第 {{my ? my.place : '-'}} 名 · 答对 {{my ? my.correct : 0}}/10 · {{my ? my.time : ''}}</view>
+      <view wx:if="{{pk.expired}}" class="muted small">这场 PK 已结束</view>
+    </view>
+    <view class="btns">
+      <button wx:if="{{!pk.expired}}" class="btn btn-amber" open-type="share" hover-class="hover">邀请同学来挑战</button>
+      <button class="btn btn-ghost" hover-class="hover" bindtap="home">再发起一场</button>
+    </view>
+
+    <view class="h2">排名</view>
+    <view class="card list">
+      <view wx:for="{{ranking}}" wx:key="place" class="item {{item.me ? 'me' : ''}}">
+        <view class="medal {{item.place > 3 ? 'mn' : 'm' + item.place}}">{{item.place}}</view>
+        <view class="item-main">
+          <view class="nm">{{item.name}}<text wx:if="{{item.me}}" class="tag" style="margin-left:10rpx">我</text></view>
+          <view class="muted small one">{{item.school || '—'}} {{item.className}}</view>
+        </view>
+        <view class="right">
+          <view class="sc">{{item.score}}</view>
+          <view class="muted small">{{item.correct}}/10 · {{item.time}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="h2">我的答题</view>
+    <view class="card list">
+      <view wx:for="{{list}}" wx:key="no" class="item">
+        <view class="qno no">{{item.no}}</view>
+        <view class="item-main">
+          <view wx:if="{{item.type === 'audio2ms'}}" class="muted small">听音选词</view>
+          <view wx:else class="{{item.type === 'ms2zh' ? 'ms' : 'pz'}}">{{item.prompt}}</view>
+          <view class="small">我选：<text class="{{item.type === 'ms2zh' ? '' : 'ms'}}">{{item.pickedText || '没答'}}</text></view>
+          <view wx:if="{{!item.ok && item.answerText}}" class="small ok">答案：<text class="{{item.type === 'ms2zh' ? '' : 'ms'}}">{{item.answerText}}</text></view>
+        </view>
+        <say-btn wx:if="{{item.audio}}" src="{{item.audio}}" size="md" />
+        <text class="tag {{item.ok ? '' : 'coral'}}">{{item.ok ? '对' : '错'}}</text>
+      </view>
+    </view>
+  </block>
+</view>

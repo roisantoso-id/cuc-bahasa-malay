@@ -35,8 +35,9 @@
 
     <!-- 题 -->
     <view wx:else class="quiz">
-      <view class="q-k">{{quiz.type === 'ms2zh' ? '选出中文意思' : quiz.type === 'listen' ? '听发音，选意思' : quiz.type === 'zh2ms' ? '选出马来语' : '拼出这个马来语词'}}</view>
+      <view class="q-k">{{quiz.type === 'ms2zh' ? '选出中文意思' : quiz.type === 'listen' ? '听发音，选意思' : quiz.type === 'zh2ms' ? '选出马来语' : quiz.type === 'cloze' ? '选词填空' : '拼出这个马来语词'}}</view>
       <view wx:if="{{quiz.type === 'listen'}}" class="q-listen"><say-btn src="{{quiz.word.audio}}" size="lg" /><view class="muted small">没听清就再点一下</view></view>
+      <view wx:elif="{{quiz.type === 'cloze'}}" class="q-cloze"><view class="cl-ms">{{quiz.cloze.before}}<text class="cl-gap">{{picked ? quiz.answer : '＿＿＿'}}</text>{{quiz.cloze.after}}</view><view class="muted small">{{quiz.cloze.zh}}</view></view>
       <view wx:else class="q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}">{{quiz.prompt}}</view>
 
       <block wx:if="{{quiz.type === 'spell'}}">
@@ -45,7 +46,7 @@
         <view class="btns"><button class="btn btn-main" hover-class="hover" bindtap="checkSpell" disabled="{{!!picked}}">确定</button></view>
       </block>
       <view wx:else class="opts">
-        <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type === 'zh2ms' ? 'ms' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
+        <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type === 'zh2ms' || quiz.type === 'cloze' ? 'ms' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
       </view>
       <view wx:if="{{quiz.graded && !picked}}" class="idk" bindtap="dontKnow">想不起来</view>
     </view>

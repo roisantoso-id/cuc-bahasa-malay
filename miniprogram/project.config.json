@@ -33,7 +33,40 @@
   "condition": {},
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "value": "miniprogram/pages/login",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pages/papers",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pages/read",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-paper",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-read",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-me/security",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-me/profile",
+        "type": "folder"
+      },
+      {
+        "value": "miniprogram/pkg-me/settings",
+        "type": "folder"
+      }
+    ],
     "include": []
   },
   "editorSetting": {}
