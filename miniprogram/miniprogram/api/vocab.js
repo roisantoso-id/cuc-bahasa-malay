@@ -53,6 +53,7 @@ module.exports = {
   search: q => call('/search?' + qs({ q })),
   book: (type, page = 0) => call('/book?' + qs({ type, page })),
   stats: () => call('/stats'),
+  memory: () => call('/memory'),
   settings: dailyNew => post('/settings', { dailyNew }),
   teachers: () => call('/teachers'),
   // 对战与排行（admin/battle.mjs）

@@ -410,6 +410,18 @@ async function appApi(req, res, p, url) {
   }
   if (p === '/api/app/book') return send(res, 200, await book(st, url.searchParams.get('type'), Number(url.searchParams.get('page')) || 0))
   if (p === '/api/app/stats') return send(res, 200, await stats(st))
+  // 记得多牢 + 未来 7 天复习量（护照页）：牢固 = 已掌握或盒子 ≥ 4；熟悉 = 盒子 1–3；快忘了 = 盒子 0 或已到期；没见过 = 已上架但没学过
+  if (p === '/api/app/memory') {
+    const today = day()
+    const b = await one(`SELECT SUM(CASE WHEN seen > 0 AND box >= 4 THEN 1 ELSE 0 END) strong, SUM(CASE WHEN seen > 0 AND box BETWEEN 1 AND 3 AND due > ? THEN 1 ELSE 0 END) ok,
+      SUM(CASE WHEN seen > 0 AND box < 4 AND (box = 0 OR due <= ?) THEN 1 ELSE 0 END) weak, SUM(CASE WHEN seen > 0 THEN 1 ELSE 0 END) seen FROM progress WHERE student_id = ?`, today, today, st.id)
+    const words = (await one(`SELECT COUNT(*) n FROM words WHERE status = 'approved'`)).n
+    const rows = await all(`SELECT due, COUNT(*) n FROM progress WHERE student_id = ? AND seen > 0 AND box < 6 AND due <= ? GROUP BY due`, st.id, day(6))
+    const by = Object.fromEntries(rows.map(r => [r.due, r.n]))
+    const overdue = rows.filter(r => r.due < today).reduce((n, r) => n + r.n, 0)
+    const next7 = Array.from({ length: 7 }, (_, i) => ({ day: day(i), n: (by[day(i)] || 0) + (i === 0 ? overdue : 0) }))
+    return send(res, 200, { strong: b.strong || 0, ok: b.ok || 0, weak: b.weak || 0, unseen: Math.max(0, words - (b.seen || 0)), words, next7 })
+  }
   if (p === '/api/app/settings' && req.method === 'POST') {
     const b = await body(req)
     const n = [10, 20, 30, 50].includes(Number(b.dailyNew)) ? Number(b.dailyNew) : 20
