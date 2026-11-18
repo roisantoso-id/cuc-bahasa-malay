@@ -12,5 +12,6 @@ trap 'rm -rf "$TMP"' EXIT
 git archive HEAD website | tar -x -C "$TMP"
 (cd "$TMP/website" && node scripts/build.mjs)
 ssh "$HOST" "mkdir -p $DIR"
-rsync -az --delete "$TMP/website/dist/" "$HOST:$DIR/"
+# /words/ 是背单词网页(word-atlas-malayu 仓库用 scripts/deploy.sh 单独部署),官网部署不能删它
+rsync -az --delete --exclude /words/ "$TMP/website/dist/" "$HOST:$DIR/"
 echo "已部署 → https://www.bahasa.cn/"
