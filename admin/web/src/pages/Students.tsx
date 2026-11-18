@@ -78,7 +78,7 @@ export function Students() {
                   </div></div></td>
                   <td className="nw hidden md:table-cell"><Pill tone={r.track === 'some' ? 'blue' : 'off'}>{TRACK[r.track] || '零基础'}</Pill></td>
                   <td className="nw"><div className="num text-[13px]"><b>{n(r.learned)}</b> <span className="text-text-3">· 掌握 {n(r.mastered)}</span></div>
-                    <div className="mt-1 h-1 w-28 overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-ok" style={{ width: `${r.learned ? r.mastered / r.learned * 100 : 0}%` }} /></div></td>
+                    <div className="mt-1 h-1 w-28 jb-progress overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-ok" style={{ width: `${r.learned ? r.mastered / r.learned * 100 : 0}%` }} /></div></td>
                   <td className="r num hidden sm:table-cell">{r.days ? `${r.days} 天` : <span className="text-text-4">—</span>}</td>
                   <td className="r nw text-text-2" title={full(r.lastActiveAt)}>{ago(r.lastActiveAt)}</td>
                   <td className="text-text-4"><ChevronRight className="size-4" /></td>
@@ -141,7 +141,7 @@ function StudentPanel({ id, onClose, onSaved }: { id: number; onClose: () => voi
             <TabsContent value="study">
               <Section title="最近 30 天" extra={<span className="text-xs text-text-4">学习 {s.total.studyDays} 天 · 收藏 {s.total.fav} 个</span>}>
                 <div className="flex h-20 items-end gap-[3px] rounded-lg border bg-[#FCFCFD] px-2 pb-1 pt-2">
-                  {s.days.map(d => <div key={d.day} title={`${d.day}:新学 ${d.new},复习 ${d.review}`} className="min-w-0 flex-1 rounded-t-[3px]" style={{ height: `${Math.max((d.new + d.review) / maxDay * 100, d.new + d.review ? 4 : 0)}%`, background: d.new + d.review ? '#2563EB' : 'transparent' }} />)}
+                  {s.days.map((d, i) => <div key={d.day} title={`${d.day}:新学 ${d.new},复习 ${d.review}`} className="jb-bar min-w-0 flex-1 rounded-t-[3px]" style={{ animationDelay: `${i * 12}ms`, height: `${Math.max((d.new + d.review) / maxDay * 100, d.new + d.review ? 4 : 0)}%`, background: d.new + d.review ? '#2563EB' : 'transparent' }} />)}
                 </div>
                 <div className="mt-1 flex justify-between text-[11px] text-text-4"><span>{s.days[0]?.day.slice(5)}</span><span>今天</span></div>
               </Section>
@@ -149,7 +149,7 @@ function StudentPanel({ id, onClose, onSaved }: { id: number; onClose: () => voi
                 <table className="jb-table rounded-lg border"><tbody>
                   {s.levels.map(l => (
                     <tr key={l.level}><td className="nw"><span className="num mr-2 text-text-4">{l.level}</span>{l.city}{!l.published && <span className="ml-1.5"><Pill>未开放</Pill></span>}</td>
-                      <td className="w-[45%]"><div className="h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-blue" style={{ width: `${l.total ? l.learned / l.total * 100 : 0}%` }} /></div></td>
+                      <td className="w-[45%]"><div className="h-1.5 jb-progress overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-blue" style={{ width: `${l.total ? l.learned / l.total * 100 : 0}%` }} /></div></td>
                       <td className="r num nw text-xs text-text-3">{l.learned ? <>{n(l.learned)} / {n(l.total)}{l.stamped && <span className="ml-1 text-ok">已盖章</span>}</> : '—'}</td></tr>
                   ))}
                 </tbody></table>

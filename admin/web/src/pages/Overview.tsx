@@ -34,9 +34,9 @@ function Trend({ days, mode }: { days: Day[]; mode: 'words' | 'people' }) {
           const th = Math.round((total / max) * (H - 4))
           const lh = mode === 'words' && total ? Math.round(th * d.learned / total) : th
           return (
-            <div key={d.day} className="flex h-full min-w-0 flex-1 cursor-default flex-col justify-end" onMouseEnter={() => setHover(i)} title={`${d.day}:${mode === 'words' ? `新学 ${d.learned},复习 ${d.reviewed}` : `在学 ${d.active} 人`}`}>
-              <div className={`rounded-t-[4px] ${hover === i ? 'opacity-100' : 'opacity-90'}`} style={{ height: Math.max(th - lh, 0), background: '#BFD3FE' }} />
-              <div className={`${th - lh > 0 ? '' : 'rounded-t-[4px]'}`} style={{ height: Math.max(lh, total ? 2 : 0), background: hover === i ? '#1D4ED8' : '#2563EB' }} />
+            <div key={`${mode}-${d.day}`} className="jb-bar flex h-full min-w-0 flex-1 cursor-default flex-col justify-end" style={{ animationDelay: `${i * 25}ms` }} onMouseEnter={() => setHover(i)} title={`${d.day}:${mode === 'words' ? `新学 ${d.learned},复习 ${d.reviewed}` : `在学 ${d.active} 人`}`}>
+              <div className="rounded-t-[4px] transition-[height] duration-500" style={{ height: Math.max(th - lh, 0), background: hover === i ? '#A9C4FD' : '#BFD3FE' }} />
+              <div className={`transition-[height,background-color] duration-500 ${th - lh > 0 ? '' : 'rounded-t-[4px]'}`} style={{ height: Math.max(lh, total ? 2 : 0), background: hover === i ? '#1D4ED8' : '#2563EB' }} />
             </div>
           )
         })}
@@ -67,7 +67,7 @@ export function Overview() {
         { label: '今天学了多少词', value: n(data.learnedToday + data.reviewedToday), sub: `新学 ${n(data.learnedToday)} · 复习 ${n(data.reviewedToday)}` },
         { label: '待复核释义', value: can('words.view') && data.check ? <Link to="/words?status=check" className="inline-flex min-h-9 min-w-9 items-center hover:underline">{n(data.check)}</Link> : n(data.check), tone: data.check ? 'bad' : undefined, sub: data.check ? 'AI 生成的释义,老师审过才给学生看' : '都审过了' }
       ]} />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="jb-stagger grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Panel>
           <PanelHead title="最近 14 天" extra={<Segmented label="看什么" value={mode} onChange={setMode} options={[{ value: 'words', label: '学了多少词' }, { value: 'people', label: '在学人数' }]} />} />
           <Trend days={data.trend} mode={mode} />
@@ -86,7 +86,7 @@ export function Overview() {
           )}
         </Panel>
       </div>
-      <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="jb-stagger mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Panel>
           <PanelHead title="课程上架进度" sub="每站 500 词;上架的词学生才能学" extra={can('courses.view') && <Link to="/courses" className="jb-head-link text-xs text-blue hover:underline">管理课程</Link>} />
           <table className="jb-table">
@@ -97,7 +97,7 @@ export function Overview() {
                 return (
                   <tr key={c.level} {...(can('words.view') ? rowClick(() => nav(`/words?level=${c.level}`)) : {})}>
                     <td><div className="flex items-center gap-2"><span className="num inline-flex size-6 items-center justify-center rounded-md bg-secondary text-xs font-semibold text-text-2">{c.level}</span><div className="min-w-0"><div className="truncate font-medium">{c.city}{!c.published && <span className="ml-1.5"><Pill>未开放</Pill></span>}</div><div className="truncate text-xs text-text-4">{c.ms}</div></div></div></td>
-                    <td className="hidden w-[38%] sm:table-cell"><div className="h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full" style={{ width: `${pct * 100}%`, background: pct >= 1 ? 'var(--ok)' : pct >= .5 ? 'var(--blue)' : '#D97706' }} /></div></td>
+                    <td className="hidden w-[38%] sm:table-cell"><div className="h-1.5 jb-progress overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full" style={{ width: `${pct * 100}%`, background: pct >= 1 ? 'var(--ok)' : pct >= .5 ? 'var(--blue)' : '#D97706' }} /></div></td>
                     <td className="r num nw font-medium">{n(a)}</td>
                     <td className={`r num nw ${p ? 'text-warn' : 'text-text-4'}`}>{p ? n(p) : '—'}</td>
                   </tr>

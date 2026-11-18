@@ -36,9 +36,9 @@ function Nav({ onPick }: { onPick?: () => void }) {
             <div className="flex flex-col gap-0.5">
               {items.map(i => (
                 <NavLink key={i.to} to={i.to} end={i.to === '/'} onClick={onPick}
-                  className={({ isActive }) => cn('flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-[13px] text-text-2 hover:bg-secondary hover:text-foreground',
+                  className={({ isActive }) => cn('relative flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-[13px] text-text-2 transition-colors hover:bg-secondary hover:text-foreground',
                     isActive && 'bg-blue-bg font-medium text-blue hover:bg-blue-bg hover:text-blue')}>
-                  <i.icon className="size-4 shrink-0" strokeWidth={1.8} />{i.label}
+                  {({ isActive }) => <>{isActive && <span className="jb-nav-ind" />}<i.icon className="size-4 shrink-0" strokeWidth={1.8} />{i.label}</>}
                 </NavLink>
               ))}
             </div>
@@ -112,7 +112,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </Sheet>
       <main className="lg:pl-[232px]">
         {me?.demo && <div className="bg-warn-bg px-4 py-1.5 text-center text-xs text-warn">演示模式(DEMO=1):不要这样上线</div>}
-        <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        <div key={loc.pathname} className="jb-page mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
     </div>
   )

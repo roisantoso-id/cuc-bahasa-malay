@@ -1,5 +1,5 @@
 // 后台共用小件(照全局 admin-ui):页头、数字卡、面板、工具条、分段、胶囊、状态点、头像、分页、右侧面板、确认框、空状态
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
@@ -19,14 +19,37 @@ export function PageHeader({ crumb, title, desc, actions }: { crumb?: string; ti
   )
 }
 
+// 数字从 0 滚到目标值(只滚一次,600ms;减少动态效果时直接显示)。字符串开头的数字也能滚,后面的单位保留
+export function CountUp({ value }: { value: ReactNode }) {
+  const m = typeof value === 'string' ? /^([\d,]+)(.*)$/.exec(value) : typeof value === 'number' ? [String(value), String(value), ''] : null
+  const target = m ? Number(m[1].replace(/,/g, '')) : 0
+  const [shown, setShown] = useState(m ? 0 : target)
+  const from = useRef(0)
+  useEffect(() => {
+    if (!m) return
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || target < 10) { setShown(target); from.current = target; return }
+    const start = performance.now(), a = from.current
+    let raf = 0
+    const tick = (t: number) => {
+      const k = Math.min((t - start) / 600, 1), e = 1 - Math.pow(1 - k, 3)
+      setShown(Math.round(a + (target - a) * e))
+      if (k < 1) raf = requestAnimationFrame(tick); else from.current = target
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target]) // eslint-disable-line react-hooks/exhaustive-deps
+  if (!m) return <>{value}</>
+  return <>{shown.toLocaleString('zh-CN')}{m[2]}</>
+}
+
 export type Kpi = { label: string; value: ReactNode; sub?: ReactNode; tone?: 'bad' | 'warn' | 'ok'; title?: string }
 export function Kpis({ items }: { items: Kpi[] }) {
   return (
-    <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="jb-stagger mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
       {items.map(k => (
-        <div key={k.label} className="jb-card px-4 py-3.5" title={k.title}>
+        <div key={k.label} className="jb-card jb-card-hover px-4 py-3.5" title={k.title}>
           <div className="text-xs text-text-3">{k.label}</div>
-          <div className={cn('num mt-1 text-[22px] font-semibold leading-tight', k.tone === 'bad' && 'text-bad', k.tone === 'warn' && 'text-warn', k.tone === 'ok' && 'text-ok')}>{k.value}</div>
+          <div className={cn('num mt-1 text-[22px] font-semibold leading-tight', k.tone === 'bad' && 'text-bad', k.tone === 'warn' && 'text-warn', k.tone === 'ok' && 'text-ok')}><CountUp value={k.value} /></div>
           {k.sub && <div className="mt-0.5 truncate text-xs text-text-4" title={typeof k.sub === 'string' ? k.sub : undefined}>{k.sub}</div>}
         </div>
       ))}
@@ -148,8 +171,19 @@ export function Pager({ page, size, total, onPage }: { page: number; size: numbe
 export function Empty({ children = '没有数据' }: { children?: ReactNode }) {
   return <div className="px-4 py-12 text-center text-[13px] text-text-4">{children}</div>
 }
-export function Loading() {
-  return <div className="px-4 py-12 text-center text-[13px] text-text-4">正在加载…</div>
+// 加载中:几行灰条扫光,比“正在加载…”更像页面本身
+export function Loading({ rows = 6 }: { rows?: number }) {
+  return (
+    <div className="px-4 py-3" aria-busy="true" aria-label="正在加载">
+      {Array.from({ length: rows }, (_, i) => (
+        <div key={i} className="flex items-center gap-3 py-2.5">
+          <div className="jb-skel size-8 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1"><div className="jb-skel h-3" style={{ width: `${55 - (i % 3) * 12}%` }} /><div className="jb-skel mt-2 h-2.5" style={{ width: `${30 + (i % 2) * 10}%` }} /></div>
+          <div className="jb-skel hidden h-3 w-16 sm:block" />
+        </div>
+      ))}
+    </div>
+  )
 }
 export function ErrorLine({ msg }: { msg: string }) {
   return msg ? <div className="mx-4 my-3 rounded-lg bg-bad-bg px-3 py-2 text-[13px] text-bad">{msg}</div> : null
@@ -177,11 +211,11 @@ export function SidePanel({ open, onClose, title, sub, head, children, footer, w
 // 小卡(面板里 4 个一排)
 export function MiniStats({ items }: { items: { label: string; value: ReactNode; tone?: 'bad' | 'ok' | 'warn' }[] }) {
   return (
-    <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div className="jb-stagger mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
       {items.map(i => (
         <div key={i.label} className="rounded-xl border bg-[#FCFCFD] px-3 py-2.5">
           <div className="text-xs text-text-3">{i.label}</div>
-          <div className={cn('num mt-0.5 text-base font-semibold', i.tone === 'bad' && 'text-bad', i.tone === 'ok' && 'text-ok', i.tone === 'warn' && 'text-warn')}>{i.value}</div>
+          <div className={cn('num mt-0.5 text-base font-semibold', i.tone === 'bad' && 'text-bad', i.tone === 'ok' && 'text-ok', i.tone === 'warn' && 'text-warn')}><CountUp value={i.value} /></div>
         </div>
       ))}
     </div>
