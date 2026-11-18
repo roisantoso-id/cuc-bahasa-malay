@@ -34,3 +34,15 @@
 .t { font-weight: 700; }
 .score { font-size: 40rpx; font-family: Georgia, serif; flex-shrink: 0; }
 .hover-row { opacity: .7; }
+
+/* 2026-11-18 简化：两行入口 + 周榜 */
+.entry { margin-top: 8rpx; border-top: 2rpx solid var(--hair); }
+.en { display: flex; align-items: center; gap: 16rpx; padding: 28rpx 0; border-bottom: 2rpx solid var(--hair); }
+.en-main { flex: 1; min-width: 0; }
+.en-t { font-size: 32rpx; font-weight: 800; color: var(--ivory); }
+.en-k { font-size: 24rpx; font-weight: 400; color: var(--ink2); margin-left: 8rpx; }
+.en-s { font-size: 24rpx; color: var(--ink2); margin-top: 6rpx; line-height: 1.45; }
+.en-b { flex: none; min-width: 120rpx; margin: 0; }
+.sel { font-size: 26rpx; color: var(--ivory); padding: 0 18rpx; height: 72rpx; line-height: 72rpx; border-radius: 999rpx; border: 2rpx solid var(--hair2); white-space: nowrap; }
+.br-n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chase { font-size: 24rpx; color: var(--star); padding: 14rpx 0 0; }

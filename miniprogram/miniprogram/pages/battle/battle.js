@@ -52,7 +52,8 @@ Page({
       if (!levels.some(l => l.level === level)) level = levels.some(l => l.level === h.level) ? h.level : (levels[0] ? levels[0].level : 0)
       const pks = (Array.isArray(mine) ? mine : (mine && mine.list) || []).map(p => ({ ...p, date: day(p.createdAt) })).slice(0, 5)
       const tries = arena ? Math.max(0, Math.min(3, arena.triesLeft)) : 3
-      this.setData({ view: 'ok', levels, level, arena, pks, tries: [0, 1, 2].map(i => i < tries) })
+      const levelIdx = Math.max(0, levels.findIndex(l => l.level === level))
+      this.setData({ view: 'ok', levels, level, levelIdx, levelNames: levels.map(l => '第' + l.level + '站'), arena, pks, tries: [0, 1, 2].map(i => i < tries) })
       this.board()
     } catch (e) {
       if (this.data.view !== 'ok') this.setData({ view: 'error', error: e.message })
@@ -84,6 +85,7 @@ Page({
   },
   togglePk() { this.setData({ showPk: !this.data.showPk }) },
   pickLevel(e) { this.setData({ level: e.currentTarget.dataset.l }) },
+  pickLevelIdx(e) { const i = Number(e.detail.value); this.setData({ levelIdx: i, level: this.data.levels[i].level }) },
   async create() {
     if (this.data.busy || !this.data.level) return
     this.setData({ busy: true })
