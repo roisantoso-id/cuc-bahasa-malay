@@ -7,7 +7,7 @@
 | `web` | Caddy：HTTPS 证书自动申请续期；托管官网 www.bahasa.cn（`/opt/jombelajar/website`）和后台网页（`admin/public/`）；把 `/api/*`、`/uploads/*` 转给 `api` |
 | `api` | Node 后端（`admin/server.mjs`）：小程序接口 `/api/app/*`、后台接口 `/api/admin/*`、老师照片 |
 
-- 单词音频在**腾讯云 COS**（`jombelajar-audio-1314893093`，广州，公有读），库里只存文件名，接口返回 `AUDIO_BASE + 文件名`。
+- 单词音频在**腾讯云 COS**（`jombelajar-audio-my-1314893093`，新加坡，公有读，目录 `vocab5000/audio/`；学生在马来西亚，离新加坡最近），库里只存文件名，接口返回 `AUDIO_BASE + 文件名`。
 - 词库来自 `content/vocab5000/words.json`（`build.py` 从启航的 xlsx 和音频清单生成）。第一次启动时库里没有词，会自动导入。
 - 数据库是**腾讯云 MySQL**（内网 10.3.4.2:3306，云数据库自带每日备份），连接串在 `.env` 的 `DATABASE_URL`。后端唯一的依赖是 `mysql2`。
 - 建表在启动时自动完成；`rank` 在 MySQL 8 是保留字，代码里自动加反引号。
