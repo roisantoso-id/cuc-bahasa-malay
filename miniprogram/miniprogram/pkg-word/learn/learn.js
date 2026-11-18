@@ -44,7 +44,7 @@ const TITLES = { today: '今日车票', review: '复习', new: '新词', wrong: 
 const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 10).replace('-', '.')
 
 Page({
-  data: { view: 'loading', card: null, flipped: false, idx: 0, total: 0, quiz: null, picked: '', typed: '', stats: { know: 0, vague: 0, forgot: 0, mastered: 0 }, busy: false, date: today() },
+  data: { dx: 0, dy: 0, drag: false, hint: '', fly: '', view: 'loading', card: null, flipped: false, idx: 0, total: 0, quiz: null, picked: '', typed: '', stats: { know: 0, vague: 0, forgot: 0, mastered: 0 }, busy: false, date: today() },
 
   async onLoad(q) {
     this.mode = q.mode || 'today'
@@ -77,7 +77,44 @@ Page({
     audio.play(card.audio)
   },
 
-  flip() { if (!this.data.flipped) this.setData({ flipped: true }) },
+  flip() { if (!this.data.flipped && !this.moved) this.setData({ flipped: true }) },
+
+  // ---- 手势：左滑不认识、右滑认识、上滑模糊（翻开以后才算打分；没翻开时滑一下就是翻开）----
+  tStart(e) {
+    if (this.data.busy || this.data.fly) return
+    const t = e.touches[0]
+    this.sx = t.clientX; this.sy = t.clientY; this.moved = false
+    this.setData({ drag: true })
+  },
+  tMove(e) {
+    if (this.sx == null || this.data.fly) return
+    const t = e.touches[0], dx = t.clientX - this.sx, dy = t.clientY - this.sy
+    if (Math.abs(dx) + Math.abs(dy) > 8) this.moved = true
+    const now = Date.now()
+    if (now - (this.lastMove || 0) < 16) return   // 每帧最多更新一次
+    this.lastMove = now
+    const hint = !this.data.flipped ? '' : dx > 50 ? 'know' : dx < -50 ? 'forgot' : dy < -50 && Math.abs(dx) < 60 ? 'vague' : ''
+    this.setData({ dx, dy, hint })
+  },
+  tEnd() {
+    if (this.sx == null) return
+    const { dx, dy, flipped } = this.data
+    this.sx = null
+    const r = dx > 100 ? 'know' : dx < -100 ? 'forgot' : dy < -90 && Math.abs(dx) < 80 ? 'vague' : ''
+    if (!r || !flipped) {
+      this.setData({ dx: 0, dy: 0, drag: false, hint: '' })
+      if (r && !flipped) this.setData({ flipped: true })
+      setTimeout(() => { this.moved = false }, 50)
+      return
+    }
+    wx.vibrateShort && wx.vibrateShort({ type: 'light' })
+    this.setData({ drag: false, fly: r, hint: r })
+    setTimeout(() => {
+      this.setData({ fly: '', dx: 0, dy: 0, hint: '' })
+      this.moved = false
+      this.record(r)
+    }, 280)
+  },
   play() { audio.play(this.data.card.audio) },
 
   async fav() {

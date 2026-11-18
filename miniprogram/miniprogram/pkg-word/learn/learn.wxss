@@ -74,3 +74,22 @@
 .sum > view { flex: 1; text-align: center; background: var(--panel); border: 2rpx solid var(--hair); border-radius: 24rpx; padding: 18rpx 0; font-size: 26rpx; color: var(--ink2); }
 .n { font-size: 44rpx; font-weight: 700; color: var(--ivory); font-family: Georgia, serif; }
 .c-know { color: var(--ok); } .c-vague { color: var(--star); } .c-forgot { color: var(--bad); }
+
+/* ---- 手势打分 ---- */
+.wcard { will-change: transform; }
+.wcard.fly-know { transform: translate(140%, -20rpx) rotate(22deg) !important; opacity: 0; }
+.wcard.fly-forgot { transform: translate(-140%, -20rpx) rotate(-22deg) !important; opacity: 0; }
+.wcard.fly-vague { transform: translate(0, -120%) !important; opacity: 0; }
+.swipe-badge { position: absolute; top: 24rpx; z-index: 2; padding: 6rpx 22rpx; border-radius: 12rpx; font-size: 30rpx; font-weight: 900; border: 4rpx solid; transform: rotate(-8deg); background: rgba(243,234,214,.9); }
+.swipe-badge.know { left: 28rpx; color: #2e7d55; border-color: #2e7d55; }
+.swipe-badge.forgot { right: 28rpx; color: #c4553e; border-color: #c4553e; transform: rotate(8deg); }
+.swipe-badge.vague { left: 50%; margin-left: -60rpx; color: #b07a1c; border-color: #b07a1c; transform: none; }
+/* 三只犀鸟 */
+.birds { display: flex; gap: 16rpx; }
+.bd { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: 14rpx 0 12rpx; border-radius: 28rpx; border: 2rpx solid var(--hair2); transition: transform .18s, background-color .18s; }
+.bd image { width: 96rpx; height: 96rpx; border-radius: 50%; background: var(--ivory); transition: transform .18s; }
+.bd-t { margin-top: 8rpx; font-size: 28rpx; font-weight: 800; color: var(--ivory); }
+.bd.hover { opacity: .7; }
+.bd.on { background: rgba(243,234,214,.1); transform: translateY(-8rpx); }
+.bd.on image { transform: scale(1.18); animation: hop .5s ease-in-out infinite alternate; }
+@keyframes hop { from { transform: scale(1.18) translateY(0); } to { transform: scale(1.18) translateY(-8rpx); } }

@@ -14,7 +14,9 @@
 
     <!-- 词卡:象牙色卡片,正面只有词和发音 -->
     <block wx:if="{{view === 'card'}}">
-      <view class="wcard {{flipped ? 'small' : ''}}" bindtap="flip">
+      <!-- 手势：左滑不认识、右滑认识、上滑模糊；卡片跟手倾斜，松手过线就飞出去 -->
+      <view class="wcard {{flipped ? 'small' : ''}} {{fly ? 'fly-' + fly : ''}}" style="transform: translate({{dx}}px, {{dy < 0 ? dy : dy * 0.25}}px) rotate({{dx / 18}}deg); transition: {{drag ? 'none' : 'transform .28s ease, opacity .28s'}};" bindtap="flip" bindtouchstart="tStart" bindtouchmove="tMove" bindtouchend="tEnd" bindtouchcancel="tEnd">
+        <view class="swipe-badge {{hint}}" wx:if="{{hint}}">{{hint === 'know' ? '认识' : hint === 'forgot' ? '不认识' : '模糊'}}</view>
         <view class="wc-in">
           <view class="w">{{card.ms}}</view>
           <view wx:if="{{!flipped}}" class="wc-hint">点卡片翻看释义</view>
@@ -67,10 +69,11 @@
 
     <view wx:if="{{view === 'card'}}" class="actions">
       <block wx:if="{{flipped}}">
-        <view class="grades">
-          <view class="g g-forgot" hover-class="hover" data-r="forgot" bindtap="grade"><view>不认识</view><view class="gh">{{card.hints.forgot}}</view></view>
-          <view class="g g-vague" hover-class="hover" data-r="vague" bindtap="grade"><view>模糊</view><view class="gh">{{card.hints.vague}}</view></view>
-          <view wx:if="{{!wrongShown || card.kind !== 'review'}}" class="g g-know" hover-class="hover" data-r="know" bindtap="grade"><view>认识</view><view class="gh">{{card.hints.know}}</view></view>
+        <!-- 三只犀鸟：拖向哪边哪只放大；也可以直接点 -->
+        <view class="birds">
+          <view class="bd {{hint === 'forgot' ? 'on' : ''}}" hover-class="hover" data-r="forgot" bindtap="grade"><image src="/assets/fail.jpg" mode="aspectFill" /><view class="bd-t">← 不认识</view><view class="gh">{{card.hints.forgot}}</view></view>
+          <view class="bd {{hint === 'vague' ? 'on' : ''}}" hover-class="hover" data-r="vague" bindtap="grade"><image src="/assets/loading.jpg" mode="aspectFill" /><view class="bd-t">↑ 模糊</view><view class="gh">{{card.hints.vague}}</view></view>
+          <view class="bd {{hint === 'know' ? 'on' : ''}}" hover-class="hover" data-r="know" bindtap="grade"><image src="/assets/cheer.jpg" mode="aspectFill" /><view class="bd-t">认识 →</view><view class="gh">{{card.hints.know}}</view></view>
         </view>
         <view wx:if="{{card.kind === 'new'}}" class="master" data-r="mastered" bindtap="grade">太简单了，设为已掌握</view>
       </block>
