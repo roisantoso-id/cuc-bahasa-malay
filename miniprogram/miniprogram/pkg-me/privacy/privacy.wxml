@@ -1,27 +1,40 @@
-<view class="wrap">
-  <view class="h1">隐私说明</view>
-  <view class="muted small">更新于 2026-11-18</view>
+<view class="wrap pv">
+  <!-- 先说结论：三条承诺 -->
+  <view class="pv-hero">
+    <image class="pv-bird" src="/assets/bird-welcome.png" mode="aspectFit" />
+    <view class="pv-h1">你的信息，<text class="pv-hl">你说了算</text></view>
+    <view class="pv-upd">隐私说明 · 更新于 2026-11-19</view>
+  </view>
+  <view class="pv-promise">
+    <view class="pv-pr"><view class="pv-n">1</view><view><view class="pv-pr-t">不拿你的微信头像、昵称和手机号</view><view class="pv-pr-d">只用微信身份标识认出你、保存学习记录</view></view></view>
+    <view class="pv-pr"><view class="pv-n">2</view><view><view class="pv-pr-t">资料全都选填</view><view class="pv-pr-d">昵称、学校、班级、手机号不填也能学</view></view></view>
+    <view class="pv-pr"><view class="pv-n">3</view><view><view class="pv-pr-t">随时一键删除</view><view class="pv-pr-d">删掉资料和全部学习记录，立即生效</view></view></view>
+  </view>
 
-  <view class="h2">我们收集什么</view>
-  <view class="pv-p"><text class="pv-b">微信身份标识</text>：打开小程序时自动用微信登录，用来认出你、保存你的学习记录。不获取你的微信昵称、头像和手机号。</view>
-  <view class="pv-p"><text class="pv-b">学习记录</text>：学过哪些词、复习和答题情况、每天学了多少、对战和擂台成绩。只用来给你安排复习、显示进度和排行。</view>
-  <view class="pv-p"><text class="pv-b">你自己选填的资料</text>：昵称、学校、班级、马来语基础、手机号。都可以不填，填了也可以随时改。</view>
+  <view class="sec"><text class="sec-t">我们收集什么</text></view>
+  <view class="pv-list">
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">微信身份标识</view><view class="pv-v">认出你、保存学习记录</view></view><text class="pv-tag must">必需</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">学习记录</view><view class="pv-v">学过的词、复习和答题、对战和擂台成绩，用来安排复习和排行</view></view><text class="pv-tag must">必需</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">昵称、学校、班级</view><view class="pv-v">在排行榜上显示，按学校、班级排名</view></view><text class="pv-tag opt">选填</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">手机号</view><view class="pv-v">方便课程老师联系你</view></view><text class="pv-tag opt">选填</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">头像</view><view class="pv-v">只能从你解锁的犀鸟形象里选，不能上传照片</view></view><text class="pv-tag none">不收集照片</text></view>
+  </view>
 
-  <view class="h2">谁能看到</view>
-  <view class="pv-p">你的昵称、学校和班级会出现在排行榜和 PK 结果里，其他同学能看到。手机号不会给其他同学看，只有课程老师在管理后台能看到，用来联系你。</view>
-  <view class="pv-p">你保存的昵称、学校、班级会先经过微信的内容安全检测，不合适的内容保存不了。</view>
+  <view class="sec"><text class="sec-t">谁能看到</text></view>
+  <view class="pv-list">
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">昵称、学校、班级、犀鸟形象</view><view class="pv-v">保存前会过微信内容安全检测</view></view><text class="pv-tag see">同学可见</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">手机号</view></view><text class="pv-tag teach">仅老师可见</text></view>
+    <view class="pv-row"><view class="pv-main"><view class="pv-k">错词本、收藏、复习计划</view></view><text class="pv-tag self">仅自己可见</text></view>
+  </view>
 
-  <view class="h2">存在哪里</view>
-  <view class="pv-p">数据存在腾讯云新加坡的服务器和数据库里，单词发音存在腾讯云新加坡的对象存储。我们不出售、不向其他人提供你的个人信息。</view>
+  <view class="sec"><text class="sec-t">存在哪里</text></view>
+  <view class="pv-p">腾讯云新加坡的服务器、数据库和对象存储。不出售、不向其他人提供你的个人信息。</view>
+  <view class="pv-p muted">用到的第三方：微信（登录、内容安全检测、分享）、腾讯云（服务器、数据库、音频存储）。</view>
 
-  <view class="h2">用到的第三方</view>
-  <view class="pv-p">微信（登录、内容安全检测、分享）、腾讯云（服务器、数据库、音频存储）。</view>
-
-  <view class="h2">删除</view>
-  <view class="pv-p">你可以随时删除自己的资料和全部学习记录，删除后立即生效、无法恢复。</view>
-  <button class="btn btn-danger btn-sm pv-btn" hover-class="hover" bindtap="del" loading="{{busy}}" disabled="{{busy}}">删除我的资料和学习记录</button>
-
-  <view class="h2">联系我们</view>
-  <view class="pv-p">对隐私有任何疑问，可以通过小程序客服联系我们。</view>
-  <button class="btn btn-ghost btn-sm pv-btn" hover-class="hover" open-type="contact">联系客服</button>
+  <!-- 操作 -->
+  <view class="pv-acts">
+    <button class="btn btn-danger btn-block" hover-class="hover" bindtap="del" loading="{{busy}}" disabled="{{busy}}">删除我的资料和学习记录</button>
+    <view class="pv-del-d">删除后立即生效，无法恢复</view>
+    <button class="btn btn-ghost btn-block" hover-class="hover" open-type="contact">对隐私有疑问？联系客服</button>
+  </view>
 </view>
