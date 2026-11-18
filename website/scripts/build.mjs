@@ -22,7 +22,7 @@ const NAV = [
   { href: '/about/', t: '关于我们' },
 ]
 // 顶栏按钮：配了小程序链接（URL Link）就直接跳小程序，否则到页尾的小程序入口
-const CTA = SITE.mp_link ? [SITE.mp_link, '打开小程序'] : ['/#open', '小程序入口']
+const CTA = SITE.mp_link ? [SITE.mp_link, '打开小程序'] : ['/#open', SITE.mp_qr ? '扫码打开小程序' : '小程序入口']
 
 const renderNav = path => `<header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="/"><img src="/img/bird/avatar.webp" alt="" width="34" height="34">${esc(SITE.brand)}</a>

@@ -45,7 +45,7 @@
 <!--/IFNOT_SITE_MP_LINK-->
         <a class="link" href="#route">看看十站学习路线</a>
       </div>
-      <p class="cta-note">学习功能在微信小程序里使用，网页上不能学。<!--IFNOT_SITE_MP_QR-->小程序正在上线，入口见<a href="#open">页尾</a>。<!--/IFNOT_SITE_MP_QR--></p>
+      <p class="cta-note">学习功能在微信小程序里使用，网页上不能学。<!--IF_SITE_MP_NAME-->在微信里搜索「{{SITE_MP_NAME}}」，或<a href="#open">扫码打开</a>。<!--/IF_SITE_MP_NAME--><!--IFNOT_SITE_MP_QR-->小程序正在上线，入口见<a href="#open">页尾</a>。<!--/IFNOT_SITE_MP_QR--></p>
       <dl class="facts-row">
         <div><dt>高频词</dt><dd><b>5000</b> 个</dd></div>
         <div><dt>路线</dt><dd><b>10</b> 站 · 每站 500 词</dd></div>
@@ -248,7 +248,7 @@
     <div class="sec-h"><p class="eyebrow">常见问题</p><h2 id="faqH">常见问题</h2></div>
     <div class="faq">
       <details open><summary>可以在网页上学吗？</summary><p>不能。官网只做介绍，背词、复习、错词本都在微信小程序里，学习记录跟着微信账号保存。</p></details>
-      <details><summary>需要下载 App 吗？</summary><p>不需要。这是微信小程序，在微信里扫码就能打开。</p></details>
+      <details><summary>需要下载 App 吗？</summary><p>不需要。这是微信小程序，在微信里扫码<!--IF_SITE_MP_NAME-->或搜索「{{SITE_MP_NAME}}」<!--/IF_SITE_MP_NAME-->就能打开。</p></details>
       <details><summary>5000 个词是怎么选的？</summary><p>按马来语的使用频率从高到低排，前面的是日常和新闻里最常见的词。每个词配中文释义、马来语例句和发音。</p></details>
       <details><summary>完全没学过马来语，可以学吗？</summary><p>可以。从第一站最常用的词开始，每个词都有中文释义，例句也有中文翻译。</p></details>
       <details><summary>马来语和印尼语一样吗？</summary><p>大部分相通，但拼写、用词和发音有差别。这里教的是马来西亚的马来语。</p></details>
@@ -263,7 +263,7 @@
       <div class="open-copy">
         <p class="eyebrow">打开小程序</p>
         <h2 id="openH">在微信里，从第一站出发</h2>
-<!--IF_SITE_MP_QR-->        <p>用微信扫右边的小程序码打开<!--IF_SITE_MP_NAME-->，或在微信里搜索「{{SITE_MP_NAME}}」<!--/IF_SITE_MP_NAME-->。不用下载 App，学习记录跟着微信账号保存。</p>
+<!--IF_SITE_MP_QR-->        <p>用微信扫这个小程序码打开；在手机微信里看这个页面，可以长按小程序码识别<!--IF_SITE_MP_NAME-->，也可以直接在微信里搜索「{{SITE_MP_NAME}}」<!--/IF_SITE_MP_NAME-->。不用下载 App，学习记录跟着微信账号保存。</p>
 <!--/IF_SITE_MP_QR-->
 <!--IFNOT_SITE_MP_QR-->        <p class="status"><i></i>小程序正在上线，上线后这里会放小程序码。</p>
         <p>学习功能只在微信小程序里提供。不用下载 App，学习记录跟着微信账号保存。</p>
@@ -272,7 +272,7 @@
         <p class="fine">在微信里点按钮可以直接进入；在电脑或其他浏览器里，请用微信扫码。</p>
 <!--/IF_SITE_MP_LINK-->
       </div>
-<!--IF_SITE_MP_QR-->      <figure class="qr-box"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="200" height="200"><figcaption>微信扫码</figcaption></figure>
+<!--IF_SITE_MP_QR-->      <figure class="qr-box"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="200" height="200"><figcaption>微信扫码 · 手机上长按识别</figcaption></figure>
 <!--/IF_SITE_MP_QR-->
 <!--IFNOT_SITE_MP_QR-->      <figure class="qr-box qr-wait"><span>小程序码<br>上线后放这里</span><img class="bird" src="/img/bird/welcome.webp" alt="" width="506" height="520" loading="lazy"></figure>
 <!--/IFNOT_SITE_MP_QR-->
