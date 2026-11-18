@@ -32,6 +32,9 @@
 	@assets path *.css *.js *.png *.jpg *.jpeg *.webp *.svg *.woff2 *.ico
 	header @assets Cache-Control "public, max-age=2592000"
 	header ?Cache-Control "no-cache"
+	# 背单词网页搬到 words.bahasa.cn 了,旧地址跳过去
+	@words path /words /words/*
+	redir @words https://words.bahasa.cn/ permanent
 	try_files {path} {path}/index.html {path}.html
 	file_server
 	handle_errors {
@@ -39,6 +42,20 @@
 		rewrite @404 /404.html
 		file_server
 	}
+}
+
+# 背单词网页(word-atlas-malayu 仓库,scripts/deploy.sh 传到 website/words/,构建 base 为 /)
+words.bahasa.cn {
+	encode gzip
+	root * /srv/website/words
+	header Strict-Transport-Security "max-age=31536000"
+	header X-Content-Type-Options nosniff
+	header -Server
+	# assets/ 下文件名带内容版本号,可以长缓存;index.html、sw.js、词库 json 每次校验
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	header ?Cache-Control "no-cache"
+	file_server
 }
 
 # 不带 www 的 bahasa.cn 跳到 www(2026-11-18 @ 已指到新加坡,打开)
