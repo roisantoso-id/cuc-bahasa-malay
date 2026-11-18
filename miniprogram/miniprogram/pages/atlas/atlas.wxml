@@ -1,0 +1,46 @@
+<view class="page">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在展开星图…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
+
+  <block wx:else>
+    <canvas type="2d" id="galaxy" class="galaxy" />
+    <view class="wrap">
+      <view class="lit-k">已点亮</view>
+      <view class="lit"><text class="lit-n">{{h.total.learned}}</text><text class="lit-u"> 颗星 / {{h.total.words}}</text></view>
+
+      <!-- 十站选择：实心 = 已盖章，半实心 = 当前站，空心 = 还没到，暗 = 词表整理中 -->
+      <view class="stops">
+        <view wx:for="{{levels}}" wx:key="level" class="st {{item.open ? '' : 'lock'}} {{sel === item.level ? 'sel' : ''}}" data-l="{{item.level}}" bindtap="pick">
+          <view class="st-c {{item.state}}"><view class="st-h" /></view>
+          <view class="st-n">{{item.no}}</view>
+        </view>
+      </view>
+
+      <view wx:if="{{stop}}" class="between sh">
+        <view class="sh-t">{{stop.level < 10 ? '0' : ''}}{{stop.level}} {{stop.city}} · <text class="no">№ {{lo}} – {{hi}}</text></view>
+        <view class="muted small no">{{counts.done + counts.learn}} / {{stop.total}}</view>
+      </view>
+      <canvas type="2d" id="matrix" class="matrix" />
+      <view class="legend">
+        <text class="lg"><text class="lg-d d1" />记牢 {{counts.done}}</text>
+        <text class="lg"><text class="lg-d d2" />学习中 {{counts.learn}}</text>
+        <text class="lg"><text class="lg-d d3" />还没见过 {{counts.none}}</text>
+      </view>
+
+      <view class="chips pos">
+        <view wx:for="{{posTabs}}" wx:key="*this" class="chip {{pos === item ? 'on' : ''}}" data-p="{{item}}" bindtap="setPos">{{item}}</view>
+      </view>
+
+      <view class="grid">
+        <view wx:for="{{cards}}" wx:key="rank" class="wc {{item.st === 'none' ? 'unseen' : ''}}" hover-class="hover" data-r="{{item.rank}}" bindtap="open">
+          <!-- 词条图片的位置：以后接口给每个词加 image 字段，这里就会显示（现在还没有图，不会渲染） -->
+          <image wx:if="{{item.image}}" class="wc-img" src="{{item.image}}" mode="aspectFill" />
+          <view class="wc-ms">{{item.ms}}</view>
+          <view class="wc-zh"><text wx:if="{{item.pos}}" class="wc-pos">{{item.posT === '功能词' ? '功' : item.posT[0]}} </text>{{item.zh}}</view>
+        </view>
+      </view>
+      <view wx:if="{{!cards.length && !loadingStop}}" class="muted center" style="padding:40rpx">这一类还没有词</view>
+      <view wx:if="{{hasMore}}" class="more" hover-class="hover" bindtap="more">加载更多</view>
+    </view>
+  </block>
+</view>

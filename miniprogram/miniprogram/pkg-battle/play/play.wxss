@@ -1,17 +1,17 @@
 @import '../common.wxss';
 .top { margin-bottom: 28rpx; }
 .top-r { margin-top: 14rpx; font-size: 28rpx; }
-.clock { color: var(--teal); }
+.clock { color: var(--star); }
 
 .qcard { text-align: center; padding: 30rpx 30rpx 44rpx; margin-bottom: 40rpx; }
 .prompt { margin-top: 36rpx; font-size: 46rpx; font-weight: 900; line-height: 1.35; word-break: break-word; }
 .prompt.ms { font-size: 68rpx; }
 /* 听音题：大的重播按钮 */
 .listen { display: flex; flex-direction: column; align-items: center; gap: 16rpx; margin-top: 30rpx; }
-.play { width: 168rpx; height: 168rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #5aa3e3, var(--blue)); box-shadow: inset 0 4rpx 0 rgba(255,255,255,.3), 0 10rpx 0 var(--blue-d), 0 22rpx 30rpx -8rpx rgba(42,103,159,.45); transition: transform .08s, box-shadow .08s; }
-.play.hover { transform: translateY(10rpx); box-shadow: 0 0 0 var(--blue-d); }
-.play .cone { width: 0; height: 0; border-top: 26rpx solid transparent; border-bottom: 26rpx solid transparent; border-right: 34rpx solid #fff; margin-right: 6rpx; }
-.play .wave { width: 26rpx; height: 50rpx; border: 8rpx solid #fff; border-left: 0; border-radius: 0 50rpx 50rpx 0; }
+.play { width: 168rpx; height: 168rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--ivory); }
+.play.hover { opacity: .7; }
+.play .cone { width: 0; height: 0; border-top: 26rpx solid transparent; border-bottom: 26rpx solid transparent; border-right: 34rpx solid var(--dark-ink); margin-right: 6rpx; }
+.play .wave { width: 26rpx; height: 50rpx; border: 8rpx solid var(--dark-ink); border-left: 0; border-radius: 0 50rpx 50rpx 0; }
 
 .opts { margin-bottom: 16rpx; }
 .opt { text-align: center; word-break: break-word; min-height: 88rpx; box-sizing: border-box; }

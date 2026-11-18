@@ -22,6 +22,24 @@ const clozeOf = w => {
   }
   return null
 }
+const INTERVALS = [1, 1, 2, 4, 7, 15, 30]   // 和服务端 grade() 同一套
+const dayText = n => `${n} 天后`
+// 三个按钮各自的「下次什么时候再见」
+const hintsOf = c => {
+  const isNew = c.kind === 'new'
+  const box = Math.max(c.box || 0, 0)
+  const know = isNew ? 2 : Math.min(box + 1, 6)
+  return { forgot: dayText(INTERVALS[0]), vague: dayText(INTERVALS[isNew ? 1 : Math.max(box, 1)]), know: know >= 6 ? '已掌握' : dayText(INTERVALS[know]) }
+}
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+// 例句里把这个词标出来
+const marks = (ex, ms) => {
+  if (!ex) return []
+  const m = new RegExp('(' + esc(ms) + ')', 'i').exec(ex)
+  if (!m) return [{ t: ex }]
+  return [{ t: ex.slice(0, m.index) }, { t: m[1], hit: 1 }, { t: ex.slice(m.index + m[1].length) }].filter(x => x.t)
+}
+const prep = c => ({ ...c, hints: hintsOf(c), first: c.kind === 'new' && !c.again, senses: (c.senses || []).map(s => ({ ...s, parts: marks(s.exMs, c.ms) })) })
 const TITLES = { today: '今日车票', review: '复习', new: '新词', wrong: '错词重练', fav: '收藏重练' }
 const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 10).replace('-', '.')
 
@@ -46,7 +64,7 @@ Page({
       this.setData({ view: 'error', error: e.message })
     }
   },
-  onUnload() { audio.stop(); if (this.data.idx) getApp().globalData.dirty = true },
+  onUnload() { clearTimeout(this.timer); audio.stop(); if (this.data.idx) getApp().globalData.dirty = true },
 
   next() {
     if (this.recent.length >= QUIZ_EVERY) return this.practice()
@@ -54,8 +72,8 @@ Page({
     if (!card) return this.finish()
     const idx = this.data.total - this.queue.length
     // 复习词先考;新词、重来的词直接看卡片
-    if (card.kind === 'review' && !card.again) return this.setData({ view: 'quiz', quiz: this.makeQuiz(card, true), picked: '', typed: '', card, idx, flipped: false, wrongShown: false })
-    this.setData({ view: 'card', card, flipped: false, idx, wrongShown: false })
+    if (card.kind === 'review' && !card.again) return this.setData({ view: 'quiz', quiz: this.makeQuiz(card, true), picked: '', typed: '', card: prep(card), idx, flipped: false, wrongShown: false })
+    this.setData({ view: 'card', card: prep(card), flipped: false, idx, wrongShown: false })
     audio.play(card.audio)
   },
 
@@ -116,12 +134,23 @@ Page({
   after(ok) {
     const quiz = this.data.quiz
     if (quiz.type !== 'listen') audio.play(quiz.word.audio)
-    setTimeout(() => {
+    const h = hintsOf(quiz.word)
+    this.setData({ fbLine: !quiz.graded ? '小练习，不记分' : ok ? `答对了，${h.know}再见` : `已放进错词本，${h.forgot}再考一次`, fbOk: ok })
+    this.pending = () => {
       if (!quiz.graded) return this.nextPractice()
       if (ok) return this.record('know')
       // 答错:翻开卡片看一眼,再记不认识 / 模糊
-      this.setData({ view: 'card', card: quiz.word, flipped: true, wrongShown: true })
-    }, ok ? 650 : 1200)
+      this.setData({ view: 'card', card: prep(quiz.word), flipped: true, wrongShown: true })
+    }
+    this.timer = setTimeout(() => this.cont(), ok ? 650 : 1200)
+  },
+  // 点「继续」不用等自动跳转
+  cont() {
+    if (!this.pending) return
+    clearTimeout(this.timer)
+    const go = this.pending
+    this.pending = null
+    go()
   },
 
   // 每 5 个新词:一轮练习

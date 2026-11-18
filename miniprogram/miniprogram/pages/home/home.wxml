@@ -1,89 +1,50 @@
 <view class="wrap">
-  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在出票…" />
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在整理今天的词…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <view class="hello between">
-      <view>
-        <view class="hi ms">{{greet}},</view>
-        <view class="h1">{{h.student.name || '同学'}}</view>
+    <view class="date">{{date}} · 连续第 {{h.streak}} 天</view>
+    <view class="hi">{{greet}}，{{h.student.name || '同学'}}。</view>
+
+    <view class="hero">
+      <view class="ring-box">
+        <canvas type="2d" id="ring" class="ring" />
+        <view class="ring-in">
+          <view class="big">{{todo}}</view>
+          <view class="lab">今天要见的词</view>
+        </view>
       </view>
-      <view class="streak {{h.checkedToday ? 'on' : ''}}">
-        <view class="streak-n">{{h.streak}}</view>
-        <view class="streak-t">连续天数</view>
-      </view>
+      <image class="bird" src="/assets/bird-hero.png" mode="aspectFit" />
     </view>
 
-    <!-- 3D 旅程地图：犀鸟站在当前站；不支持 WebGL 或低端机时显示插画 -->
-    <view class="map card-dark">
-      <canvas wx:if="{{show3d}}" type="webgl" id="map3d" class="map-c" bindtouchstart="touch" bindtouchmove="touch" />
-      <image wx:else class="map-bird" src="/assets/study.jpg" mode="aspectFit" />
-      <view class="map-tag">
-        <view class="no map-k">STESEN {{h.level}} / 10</view>
-        <view class="map-city"><text class="ms">{{cur.ms}}</text> · {{cur.city}}</view>
-        <view class="bar map-bar"><view class="bar-in" style="width:{{cur.pct}}%" /></view>
-        <view class="map-sub">这一站已学 {{cur.learned}} / {{cur.total}}{{show3d ? ' · 左右拖动看路线' : ''}}</view>
-      </view>
+    <view class="stats">
+      <view><view class="n">{{h.today.due}}</view><view class="l">先温故</view></view>
+      <view><view class="n">{{h.today.newLeft}}</view><view class="l">再知新</view></view>
+      <view><view class="n">{{mins}}<text class="u"> 分钟</text></view><view class="l">大约</view></view>
     </view>
 
-    <!-- 今日车票 -->
-    <view class="ticket">
-      <view class="songket" />
-      <view class="t-top between">
-        <text class="t-k no">TIKET HARI INI · 今日车票</text>
-        <text class="tag amber">第 {{h.level}} 站</text>
-      </view>
-      <view class="t-nums">
-        <view class="tile"><view class="n c-blue">{{h.today.due}}</view><view class="muted small">待复习</view></view>
-        <view class="tile"><view class="n c-green">{{h.today.newLeft}}</view><view class="muted small">新词</view></view>
-        <view class="tile"><view class="n">{{h.today.learned}}<text class="of">/{{h.today.goal}}</text></view><view class="muted small">今日已学</view></view>
-      </view>
-      <view class="ticket-cut" />
-      <view class="t-bot">
-        <button wx:if="{{todo}}" class="btn btn-main" hover-class="hover" bindtap="start">Jom, 出发！</button>
-        <block wx:else>
-          <view class="done-t">今天的车票用完了，明天见。</view>
-          <button class="btn btn-ghost" hover-class="hover" bindtap="more">再多学 10 个</button>
-        </block>
-      </view>
+    <view class="cta">
+      <button wx:if="{{todo}}" class="btn btn-main" hover-class="hover" bindtap="start">开始今天的航程</button>
+      <block wx:else>
+        <button class="btn btn-main" hover-class="hover" disabled>今天的航程完成了</button>
+        <button class="btn btn-ghost" style="margin-top:20rpx" hover-class="hover" bindtap="more">再多学 10 个</button>
+      </block>
     </view>
 
-    <!-- 单词本 -->
-    <view class="quick">
-      <view class="tile" hover-class="hover" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><view class="n c-coral">{{h.total.wrong}}</view><view class="small">错词本</view></view>
-      <view class="tile" hover-class="hover" data-url="/pkg-word/book/book?type=fav" bindtap="go"><view class="n c-amber">{{h.total.fav}}</view><view class="small">收藏</view></view>
-      <view class="tile" hover-class="hover" data-url="/pkg-word/book/book?type=mastered" bindtap="go"><view class="n c-green">{{h.total.mastered}}</view><view class="small">已掌握</view></view>
-      <view class="tile" hover-class="hover" data-url="/pkg-word/search/search" bindtap="go"><view class="n c-blue">查</view><view class="small">查词</view></view>
-    </view>
-
-    <!-- 对战入口 -->
-    <view class="card card-tap vs" hover-class="hover" bindtap="battle">
-      <image class="vs-bird" src="/assets/cheer.jpg" mode="aspectFill" />
+    <view class="line" hover-class="hover" bindtap="atlas">
+      <view class="dots" />
       <view class="item-main">
-        <view class="vs-t">找同学 PK</view>
-        <view class="muted small">10 道题比谁又快又准，每周还有擂台和学校榜</view>
+        <view class="l1">已点亮 <text class="star-n">{{h.total.learned}}</text> 颗星</view>
+        <view class="muted small">{{cur.city}}还有 {{left}} 颗没亮</view>
       </view>
       <text class="arrow">›</text>
     </view>
 
-    <!-- 路线 -->
-    <view class="between route-h">
-      <view class="h2">十站路线</view>
-      <text class="muted small">已学 {{h.total.learned}} / {{h.total.words}}</text>
-    </view>
-    <view class="route">
-      <view wx:for="{{h.levels}}" wx:key="level" class="stop {{index % 2 ? 'r' : 'l'}} {{item.open ? '' : 'lock'}} {{item.cur ? 'cur' : ''}}" data-l="{{item}}" bindtap="stop">
-        <view class="dot-wrap">
-          <view wx:if="{{item.stamped}}" class="stamp mini"><text class="s1">{{item.city}}</text></view>
-          <image wx:elif="{{item.cur}}" class="dot bird" src="/assets/avatar.jpg" mode="aspectFill" />
-          <view wx:else class="dot">{{item.level}}</view>
-        </view>
-        <view class="info">
-          <view class="city">{{item.city}} <text class="ms muted small">{{item.ms}}</text></view>
-          <view class="muted small">第 {{(item.level - 1) * 500 + 1}}–{{item.level * 500}} 词 · {{item.open ? item.note : '词表整理中'}}</view>
-          <view wx:if="{{item.open}}" class="bar thin"><view class="bar-in" style="width:{{item.pct}}%" /></view>
-          <view wx:if="{{item.open}}" class="muted small">{{item.learned}}/{{item.total}}{{item.mastered ? ' · 掌握 ' + item.mastered : ''}}</view>
-        </view>
+    <view wx:if="{{wod}}" class="line wod" hover-class="hover" bindtap="playWod">
+      <view class="say-ic"><view class="cone" /><view class="wave" /></view>
+      <view class="item-main">
+        <view class="row w1"><text class="wms">{{wod.ms}}</text><text class="wzh">{{wod.zh}}</text></view>
+        <view class="muted small one">今日一词{{wod.ex ? ' · ' + wod.ex : ''}}</view>
       </view>
     </view>
   </block>

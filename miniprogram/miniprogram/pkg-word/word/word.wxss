@@ -1,9 +1,9 @@
 .hd { padding: 24rpx 28rpx 28rpx; }
-.w { font-size: 72rpx; font-weight: 900; line-height: 1.2; word-break: break-word; }
-.fav { font-size: 24rpx; font-weight: 800; color: var(--ink2); padding: 6rpx 16rpx; border-radius: 999rpx; background: var(--bg); }
-.fav.on { color: var(--amber-d); background: var(--amber-l); }
+.w { font-size: 72rpx; font-weight: 700; font-style: italic; line-height: 1.2; word-break: break-word; font-family: Georgia, "Times New Roman", serif; }
+.fav { font-size: 26rpx; font-weight: 700; color: var(--ink2); padding: 8rpx 20rpx; border-radius: 999rpx; border: 2rpx solid var(--hair2); }
+.fav.on { color: var(--star); border-color: var(--star); }
 .lv { margin-top: 20rpx; gap: 10rpx; }
-.lv-d { width: 36rpx; height: 14rpx; border-radius: 8rpx; background: var(--line); }
-.lv-d.on { background: var(--green); }
-.pos { font-size: 22rpx; font-weight: 800; color: var(--ink2); background: var(--bg); padding: 2rpx 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
-.zh { font-size: 34rpx; font-weight: 900; color: var(--green-d); }
+.lv-d { width: 36rpx; height: 12rpx; border-radius: 8rpx; background: var(--hair); }
+.lv-d.on { background: var(--star); }
+.pos { font-size: 24rpx; font-weight: 700; color: var(--ink2); border: 2rpx solid var(--hair2); padding: 0 12rpx; border-radius: 8rpx; margin-right: 12rpx; }
+.zh { font-size: 34rpx; font-weight: 700; color: var(--ivory); }

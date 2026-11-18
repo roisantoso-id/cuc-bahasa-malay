@@ -15,13 +15,13 @@
       </view>
     </view>
 
-    <scroll-view scroll-x class="chips-wrap"><view class="chips">
+    <view class="chips-wrap"><view class="chips">
       <view class="chip {{filter === 'all' ? 'on' : ''}}" data-f="all" bindtap="setFilter">全部 {{counts.all}}</view>
       <view class="chip {{filter === 'none' ? 'on' : ''}}" data-f="none" bindtap="setFilter">没学 {{counts.none}}</view>
       <view class="chip {{filter === 'learn' ? 'on' : ''}}" data-f="learn" bindtap="setFilter">在学 {{counts.learn}}</view>
       <view class="chip {{filter === 'good' ? 'on' : ''}}" data-f="good" bindtap="setFilter">熟悉 {{counts.good}}</view>
       <view class="chip {{filter === 'done' ? 'on' : ''}}" data-f="done" bindtap="setFilter">掌握 {{counts.done}}</view>
-    </view></scroll-view>
+    </view></view>
 
     <view class="grid">
       <view wx:for="{{words}}" wx:key="rank" class="cell {{item.st}}" hover-class="hover" data-r="{{item.rank}}" bindtap="open">

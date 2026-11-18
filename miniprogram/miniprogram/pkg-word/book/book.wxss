@@ -1,7 +1,7 @@
-.tabs { display: flex; background: var(--card); border-bottom: 2rpx solid var(--line); position: sticky; top: 0; z-index: 2; }
-.tab { flex: 1; text-align: center; padding: 24rpx 0; font-weight: 800; color: var(--ink2); border-bottom: 6rpx solid transparent; }
-.tab.on { color: var(--ink); border-bottom-color: var(--green); }
+.tabs { display: flex; background: var(--night); border-bottom: 2rpx solid var(--hair); position: sticky; top: 0; z-index: 2; }
+.tab { flex: 1; text-align: center; padding: 26rpx 0; font-weight: 700; color: var(--ink2); border-bottom: 4rpx solid transparent; }
+.tab.on { color: var(--star); border-bottom-color: var(--star); }
 .head { margin-bottom: 20rpx; }
 .one { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.star { font-size: 40rpx; color: var(--line); padding: 0 8rpx; }
-.star.on { color: var(--amber-d); }
+.star { font-size: 40rpx; color: var(--hair2); padding: 0 8rpx; min-width: 64rpx; text-align: center; }
+.star.on { color: var(--star); }

@@ -4,7 +4,6 @@ const { ensureStudent } = require('../../utils/student')
 
 const TRACK = { zero: '零基础', some: '会说一些' }
 const GOALS = [10, 20, 30, 50]
-const BOX_LABEL = ['生疏', '刚学', '有印象', '熟悉', '很熟', '快掌握', '已掌握']
 
 Page({
   data: { view: 'loading', student: null, s: null, goals: GOALS },
@@ -14,12 +13,21 @@ Page({
     try {
       const student = await ensureStudent()
       if (!student) return
-      const [s, h] = await Promise.all([vocab.stats(), vocab.home()])
-      const max = Math.max(1, ...s.days.map(d => d.new + d.review))
-      const days = s.days.map(d => ({ ...d, hNew: d.new / max * 100, hRev: d.review / max * 100, label: d.day.slice(8) }))
-      const total = s.boxes.reduce((a, b) => a + b, 0) || 1
-      const boxes = s.boxes.map((n, i) => ({ n, label: BOX_LABEL[i], pct: n / total * 100 }))
-      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, days, boxes, total: h.total, stamps: s.levels.filter(l => l.stamped).length })
+      const [s, h, mem] = await Promise.all([vocab.stats(), vocab.home(), vocab.memory().catch(() => null)])
+      // 近 30 天热力格：按当天新学 + 复习的量分四档
+      const peak = Math.max(1, ...s.days.map(d => d.new + d.review))
+      const heat = s.days.map(d => { const v = d.new + d.review; return { day: d.day, lv: v === 0 ? 0 : v / peak > 0.66 ? 3 : v / peak > 0.33 ? 2 : 1 } })
+      let memory = null, next7 = []
+      if (mem) {
+        const base = Math.max(1, mem.words)
+        memory = { ...mem, pStrong: mem.strong / base * 100, pOk: mem.ok / base * 100, pWeak: mem.weak / base * 100 }
+        const peak7 = Math.max(1, ...mem.next7.map(d => d.n))
+        const WK = ['日', '一', '二', '三', '四', '五', '六']
+        next7 = mem.next7.map((d, i) => ({ n: d.n, h: Math.max(6, d.n / peak7 * 100), label: i === 0 ? '今天' : WK[new Date(d.day + 'T00:00:00Z').getUTCDay()], today: i === 0 }))
+        const top = mem.next7.reduce((m, d, i) => (d.n > m.n ? { n: d.n, i } : m), { n: -1, i: 0 }).i
+        memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
+      }
+      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
   goal() {

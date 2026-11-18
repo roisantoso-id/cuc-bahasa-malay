@@ -1,21 +1,21 @@
-// 旅程首页:今日车票(到期复习 + 今天的新词)+ 10 站路线(每站 500 词)
+// 今日：一个数字、一个按钮。圆环是今天的进度，犀鸟站在旁边陪着
 const vocab = require('../../api/vocab')
+const audio = require('../../utils/vocab-audio')
 const { ensureStudent } = require('../../utils/student')
+const { draw } = require('../../utils/canvas')
 
-// 低端安卓（benchmarkLevel 低）不开 3D；iOS 返回 -1，照常开
-const can3d = () => {
-  try {
-    const d = wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()
-    return !(typeof d.benchmarkLevel === 'number' && d.benchmarkLevel >= 0 && d.benchmarkLevel < 15)
-  } catch (e) { return true }
-}
-const greet = () => { const h = (new Date().getUTCHours() + 8) % 24; return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat tengah hari' : h < 19 ? 'Selamat petang' : 'Selamat malam' }
+const bj = () => new Date(Date.now() + 8 * 3600e3)
+const greet = () => { const h = bj().getUTCHours(); return h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好' }
+const dateText = () => { const d = bj(); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日` }
+// 今日一词：按日期定一个，同一天不变
+const dayIndex = n => Math.floor(bj().getTime() / 86400e3) % Math.max(1, n)
 
 Page({
-  data: { view: 'loading', h: null, greet: '', error: '', show3d: false },
+  data: { view: 'loading', h: null, error: '', greet: '', date: '', todo: 0, mins: 0, pct: 0, wod: null },
   onShow() {
     if (getApp().globalData.dirty || !this.data.h) this.load()
   },
+  onUnload() { audio.stop() },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
   async load() {
     try {
@@ -23,43 +23,53 @@ Page({
       if (!st) return
       const h = await vocab.home()
       getApp().globalData.dirty = false
+      const t = h.today
+      const todo = t.due + t.newLeft
+      const done = t.learned + t.reviewed
+      const pct = done + todo ? Math.min(1, done / (done + todo)) : 1
       const cur = h.levels.find(l => l.level === h.level)
-      h.levels.forEach(l => { l.pct = l.total ? Math.round(l.learned / l.total * 100) : 0; l.cur = l.level === h.level })
-      this.setData({ view: 'ok', h, cur, greet: greet(), todo: h.today.due + h.today.newLeft, show3d: can3d() }, () => this.map3d(h))
+      this.setData({
+        view: 'ok', h, cur, todo, pct,
+        mins: Math.max(1, Math.round(todo * 0.25)),
+        greet: greet(), date: dateText(),
+        left: cur ? cur.total - cur.learned : 0
+      }, () => { this.ring(); this.wordOfDay(h.level) })
     } catch (e) {
       this.setData({ view: 'error', error: e.message })
     }
   },
-  // 3D 地图：three.js 在 pkg-word 分包里，异步加载；失败或机器太弱就显示插画
-  map3d(h) {
-    if (!this.data.show3d) return
-    const key = h.level + ':' + h.levels.filter(l => l.stamped).length
-    if (this.map && this.mapKey === key) return
-    this.mapKey = key
-    require.async('../../pkg-word/three/journey.js').then(m => {
-      wx.createSelectorQuery().select('#map3d').fields({ node: true, size: true }).exec(res => {
-        const r = res && res[0]
-        if (!r || !r.node) return this.setData({ show3d: false })
-        if (this.map) this.map.destroy()
-        try {
-          this.map = m.start(r.node, { width: r.width, height: r.height, dpr: Math.min(2, wx.getWindowInfo ? wx.getWindowInfo().pixelRatio : 2), current: h.level, stamped: h.levels.filter(l => l.stamped).map(l => l.level), open: h.levels.filter(l => l.open).map(l => l.level) })
-        } catch (e) { console.warn('3D 地图启动失败', e); this.setData({ show3d: false }) }
-      })
-    }).catch(e => { console.warn('3D 地图加载失败', e); this.setData({ show3d: false }) })
+  ring() {
+    const { pct } = this.data
+    draw(this, '#ring', (ctx, w, hh) => {
+      const cx = w / 2, cy = hh / 2, r = Math.min(w, hh) / 2 - 8
+      ctx.lineWidth = 8
+      ctx.lineCap = 'round'
+      ctx.strokeStyle = 'rgba(243,234,214,0.12)'
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke()
+      if (pct > 0) {
+        ctx.strokeStyle = '#e9b961'
+        ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0.02, pct)); ctx.stroke()
+      }
+    })
   },
-  touch(e) {
-    const x = e.touches[0].clientX
-    if (e.type === 'touchmove' && this.map && this.lastX != null) this.map.drag(x - this.lastX)
-    this.lastX = x
+  async wordOfDay(level) {
+    if (this.wodLevel === level && this.data.wod) return
+    try {
+      const { words } = await vocab.stop(level)
+      if (!words.length) return
+      const w = words[dayIndex(words.length)]
+      this.wodLevel = level
+      this.setData({ wod: { rank: w.rank, ms: w.ms, zh: w.zh, pos: w.pos, audio: w.audio, ex: '' } })
+      try {
+        const d = await vocab.word(w.rank)
+        const s = (d.senses || []).find(x => x.exMs)
+        if (s) this.setData({ 'wod.ex': s.exMs })
+      } catch (e) { /* 例句是锦上添花 */ }
+    } catch (e) { /* 今日一词失败就不显示 */ }
   },
-  battle() { wx.switchTab({ url: '/pages/battle/battle' }) },
-  go(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
+  playWod() { const w = this.data.wod; if (w) audio.play(w.audio) },
+  atlas() { wx.switchTab({ url: '/pages/atlas/atlas' }) },
   start() { wx.navigateTo({ url: '/pkg-word/learn/learn?mode=today' }) },
   more() { wx.navigateTo({ url: `/pkg-word/learn/learn?mode=new&level=${this.data.h.level}` }) },
-  stop(e) {
-    const l = e.currentTarget.dataset.l
-    if (!l.open) { wx.showToast({ title: '这一站的词表还在整理', icon: 'none' }); return }
-    wx.navigateTo({ url: `/pkg-word/stop/stop?level=${l.level}` })
-  },
   onShareAppMessage() { return { title: '一起背马来语 5000 高频词', path: '/pages/home/home' } }
 })

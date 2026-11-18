@@ -3,57 +3,60 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
   <block wx:else>
-    <!-- 好友 PK -->
-    <view class="card card-dark hero">
-      <view class="h1">好友 PK</view>
-      <view class="muted">选一站，10 道题，发给同学比谁又快又准</view>
-      <view wx:if="{{levels.length}}" class="lvs">
+    <view class="hero">
+      <view class="hero-l">
+        <view class="k">周擂台 · 第 {{cd.week}} 周</view>
+        <view class="cd"><text class="cd-n">{{cd.d}}</text><text class="cd-u"> 天 </text><text class="cd-n">{{cd.h}}</text><text class="cd-u"> 小时</text></view>
+        <view class="rule">20 题，取三次里最高的一次</view>
+        <view class="tries">
+          <view class="tr-bars"><view wx:for="{{tries}}" wx:key="index" class="tr {{item ? 'on' : ''}}" /></view>
+          <text class="tr-t">还剩 {{arena ? arena.triesLeft : 3}} 次 · 最高 <text class="tr-b">{{arena && arena.best ? arena.best.score : '—'}}</text></text>
+        </view>
+      </view>
+      <image class="bird" src="/assets/bird-welcome.png" mode="aspectFit" />
+    </view>
+
+    <view class="acts">
+      <button class="btn btn-main a1" hover-class="hover" bindtap="arena">进入擂台</button>
+      <button class="btn btn-ghost a2" hover-class="hover" bindtap="togglePk">好友 PK</button>
+    </view>
+
+    <view wx:if="{{showPk}}" class="card pk">
+      <view class="muted small">选一站，10 道题，发给同学比谁又快又准</view>
+      <view wx:if="{{levels.length}}" class="chips lvs">
         <view wx:for="{{levels}}" wx:key="level" class="chip lv {{level === item.level ? 'on' : ''}}" data-l="{{item.level}}" bindtap="pickLevel">第{{item.level}}站</view>
       </view>
       <view wx:else class="muted small lvs">还没有开放的站</view>
-      <button class="btn btn-amber go" hover-class="hover" bindtap="create" disabled="{{busy || !level}}" loading="{{busy}}">发起 PK</button>
+      <button class="btn btn-amber" hover-class="hover" bindtap="create" disabled="{{busy || !level}}" loading="{{busy}}">发起 PK</button>
     </view>
 
-    <!-- 每周擂台 -->
-    <view class="h2">每周擂台</view>
-    <view class="card">
-      <view wx:if="{{arena}}">
-        <view class="muted small">本周 {{arena.total}} 题 · {{arena.players}} 人参加</view>
-        <view class="tiles">
-          <view class="tile"><view class="n">{{arena.best ? arena.best.score : '—'}}</view><view class="muted small">我的最好</view></view>
-          <view class="tile"><view class="n">{{arena.best ? arena.best.correct + '/' + arena.total : '—'}}</view><view class="muted small">答对</view></view>
-          <view class="tile"><view class="n">{{arena.triesLeft}}</view><view class="muted small">剩余次数</view></view>
+    <view class="between bh"><view class="h2" style="margin:0">周榜</view>
+      <view class="tabs"><view wx:for="{{tabs}}" wx:key="k" class="tb {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickTab">{{item.t}}</view></view>
+    </view>
+    <view class="board">
+      <view wx:if="{{boardLoading && !board.length}}" class="muted small note">正在排名…</view>
+      <view wx:elif="{{boardNote}}" class="muted small note">{{boardNote}}</view>
+      <block wx:for="{{board}}" wx:key="place">
+        <view wx:if="{{item.gap}}" class="gap">· · ·</view>
+        <view class="br {{item.me ? 'me' : ''}}">
+          <text class="br-p">{{item.place}}</text>
+          <text class="br-n">{{item.name}}{{item.me ? '（我）' : ''}}{{item.me && chase ? ' · ' + chase : ''}}</text>
+          <text class="br-s">{{item.points}}</text>
         </view>
-      </view>
-      <view wx:else class="muted small">每周一换一套题，每周 3 次机会。</view>
-      <button class="btn btn-main go" hover-class="hover" bindtap="arena">去打擂台</button>
+      </block>
+      <view class="more-r" bindtap="rank">看完整榜单 ›</view>
     </view>
 
-    <!-- 本周排行 -->
-    <view class="h2">本周排行</view>
-    <view class="card">
-      <view class="between">
-        <view>
-          <view class="pts"><text class="n">{{me ? me.points : 0}}</text> 分</view>
-          <view class="muted small">{{me && me.place ? '全站第 ' + me.place + ' 名' : '本周还没上榜'}}</view>
+    <view class="between bh"><view class="h2" style="margin:0">最近的 PK</view></view>
+    <view wx:if="{{!pks.length}}" class="muted small note">还没有 PK。点「好友 PK」选一站发起，发给同学。</view>
+    <view wx:else class="list">
+      <view wx:for="{{pks}}" wx:key="id" class="item" hover-class="hover-row" data-id="{{item.id}}" bindtap="open">
+        <view class="item-main">
+          <view class="row"><text class="t">第{{item.level}}站</text><text class="tag {{item.isCreator ? 'amber' : 'blue'}}">{{item.isCreator ? '我发起' : '应战'}}</text></view>
+          <view class="muted small">{{item.date}} · {{item.players}} 人参加 · 答对 {{item.correct}}/10</view>
         </view>
-        <button class="btn btn-ghost rk" hover-class="hover" bindtap="rank">看排行榜</button>
-      </view>
-    </view>
-
-    <!-- 我的 PK -->
-    <view class="h2">我的 PK</view>
-    <view class="card">
-      <view wx:if="{{!pks.length}}" class="muted small none">还没有 PK。选一站发起，发给同学。</view>
-      <view wx:else class="list">
-        <view wx:for="{{pks}}" wx:key="id" class="item" hover-class="hover-row" data-id="{{item.id}}" bindtap="open">
-          <view class="item-main">
-            <view class="row"><text class="t">第{{item.level}}站</text><text class="tag {{item.isCreator ? 'amber' : 'blue'}}">{{item.isCreator ? '我发起' : '应战'}}</text></view>
-            <view class="muted small">{{item.date}} · {{item.players}} 人参加 · 答对 {{item.correct}}/10</view>
-          </view>
-          <view class="score">{{item.score}}<text class="muted small"> 分</text></view>
-          <text class="arrow">›</text>
-        </view>
+        <view class="score">{{item.score}}<text class="muted small"> 分</text></view>
+        <text class="arrow">›</text>
       </view>
     </view>
   </block>

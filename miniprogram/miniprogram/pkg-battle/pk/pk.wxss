@@ -1,7 +1,7 @@
 @import '../common.wxss';
 .invite { padding: 40rpx 30rpx 36rpx; }
-.invite .bird { border: 6rpx solid rgba(255,255,255,.25); }
-.who { color: #fff; margin-top: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.invite .bird { border: 6rpx solid rgba(243,234,214,.25); }
+.who { color: var(--ivory); margin-top: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 14rpx; margin: 24rpx 0 18rpx; }
 .go { margin-top: 36rpx; }
 .tip { margin-top: 28rpx; }

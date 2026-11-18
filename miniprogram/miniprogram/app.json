@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/atlas/atlas",
     "pages/battle/battle",
     "pages/me/me",
     "pages/register/register"
@@ -34,20 +35,27 @@
     }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#f7f1e6",
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "JomBelajar",
-    "backgroundColor": "#f4ede0"
+    "navigationBarBackgroundColor": "#0a1f22",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "词光夜航",
+    "backgroundColor": "#0a1f22",
+    "backgroundTextStyle": "light",
+    "backgroundColorTop": "#0a1f22",
+    "backgroundColorBottom": "#0a1f22"
   },
   "tabBar": {
-    "color": "#6b7470",
-    "selectedColor": "#1f6b4e",
-    "backgroundColor": "#fffdf8",
+    "color": "#9aa59f",
+    "selectedColor": "#e9b961",
+    "backgroundColor": "#0a1f22",
     "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/home/home",
-        "text": "旅程"
+        "text": "今日"
+      },
+      {
+        "pagePath": "pages/atlas/atlas",
+        "text": "图鉴"
       },
       {
         "pagePath": "pages/battle/battle",
