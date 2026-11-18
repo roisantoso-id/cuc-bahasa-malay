@@ -8,7 +8,12 @@ if ! command -v docker >/dev/null; then
   echo "deb [signed-by=/usr/share/keyrings/docker.gpg] https://mirrors.cloud.tencent.com/docker-ce/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
   apt-get update -q && apt-get install -yq docker-ce docker-ce-cli containerd.io docker-compose-plugin
 fi
-# Docker Hub 在国内拉不动,用腾讯云内网镜像
+# Docker Hub 在国内拉不动,用腾讯云内网镜像;境外服务器(NO_CN_MIRROR=1)不加镜像,只限制日志大小
+if [ ! -f /etc/docker/daemon.json ] && [ -n "${NO_CN_MIRROR:-}" ]; then
+  mkdir -p /etc/docker
+  echo '{ "log-driver": "json-file", "log-opts": { "max-size": "20m", "max-file": "3" } }' > /etc/docker/daemon.json
+  systemctl restart docker
+fi
 if [ ! -f /etc/docker/daemon.json ]; then
   mkdir -p /etc/docker
   echo '{ "registry-mirrors": ["https://mirror.ccs.tencentyun.com"], "log-driver": "json-file", "log-opts": { "max-size": "20m", "max-file": "3" } }' > /etc/docker/daemon.json
