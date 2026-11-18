@@ -1,4 +1,4 @@
-<view class="wrap">
+<view class="wrap me-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻护照…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <block wx:else>
@@ -6,7 +6,7 @@
     <view class="me-hero">
       <view class="me-more" hover-class="hover" data-url="/pkg-me/more/more" bindtap="go"><text class="me-dot" /><text class="me-dot" /><text class="me-dot" /></view>
       <view class="me-top" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go">
-        <lv-avatar src="{{mascotImg || student.avatar}}" size="{{176}}" level="{{lv.level}}" pct="{{lv.pct}}" />
+        <lv-avatar src="{{mascotImg || student.avatar}}" size="{{144}}" level="{{lv.level}}" pct="{{lv.pct}}" />
         <view class="me-id">
           <view class="me-name one">{{student.name || '同学'}}</view>
           <view class="me-sub one">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}}</view>
