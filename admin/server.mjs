@@ -1,6 +1,6 @@
-// JomBelajar 背单词服务(Node 22+,PostgreSQL,唯一依赖 pg)
+// JomBelajar 背单词服务(Node 22+,MySQL 5.7/8.0,唯一依赖 mysql2)
 //   线上:docker compose 起(见仓库根目录 docker-compose.yml),配置从环境变量读
-//   本机:DATABASE_URL=postgres://… node admin/server.mjs(也可以写进 ADMIN_ENV 指定的文件)
+//   本机:DATABASE_URL=mysql://用户:密码@主机:3306/库名 node admin/server.mjs(也可以写进 ADMIN_ENV 指定的文件)
 // 一个进程同时提供:
 //   /api/app/*    小程序接口(微信登录换 openid,token 放在 Authorization 头)
 //   /api/admin/*  后台接口(管理员账号 + 会话 cookie)
@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'no
 import { join, dirname, extname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto'
-import pg from 'pg'
+import mysql from 'mysql2/promise'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -68,29 +68,28 @@ const STOPS = [
 // ---------------- 数据库 ----------------
 // 布尔值都用 0/1 整数存,日期(北京时间)用 'YYYY-MM-DD' 文本,时间用 ISO 文本;senses 是 JSON 文本
 mkdirSync(join(DATA, 'uploads'), { recursive: true })
-pg.types.setTypeParser(20, v => Number(v)) // COUNT / SUM 返回的 bigint 转成数字
-const pool = new pg.Pool({ connectionString: ENV.DATABASE_URL, max: 10 })
-const SCHEMA = `
-CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT);
-CREATE TABLE IF NOT EXISTS words (rank INTEGER PRIMARY KEY, ms TEXT NOT NULL, root TEXT DEFAULT '', level INTEGER NOT NULL, senses TEXT DEFAULT '[]', audio TEXT DEFAULT '', status TEXT DEFAULT 'pending', edited INTEGER DEFAULT 0, updated_at TEXT);
-CREATE INDEX IF NOT EXISTS words_level ON words(level, status);
-CREATE TABLE IF NOT EXISTS students (id SERIAL PRIMARY KEY, openid TEXT UNIQUE NOT NULL, name TEXT, school TEXT, class_name TEXT, track TEXT, phone TEXT, daily_new INTEGER DEFAULT 20, created_at TEXT, last_active_at TEXT);
-CREATE TABLE IF NOT EXISTS progress (student_id INTEGER NOT NULL, rank INTEGER NOT NULL, box INTEGER DEFAULT 0, due TEXT, wrong INTEGER DEFAULT 0, seen INTEGER DEFAULT 0, fav INTEGER DEFAULT 0, first_at TEXT, last_day TEXT, last_at TEXT, PRIMARY KEY (student_id, rank));
-CREATE INDEX IF NOT EXISTS progress_due ON progress(student_id, due);
-CREATE TABLE IF NOT EXISTS daily (student_id INTEGER NOT NULL, day TEXT NOT NULL, new_cnt INTEGER DEFAULT 0, review_cnt INTEGER DEFAULT 0, right_cnt INTEGER DEFAULT 0, PRIMARY KEY (student_id, day));
-CREATE TABLE IF NOT EXISTS teachers (id SERIAL PRIMARY KEY, name TEXT, title TEXT, role TEXT, bio TEXT, photo TEXT, sort INTEGER DEFAULT 0);
-`
-// SQL 里写 ?,这里换成 $1 $2 …
-const pgSql = sql => { let n = 0; return sql.replace(/\?/g, () => '$' + ++n) }
+// decimalNumbers:SUM() 返回数字而不是字符串;dateStrings:不让驱动把文本日期转成 Date
+const pool = mysql.createPool({ uri: ENV.DATABASE_URL, connectionLimit: 10, charset: 'utf8mb4', decimalNumbers: true, dateStrings: true, supportBigNumbers: true })
+// 建表一条一条执行(MySQL 不支持一次多条,也不支持 CREATE INDEX IF NOT EXISTS,索引写进建表语句)
+const SCHEMA = [
+  `CREATE TABLE IF NOT EXISTS meta (k VARCHAR(64) PRIMARY KEY, v TEXT) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS words (\`rank\` INT PRIMARY KEY, ms VARCHAR(120) NOT NULL, root VARCHAR(120) NOT NULL DEFAULT '', level INT NOT NULL, senses MEDIUMTEXT, audio VARCHAR(255) NOT NULL DEFAULT '', status VARCHAR(16) NOT NULL DEFAULT 'pending', edited TINYINT NOT NULL DEFAULT 0, updated_at VARCHAR(32), INDEX words_level (level, status)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS students (id INT AUTO_INCREMENT PRIMARY KEY, openid VARCHAR(64) NOT NULL UNIQUE, name VARCHAR(60), school VARCHAR(120), class_name VARCHAR(80), track VARCHAR(16), phone VARCHAR(32), daily_new INT NOT NULL DEFAULT 20, created_at VARCHAR(32), last_active_at VARCHAR(32)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS progress (student_id INT NOT NULL, \`rank\` INT NOT NULL, box INT NOT NULL DEFAULT 0, due VARCHAR(10), wrong INT NOT NULL DEFAULT 0, seen INT NOT NULL DEFAULT 0, fav TINYINT NOT NULL DEFAULT 0, first_at VARCHAR(32), last_day VARCHAR(10), last_at VARCHAR(32), PRIMARY KEY (student_id, \`rank\`), INDEX progress_due (student_id, due)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS daily (student_id INT NOT NULL, day VARCHAR(10) NOT NULL, new_cnt INT NOT NULL DEFAULT 0, review_cnt INT NOT NULL DEFAULT 0, right_cnt INT NOT NULL DEFAULT 0, PRIMARY KEY (student_id, day)) DEFAULT CHARSET = utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS teachers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60), title VARCHAR(200), role VARCHAR(60), bio TEXT, photo VARCHAR(300), sort INT NOT NULL DEFAULT 0) DEFAULT CHARSET = utf8mb4`
+]
+// rank 在 MySQL 8 是保留字:SQL 里没带表名前缀的 rank 自动加反引号(w.rank / p.rank 这种不用)
+const mySql = sql => sql.replace(/(?<![.\w`])rank\b/g, '`rank`')
 const helpers = c => ({
-  all: async (sql, ...a) => (await c.query(pgSql(sql), a)).rows,
-  one: async (sql, ...a) => (await c.query(pgSql(sql), a)).rows[0],
-  run: (sql, ...a) => c.query(pgSql(sql), a)
+  all: async (sql, ...a) => (await c.query(mySql(sql), a))[0],
+  one: async (sql, ...a) => (await c.query(mySql(sql), a))[0][0],
+  run: async (sql, ...a) => (await c.query(mySql(sql), a))[0]
 })
 const { all, one, run } = helpers(pool)
 async function tx(fn) {
-  const c = await pool.connect()
-  try { await c.query('BEGIN'); const r = await fn(helpers(c)); await c.query('COMMIT'); return r } catch (e) { await c.query('ROLLBACK'); throw e } finally { c.release() }
+  const c = await pool.getConnection()
+  try { await c.beginTransaction(); const r = await fn(helpers(c)); await c.commit(); return r } catch (e) { await c.rollback(); throw e } finally { c.release() }
 }
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
@@ -101,16 +100,18 @@ const cleanSense = s => { const o = { pos: str(s.pos, 20), zh: str(s.zh, 200), e
 async function importWords(list, { overwriteEdited = false } = {}) {
   const now = new Date().toISOString()
   let changed = 0
+  // 后台改过的词(edited = 1)不覆盖,除非勾了「覆盖已改过的」
+  const keep = overwriteEdited ? new Set() : new Set((await all('SELECT rank FROM words WHERE edited = 1')).map(r => r.rank))
   await tx(async c => {
     for (const w of list) {
       const rank = Number(w.rank)
-      if (!Number.isInteger(rank) || rank < 1 || rank > 20000 || !w.ms) continue
+      if (!Number.isInteger(rank) || rank < 1 || rank > 20000 || !w.ms || keep.has(rank)) continue
       const senses = (Array.isArray(w.senses) ? w.senses : []).map(cleanSense).filter(s => s.zh)
       const status = w.status === 'approved' && senses.some(s => !s.check) ? 'approved' : 'pending'
       const r = await c.run(`INSERT INTO words (rank, ms, root, level, senses, audio, status, edited, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
-        ON CONFLICT (rank) DO UPDATE SET ms = excluded.ms, root = excluded.root, level = excluded.level, senses = excluded.senses, audio = excluded.audio, status = excluded.status, edited = 0, updated_at = excluded.updated_at
-        WHERE words.edited = 0 OR ?::int = 1`, rank, str(w.ms, 80), str(w.root, 80), Number(w.level) || Math.ceil(rank / 500), JSON.stringify(senses), str(w.audio, 200), status, now, overwriteEdited ? 1 : 0)
-      changed += r.rowCount
+        ON DUPLICATE KEY UPDATE ms = VALUES(ms), root = VALUES(root), level = VALUES(level), senses = VALUES(senses), audio = VALUES(audio), status = VALUES(status), edited = 0, updated_at = VALUES(updated_at)`,
+        rank, str(w.ms, 80), str(w.root, 80), Number(w.level) || Math.ceil(rank / 500), JSON.stringify(senses), str(w.audio, 200), status, now)
+      if (r.affectedRows) changed++
     }
   })
   return { total: list.length, changed }
@@ -120,10 +121,10 @@ async function init() {
   for (let i = 0; ; i++) { // 数据库容器可能还没起来,等一会儿
     try { await pool.query('SELECT 1'); break } catch (e) { if (i >= 30) throw e; await new Promise(r => setTimeout(r, 1000)) }
   }
-  await pool.query(SCHEMA)
+  for (const q of SCHEMA) await pool.query(q)
   const k = await one('SELECT v FROM meta WHERE k = ?', 'token_key')
   TOKEN_KEY = k ? k.v : randomBytes(32).toString('hex')
-  if (!k) await run('INSERT INTO meta (k, v) VALUES (?, ?) ON CONFLICT (k) DO NOTHING', 'token_key', TOKEN_KEY)
+  if (!k) await run('INSERT IGNORE INTO meta (k, v) VALUES (?, ?)', 'token_key', TOKEN_KEY)
   if (!(await one('SELECT 1 FROM words LIMIT 1'))) {
     const seed = [join(HERE, '../content/vocab5000/words.json'), join(HERE, 'words.json')].find(existsSync)
     if (seed) console.log('首次启动,导入词库:', await importWords(JSON.parse(readFileSync(seed, 'utf8'))))
@@ -154,7 +155,7 @@ async function streakOf(sid) {
   return { streak: n, checkedToday: days.has(day()) }
 }
 async function levelsOf(sid) {
-  const rows = await all(`SELECT w.level, COUNT(*) total, COUNT(*) FILTER (WHERE p.seen > 0) learned, COUNT(*) FILTER (WHERE p.box = 6) mastered
+  const rows = await all(`SELECT w.level, COUNT(*) total, SUM(CASE WHEN p.seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN p.box = 6 THEN 1 ELSE 0 END) mastered
     FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' GROUP BY w.level`, sid)
   const by = Object.fromEntries(rows.map(r => [r.level, r]))
   return STOPS.map(s => {
@@ -170,7 +171,7 @@ async function home(st) {
   const levels = await levelsOf(sid)
   const d = await one('SELECT * FROM daily WHERE student_id = ? AND day = ?', sid, today) || { new_cnt: 0, review_cnt: 0 }
   const due = (await one('SELECT COUNT(*) n FROM progress WHERE student_id = ? AND seen > 0 AND box < 6 AND due <= ?', sid, today)).n
-  const tot = await one('SELECT COUNT(*) FILTER (WHERE seen > 0) learned, COUNT(*) FILTER (WHERE box = 6) mastered, COALESCE(SUM(fav), 0) fav, COUNT(*) FILTER (WHERE wrong > 0 AND box < 6) wrong FROM progress WHERE student_id = ?', sid)
+  const tot = await one('SELECT SUM(CASE WHEN seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN box = 6 THEN 1 ELSE 0 END) mastered, COALESCE(SUM(fav), 0) fav, SUM(CASE WHEN wrong > 0 AND box < 6 THEN 1 ELSE 0 END) wrong FROM progress WHERE student_id = ?', sid)
   return {
     student: studentOut(st), levels, level: currentLevel(levels),
     today: { goal: st.daily_new, learned: d.new_cnt, reviewed: d.review_cnt, newLeft: Math.max(st.daily_new - d.new_cnt, 0), due: Number(due) },
@@ -197,7 +198,7 @@ async function start(st, b) {
   const items = [...review.map(w => ({ ...wordOut(w, w), kind: 'review' })), ...fresh.map(w => ({ ...wordOut(w, w), kind: 'new' }))]
   // 出题用的干扰项:同一站的其他词
   const levels = [...new Set(items.map(i => i.level))]
-  const pool = levels.length ? await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved' AND level IN (${levels.map(() => '?').join(',')}) ORDER BY random() LIMIT 80`, ...levels) : []
+  const pool = levels.length ? await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved' AND level IN (${levels.map(() => '?').join(',')}) ORDER BY RAND() LIMIT 80`, ...levels) : []
   return { mode, items, pool: pool.map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses).find(s => !s.check) || {}).zh || '' })) }
 }
 
@@ -218,10 +219,10 @@ async function grade(st, b) {
   const now = new Date().toISOString()
   await tx(async c => {
     await c.run(`INSERT INTO progress (student_id, rank, box, due, wrong, seen, first_at, last_day, last_at) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)
-      ON CONFLICT (student_id, rank) DO UPDATE SET box = excluded.box, due = excluded.due, wrong = excluded.wrong, seen = progress.seen + 1,
-        first_at = CASE WHEN progress.seen = 0 THEN excluded.first_at ELSE progress.first_at END, last_day = excluded.last_day, last_at = excluded.last_at`, sid, rank, box, due, wrong, today, today, now)
+      ON DUPLICATE KEY UPDATE first_at = CASE WHEN seen = 0 THEN VALUES(first_at) ELSE first_at END, seen = seen + 1,
+        box = VALUES(box), due = VALUES(due), wrong = VALUES(wrong), last_day = VALUES(last_day), last_at = VALUES(last_at)`, sid, rank, box, due, wrong, today, today, now)
     await c.run(`INSERT INTO daily (student_id, day, new_cnt, review_cnt, right_cnt) VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT (student_id, day) DO UPDATE SET new_cnt = daily.new_cnt + excluded.new_cnt, review_cnt = daily.review_cnt + excluded.review_cnt, right_cnt = daily.right_cnt + excluded.right_cnt`,
+      ON DUPLICATE KEY UPDATE new_cnt = new_cnt + VALUES(new_cnt), review_cnt = review_cnt + VALUES(review_cnt), right_cnt = right_cnt + VALUES(right_cnt)`,
       sid, today, isNew ? 1 : 0, reviewCounted ? 1 : 0, result === 'know' || result === 'mastered' ? 1 : 0)
     await c.run('UPDATE students SET last_active_at = ? WHERE id = ?', now, sid)
   })
@@ -312,7 +313,7 @@ async function appApi(req, res, p, url) {
     if (!b.agree) return fail(res, 400, '请先阅读并同意隐私保护指引')
     const now = new Date().toISOString()
     await run(`INSERT INTO students (openid, name, school, class_name, track, phone, created_at, last_active_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT (openid) DO UPDATE SET name = excluded.name, school = excluded.school, class_name = excluded.class_name, track = excluded.track, phone = excluded.phone`,
+      ON DUPLICATE KEY UPDATE name = VALUES(name), school = VALUES(school), class_name = VALUES(class_name), track = VALUES(track), phone = VALUES(phone)`,
       openid, name, school, className, ['some', 'heritage'].includes(b.track) ? 'some' : 'zero', phone, now, now)
     return send(res, 200, { ok: true, student: studentOut(await one('SELECT * FROM students WHERE openid = ?', openid)) })
   }
@@ -327,7 +328,7 @@ async function appApi(req, res, p, url) {
     const b = await body(req), rank = Number(b.rank)
     if (!await one(`SELECT 1 FROM words WHERE rank = ? AND status = 'approved'`, rank)) return fail(res, 404, '没有这个词')
     // 没学过的词也能收藏:建一条 seen = 0 的记录,不算已学
-    await run(`INSERT INTO progress (student_id, rank, box, due, fav, last_at) VALUES (?, ?, 0, ?, ?, ?) ON CONFLICT (student_id, rank) DO UPDATE SET fav = excluded.fav`, st.id, rank, day(), b.on ? 1 : 0, new Date().toISOString())
+    await run(`INSERT INTO progress (student_id, rank, box, due, fav, last_at) VALUES (?, ?, 0, ?, ?, ?) ON DUPLICATE KEY UPDATE fav = VALUES(fav)`, st.id, rank, day(), b.on ? 1 : 0, new Date().toISOString())
     return send(res, 200, { ok: true })
   }
   if (p === '/api/app/level') {
@@ -344,10 +345,13 @@ async function appApi(req, res, p, url) {
     if (!k) return send(res, 200, [])
     const like = `%${k}%`
     // 输入中文查释义,输入字母查马来语和词根
-    const cond = /[\u4e00-\u9fff]/.test(k) ? `EXISTS (SELECT 1 FROM json_array_elements(w.senses::json) j WHERE j.value->>'zh' LIKE ? AND j.value->>'check' IS NULL)` : `(lower(w.ms) LIKE ? OR lower(w.root) LIKE ?)`
+    // 中文先粗查 senses 文本,再在这里只留「审过的释义里含这个词」的(不依赖 MySQL 8 的 JSON_TABLE)
+    const zh = /[\u4e00-\u9fff]/.test(k)
+    const cond = zh ? `w.senses LIKE ?` : `(lower(w.ms) LIKE ? OR lower(w.root) LIKE ?)`
     const rows = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' AND ${cond}
-      ORDER BY (lower(w.ms) = ?) DESC, (lower(w.ms) LIKE ?) DESC, w.rank LIMIT 30`, st.id, ...(cond.includes('root') ? [like, like] : [like]), k, k + '%')
-    return send(res, 200, rows.map(w => brief(wordOut(w, w))))
+      ORDER BY (lower(w.ms) = ?) DESC, (lower(w.ms) LIKE ?) DESC, w.rank LIMIT ?`, st.id, ...(zh ? [like] : [like, like]), k, k + '%', zh ? 200 : 30)
+    const out = rows.map(w => wordOut(w, w)).filter(o => !zh || o.senses.some(s => s.zh.toLowerCase().includes(k))).slice(0, 30)
+    return send(res, 200, out.map(brief))
   }
   if (p === '/api/app/book') return send(res, 200, await book(st, url.searchParams.get('type'), Number(url.searchParams.get('page')) || 0))
   if (p === '/api/app/stats') return send(res, 200, await stats(st))
