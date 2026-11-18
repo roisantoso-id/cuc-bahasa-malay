@@ -389,7 +389,7 @@ async function appApi(req, res, p, url) {
   if (p === '/api/app/level') {
     const level = Number(url.searchParams.get('level')) || 1
     const rows = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.level = ? AND w.status = 'approved' ORDER BY w.rank`, st.id, level)
-    return send(res, 200, { stop: (await levelsOf(st.id)).find(l => l.level === level), words: rows.map(w => { const o = wordOut(w, w); return { rank: o.rank, ms: o.ms, zh: (o.senses[0] || {}).zh || '', box: o.box, fav: o.fav } }) })
+    return send(res, 200, { stop: (await levelsOf(st.id)).find(l => l.level === level), words: rows.map(w => { const o = wordOut(w, w); return { rank: o.rank, ms: o.ms, zh: (o.senses[0] || {}).zh || '', pos: (o.senses[0] || {}).pos || '', box: o.box, fav: o.fav, audio: o.audio } }) })
   }
   if (p === '/api/app/word') {
     const w = await one(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.rank = ? AND w.status = 'approved'`, st.id, Number(url.searchParams.get('rank')))
