@@ -79,9 +79,9 @@ Page({
         : { place: x.place, name: x.name, sub: x.school || '', points: x.points, me: !!x.me, av: av(x.aid) })
       const { rows, chase } = nearby(list)
       // 前三名上领奖台（显示顺序 2-1-3），下面只列第 4 名以后、我附近的几行
-      const podium = [list[1], list[0], list[2]].filter(Boolean)
+      const podium = list.length >= 3 ? [list[1], list[0], list[2]] : list.slice(0, 2).reverse()
       const me = r.me ? { ...r.me, av: av(r.me.aid) } : null
-      this.setData({ podium, board: rows.filter(x => x.place > 3 || x.gap), chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
+      this.setData({ podium, board: rows.filter(x => x.place > 3), chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
     } catch (e) {
       if (seq === this.seq) this.setData({ board: [], boardLoading: false, boardNote: e.message })
     }

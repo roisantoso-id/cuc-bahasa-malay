@@ -25,7 +25,8 @@
       <view class="tile pk">
         <image class="tile-bird" src="/assets/cheer.jpg" mode="aspectFill" />
         <view class="tile-t">好友 PK</view>
-        <view class="tile-s">10 题，发给同学比一比</view>
+        <view class="tile-s">10 题</view>
+        <view class="tile-s">发给同学比一比</view>
         <view class="tile-row">
           <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx"><view class="sel">{{levelNames[levelIdx]}} ▾</view></picker>
           <view class="tile-go go-amber {{busy ? 'dis' : ''}}" bindtap="create">{{busy ? '…' : '发起 ›'}}</view>
@@ -52,7 +53,7 @@
       <view class="board">
         <block wx:for="{{board}}" wx:key="place">
           <view wx:if="{{item.gap}}" class="gap">· · ·</view>
-          <view wx:else class="br {{item.me ? 'me' : ''}}">
+          <view class="br {{item.me ? 'me' : ''}}">
             <text class="br-p">{{item.place}}</text>
             <image wx:if="{{item.av}}" class="br-av" src="{{item.av}}" mode="aspectFill" />
             <view wx:else class="br-av pd-mark sm">{{item.mark}}</view>

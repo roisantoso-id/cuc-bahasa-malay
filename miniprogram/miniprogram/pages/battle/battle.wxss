@@ -45,8 +45,8 @@
 .tile.hover { opacity: .85; }
 .tile.arena { background: linear-gradient(160deg, #3b3220, #1a2a26 70%); }
 .tile.pk { background: linear-gradient(160deg, #1f4a3c, #12312f 70%); }
-.tile-bird { position: absolute; right: -14rpx; top: -10rpx; width: 120rpx; height: 120rpx; border-radius: 50%; opacity: .95; background: var(--ivory); }
-.tile-t { font-size: 32rpx; font-weight: 800; color: var(--ivory); padding-right: 100rpx; }
+.tile-bird { position: absolute; right: 18rpx; top: 18rpx; width: 76rpx; height: 76rpx; border-radius: 50%; background: var(--ivory); box-shadow: 0 0 0 3rpx rgba(243,234,214,.25); }
+.tile-t { font-size: 32rpx; font-weight: 800; color: var(--ivory); padding-right: 84rpx; line-height: 76rpx; margin-top: -8rpx; }
 .tile-s { font-size: 22rpx; color: var(--ink2); margin-top: 6rpx; }
 .tile-row { display: flex; align-items: center; justify-content: space-between; gap: 10rpx; margin-top: 18rpx; }
 .tile-go { display: inline-flex; align-items: center; height: 64rpx; padding: 0 24rpx; margin-top: 18rpx; border-radius: 999rpx; background: var(--ivory); color: var(--dark-ink); font-size: 26rpx; font-weight: 800; }
