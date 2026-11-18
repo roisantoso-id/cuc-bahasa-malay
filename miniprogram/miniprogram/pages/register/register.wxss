@@ -10,3 +10,7 @@ button.rg-av-btn { position: relative; width: 128rpx; height: 128rpx; min-height
 .rg-box.on { background: var(--ivory); border-color: var(--ivory); }
 .rg-tick { width: 20rpx; height: 10rpx; border-left: 4rpx solid var(--dark-ink); border-bottom: 4rpx solid var(--dark-ink); transform: rotate(-45deg) translateY(-2rpx); }
 .rg-save { margin-top: var(--s4); }
+
+.rg-av { display: flex; align-items: center; gap: 24rpx; margin-bottom: 32rpx; }
+.rg-av-img { width: 112rpx; height: 112rpx; border-radius: 50%; background: var(--ivory); flex: none; }
+.rg-av-t { font-size: 30rpx; font-weight: 700; color: var(--ivory); }

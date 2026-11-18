@@ -77,8 +77,8 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avata
     const pk = await one('SELECT * FROM pk WHERE id = ?', id)
     if (!pk) throw Object.assign(new Error('这场 PK 不存在'), { code: 404 })
     const qs = JSON.parse(pk.questions)
-    const creator = await one('SELECT id, name, school, class_name, avatar, avatar_ok FROM students WHERE id = ?', pk.creator)
-    const rows = await all('SELECT e.*, s.id sid, s.name, s.school, s.class_name, s.avatar, s.avatar_ok FROM pk_entry e JOIN students s ON s.id = e.student_id WHERE e.pk_id = ? ORDER BY e.score DESC, e.ms ASC', id)
+    const creator = await one('SELECT id, name, school, class_name, mascot FROM students WHERE id = ?', pk.creator)
+    const rows = await all('SELECT e.*, s.id sid, s.name, s.school, s.class_name, s.mascot FROM pk_entry e JOIN students s ON s.id = e.student_id WHERE e.pk_id = ? ORDER BY e.score DESC, e.ms ASC', id)
     const mine = rows.find(r => r.student_id === st.id)
     return {
       id, level: pk.level, expired: pk.expires_at < Date.now(), mine: !!mine, isCreator: pk.creator === st.id,
@@ -86,7 +86,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avata
       // 没答过才发题（不带答案）；答过的发带答案的复盘
       questions: mine ? null : publicQ(qs),
       review: mine ? qs.map((q, i) => ({ ...q, picked: JSON.parse(mine.answers || '[]')[i] })) : null,
-      ranking: rows.map((r, i) => ({ place: i + 1, ...who({ id: r.sid, name: r.name, school: r.school, class_name: r.class_name, avatar: r.avatar, avatar_ok: r.avatar_ok }), score: r.score, correct: r.correct, ms: r.ms, me: r.student_id === st.id }))
+      ranking: rows.map((r, i) => ({ place: i + 1, ...who({ id: r.sid, name: r.name, school: r.school, class_name: r.class_name, mascot: r.mascot }), score: r.score, correct: r.correct, ms: r.ms, me: r.student_id === st.id }))
     }
   }
   async function pkSubmit(st, id, b) {
@@ -150,7 +150,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avata
   async function arenaRank(st, scope) {
     const week = weekStart()
     const cond = scope === 'school' && st.school ? 'AND s.school = ?' : ''
-    const rows = await all(`SELECT e.score, e.correct, e.ms, s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok FROM arena_entry e JOIN students s ON s.id = e.student_id
+    const rows = await all(`SELECT e.score, e.correct, e.ms, s.id, s.name, s.school, s.class_name, s.mascot FROM arena_entry e JOIN students s ON s.id = e.student_id
       WHERE e.week = ? ${cond} ORDER BY e.score DESC, e.ms ASC LIMIT 50`, week, ...(cond ? [st.school] : []))
     return { week, scope: cond ? 'school' : 'all', list: rows.map((r, i) => ({ place: i + 1, ...who(r), score: r.score, correct: r.correct, ms: r.ms, me: r.id === st.id })) }
   }
@@ -162,8 +162,8 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avata
     let cond = '', args = []
     if (scope === 'school') { if (!st.school) return { week: from, scope, needProfile: true, list: [] }; cond = 'AND s.school = ?'; args = [st.school] }
     if (scope === 'class') { if (!st.school || !st.class_name) return { week: from, scope, needProfile: true, list: [] }; cond = 'AND s.school = ? AND s.class_name = ?'; args = [st.school, st.class_name] }
-    const rows = await all(`SELECT s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok, ${POINTS} pts, SUM(d.new_cnt) learned FROM daily d JOIN students s ON s.id = d.student_id
-      WHERE d.day >= ? ${cond} GROUP BY s.id, s.name, s.school, s.class_name, s.avatar, s.avatar_ok HAVING pts > 0 ORDER BY pts DESC, learned DESC LIMIT 50`, from, ...args)
+    const rows = await all(`SELECT s.id, s.name, s.school, s.class_name, s.mascot, ${POINTS} pts, SUM(d.new_cnt) learned FROM daily d JOIN students s ON s.id = d.student_id
+      WHERE d.day >= ? ${cond} GROUP BY s.id, s.name, s.school, s.class_name, s.mascot HAVING pts > 0 ORDER BY pts DESC, learned DESC LIMIT 50`, from, ...args)
     const list = rows.map((r, i) => ({ place: i + 1, ...who(r), points: Number(r.pts), learned: Number(r.learned), me: r.id === st.id }))
     let me = list.find(x => x.me) || null
     if (!me) {

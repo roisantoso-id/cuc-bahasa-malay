@@ -3,7 +3,7 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
   <block wx:else>
     <view class="me-who">
-      <image class="me-av" src="{{student.avatar || '/assets/avatar.jpg'}}" mode="aspectFill" data-url="/pages/register/register" bindtap="go" />
+      <image class="me-av" src="{{student.avatar || '/assets/avatar.jpg'}}" mode="aspectFill" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go" />
       <view class="item-main">
         <view class="h1 one">{{student.name || '同学'}}</view>
         <view class="muted small one">{{student.school || '学校未填'}}{{student.className ? ' · ' + student.className : ''}} · 已盖 {{stamps}} 个章</view>
@@ -43,6 +43,7 @@
     <view class="list me-links">
       <view class="item" hover-class="hover-row" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><view class="item-main">错词本</view><text class="item-x">{{total.wrong}} 个</text><text class="arrow">›</text></view>
       <view class="item" hover-class="hover-row" data-url="/pkg-word/book/book?type=fav" bindtap="go"><view class="item-main">收藏</view><text class="item-x">{{total.fav}} 个</text><text class="arrow">›</text></view>
+      <view class="item" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><view class="item-main">我的犀鸟 · 换装和徽章</view><text class="arrow">›</text></view>
       <view class="item" hover-class="hover-row" bindtap="goal"><view class="item-main">每天新词</view><text class="item-x">{{student.dailyNew}} 个</text><text class="arrow">›</text></view>
       <view class="item" hover-class="hover-row" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于老师</view><text class="arrow">›</text></view>
       <button class="item me-fb" hover-class="hover-row" open-type="feedback"><view class="item-main">意见反馈 / 单词报错</view><text class="arrow">›</text></button>

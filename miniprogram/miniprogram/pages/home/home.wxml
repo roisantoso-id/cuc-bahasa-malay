@@ -50,3 +50,16 @@
   </block>
 </view>
 <view class="tab-pad" />
+
+<!-- 解锁新成就：打开时检查一次，有新的就弹出来 -->
+<view wx:if="{{unlock}}" class="hm-ul-mask" catchtouchmove="noop">
+  <view class="hm-ul">
+    <view class="hm-ul-k">解锁新成就</view>
+    <view class="hm-ul-imgw"><image class="hm-ul-img {{unlock.type === 'badge' ? 'round' : ''}}" src="{{unlock.img}}" mode="aspectFill" /><fx-burst fire="{{ulFx}}" count="16" /></view>
+    <view class="hm-ul-t">{{unlock.title}}</view>
+    <view class="hm-ul-d">{{unlock.desc}}{{ulMore ? ' · 还有 ' + ulMore + ' 个新成就' : ''}}</view>
+    <button wx:if="{{unlock.type === 'costume'}}" class="btn btn-main btn-block" hover-class="hover" bindtap="ulWear">换上这套</button>
+    <button class="btn btn-text" hover-class="hover" bindtap="ulNext">{{ulMore ? '下一个' : '知道了'}}</button>
+  </view>
+</view>
+

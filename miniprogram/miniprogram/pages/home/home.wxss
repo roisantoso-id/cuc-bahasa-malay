@@ -17,3 +17,15 @@
 .hm-wave { width: 14rpx; height: 24rpx; border: 4rpx solid var(--ivory); border-left: 0; border-radius: 0 24rpx 24rpx 0; }
 .hm-w1 { display: flex; align-items: baseline; gap: var(--s2); }
 .hm-wms { font-size: 36rpx; }
+
+/* 解锁新成就弹窗 */
+.hm-ul-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 300; background: rgba(5,16,18,.72); display: flex; align-items: center; justify-content: center; }
+.hm-ul { width: 82vw; padding: 40rpx 36rpx 24rpx; border-radius: 36rpx; background: var(--ivory); color: var(--dark-ink); text-align: center; animation: ulin .4s cubic-bezier(.3,1.4,.5,1); }
+@keyframes ulin { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.hm-ul-k { font-size: 24rpx; letter-spacing: 6rpx; color: #b07a1c; font-weight: 700; }
+.hm-ul-imgw { position: relative; width: 320rpx; height: 320rpx; margin: 20rpx auto 12rpx; }
+.hm-ul-img { width: 320rpx; height: 320rpx; border-radius: 32rpx; }
+.hm-ul-img.round { border-radius: 50%; }
+.hm-ul-t { font-size: 38rpx; font-weight: 800; }
+.hm-ul-d { font-size: 24rpx; color: rgba(10,31,34,.6); margin: 8rpx 0 28rpx; }
+.hm-ul .btn-text { color: rgba(10,31,34,.6); margin-top: 8rpx; }

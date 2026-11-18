@@ -43,7 +43,6 @@ services:
       ADMIN_USER: ${ADMIN_USER:-admin}
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
       AUDIO_BASE: ${AUDIO_BASE:?请在 .env 里填 AUDIO_BASE}
-      WX_PUSH_TOKEN: ${WX_PUSH_TOKEN:-}   # 微信消息推送 Token（头像检测结果回调，avatar.mjs）
     volumes:
       - uploads:/data
 

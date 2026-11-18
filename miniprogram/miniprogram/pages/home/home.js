@@ -18,6 +18,28 @@ Page({
     if (getApp().globalData.dirty || !this.data.h) this.load()
   },
   onUnload() { audio.stop() },
+  noop() {},
+  // ---- 解锁新成就弹窗 ----
+  async checkUnlock() {
+    try {
+      const r = await vocab.achievements()
+      if (!r.fresh || !r.fresh.length) return
+      this.fresh = r.fresh
+      this.showUnlock()
+      vocab.achievementsSeen().catch(() => {})
+    } catch (e) { /* 成就检查失败不影响首页 */ }
+  },
+  showUnlock() {
+    const u = this.fresh.shift()
+    if (!u) return this.setData({ unlock: null })
+    this.setData({ unlock: u, ulMore: this.fresh.length })
+    setTimeout(() => this.setData({ ulFx: (this.data.ulFx || 0) + 1 }), 120)
+  },
+  ulNext() { this.showUnlock() },
+  async ulWear() {
+    try { await vocab.setMascot(this.data.unlock.key); getApp().globalData.dirty = true; wx.showToast({ title: '换好了', icon: 'success' }) } catch (e) { wx.showToast({ title: e.message, icon: 'none' }) }
+    this.showUnlock()
+  },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
   async load() {
     try {
@@ -35,7 +57,7 @@ Page({
         mins: Math.max(1, Math.round(todo * 0.25)),
         greet: greet(), date: dateText(),
         left: cur ? cur.total - cur.learned : 0
-      }, () => { this.ring(); this.wordOfDay(h.level) })
+      }, () => { this.ring(); this.wordOfDay(h.level); this.checkUnlock() })
     } catch (e) {
       this.setData({ view: 'error', error: e.message })
     }

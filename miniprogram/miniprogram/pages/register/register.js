@@ -8,22 +8,11 @@ Page({
     const me = await vocab.login().catch(() => null)
     const s = (me && me.student) || {}
     const filled = !!(s.name || s.school || s.phone)
-    this.setData({ avatar: s.avatar || '', avatarPending: !!s.avatarPending, edit: true, agree: filled, form: { name: s.name || '', school: s.school || '', className: s.className || '', track: s.track || 'zero', phone: s.phone || '' } })
+    this.setData({ avatar: s.avatar || '', edit: true, agree: filled, form: { name: s.name || '', school: s.school || '', className: s.className || '', track: s.track || 'zero', phone: s.phone || '' } })
     wx.setNavigationBarTitle({ title: filled ? '修改资料' : '完善资料' })
   },
   input(e) { this.setData({ [`form.${e.currentTarget.dataset.k}`]: e.detail.value, error: '' }) },
-  async chooseAvatar(e) {
-    const path = e.detail && e.detail.avatarUrl
-    if (!path || this.data.avBusy) return
-    this.setData({ avBusy: true, avatar: path })
-    try {
-      const r = await vocab.uploadAvatar(path)
-      this.setData({ avatar: r.avatar, avatarPending: !!r.pending })
-      getApp().globalData.dirty = true
-      wx.showToast({ title: r.pending ? '已上传，审核中' : '头像已更新', icon: 'none' })
-    } catch (err) { wx.showToast({ title: err.message, icon: 'none' }) }
-    this.setData({ avBusy: false })
-  },
+  wardrobe() { wx.navigateTo({ url: '/pkg-me/wardrobe/wardrobe' }) },
   setTrack(e) { this.setData({ 'form.track': e.currentTarget.dataset.v }) },
   toggleAgree() { this.setData({ agree: !this.data.agree, error: '' }) },
   privacy() { wx.navigateTo({ url: '/pkg-me/privacy/privacy' }) },

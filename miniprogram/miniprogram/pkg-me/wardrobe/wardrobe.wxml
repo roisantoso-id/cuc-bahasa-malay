@@ -1,0 +1,35 @@
+<view class="wrap">
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在打开衣柜…" />
+  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
+  <block wx:else>
+    <!-- 当前形象 -->
+    <view class="wd-now">
+      <image class="wd-now-img" src="{{curImg || '/assets/avatar.jpg'}}" mode="aspectFill" />
+      <view class="wd-now-main">
+        <view class="wd-now-t">{{curTitle || '原版犀鸟'}}</view>
+        <view class="muted small">这是你在排行榜和 PK 里的头像</view>
+      </view>
+    </view>
+
+    <view class="sec"><text class="sec-t">服装</text><text class="sec-r">已解锁 {{costumeN}} / {{costumes.length}}</text></view>
+    <view class="wd-grid">
+      <view class="wd-it {{!mascot ? 'on' : ''}}" bindtap="pick" data-k="">
+        <image class="wd-img" src="/assets/avatar.jpg" mode="aspectFill" />
+        <view class="wd-t">原版犀鸟</view>
+      </view>
+      <view wx:for="{{costumes}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}} {{mascot === item.key ? 'on' : ''}}" data-k="{{item.key}}" data-u="{{item.unlocked}}" data-d="{{item.desc}}" bindtap="pick">
+        <image class="wd-img" src="{{item.img}}" mode="aspectFill" lazy-load />
+        <view class="wd-t">{{item.title}}</view>
+        <view wx:if="{{!item.unlocked}}" class="wd-lock">{{item.desc}}</view>
+      </view>
+    </view>
+
+    <view class="sec"><text class="sec-t">徽章</text><text class="sec-r">已获得 {{badgeN}} / {{badges.length}}</text></view>
+    <view class="wd-grid badges">
+      <view wx:for="{{badges}}" wx:key="key" class="wd-it {{item.unlocked ? '' : 'lock'}}" data-d="{{item.desc}}" data-t="{{item.title}}" data-u="{{item.unlocked}}" bindtap="badge">
+        <image class="wd-img" src="{{item.img}}" mode="aspectFill" lazy-load />
+        <view class="wd-t">{{item.title}}</view>
+      </view>
+    </view>
+  </block>
+</view>

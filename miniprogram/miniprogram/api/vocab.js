@@ -42,16 +42,10 @@ const qs = o => Object.keys(o).map(k => `${k}=${encodeURIComponent(o[k])}`).join
 module.exports = {
   login,
   // 删除我的资料和学习记录，删完清掉本地登录，下次打开重新开始
-  // 上传头像（微信头像选择器给的临时文件）：要在公众平台把 api.bahasa.cn 加进 uploadFile 合法域名
-  uploadAvatar(path) {
-    const up = () => new Promise((ok, no) => wx.uploadFile({
-      url: config.vocabApi.replace(/\/$/, '') + '/api/app/avatar', filePath: path, name: 'file',
-      header: { authorization: 'Bearer ' + (wx.getStorageSync(TOKEN_KEY) || '') },
-      success: r => { let d = {}; try { d = JSON.parse(r.data) } catch (e) {} ; r.statusCode === 200 ? ok(d) : no(Object.assign(new Error(d.error || `上传失败(${r.statusCode})`), { status: r.statusCode })) },
-      fail: () => no(new Error('上传失败，检查一下网络'))
-    }))
-    return up().catch(async e => { if (e.status !== 401) throw e; await login(true); return up() })
-  },
+  // 成就与犀鸟形象（服务器自动判定解锁；头像只能从已解锁的形象里选）
+  achievements: () => call('/achievements'),
+  achievementsSeen: () => post('/achievements/seen', {}),
+  setMascot: key => post('/mascot', { key }),
   async deleteMe() { await post('/delete-me', {}); wx.removeStorageSync(TOKEN_KEY); me = null },
   async register(form) { const r = await post('/register', form); me = { ...(me || {}), student: r.student }; return r.student },
   home: () => call('/home'),

@@ -1,0 +1,12 @@
+.wd-now { display: flex; align-items: center; gap: 24rpx; padding: 24rpx 0 8rpx; }
+.wd-now-img { width: 160rpx; height: 160rpx; border-radius: 50%; background: var(--ivory); flex: none; box-shadow: 0 0 0 4rpx var(--star); }
+.wd-now-t { font-size: 34rpx; font-weight: 800; color: var(--ivory); margin-bottom: 6rpx; }
+.wd-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24rpx 16rpx; margin-top: 16rpx; }
+.wd-it { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.wd-img { width: 100%; aspect-ratio: 1; height: auto; border-radius: 24rpx; background: var(--ivory); box-sizing: border-box; }
+.wd-it.on .wd-img { box-shadow: 0 0 0 5rpx var(--star); }
+.wd-it.lock .wd-img { opacity: .28; filter: grayscale(1); }
+.wd-t { margin-top: 10rpx; font-size: 24rpx; color: var(--ivory); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wd-it.lock .wd-t { color: var(--ink2); }
+.wd-lock { font-size: 20rpx; color: var(--ink2); text-align: center; line-height: 1.35; margin-top: 2rpx; }
+.badges .wd-img { border-radius: 50%; }
