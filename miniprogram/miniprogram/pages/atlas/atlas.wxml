@@ -16,15 +16,20 @@
         </view>
       </view>
 
-      <view wx:if="{{stop}}" class="between sh">
-        <view class="sh-t">{{stop.level < 10 ? '0' : ''}}{{stop.level}} {{stop.city}} · <text class="no">№ {{lo}} – {{hi}}</text></view>
-        <view class="muted small no">{{counts.done + counts.learn}} / {{stop.total}}</view>
-      </view>
-      <canvas type="2d" id="matrix" class="matrix" />
-      <view class="legend">
-        <text class="lg"><text class="lg-d d1" />记牢 {{counts.done}}</text>
-        <text class="lg"><text class="lg-d d2" />学习中 {{counts.learn}}</text>
-        <text class="lg"><text class="lg-d d3" />还没见过 {{counts.none}}</text>
+      <!-- 这一站的进度：一条分段进度条 + 三个数字（原来的 500 点阵看不懂，去掉了） -->
+      <view wx:if="{{stop}}" class="sp">
+        <view class="between">
+          <view class="sh-t">第 {{stop.level}} 站 · {{stop.city}} <text class="sp-r">第 {{lo}}–{{hi}} 个词</text></view>
+          <view class="sp-n"><text class="sp-big">{{counts.done + counts.learn}}</text> / {{stop.total}}</view>
+        </view>
+        <view class="seg3">
+          <view class="s-done" style="width:{{pct.done}}%" /><view class="s-learn" style="width:{{pct.learn}}%" />
+        </view>
+        <view class="legend">
+          <text class="lg"><text class="lg-d d1" />记牢 {{counts.done}}</text>
+          <text class="lg"><text class="lg-d d2" />学习中 {{counts.learn}}</text>
+          <text class="lg"><text class="lg-d d3" />还没见过 {{counts.none}}</text>
+        </view>
       </view>
 
       <view class="chips pos">

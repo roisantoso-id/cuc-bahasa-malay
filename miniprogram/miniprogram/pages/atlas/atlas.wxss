@@ -44,3 +44,17 @@
 .dr.learn .dr-dot { background: var(--ok); }
 .dr.done .dr-dot { background: var(--star); }
 .dr.none .dr-ms { color: rgba(243,234,214,.55); }
+
+/* 站点进度条（替换 500 点阵） */
+.sp { margin-top: 28rpx; padding: 24rpx; border-radius: 28rpx; background: var(--panel); border: 2rpx solid var(--hair); }
+.sp-r { font-size: 22rpx; color: var(--ink2); font-weight: 400; margin-left: 8rpx; }
+.sp-n { font-size: 24rpx; color: var(--ink2); }
+.sp-big { font-family: Georgia, serif; font-size: 36rpx; font-weight: 700; color: var(--ivory); }
+.seg3 { display: flex; height: 18rpx; margin: 18rpx 0 14rpx; border-radius: 999rpx; overflow: hidden; background: rgba(243,234,214,.1); }
+.s-done { background: var(--star); }
+.s-learn { background: var(--ok); }
+/* 词性筛选压成一行 */
+.chips.pos { display: flex; flex-wrap: nowrap; gap: 10rpx; margin-top: 24rpx; }
+.chips.pos .chip { flex: 1; min-width: 0; padding: 0; height: 60rpx; line-height: 60rpx; text-align: center; font-size: 24rpx; white-space: nowrap; }
+.dr-no { width: 48rpx; }
+.dr-ms { width: 180rpx; }

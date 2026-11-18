@@ -13,7 +13,7 @@ const pad = n => (n < 10 ? '0' + n : '' + n)
 const rng = seed => () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
 
 Page({
-  data: { view: 'loading', error: '', h: null, sel: 0, levels: [], posTabs: POS_TABS, pos: '全部', stop: null, counts: { done: 0, learn: 0, none: 0 }, cards: [], shown: 0, hasMore: false, loadingStop: false },
+  data: { view: 'loading', error: '', h: null, sel: 0, levels: [], posTabs: POS_TABS, pos: '全部', stop: null, counts: { done: 0, learn: 0, none: 0 }, pct: { done: 0, learn: 0 }, cards: [], shown: 0, hasMore: false, loadingStop: false },
   onShow() {
     setTab(this, 1)
     if (getApp().globalData.dirty || !this.data.h) this.load()
@@ -73,7 +73,9 @@ Page({
       this.words = words.map(w => ({ ...w, posT: posOf(w.pos), st: w.box < 0 ? 'none' : w.box >= 6 ? 'done' : 'learn' }))
       const counts = { done: 0, learn: 0, none: 0 }
       this.words.forEach(w => counts[w.st]++)
-      this.setData({ stop, counts, loadingStop: false, lo: (level - 1) * 500 + 1, hi: level * 500 })
+      const all = Math.max(1, this.words.length)
+      const pct = { done: Math.round(counts.done / all * 1000) / 10, learn: Math.round(counts.learn / all * 1000) / 10 }
+      this.setData({ stop, counts, pct, loadingStop: false, lo: (level - 1) * 500 + 1, hi: level * 500 })
       this.dotMatrix()
       this.applyPos()
     } catch (e) {
@@ -82,6 +84,7 @@ Page({
     }
   },
   dotMatrix() {
+    if (true) return   // 500 点阵已经换成进度条（页面上没有 #matrix 了），保留代码备用
     const ws = this.words
     draw(this, '#matrix', (ctx, w, hh) => {
       const cols = 25, rows = 20, px = w / cols, py = hh / rows, r = Math.min(px, py) * 0.34
