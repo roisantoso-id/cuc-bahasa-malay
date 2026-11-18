@@ -11,17 +11,18 @@
   </view>
   <view class="ab-bio" wx:if="{{lead}}">{{lead.bio}}</view>
 
-  <view class="sec"><text class="sec-t">著作</text><text class="sec-x">左右滑 · 点封面看大图</text></view>
+  <view class="sec"><text class="sec-t">著作</text><text class="sec-x">自动翻页 · 点封面看大图</text></view>
 </view>
-<scroll-view scroll-x class="ab-shelf" enhanced show-scrollbar="{{false}}">
-  <view class="ab-books">
-    <view wx:for="{{books}}" wx:key="img" class="ab-book" data-i="{{index}}" bindtap="preview">
+<!-- 书架：一屏刚好三本完整的书，进来就自动轮播（不露半本）；手指一碰停下 -->
+<swiper class="ab-shelf" autoplay="{{autoplay}}" interval="2800" duration="600" circular display-multiple-items="3" bindtouchstart="stopAuto">
+  <swiper-item wx:for="{{books}}" wx:key="img">
+    <view class="ab-book" data-i="{{index}}" bindtap="preview">
       <image src="/pkg-me/img/{{item.img}}.jpg" mode="aspectFill" class="ab-cover" lazy-load />
       <view class="ab-bt">{{item.title}}</view>
-      <view class="muted small">{{item.role}} · {{item.pub}}</view>
+      <view class="muted small ab-bs">{{item.role}} · {{item.pub}}</view>
     </view>
-  </view>
-</scroll-view>
+  </swiper-item>
+</swiper>
 
 <view class="wrap ab-rest">
   <view class="sec"><text class="sec-t">研发团队</text></view>

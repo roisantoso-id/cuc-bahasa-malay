@@ -11,7 +11,8 @@ const BOOKS = [
 const vocab = require('../../api/vocab')
 
 Page({
-  data: { books: BOOKS, lead: null, others: [] },
+  data: {
+    autoplay: true, books: BOOKS, lead: null, others: [] },
   async onLoad() {
     try {
       const list = await vocab.teachers()
@@ -21,6 +22,7 @@ Page({
       this.setData({ lead: withUrl[0] || null, others: withUrl.slice(1) })
     } catch (e) { /* 拿不到就只显示书架和技术支持 */ }
   },
+  stopAuto() { if (this.data.autoplay) this.setData({ autoplay: false }) },
   preview(e) {
     const urls = BOOKS.map(b => `/pkg-me/img/${b.img}.jpg`)
     wx.previewImage({ current: urls[e.currentTarget.dataset.i], urls })

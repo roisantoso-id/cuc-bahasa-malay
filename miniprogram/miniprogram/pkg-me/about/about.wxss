@@ -5,11 +5,12 @@
 .ab-bio { margin-top: var(--s3); font-size: 28rpx; line-height: 1.75; color: var(--ink2); }
 
 /* 书架：一行，左右滑（不出滚动条） */
-.ab-shelf { width: 100%; white-space: nowrap; }
-.ab-books { display: inline-flex; gap: var(--s3); padding: 0 var(--s4); }
-.ab-book { width: 200rpx; white-space: normal; }
-.ab-cover { display: block; width: 200rpx; height: 296rpx; border-radius: 8rpx; background: var(--panel); }
-.ab-bt { margin-top: var(--s2); font-size: 26rpx; font-weight: 600; line-height: 1.35; }
+.ab-shelf { height: 470rpx; margin: 0 var(--s4); }
+
+.ab-book { padding: 0 10rpx; box-sizing: border-box; }
+.ab-cover { display: block; width: 100%; height: 290rpx; border-radius: 8rpx; background: var(--panel); }
+.ab-bt { margin-top: var(--s2); font-size: 26rpx; font-weight: 600; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.ab-bs { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .ab-top { padding-bottom: 0; }
 .ab-rest { padding-top: 0; padding-bottom: 96rpx; }
