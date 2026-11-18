@@ -1,3 +1,4 @@
+const setTab = require('../../utils/tab')
 // 护照:学生资料 + 10 站印章 + 学习统计(连续天数、近 30 天柱状、熟练度分布)+ 设置
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
@@ -7,7 +8,8 @@ const GOALS = [10, 20, 30, 50]
 
 Page({
   data: { view: 'loading', student: null, s: null, goals: GOALS },
-  onShow() { this.load() },
+  onShow() {
+    setTab(this, 3); this.load() },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },
   async load() {
     try {

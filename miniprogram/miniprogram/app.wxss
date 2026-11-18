@@ -32,6 +32,8 @@ page {
 }
 
 .wrap { padding: 24rpx 32rpx 80rpx; }
+/* 自定义底栏盖在页面上，tab 页底部留出它的高度 */
+.tab-pad { height: calc(150rpx + env(safe-area-inset-bottom)); }
 .muted { color: var(--ink2); }
 .small { font-size: 26rpx; }
 .h1 { font-size: 46rpx; font-weight: 800; line-height: 1.3; font-family: "Songti SC", "STSong", -apple-system, "PingFang SC", serif; }

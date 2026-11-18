@@ -1,3 +1,4 @@
+const setTab = require('../../utils/tab')
 // 图鉴：整片星图（每个已上架的词一颗星，学过的点亮）+ 一站 500 词的点阵 + 词卡列表
 const vocab = require('../../api/vocab')
 const { ensureStudent } = require('../../utils/student')
@@ -14,6 +15,7 @@ const rng = seed => () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = M
 Page({
   data: { view: 'loading', error: '', h: null, sel: 0, levels: [], posTabs: POS_TABS, pos: '全部', stop: null, counts: { done: 0, learn: 0, none: 0 }, cards: [], shown: 0, hasMore: false, loadingStop: false },
   onShow() {
+    setTab(this, 1)
     if (getApp().globalData.dirty || !this.data.h) this.load()
   },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh() },

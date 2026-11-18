@@ -65,7 +65,8 @@
         "pagePath": "pages/me/me",
         "text": "护照"
       }
-    ]
+    ],
+    "custom": true
   },
   "usingComponents": {
     "hb-empty": "/components/hb-empty/hb-empty",

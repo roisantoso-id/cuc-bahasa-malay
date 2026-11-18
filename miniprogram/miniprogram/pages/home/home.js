@@ -1,3 +1,4 @@
+const setTab = require('../../utils/tab')
 // 今日：一个数字、一个按钮。圆环是今天的进度，犀鸟站在旁边陪着
 const vocab = require('../../api/vocab')
 const audio = require('../../utils/vocab-audio')
@@ -13,6 +14,7 @@ const dayIndex = n => Math.floor(bj().getTime() / 86400e3) % Math.max(1, n)
 Page({
   data: { view: 'loading', h: null, error: '', greet: '', date: '', todo: 0, mins: 0, pct: 0, wod: null },
   onShow() {
+    setTab(this, 0)
     if (getApp().globalData.dirty || !this.data.h) this.load()
   },
   onUnload() { audio.stop() },

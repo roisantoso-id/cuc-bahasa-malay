@@ -1,0 +1,10 @@
+<!-- 自定义底栏：线条图标；当前这一项换成犀鸟头像，切过来时跳一下 -->
+<view class="bar">
+  <view wx:for="{{list}}" wx:key="path" class="it {{selected === index ? 'on' : ''}}" data-i="{{index}}" bindtap="go">
+    <view class="ic">
+      <image wx:if="{{selected === index}}" class="bird {{hop ? 'hop' : ''}}" src="/assets/avatar.jpg" mode="aspectFill" />
+      <image wx:else class="svg" src="/assets/tab/{{item.icon}}.svg" />
+    </view>
+    <text class="t">{{item.text}}</text>
+  </view>
+</view>

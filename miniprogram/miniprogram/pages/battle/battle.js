@@ -1,3 +1,4 @@
+const setTab = require('../../utils/tab')
 // 对战：本周擂台倒计时、进入擂台、好友 PK、周榜（只看第一名和我的邻居）、最近的 PK
 const vocab = require('../../api/vocab')
 
@@ -31,7 +32,8 @@ function nearby(list) {
 
 Page({
   data: { view: 'loading', error: '', levels: [], level: 0, arena: null, me: null, pks: [], busy: false, showPk: false, tabs: TABS, tab: 'all', board: [], boardLoading: false, boardNote: '', chase: '', cd: { d: 0, h: 0, m: 0, week: 0 } },
-  onShow() { this.tick(); this.timer = setInterval(() => this.tick(), 30000); this.load() },
+  onShow() {
+    setTab(this, 2); this.tick(); this.timer = setInterval(() => this.tick(), 30000); this.load() },
   onHide() { clearInterval(this.timer) },
   onUnload() { clearInterval(this.timer) },
   tick() { this.setData({ cd: countdown() }) },
