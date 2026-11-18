@@ -92,6 +92,19 @@ export function init(box, stops) {
   // HTML 标签（清楚、可缩放）：只显示当前站，相邻站离得太近会叠在一起
   const labels = stops.map(s => { const el = document.createElement('span'); el.textContent = `${s.n} ${s.zh}`; labelsEl.appendChild(el); return el })
 
+  // 犀鸟：站在当前站上，换站时跳过去（抛物线），只在换站时动
+  const BIRD_H = 0.95
+  const birdTex = new THREE.TextureLoader().load('/img/bird/hero.webp', () => kick())
+  birdTex.colorSpace = THREE.SRGBColorSpace
+  const bird = new THREE.Sprite(new THREE.SpriteMaterial({ map: birdTex, transparent: true, alphaTest: 0.05 }))
+  bird.scale.set(BIRD_H * 593 / 880, BIRD_H, 1)
+  bird.center.set(0.5, 0)
+  scene.add(bird)
+  const standAt = n => markers[n - 1].g.position.clone().setY(DEPTH + 0.06)
+  let hopFrom = standAt(1), hopTo = hopFrom.clone(), hopT = 1, hopStart = 0
+  const HOP_MS = 650
+  bird.position.copy(hopFrom)
+
   let target = 0, cur = 0, active = 1, raf = 0, visible = true, w = 0, h = 0
   const tmp = new THREE.Vector3(), look = new THREE.Vector3(), camPos = new THREE.Vector3()
 
@@ -119,16 +132,24 @@ export function init(box, stops) {
     markers.forEach((m, i) => {
       const n = i + 1, on = n === active, done = n < active
       m.head.material.color.setHex(on ? 0xffffff : done ? C.route : C.future)
-      const k = on ? 1.6 : done ? 1.15 : 1
+      const k = on ? 0.001 : done ? 1.15 : 1
       m.head.scale.setScalar(m.head.scale.x + (k - m.head.scale.x) * 0.2)
       m.ring.material.color.setHex(on || done ? C.route : C.future)
     })
+    if (hopT < 1) {
+      hopT = Math.min(1, (performance.now() - hopStart) / HOP_MS)
+      const e = hopT < 0.5 ? 2 * hopT * hopT : 1 - Math.pow(-2 * hopT + 2, 2) / 2
+      bird.position.lerpVectors(hopFrom, hopTo, e)
+      bird.position.y += Math.sin(hopT * Math.PI) * (0.6 + hopFrom.distanceTo(hopTo) * 0.18)
+      const sq = 1 - Math.sin(hopT * Math.PI) * 0.08   // 起跳落地时微微压扁
+      bird.scale.set(BIRD_H * 593 / 880 / sq, BIRD_H * sq, 1)
+    }
     renderer.render(scene, camera)
 
     labels.forEach((el, i) => {
       const n = i + 1
       if (n !== active) { el.style.display = 'none'; return }
-      tmp.copy(markers[i].g.position); tmp.y += 0.55
+      tmp.copy(markers[i].g.position); tmp.y += BIRD_H + 0.25
       tmp.project(camera)
       if (tmp.z > 1 || Math.abs(tmp.x) > 1.05 || Math.abs(tmp.y) > 1.05) { el.style.display = 'none'; return }
       el.style.display = ''
@@ -136,7 +157,7 @@ export function init(box, stops) {
       el.style.transform = `translate(${((tmp.x + 1) / 2 * w).toFixed(1)}px,${((1 - tmp.y) / 2 * h).toFixed(1)}px) translate(-50%,-130%)`
     })
 
-    const settling = cur !== target || markers.some((m, i) => Math.abs(m.head.scale.x - (i + 1 === active ? 1.6 : i + 1 < active ? 1.15 : 1)) > 0.005)
+    const settling = hopT < 1 || cur !== target || markers.some((m, i) => Math.abs(m.head.scale.x - (i + 1 === active ? 0.001 : i + 1 < active ? 1.15 : 1)) > 0.005)
     if (settling && visible) raf = requestAnimationFrame(frame)
   }
   const kick = () => { if (!raf && visible) raf = requestAnimationFrame(frame) }
@@ -160,7 +181,14 @@ export function init(box, stops) {
     frame()
     resolve({
       setProgress(p) { target = p; kick() },
-      setActive(n) { active = n; kick() }
+      setActive(n) {
+        if (n === active) return
+        // 滚得快、一次跨好几站就直接落过去，不连跳
+        hopFrom = bird.position.clone(); hopTo = standAt(n)
+        hopT = 0; hopStart = performance.now()
+        if (Math.abs(n - active) > 2) { hopFrom = hopTo.clone() }
+        active = n; kick()
+      }
     })
   })
 }

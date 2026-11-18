@@ -41,9 +41,36 @@ if (sec) {
   const detail = document.getElementById('stopDetail')
   let active = 0, r3 = null
 
+  // 静态路线图上的犀鸟：站在当前站上，换站时跳过去
+  const svg = sec.querySelector('.route-svg'), staticBox = sec.querySelector('.route-static')
+  let rbird = null, birdAt = null
+  if (svg && staticBox) {
+    rbird = Object.assign(document.createElement('img'), { src: '/img/bird/hero.webp', alt: '', className: 'rbird', width: 593, height: 880 })
+    rbird.setAttribute('aria-hidden', 'true')
+    staticBox.appendChild(rbird)
+  }
+  const vb = svg ? svg.viewBox.baseVal : null
+  const posOf = n => { const c = svgStops[n - 1].querySelector('circle'); return [c.cx.baseVal.value / vb.width * 100, c.cy.baseVal.value / vb.height * 100] }
+  const hopStatic = n => {
+    if (!rbird) return
+    const [x, y] = posOf(n)
+    const to = { left: x + '%', top: y + '%' }
+    if (birdAt && !reduce && Math.abs(n - birdAt.n) <= 2) {
+      const [fx, fy] = birdAt.xy
+      rbird.animate([
+        { left: fx + '%', top: fy + '%' },
+        { left: (fx + x) / 2 + '%', top: Math.min(fy, y) - 14 + '%', offset: 0.5 },
+        to
+      ], { duration: 600, easing: 'ease-in-out' })
+    }
+    Object.assign(rbird.style, to)
+    birdAt = { n, xy: [x, y] }
+  }
+
   const setActive = n => {
     if (n === active) return
     active = n
+    hopStatic(n)
     const s = STOPS[n - 1]
     buttons.forEach(b => b.setAttribute('aria-current', String(+b.dataset.n === n)))
     svgStops.forEach(g => g.classList.toggle('on', +g.dataset.n === n))
@@ -103,4 +130,54 @@ if (sec) {
     // 首屏加载完、浏览器空闲时也预先加载，滚到路线时不用等
     addEventListener('load', () => setTimeout(() => (window.requestIdleCallback || setTimeout)(load), 2500))
   }
+}
+
+/* ---------- 首次进入：犀鸟从上面跳下来，带着看各章节 ----------
+   只在第一次打开网站时出现（localStorage 记一下）；点 × 或看到页尾就结束。
+   到十站路线那一节它会躲开，换路线图上的犀鸟带路。减少动效时不跳，只出现和换话。 */
+const GUIDE_KEY = 'jb_guide_seen'
+const seen = (() => { try { return localStorage.getItem(GUIDE_KEY) } catch (e) { return '1' } })()
+if (!seen && !location.hash) {
+  try { localStorage.setItem(GUIDE_KEY, '1') } catch (e) {}
+  const LINES = [
+    ['top', '嗨，我是犀鸟。跟着我往下看看'],
+    ['how', '每个词，都按这五步来'],
+    ['route', null],
+    ['content', '一个词条里有这些'],
+    ['team', '这些是做课的人'],
+    ['who', '看看适不适合你'],
+    ['faq', '有疑问，先看这里'],
+    ['open', '最后，在微信里打开小程序就能学']
+  ]
+  const g = document.createElement('div')
+  g.className = 'guide'
+  g.innerHTML = '<p class="guide-say" aria-hidden="true"></p><img src="/img/bird/hero.webp" alt="" width="593" height="880"><button type="button" class="guide-x" aria-label="关闭犀鸟向导">×</button>'
+  document.body.appendChild(g)
+  const say = g.querySelector('.guide-say'), img = g.querySelector('img')
+  const hop = () => { if (!reduce) img.animate([{ transform: 'translateY(0) scale(1,1)' }, { transform: 'translateY(-36px) scale(.96,1.04)', offset: .45 }, { transform: 'translateY(0) scale(1.06,.94)', offset: .85 }, { transform: 'translateY(0) scale(1,1)' }], { duration: 560, easing: 'ease-out' }) }
+  let cur = '', talkT = 0
+  const show = id => {
+    if (id === cur) return
+    cur = id
+    const line = (LINES.find(l => l[0] === id) || [])[1]
+    g.classList.toggle('away', !line)
+    if (!line) return
+    say.textContent = line
+    g.classList.add('talk')
+    clearTimeout(talkT); talkT = setTimeout(() => g.classList.remove('talk'), 3500)  // 话只说一会儿，免得一直挡字
+    hop()
+    if (id === 'open') setTimeout(end, 6000)
+  }
+  const end = () => { g.classList.add('bye'); setTimeout(() => g.remove(), 600) }
+  g.querySelector('.guide-x').addEventListener('click', end)
+  // 先从屏幕上方跳下来
+  g.classList.add('drop')
+  setTimeout(() => { g.classList.remove('drop'); show('top') }, reduce ? 0 : 900)
+  const ids = LINES.map(l => l[0]).filter(id => id !== 'top')
+  const io = new IntersectionObserver(es => {
+    const vis = es.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+    if (vis && !g.classList.contains('drop')) show(vis.target.id)
+  }, { rootMargin: '-35% 0px -45% 0px' })
+  ids.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el) })
+  addEventListener('scroll', () => { if (scrollY < innerHeight * 0.3 && !g.classList.contains('drop')) show('top') }, { passive: true })
 }

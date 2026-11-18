@@ -235,6 +235,11 @@ p{text-wrap:pretty}
 @media (max-width:960px){.stop-list span{display:inline;font:13px/1 var(--mono);color:rgba(247,242,232,.55)}.stop-list button{grid-template-columns:28px minmax(0,1fr) auto}}
 @media (max-width:420px){.stop-list{columns:1}}
 
+/* 静态路线图上的犀鸟（手机 / 没有 3D 时） */
+.route-static{position:relative}
+.rbird{position:absolute;width:7%;min-width:34px;height:auto;transform:translate(-50%,-92%);pointer-events:none;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.route-svg .rs.on circle{r:15}
+
 /* ---------- 课程内容：词条 ---------- */
 .entry-wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:clamp(28px,5vw,72px);align-items:start}
 .entry{background:var(--card);border-radius:4px;padding:clamp(24px,4vw,44px);box-shadow:0 1px 0 var(--line),0 30px 50px -36px rgba(28,36,32,.5);border-left:0}
@@ -381,3 +386,15 @@ p{text-wrap:pretty}
 .js .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .js .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.js .reveal{opacity:1;transform:none}}
+
+/* ---------- 首次进入的犀鸟向导 ---------- */
+.guide{position:fixed;right:clamp(12px,2vw,28px);bottom:clamp(12px,2vw,28px);z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:6px;width:150px;pointer-events:none;transition:transform .5s var(--ease),opacity .4s}
+.guide img{width:84px;height:auto;filter:drop-shadow(0 6px 8px rgba(28,36,32,.25));transform-origin:50% 100%}
+.guide-say{opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s var(--ease);background:var(--card);color:var(--ink);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:12px 12px 2px 12px;box-shadow:0 1px 0 var(--line),0 12px 24px -12px rgba(28,36,32,.45);max-width:150px}
+.guide-x{pointer-events:auto;position:absolute;right:-6px;bottom:72px;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:16px/1 var(--sans);cursor:pointer}
+.guide.talk .guide-say{opacity:1;transform:none}
+.guide.drop{transform:translateY(-110vh)}
+.guide.away,.guide.bye{transform:translateX(160px);opacity:0}
+.guide.drop img{animation:none}
+@media (max-width:640px){.guide{width:124px}.guide img{width:64px}.guide-say{font-size:13px;max-width:124px}.guide-x{bottom:54px}}
+@media (prefers-reduced-motion:reduce){.guide.drop{transform:none;opacity:0}}
