@@ -36,5 +36,5 @@ Page({
     })
   },
   go(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
-  privacy() { wx.setClipboardData({ data: 'https://www.bahasa.cn/privacy/', success: () => wx.showToast({ title: '隐私说明链接已复制', icon: 'none' }) }) }
+  privacy() { wx.navigateTo({ url: '/pkg-me/privacy/privacy' }) },
 })

@@ -290,6 +290,27 @@ function readToken(req) {
   if (want.length !== sig.length || !timingSafeEqual(Buffer.from(want), Buffer.from(sig))) return null
   try { const d = JSON.parse(Buffer.from(payload, 'base64url').toString()); return d.e > Date.now() ? d.o : null } catch { return null }
 }
+// 微信内容安全：学生填的昵称、学校、班级会出现在排行榜和 PK 里给别人看，提交前过一遍 msgSecCheck（2.0，资料场景）。
+// access_token 缓存到快过期；微信接口出错时不放行（宁可让学生稍后再试，也不展示没检查过的内容）
+let wxToken = { v: '', exp: 0 }
+async function accessToken() {
+  if (wxToken.v && wxToken.exp > Date.now()) return wxToken.v
+  const d = await (await fetch(`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${ENV.APPID}&secret=${ENV.APPSECRET}`)).json()
+  if (!d.access_token) throw Object.assign(new Error('内容检查暂时不可用，请稍后再试'), { code: 503 })
+  wxToken = { v: d.access_token, exp: Date.now() + (d.expires_in - 300) * 1000 }
+  return wxToken.v
+}
+async function textSafe(openid, content) {
+  if (DEMO || !content) return true
+  for (let i = 0; i < 2; i++) {
+    const d = await (await fetch(`https://api.weixin.qq.com/wxa/msg_sec_check?access_token=${await accessToken()}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content, version: 2, scene: 1, openid }) })).json()
+    if (d.errcode === 40001 || d.errcode === 42001) { wxToken = { v: '', exp: 0 }; continue } // token 失效，换一个再试
+    if (d.errcode) throw Object.assign(new Error('内容检查暂时不可用，请稍后再试'), { code: 503 })
+    return d.result && d.result.suggest === 'pass'
+  }
+  throw Object.assign(new Error('内容检查暂时不可用，请稍后再试'), { code: 503 })
+}
+
 async function code2openid(code) {
   if (DEMO) return 'demo-' + (String(code || '').replace(/[^\w-]/g, '').slice(0, 40) || 'dev')
   if (!ENV.APPID || !ENV.APPSECRET) throw Object.assign(new Error('服务器还没配置小程序 AppID'), { code: 503 })
@@ -335,11 +356,18 @@ async function appApi(req, res, p, url) {
     // 资料全部选填；填了手机号才校验格式。只要填了任何个人资料，就要先同意隐私说明
     if (phone && !/^1\d{10}$|^\+?\d{8,15}$/.test(phone)) return fail(res, 400, '手机号格式不对')
     if ((name || school || className || phone) && !b.agree) return fail(res, 400, '请先阅读并同意隐私说明')
+    if (!(await textSafe(openid, [name, school, className].filter(Boolean).join(' ')))) return fail(res, 400, '昵称、学校或班级里有不合适的内容，请修改后再保存')
     const now = new Date().toISOString()
     await run(`INSERT INTO students (openid, name, school, class_name, track, phone, created_at, last_active_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE name = VALUES(name), school = VALUES(school), class_name = VALUES(class_name), track = VALUES(track), phone = VALUES(phone)`,
       openid, name, school, className, ['some', 'heritage'].includes(b.track) ? 'some' : 'zero', phone, now, now)
     return send(res, 200, { ok: true, student: studentOut(await one('SELECT * FROM students WHERE openid = ?', openid)) })
+  }
+  // 删除我的资料和学习记录（隐私说明页里的按钮）：立即删除，不可恢复
+  if (p === '/api/app/delete-me' && req.method === 'POST') {
+    const me = await one('SELECT id FROM students WHERE openid = ?', openid)
+    if (me) for (const t of ['progress', 'daily', 'pk_entry', 'arena_entry', 'arena_try', 'students']) await run(`DELETE FROM ${t} WHERE ${t === 'students' ? 'id' : 'student_id'} = ?`, me.id)
+    return send(res, 200, { ok: true })
   }
   if (p === '/api/app/teachers') return send(res, 200, await all('SELECT name, title, role, bio, photo FROM teachers ORDER BY sort, id'))
 

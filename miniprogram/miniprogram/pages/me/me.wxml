@@ -64,6 +64,7 @@
       <view class="item" data-url="/pkg-me/about/about" bindtap="go"><view class="item-main">关于老师</view><text class="arrow">›</text></view>
       <button class="item fb" open-type="feedback"><view class="item-main">意见反馈 / 单词报错</view><text class="arrow">›</text></button>
       <view class="item" bindtap="privacy"><view class="item-main">隐私说明</view><text class="arrow">›</text></view>
+      <button class="item fb" open-type="contact"><view class="item-main">联系客服</view><text class="arrow">›</text></button>
     </view>
     <view class="muted small center" style="margin-top:40rpx">JomBelajar · 张静灵老师主持编写</view>
   </block>

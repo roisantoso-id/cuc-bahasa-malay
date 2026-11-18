@@ -1,0 +1,5 @@
+.doc { padding: 36rpx 32rpx 44rpx; }
+.doc .h2 { font-size: 30rpx; margin: 40rpx 0 12rpx; }
+.p { font-size: 28rpx; line-height: 1.75; color: var(--ink); margin-bottom: 14rpx; }
+.b { font-weight: 800; }
+.doc .btn { margin-top: 24rpx; }

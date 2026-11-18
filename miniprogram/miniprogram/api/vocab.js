@@ -41,6 +41,8 @@ const qs = o => Object.keys(o).map(k => `${k}=${encodeURIComponent(o[k])}`).join
 
 module.exports = {
   login,
+  // 删除我的资料和学习记录，删完清掉本地登录，下次打开重新开始
+  async deleteMe() { await post('/delete-me', {}); wx.removeStorageSync(TOKEN_KEY); me = null },
   async register(form) { const r = await post('/register', form); me = { ...(me || {}), student: r.student }; return r.student },
   home: () => call('/home'),
   start: (mode, level) => post('/start', { mode, level }),

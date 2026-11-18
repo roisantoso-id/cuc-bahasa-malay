@@ -1,0 +1,29 @@
+<view class="wrap">
+  <view class="card doc">
+    <view class="h1">隐私说明</view>
+    <view class="muted small">更新于 2026-11-18</view>
+
+    <view class="h2">我们收集什么</view>
+    <view class="p"><text class="b">微信身份标识</text>：打开小程序时自动用微信登录，用来认出你、保存你的学习记录。不获取你的微信昵称、头像和手机号。</view>
+    <view class="p"><text class="b">学习记录</text>：学过哪些词、复习和答题情况、每天学了多少、对战和擂台成绩。只用来给你安排复习、显示进度和排行。</view>
+    <view class="p"><text class="b">你自己选填的资料</text>：昵称、学校、班级、马来语基础、手机号。都可以不填，填了也可以随时改。</view>
+
+    <view class="h2">谁能看到</view>
+    <view class="p">你的昵称、学校和班级会出现在排行榜和 PK 结果里，其他同学能看到。手机号不会给其他同学看，只有课程老师在管理后台能看到，用来联系你。</view>
+    <view class="p">你保存的昵称、学校、班级会先经过微信的内容安全检测，不合适的内容保存不了。</view>
+
+    <view class="h2">存在哪里</view>
+    <view class="p">数据存在腾讯云新加坡的服务器和数据库里，单词发音存在腾讯云新加坡的对象存储。我们不出售、不向其他人提供你的个人信息。</view>
+
+    <view class="h2">用到的第三方</view>
+    <view class="p">微信（登录、内容安全检测、分享）、腾讯云（服务器、数据库、音频存储）。</view>
+
+    <view class="h2">删除</view>
+    <view class="p">你可以随时删除自己的资料和全部学习记录，删除后立即生效、无法恢复。</view>
+    <button class="btn btn-danger" hover-class="hover" bindtap="del" loading="{{busy}}" disabled="{{busy}}">删除我的资料和学习记录</button>
+
+    <view class="h2">联系我们</view>
+    <view class="p">对隐私有任何疑问，可以通过小程序客服联系我们。</view>
+    <button class="btn btn-ghost" hover-class="hover" open-type="contact">联系客服</button>
+  </view>
+</view>

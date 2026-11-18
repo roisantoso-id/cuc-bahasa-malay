@@ -19,7 +19,8 @@
     {
       "root": "pkg-me",
       "pages": [
-        "about/about"
+        "about/about",
+        "privacy/privacy"
       ]
     },
     {

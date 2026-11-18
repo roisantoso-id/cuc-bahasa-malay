@@ -14,7 +14,7 @@ Page({
   input(e) { this.setData({ [`form.${e.currentTarget.dataset.k}`]: e.detail.value, error: '' }) },
   setTrack(e) { this.setData({ 'form.track': e.currentTarget.dataset.v }) },
   toggleAgree() { this.setData({ agree: !this.data.agree, error: '' }) },
-  privacy() { wx.setClipboardData({ data: 'https://www.bahasa.cn/privacy/', success: () => wx.showToast({ title: '隐私说明链接已复制', icon: 'none' }) }) },
+  privacy() { wx.navigateTo({ url: '/pkg-me/privacy/privacy' }) },
   async submit() {
     this.setData({ busy: true, error: '' })
     try {
