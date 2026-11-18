@@ -64,6 +64,7 @@ module.exports = {
   book: (type, page = 0) => call('/book?' + qs({ type, page })),
   stats: () => call('/stats'),
   memory: () => call('/memory'),
+  days: () => call('/days'),
   settings: dailyNew => post('/settings', { dailyNew }),
   teachers: () => call('/teachers'),
   // 对战与排行（admin/battle.mjs）

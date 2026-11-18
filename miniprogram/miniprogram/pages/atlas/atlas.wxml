@@ -1,55 +1,29 @@
 <view class="page">
-  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在展开星图…" />
+  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在点亮星星…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
+  <hb-empty wx:elif="{{!days.length}}" image="study" title="还没有学过的词" desc="去「今日」开始学，学过的词会按天出现在这里。" />
 
   <block wx:else>
-    <canvas type="2d" id="galaxy" class="galaxy" />
-    <view class="wrap">
-      <view class="lit-k">已点亮</view>
-      <view class="lit"><text class="lit-n">{{h.total.learned}}</text><text class="lit-u"> 颗星 / {{h.total.words}}</text></view>
-
-      <!-- 十站选择：实心 = 已盖章，半实心 = 当前站，空心 = 还没到，暗 = 词表整理中 -->
-      <view class="stops">
-        <view wx:for="{{levels}}" wx:key="level" class="st {{item.open ? '' : 'lock'}} {{sel === item.level ? 'sel' : ''}}" data-l="{{item.level}}" bindtap="pick">
-          <view class="st-c {{item.state}}"><view class="st-h" /></view>
-          <view class="st-n">{{item.no}}</view>
-        </view>
-      </view>
-
-      <!-- 这一站的进度：一条分段进度条 + 三个数字（原来的 500 点阵看不懂，去掉了） -->
-      <view wx:if="{{stop}}" class="sp">
-        <view class="between">
-          <view class="sh-t">第 {{stop.level}} 站 · {{stop.city}} <text class="sp-r">第 {{lo}}–{{hi}} 个词</text></view>
-          <view class="sp-n"><text class="sp-big">{{counts.done + counts.learn}}</text> / {{stop.total}}</view>
-        </view>
-        <view class="seg3">
-          <view class="s-done" style="width:{{pct.done}}%" /><view class="s-learn" style="width:{{pct.learn}}%" />
-        </view>
-        <view class="legend">
-          <text class="lg"><text class="lg-d d1" />记牢 {{counts.done}}</text>
-          <text class="lg"><text class="lg-d d2" />学习中 {{counts.learn}}</text>
-          <text class="lg"><text class="lg-d d3" />还没见过 {{counts.none}}</text>
-        </view>
-      </view>
-
-      <view class="chips pos">
-        <view wx:for="{{posTabs}}" wx:key="*this" class="chip {{pos === item ? 'on' : ''}}" data-p="{{item}}" bindtap="setPos">{{item}}</view>
-      </view>
-
-      <!-- 词典式列表：一行一个词，释义完整一行，右边小圆点表示记得多牢 -->
-      <view class="dict">
-        <view wx:for="{{cards}}" wx:key="rank" class="dr {{item.st}}" hover-class="hover" data-r="{{item.rank}}" bindtap="open">
-          <!-- 词条图片的位置：以后接口给每个词加 image 字段，这里就会显示（现在还没有图，不会渲染） -->
-          <image wx:if="{{item.image}}" class="dr-img" src="{{item.image}}" mode="aspectFill" />
-          <text class="dr-no">{{item.rank}}</text>
-          <text class="dr-ms">{{item.ms}}</text>
-          <text class="dr-zh">{{item.zh}}</text>
-          <view class="dr-dot" />
-        </view>
-      </view>
-      <view wx:if="{{!cards.length && !loadingStop}}" class="muted center" style="padding:40rpx">这一类还没有词</view>
-      <view wx:if="{{hasMore}}" class="more" hover-class="hover" bindtap="more">加载更多</view>
+    <view class="wrap head">
+      <view class="lit"><text class="lit-n">{{learned}}</text><text class="lit-u"> 个词已点亮</text></view>
+      <view class="cap">{{cur.label}} · {{cur.date}} · {{cur.words.length}} 个词{{more ? '（显示前 ' + shownN + ' 个）' : ''}}</view>
     </view>
+
+    <!-- 按天切换：全部 / 第 1 天 / 第 2 天 … -->
+    <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="days" scroll-into-view="{{intoView}}">
+      <view class="days-in">
+        <view wx:for="{{days}}" wx:key="key" id="d{{index}}" class="dy {{sel === index ? 'on' : ''}}" data-i="{{index}}" bindtap="pick">
+          <view class="dy-t">{{item.label}}</view>
+          <view class="dy-d">{{item.short}}</view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 词云：越熟的词越大越亮；依次弹出后轻轻浮动；点词看详情 -->
+    <view class="cloud" style="height:{{cloudH}}px">
+      <view wx:for="{{cloud}}" wx:key="k" class="w b{{item.b}}" style="left:{{item.x}}px;top:{{item.y}}px;font-size:{{item.fs}}px;animation-delay:{{item.d}}ms, {{item.d + 500}}ms;animation-duration:.5s, {{item.dur}}s" data-r="{{item.rank}}" bindtap="open">{{item.ms}}</view>
+    </view>
+    <view class="hint">越大越亮的词记得越牢 · 点词看释义</view>
   </block>
 </view>
 <view class="tab-pad" />

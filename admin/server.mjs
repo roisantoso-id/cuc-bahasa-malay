@@ -418,6 +418,19 @@ async function appApi(req, res, p, url) {
   if (p === '/api/app/book') return send(res, 200, await book(st, url.searchParams.get('type'), Number(url.searchParams.get('page')) || 0))
   if (p === '/api/app/stats') return send(res, 200, await stats(st))
   // 记得多牢 + 未来 7 天复习量（护照页）：牢固 = 已掌握或盒子 ≥ 4；熟悉 = 盒子 1–3；快忘了 = 盒子 0 或已到期；没见过 = 已上架但没学过
+  // 按天的词云（图鉴）：每个词按第一次学的日期（北京时间）分组，最近 60 天，每天最多 200 个
+  if (p === '/api/app/days') {
+    const rows = await all(`SELECT p.rank, p.first_at, p.box, w.ms, w.senses FROM progress p JOIN words w ON w.rank = p.rank
+      WHERE p.student_id = ? AND p.seen > 0 AND p.first_at IS NOT NULL AND p.first_at >= ? ORDER BY p.first_at`, st.id, new Date(Date.now() - 61 * 86400e3).toISOString())
+    const byDay = new Map()
+    for (const r of rows) {
+      const d = new Date(new Date(r.first_at).getTime() + 8 * 3600e3).toISOString().slice(0, 10)
+      if (!byDay.has(d)) byDay.set(d, [])
+      const list = byDay.get(d)
+      if (list.length < 200) list.push({ rank: r.rank, ms: r.ms, zh: (JSON.parse(r.senses || '[]').find(x => !x.check) || {}).zh || '', box: r.box })
+    }
+    return send(res, 200, { days: [...byDay.entries()].map(([day, words]) => ({ day, words })) })
+  }
   if (p === '/api/app/memory') {
     const today = day()
     const b = await one(`SELECT SUM(CASE WHEN seen > 0 AND box >= 4 THEN 1 ELSE 0 END) strong, SUM(CASE WHEN seen > 0 AND box BETWEEN 1 AND 3 AND due > ? THEN 1 ELSE 0 END) ok,
