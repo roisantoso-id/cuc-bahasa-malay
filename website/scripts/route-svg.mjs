@@ -2,8 +2,9 @@
 // 数据和 3D 场景共用 site/js/route-data.js。build.mjs 把它替换进页面里的 <!--ROUTE_SVG-->。
 import { STOPS, LAND, project } from '../site/js/route-data.js'
 
-const S = 50, PAD = 44
-const pts = [...LAND.peninsula, ...LAND.borneo, ...STOPS.map(s => [s.lon, s.lat])].map(([lo, la]) => project(lo, la))
+const S = 40, PAD = 40
+// 视野按马来西亚和十站算；周边国家超出的部分被 viewBox 裁掉
+const pts = [...LAND.my.flat(), ...STOPS.map(s => [s.lon, s.lat])].map(([lo, la]) => project(lo, la))
 const minX = Math.min(...pts.map(p => p[0])), maxX = Math.max(...pts.map(p => p[0]))
 const minY = Math.min(...pts.map(p => p[1])), maxY = Math.max(...pts.map(p => p[1]))
 const W = Math.round((maxX - minX) * S + PAD * 2), H = Math.round((maxY - minY) * S + PAD * 2)
@@ -23,7 +24,7 @@ function smooth(points) {
 }
 const land = smooth(P.slice(0, 8)), east = smooth(P.slice(8))
 const [a, b] = [P[7], P[8]]
-const sea = `M${a.join(' ')}Q${((a[0] + b[0]) / 2).toFixed(1)} ${(Math.min(a[1], b[1]) - 150).toFixed(1)} ${b.join(' ')}`
+const sea = `M${a.join(' ')}Q${((a[0] + b[0]) / 2).toFixed(1)} ${(Math.min(a[1], b[1]) - 60).toFixed(1)} ${b.join(' ')}`
 
 export function routeSvg() {
   const stops = STOPS.map((s, i) => {
@@ -34,7 +35,7 @@ export function routeSvg() {
   }).join('')
   return `<svg class="route-svg" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="routeSvgT">
 <title id="routeSvgT">十站学习路线图：从吉隆坡出发，经马六甲、怡保、槟城、金马伦、关丹、瓜拉登嘉楼、哥打巴鲁，跨海到古晋，终点亚庇</title>
-<path class="land" d="${poly(LAND.peninsula)}"/><path class="land" d="${poly(LAND.borneo)}"/>
+${LAND.near.map(r => `<path class="near" d="${poly(r)}"/>`).join('')}${LAND.my.map(r => `<path class="land" d="${poly(r)}"/>`).join('')}
 <path class="rt" d="${land}"/><path class="rt rt-sea" d="${sea}"/><path class="rt" d="${east}"/>
 ${stops}
 </svg>`

@@ -1,7 +1,7 @@
 // 首页交互：学习方法五步演示、十站路线（列表 / 静态图 / 3D）。
 // 3D 只在 <html class="can3d"> 时（宽屏、有 WebGL、没开减少动效，判断在 index.html 的 head 里）
 // 滚动到路线附近才加载；加载失败就一直用静态路线图。
-import { STOPS } from './route-data.js'
+import { STOPS, BUG_URL } from './route-data.js'
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -49,8 +49,22 @@ if (sec) {
     rbird.setAttribute('aria-hidden', 'true')
     staticBox.appendChild(rbird)
   }
+  // 每站一只小虫，犀鸟到站啄掉；往回滚又回来
+  const bugEls = svg && staticBox ? STOPS.map(() => {
+    const b = Object.assign(document.createElement('img'), { src: BUG_URL, alt: '', className: 'rbug', width: 64, height: 48 })
+    b.setAttribute('aria-hidden', 'true')
+    staticBox.appendChild(b)
+    return b
+  }) : []
+  const BASE = 'translate(-50%,-92%)'
+  const peck = (el, base, after) => {
+    if (reduce) return after()
+    el.animate([{ transform: base + ' rotate(0)' }, { transform: base + ' rotate(-24deg)', offset: .45 }, { transform: base + ' rotate(0)' }], { duration: 480, easing: 'ease-in-out' })
+    setTimeout(after, 220)
+  }
   const vb = svg ? svg.viewBox.baseVal : null
   const posOf = n => { const c = svgStops[n - 1].querySelector('circle'); return [c.cx.baseVal.value / vb.width * 100, c.cy.baseVal.value / vb.height * 100] }
+  bugEls.forEach((b, i) => { const [x, y] = posOf(i + 1); Object.assign(b.style, { left: x - 2.6 + '%', top: y + '%' }) })
   const hopStatic = n => {
     if (!rbird) return
     const [x, y] = posOf(n)
@@ -64,7 +78,11 @@ if (sec) {
       ], { duration: 600, easing: 'ease-in-out' })
     }
     Object.assign(rbird.style, to)
+    const hopped = birdAt && !reduce && Math.abs(n - birdAt.n) <= 2
     birdAt = { n, xy: [x, y] }
+    bugEls.forEach((b, i) => b.classList.toggle('eaten', i + 1 < n))
+    bugEls[n - 1].classList.remove('eaten')
+    setTimeout(() => { if (birdAt.n === n) peck(rbird, BASE, () => bugEls[n - 1].classList.add('eaten')) }, hopped ? 620 : 120)
   }
 
   const setActive = n => {
@@ -87,7 +105,7 @@ if (sec) {
   const goTo = n => {
     if (!can3d) return setActive(n)
     const span = sec.offsetHeight - innerHeight
-    scrollTo({ top: sec.getBoundingClientRect().top + scrollY + span * (n - 0.5) / STOPS.length, behavior: 'smooth' })
+    scrollTo({ top: sec.getBoundingClientRect().top + scrollY + span * (n - 1 + (n === 1 ? 0.3 : 0.8)) / STOPS.length, behavior: 'smooth' })
   }
   buttons.forEach(b => b.addEventListener('click', () => goTo(+b.dataset.n)))
   svgStops.forEach(g => g.addEventListener('click', () => goTo(+g.dataset.n)))
@@ -100,7 +118,9 @@ if (sec) {
       requestAnimationFrame(() => {
         ticking = false
         const p = progress()
-        setActive(Math.min(STOPS.length, Math.floor(p * STOPS.length) + 1))
+        // 和 3D 一致：每站一段，前 60% 在路上（还算上一站），后 40% 到站
+        const q = Math.min(STOPS.length - 1e-6, p * STOPS.length), n = Math.floor(q) + 1
+        setActive(n === 1 || q - (n - 1) >= 0.6 ? n : n - 1)
         if (r3) r3.setProgress(p)
       })
     }
@@ -151,9 +171,9 @@ if (!seen && !location.hash) {
   ]
   const g = document.createElement('div')
   g.className = 'guide'
-  g.innerHTML = '<p class="guide-say" aria-hidden="true"></p><img src="/img/bird/hero.webp" alt="" width="593" height="880"><button type="button" class="guide-x" aria-label="关闭犀鸟向导">×</button>'
+  g.innerHTML = '<p class="guide-say" aria-hidden="true"></p><div class="guide-bird"><img class="gbug" src="' + BUG_URL + '" alt="" width="64" height="48"><img class="gb" src="/img/bird/hero.webp" alt="" width="593" height="880"></div><button type="button" class="guide-x" aria-label="关闭犀鸟向导">×</button>'
   document.body.appendChild(g)
-  const say = g.querySelector('.guide-say'), img = g.querySelector('img')
+  const say = g.querySelector('.guide-say'), img = g.querySelector('.gb'), gbug = g.querySelector('.gbug')
   const hop = () => { if (!reduce) img.animate([{ transform: 'translateY(0) scale(1,1)' }, { transform: 'translateY(-36px) scale(.96,1.04)', offset: .45 }, { transform: 'translateY(0) scale(1.06,.94)', offset: .85 }, { transform: 'translateY(0) scale(1,1)' }], { duration: 560, easing: 'ease-out' }) }
   let cur = '', talkT = 0
   const show = id => {
@@ -166,7 +186,14 @@ if (!seen && !location.hash) {
     g.classList.add('talk')
     clearTimeout(talkT); talkT = setTimeout(() => g.classList.remove('talk'), 3500)  // 话只说一会儿，免得一直挡字
     hop()
+    // 每到一节，脚边爬来一只虫，跳完低头啄掉
+    gbug.classList.remove('eaten')
+    setTimeout(() => peckGuide(), reduce ? 400 : 640)
     if (id === 'open') setTimeout(end, 6000)
+  }
+  const peckGuide = () => {
+    if (!reduce) img.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-22deg)', offset: .45 }, { transform: 'rotate(0)' }], { duration: 480, easing: 'ease-in-out' })
+    setTimeout(() => gbug.classList.add('eaten'), reduce ? 0 : 220)
   }
   const end = () => { g.classList.add('bye'); setTimeout(() => g.remove(), 600) }
   g.querySelector('.guide-x').addEventListener('click', end)

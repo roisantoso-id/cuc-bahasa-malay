@@ -2,7 +2,7 @@
 // 滚动推进：路线逐段画出来，镜头跟着走，经过的站变亮，当前站最亮。不自己转、不闪。
 // 只在需要时渲染（滚动或镜头还在缓动时），离开视口就停。
 import * as THREE from './vendor/three.module.min.js'
-import { LAND, project } from './route-data.js'
+import { LAND, project, BUG_URL } from './route-data.js'
 
 const C = { land: 0x2b6c69, landSide: 0x174a4e, route: 0xe9a75f, paper: 0xf7f2e8, future: 0x9fbcb7, tower: 0xf3ebdc, hill: 0x3f8a6c }
 
@@ -21,12 +21,15 @@ export function init(box, stops) {
   // 地形：海岸线挤出成薄片
   const DEPTH = 0.16
   const landMats = [new THREE.MeshLambertMaterial({ color: C.land }), new THREE.MeshLambertMaterial({ color: C.landSide })]
-  for (const ring of Object.values(LAND)) {
+  const nearMats = [new THREE.MeshLambertMaterial({ color: 0x1d5156 }), new THREE.MeshLambertMaterial({ color: 0x143f44 })]
+  const addLand = (ring, mats, depth) => {
     const shape = new THREE.Shape(ring.map(([lo, la]) => { const [x, z] = project(lo, la); return new THREE.Vector2(x, -z) }))
-    const g = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: false })
+    const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false })
     g.rotateX(-Math.PI / 2)
-    scene.add(new THREE.Mesh(g, landMats))
+    scene.add(new THREE.Mesh(g, mats))
   }
+  LAND.near.forEach(r => addLand(r, nearMats, DEPTH * 0.5))   // 周边国家：矮一点、暗一点
+  LAND.my.forEach(r => addLand(r, landMats, DEPTH))
   const at = (lo, la, y = DEPTH) => { const [x, z] = project(lo, la); return new THREE.Vector3(x, y, z) }
 
   // 几个克制的地标：吉隆坡双子塔、金马伦的山、亚庇的神山
@@ -102,23 +105,51 @@ export function init(box, stops) {
   scene.add(bird)
   const standAt = n => markers[n - 1].g.position.clone().setY(DEPTH + 0.06)
   let hopFrom = standAt(1), hopTo = hopFrom.clone(), hopT = 1, hopStart = 0
+
+  // 每站一只小虫：还没到的站有虫，到了站犀鸟低头一啄，虫就没了；往回滚，前面的虫又回来
+  const bugTex = new THREE.TextureLoader().load(BUG_URL, () => kick())
+  bugTex.colorSpace = THREE.SRGBColorSpace
+  const BUG_W = 0.3, BUG_H = BUG_W * 48 / 64
+  const bugs = markers.map(m => {
+    const b = new THREE.Sprite(new THREE.SpriteMaterial({ map: bugTex, transparent: true, alphaTest: 0.05 }))
+    b.center.set(0.5, 0)
+    b.position.copy(m.g.position).add(new THREE.Vector3(-0.3, 0.02, 0.06))
+    b.scale.set(BUG_W, BUG_H, 1)
+    scene.add(b)
+    return { b, s: 1 }
+  })
+  let peckT = 1, peckStart = 0, peckPending = true, eaten = 0   // eaten = 当前站的虫已经被吃掉
+  const PECK_MS = 520
+  const bugTarget = i => { const n = i + 1; return n > active ? 1 : n < active ? 0 : (eaten === n ? 0 : 1) }
   const HOP_MS = 650
   bird.position.copy(hopFrom)
 
   let target = 0, cur = 0, active = 1, raf = 0, visible = true, w = 0, h = 0
   const tmp = new THREE.Vector3(), look = new THREE.Vector3(), camPos = new THREE.Vector3()
 
-  // 连续进度 p（0–1）→ 路线画到哪里：每站占一段，站的中间正好走到这一站
+  // 连续进度 p（0–1）→ 路线画到哪里：每站占一段滚动，前 60% 从上一站走过来，后 40% 停在这一站
+  const N = stops.length
+  const band = p => { const q = Math.min(N - 1e-6, Math.max(0, p * N)); const n = Math.floor(q) + 1; return [n, q - (n - 1)] }
+  const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
   const uOf = p => {
-    const q = Math.min(stops.length - 1, Math.max(0, p * stops.length - 0.5))
-    const i = Math.floor(q), f = q - i
-    return i >= stops.length - 1 ? stopU[i] : stopU[i] + (stopU[i + 1] - stopU[i]) * f
+    const [n, local] = band(p)
+    return n === 1 ? stopU[0] : stopU[n - 2] + (stopU[n - 1] - stopU[n - 2]) * ease(Math.min(1, local / 0.6))
+  }
+  const stopOf = p => { const [n, local] = band(p); return n === 1 || local >= 0.6 ? n : n - 1 }
+  const hopTo_ = n => {
+    if (n === active) return
+    hopFrom = bird.position.clone(); hopTo = standAt(n)
+    hopT = 0; hopStart = performance.now()
+    if (Math.abs(n - active) > 1) hopFrom = hopTo.clone()   // 一次跨好几站就直接落过去
+    peckPending = true; peckT = 1; bird.material.rotation = 0
+    active = n
   }
 
   function frame() {
     raf = 0
     cur += (target - cur) * 0.09
     if (Math.abs(target - cur) < 1e-4) cur = target
+    hopTo_(stopOf(cur))   // 路线走到哪一站，犀鸟就跳到哪一站
     const u = Math.max(0.002, uOf(cur))
     tube.geometry.setDrawRange(0, Math.floor(u * SEG) * RAD * 6)
 
@@ -144,6 +175,22 @@ export function init(box, stops) {
       const sq = 1 - Math.sin(hopT * Math.PI) * 0.08   // 起跳落地时微微压扁
       bird.scale.set(BIRD_H * 593 / 880 / sq, BIRD_H * sq, 1)
     }
+    // 落地后啄虫：身子往前（左）一低再抬起来，低到一半时虫被吃掉
+    if (hopT >= 1 && peckPending) { peckPending = false; peckT = 0; peckStart = performance.now() }
+    if (peckT < 1) {
+      peckT = Math.min(1, (performance.now() - peckStart) / PECK_MS)
+      const k = Math.sin(peckT * Math.PI)
+      bird.material.rotation = k * 0.55
+      bird.position.copy(hopTo).add(new THREE.Vector3(-0.08 * k, 0, 0))
+      if (peckT > 0.5) eaten = active
+    }
+    bugs.forEach((x, i) => {
+      const t = bugTarget(i)
+      x.s += (t - x.s) * (t ? 0.15 : 0.35)
+      if (Math.abs(t - x.s) < 0.01) x.s = t
+      x.b.scale.set(BUG_W * x.s, BUG_H * x.s, 1)
+      x.b.visible = x.s > 0.01
+    })
     renderer.render(scene, camera)
 
     labels.forEach((el, i) => {
@@ -157,7 +204,7 @@ export function init(box, stops) {
       el.style.transform = `translate(${((tmp.x + 1) / 2 * w).toFixed(1)}px,${((1 - tmp.y) / 2 * h).toFixed(1)}px) translate(-50%,-130%)`
     })
 
-    const settling = hopT < 1 || cur !== target || markers.some((m, i) => Math.abs(m.head.scale.x - (i + 1 === active ? 0.001 : i + 1 < active ? 1.15 : 1)) > 0.005)
+    const settling = hopT < 1 || peckT < 1 || peckPending || bugs.some((x, i) => x.s !== bugTarget(i)) || cur !== target || markers.some((m, i) => Math.abs(m.head.scale.x - (i + 1 === active ? 0.001 : i + 1 < active ? 1.15 : 1)) > 0.005)
     if (settling && visible) raf = requestAnimationFrame(frame)
   }
   const kick = () => { if (!raf && visible) raf = requestAnimationFrame(frame) }
@@ -181,14 +228,7 @@ export function init(box, stops) {
     frame()
     resolve({
       setProgress(p) { target = p; kick() },
-      setActive(n) {
-        if (n === active) return
-        // 滚得快、一次跨好几站就直接落过去，不连跳
-        hopFrom = bird.position.clone(); hopTo = standAt(n)
-        hopT = 0; hopStart = performance.now()
-        if (Math.abs(n - active) > 2) { hopFrom = hopTo.clone() }
-        active = n; kick()
-      }
+      setActive() { kick() }   // 站点由滚动进度决定（frame 里），这里只触发重画
     })
   })
 }
