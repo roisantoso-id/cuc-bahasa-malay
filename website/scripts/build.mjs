@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto'
 import { cpSync, existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { routeSvg } from './route-svg.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = join(ROOT, 'site')
@@ -20,7 +21,8 @@ const NAV = [
   { href: '/courses/', t: '学什么' },
   { href: '/about/', t: '关于我们' },
 ]
-const CTA = ['/#open', '打开小程序']
+// 顶栏按钮：配了小程序链接（URL Link）就直接跳小程序，否则到页尾的小程序入口
+const CTA = SITE.mp_link ? [SITE.mp_link, '打开小程序'] : ['/#open', '小程序入口']
 
 const renderNav = path => `<header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="/"><img src="/img/bird/avatar.webp" alt="" width="34" height="34">${esc(SITE.brand)}</a>
@@ -32,7 +34,7 @@ const renderNav = path => `<header class="nav" id="nav"><div class="wrap">
 const renderFoot = () => `<footer class="foot"><div class="wrap foot-in">
   <div>
     <a class="brand" href="/"><img src="/img/bird/avatar.webp" alt="" width="28" height="28">${esc(SITE.brand)}</a>
-    <p>马来语 5000 高频词，一站一站背</p>
+    <p>马来语 5000 高频词，十站学完。学习在微信小程序里进行。</p>
     <p>课程主持：张静灵（中国传媒大学马来语专业教师）</p>
     <p>技术支持：<a href="https://jobtalentai.com/zh/team/" target="_blank" rel="noopener">Santoso · JobTalent AI</a></p>
     <p>© ${new Date().getFullYear()} ${esc(SITE.operator || SITE.brand)}${SITE.icp ? ` · <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">${esc(SITE.icp)}</a>` : ''}</p>
@@ -50,14 +52,33 @@ const ver = url => {
   return hashes.get(url)
 }
 
+// JS 模块之间的 import 也加版本号（Caddy 给 .js 缓存 30 天）：先改叶子文件，再按改完的内容算哈希
+const jsDone = new Map()
+const stampJs = file => {
+  if (jsDone.has(file)) return jsDone.get(file)
+  jsDone.set(file, null)
+  let src = readFileSync(file, 'utf8')
+  src = src.replace(/((?:from\s*|import\s*\(\s*)['"])(\.\/[\w/.-]+\.js)(['"])/g, (m, a, rel, z) => {
+    const dep = join(dirname(file), rel)
+    if (!existsSync(dep)) return m
+    const hdep = stampJs(dep)
+    return hdep ? `${a}${rel}?v=${hdep}${z}` : m
+  })
+  writeFileSync(file, src)
+  const hv = createHash('sha1').update(src).digest('hex').slice(0, 10)
+  jsDone.set(file, hv)
+  return hv
+}
+for (const f of walk(join(OUT, 'js')).filter(f => f.endsWith('.js') && !f.includes('/vendor/'))) stampJs(f)
+
 const errors = []
 const pages = []
 for (const f of walk(OUT).filter(f => f.endsWith('.html'))) {
   const path = '/' + f.slice(OUT.length + 1).replace(/index\.html$/, '')
   let h = readFileSync(f, 'utf8')
-  h = h.replace('<!--NAV-->', renderNav(path)).replace('<!--FOOT-->', renderFoot())
+  h = h.replace('<!--NAV-->', renderNav(path)).replace('<!--FOOT-->', renderFoot()).replace('<!--ROUTE_SVG-->', routeSvg())
   // 网站图标(犀鸟头像):每页统一注入
-  if (!h.includes('rel="icon"')) h = h.replace('</head>', `<link rel="icon" href="/favicon.ico" sizes="32x32">\n<link rel="icon" type="image/png" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n<meta name="theme-color" content="#2fae66">\n</head>`)
+  if (!h.includes('rel="icon"')) h = h.replace('</head>', `<link rel="icon" href="/favicon.ico" sizes="32x32">\n<link rel="icon" type="image/png" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n<meta name="theme-color" content="#1f5a43">\n</head>`)
   for (let prev; prev !== h;) {   // 条件块可以嵌套,替换到不再变化为止
     prev = h
     h = h.replace(/<!--IF_SITE_(\w+)-->([\s\S]*?)<!--\/IF_SITE_\1-->\n?/g, (m, k, inner) => (val(k) ? inner : ''))
@@ -65,7 +86,7 @@ for (const f of walk(OUT).filter(f => f.endsWith('.html'))) {
   }
   h = h.replace(/\{\{SITE_(\w+)\}\}/g, (m, k) => esc(val(k)))
   h = h.replace(/((?:href|src)=")(\/[\w/.-]+\.(?:css|m?js))(")/g, (m, a, url, z) => (ver(url) ? `${a}${url}?v=${ver(url)}${z}` : m))
-  for (const left of h.match(/<!--(NAV|FOOT|IF_|IFNOT_|\/IF)[^>]*-->|\{\{[A-Z_]+\}\}/g) || []) errors.push(`${path}: 残留 ${left}`)
+  for (const left of h.match(/<!--(NAV|FOOT|ROUTE_SVG|IF_|IFNOT_|\/IF)[^>]*-->|\{\{[A-Z_]+\}\}/g) || []) errors.push(`${path}: 残留 ${left}`)
   writeFileSync(f, h)
   if (!/name="robots" content="noindex"/.test(h)) pages.push(path)
 }

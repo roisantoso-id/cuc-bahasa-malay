@@ -3,114 +3,177 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{{SITE_BRAND}} · 马来语 5000 高频词，一站一站背</title>
-<meta name="description" content="JomBelajar 是背马来语单词的微信小程序：5000 个高频词按使用频率排好，分成十站，每个词配发音、释义和例句。词表由张静灵老师团队整理。">
+<title>{{SITE_BRAND}} · 从第一句马来语，到走遍十站</title>
+<meta name="description" content="JomBelajar 是学马来语的微信小程序：5000 个高频词按使用频率分成十站，每个词配发音、中文释义、例句和复习练习。官网只做介绍，学习在微信小程序里进行。">
 <!--IF_SITE_SITE_URL--><link rel="canonical" href="{{SITE_SITE_URL}}/"><!--/IF_SITE_SITE_URL-->
-<meta property="og:title" content="{{SITE_BRAND}} · 马来语 5000 高频词，一站一站背">
-<meta property="og:description" content="按使用频率背马来语单词。每天一张车票：先复习到期的词，再学新词。">
+<meta property="og:title" content="{{SITE_BRAND}} · 从第一句马来语，到走遍十站">
+<meta property="og:description" content="按使用频率学 5000 个马来语高频词，十站路线，从吉隆坡到亚庇。在微信小程序里学习。">
 <!--IF_SITE_SITE_URL--><meta property="og:image" content="{{SITE_SITE_URL}}/img/hero.jpg"><!--/IF_SITE_SITE_URL-->
+<script>
+/* 能不能放 3D 路线：宽屏、没开「减少动效」、有 WebGL、设备不太弱。不能就一直用静态路线图。
+   放在 head 里同步判断，路线那一节的高度从一开始就定好，不会加载完再跳。 */
+(function () {
+  var d = document.documentElement, ok = false
+  try {
+    var c = document.createElement('canvas')
+    ok = innerWidth >= 960 && !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      !!(c.getContext('webgl2') || c.getContext('webgl')) &&
+      (navigator.hardwareConcurrency || 4) >= 4 && (navigator.deviceMemory || 4) >= 4
+  } catch (e) {}
+  d.classList.add('js'); if (ok) d.classList.add('can3d')
+})()
+</script>
 <link rel="preload" as="image" href="/img/bird/hero.webp">
 <link rel="stylesheet" href="/css/site.css">
 <script src="/js/nav.js" defer></script>
+<script type="module" src="/js/home.js"></script>
 </head>
 <body>
 <!--NAV-->
 <main>
 
-<section class="hero">
+<section class="hero" aria-labelledby="heroH">
   <div class="wrap hero-in">
-    <div>
-      <p class="kicker">马来语背单词小程序 · 张静灵老师团队整理</p>
-      <h1><span class="ln"><em>5000</em> 个马来语高频词，</span><span class="ln">一站一站背下来</span></h1>
-      <p class="lede">按使用频率排好，从最常用的 yang、dan 开始。每天打开是一张车票：先复习到期的词，再学 20 个新词，每个词都有发音、释义和例句。</p>
-      <div class="ctas"><a class="btn btn-main" href="#open">打开小程序</a><a class="link" href="#how">看看怎么背</a></div>
-      <div class="hero-meta"><span><b>5000</b> 个高频词</span><span><b>10</b> 站，每站 <b>500</b> 词</span><span>中文释义 + 马来语例句</span></div>
+    <div class="hero-copy">
+      <p class="kicker">马来语背单词 · 微信小程序</p>
+      <h1 id="heroH">从第一句马来语，<br>到走遍十站</h1>
+      <p class="lede">按使用频率学 5000 个马来语高频词，每个词都配发音、中文释义、例句和复习练习。</p>
+      <div class="ctas">
+<!--IF_SITE_MP_LINK-->        <a class="btn btn-main" href="{{SITE_MP_LINK}}">打开微信小程序</a>
+<!--/IF_SITE_MP_LINK-->
+<!--IFNOT_SITE_MP_LINK-->        <a class="btn btn-main" href="#open">打开微信小程序</a>
+<!--/IFNOT_SITE_MP_LINK-->
+        <a class="link" href="#route">看看十站学习路线</a>
+      </div>
+      <p class="cta-note">学习功能在微信小程序里使用，网页上不能学。<!--IFNOT_SITE_MP_QR-->小程序正在上线，入口见<a href="#open">页尾</a>。<!--/IFNOT_SITE_MP_QR--></p>
+      <dl class="facts-row">
+        <div><dt>高频词</dt><dd><b>5000</b> 个</dd></div>
+        <div><dt>路线</dt><dd><b>10</b> 站 · 每站 500 词</dd></div>
+        <div><dt>每个词</dt><dd>发音 · 释义 · 例句</dd></div>
+      </dl>
     </div>
-    <div class="scene" aria-hidden="true">
+    <div class="hero-vis" aria-hidden="true">
       <div class="ticket">
-        <div class="songket"></div>
-        <div class="tk-top">
-          <div class="tk-k"><span>TIKET HARI INI</span><span>第 1 站</span></div>
-          <div class="tk-city">Kuala Lumpur</div>
-          <div class="tk-sub">吉隆坡 · 第 1–500 个词</div>
-        </div>
+        <div class="tk-head"><span>TIKET · 今日车票</span><span>第 1 站</span></div>
+        <div class="tk-city">Kuala Lumpur</div>
+        <div class="tk-sub">吉隆坡 · 第 1–500 个词</div>
         <div class="tk-cut"></div>
         <div class="tk-nums"><div><b>12</b><span>待复习</span></div><div><b>20</b><span>新词</span></div><div><b>7</b><span>连续天数</span></div></div>
-        <div class="tk-word"><div><span class="ms">makan</span><br><small>动词 · 吃；用餐</small></div></div>
+        <div class="tk-word"><span class="ms">makan</span><small>动词 · 吃；用餐</small></div>
       </div>
       <div class="stamp"><b>吉隆坡</b><small>SAMPAI</small></div>
-      <div class="ground"></div>
       <img class="bird" src="/img/bird/hero.webp" alt="" width="593" height="880" fetchpriority="high">
     </div>
   </div>
 </section>
 
-<section class="sec sec-alt" id="how" aria-labelledby="howH">
+<section class="sec sec-method" id="how" aria-labelledby="howH">
   <div class="wrap">
-    <div class="sec-h reveal">
-      <h2 id="howH">每个词，都按这四步走</h2>
-      <p>学过的词按记忆规律回来找你，答错的进错词本，不会学了就忘。</p>
+    <div class="sec-h">
+      <p class="eyebrow">学习方法</p>
+      <h2 id="howH">每个词，走这五步</h2>
+      <p>学过的词按记忆规律回来找你，答错的词会再练，不会学了就忘。</p>
     </div>
-    <ol class="how reveal">
-      <li>
-        <div class="ui"><div class="ui-word"><span class="ms">makan</span><i class="say"></i></div><div class="ui-sense">先想意思，再翻开：<b>吃；用餐</b></div></div>
-        <h3>听发音，先回忆</h3>
-        <p>卡片一出来就播发音。想好了再看释义和例句。</p>
-      </li>
-      <li>
-        <div class="ui"><div class="grades"><span class="g-no">不认识</span><span class="g-mid">模糊</span><span class="g-ok">认识</span></div><div class="ui-note">太简单的词，直接设为已掌握</div></div>
-        <h3>给自己打分</h3>
-        <p>认识、模糊、不认识，决定这个词多久后再出现。</p>
-      </li>
-      <li>
-        <div class="ui"><div class="days"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="days-l"><span>1</span><span>2</span><span>4</span><span>7</span><span>15</span><span>30 天</span></div><div class="opts"><span>房屋；家</span><span class="ok">rumah</span></div></div>
-        <h3>到期了，先考你</h3>
-        <p>看词选义、听音选词、看中文拼写，越熟题越难。</p>
-      </li>
-      <li>
-        <div class="ui"><div class="rows"><div><span class="ms">minum</span><small>喝</small><em>错 3 次</em></div><div><span class="ms">sekolah</span><small>学校</small><em>错 2 次</em></div><div><span class="ms">boleh</span><small>可以</small><em>错 1 次</em></div></div></div>
-        <h3>错词本，一键重练</h3>
-        <p>答错过的词自动收进来。也可以收藏、按中文或马来语查词。</p>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<section class="sec" id="route" aria-labelledby="routeH">
-  <div class="wrap">
-    <div class="sec-h reveal">
-      <h2 id="routeH">5000 个词，分成十站</h2>
-      <p>从吉隆坡出发，到亚庇结束。每站 500 个词，越往后越少见。</p>
-    </div>
-    <ol class="route reveal">
-      <li class="on"><span class="dot">1</span><span class="city">吉隆坡</span><span class="ms-city">Kuala Lumpur</span><span class="range">1–500</span></li>
-      <li class="on"><span class="dot">2</span><span class="city">马六甲</span><span class="ms-city">Melaka</span><span class="range">501–1000</span></li>
-      <li class="on"><span class="dot">3</span><span class="city">怡保</span><span class="ms-city">Ipoh</span><span class="range">1001–1500</span></li>
-      <li class="on"><span class="dot">4</span><span class="city">槟城</span><span class="ms-city">Pulau Pinang</span><span class="range">1501–2000</span></li>
-      <li class="on"><span class="dot">5</span><span class="city">金马伦</span><span class="ms-city">Cameron</span><span class="range">2001–2500</span></li>
-      <li class="on"><span class="dot">6</span><span class="city">关丹</span><span class="ms-city">Kuantan</span><span class="range">2501–3000</span></li>
-      <li><span class="dot">7</span><span class="city">登嘉楼</span><span class="ms-city">Terengganu</span><span class="range">3001–3500</span></li>
-      <li><span class="dot">8</span><span class="city">哥打巴鲁</span><span class="ms-city">Kota Bharu</span><span class="range">3501–4000</span></li>
-      <li><span class="dot">9</span><span class="city">古晋</span><span class="ms-city">Kuching</span><span class="range">4001–4500</span></li>
-      <li><span class="dot">10</span><span class="city">亚庇</span><span class="ms-city">Kota Kinabalu</span><span class="range">4501–5000</span></li>
-    </ol>
-    <div class="route-foot reveal">
-      <div class="stamp"><b>槟城</b><small>SAMPAI</small></div>
-      <span>每学完一站，就在你的马来语护照上盖一个章。</span>
-      <span class="legend"><i></i>已审校，可以学</span>
-      <span class="legend"><i class="off"></i>整理中，陆续上线</span>
+    <div class="method" data-steps>
+      <ol class="steps" role="tablist" aria-label="五个学习步骤">
+        <li><button type="button" role="tab" id="st1" aria-controls="sp1" aria-selected="true"><i>1</i>听发音</button></li>
+        <li><button type="button" role="tab" id="st2" aria-controls="sp2" aria-selected="false" tabindex="-1"><i>2</i>回忆词义</button></li>
+        <li><button type="button" role="tab" id="st3" aria-controls="sp3" aria-selected="false" tabindex="-1"><i>3</i>自我评估</button></li>
+        <li><button type="button" role="tab" id="st4" aria-controls="sp4" aria-selected="false" tabindex="-1"><i>4</i>到期复习</button></li>
+        <li><button type="button" role="tab" id="st5" aria-controls="sp5" aria-selected="false" tabindex="-1"><i>5</i>错词重练</button></li>
+      </ol>
+      <div class="panels">
+        <div class="panel on" role="tabpanel" id="sp1" aria-labelledby="st1">
+          <div class="demo"><div class="card"><span class="ms big">makan</span><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></div>
+          <div class="ptext"><h3>听发音</h3><p>词卡一出现就播放马来语发音。先听，再看拼写，把声音和字母对上。</p></div>
+        </div>
+        <div class="panel" role="tabpanel" id="sp2" aria-labelledby="st2">
+          <div class="demo"><div class="card"><span class="ms big">makan</span><span class="reveal-line"><span>吃；用餐</span></span><small>Kami makan nasi bersama-sama.</small></div></div>
+          <div class="ptext"><h3>回忆词义</h3><p>先在心里想这个词是什么意思，想好了再翻开中文释义和例句。</p></div>
+        </div>
+        <div class="panel" role="tabpanel" id="sp3" aria-labelledby="st3">
+          <div class="demo"><div class="card"><span class="ms big">makan</span><span class="grades"><span>不认识</span><span>模糊</span><span class="sel">认识</span></span></div></div>
+          <div class="ptext"><h3>自我评估</h3><p>认识、模糊、不认识，三选一。选的结果决定这个词多久后再出现；太简单的词可以直接设为已掌握。</p></div>
+        </div>
+        <div class="panel" role="tabpanel" id="sp4" aria-labelledby="st4">
+          <div class="demo"><div class="card"><span class="days"><i>1</i><i>2</i><i>4</i><i>7</i><i>15</i><i>30</i></span><small>复习间隔（天）</small><span class="q">看词选义：<b class="ms">rumah</b></span><span class="opts"><span>学校</span><span class="ok">房屋；家</span><span>可以</span></span></div></div>
+          <div class="ptext"><h3>到期复习</h3><p>学过的词隔 1、2、4、7、15、30 天回来。复习先出题：看词选义、听音选词、看中文拼写。</p></div>
+        </div>
+        <div class="panel" role="tabpanel" id="sp5" aria-labelledby="st5">
+          <div class="demo"><div class="card"><span class="wrong"><span><b class="ms">minum</b>喝<em>错 3 次</em></span><span><b class="ms">sekolah</b>学校<em>错 2 次</em></span><span><b class="ms">boleh</b>可以<em>错 1 次</em></span></span></div></div>
+          <div class="ptext"><h3>错词重练</h3><p>答错过的词自动进错词本，一键重练。也可以收藏单词，按中文或马来语查词。</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="sec sec-alt" id="team" aria-labelledby="teamH">
+<section class="route-sec" id="route" aria-labelledby="routeH">
+  <div class="route-stage">
+    <div class="wrap route-in">
+      <div class="route-copy">
+        <p class="eyebrow">十站路线</p>
+        <h2 id="routeH">5000 个词，分成十站</h2>
+        <p class="route-lede">从吉隆坡出发，到亚庇结束。每站 500 个词，越往后越少见。学完一站，在小程序的「我的护照」里盖一个章。</p>
+        <ol class="stop-list" aria-label="十个学习站">
+          <li><button type="button" data-n="1"><i>1</i><b>吉隆坡</b><span>1–500</span></button></li>
+          <li><button type="button" data-n="2"><i>2</i><b>马六甲</b><span>501–1000</span></button></li>
+          <li><button type="button" data-n="3"><i>3</i><b>怡保</b><span>1001–1500</span></button></li>
+          <li><button type="button" data-n="4"><i>4</i><b>槟城</b><span>1501–2000</span></button></li>
+          <li><button type="button" data-n="5"><i>5</i><b>金马伦</b><span>2001–2500</span></button></li>
+          <li><button type="button" data-n="6"><i>6</i><b>关丹</b><span>2501–3000</span></button></li>
+          <li class="off"><button type="button" data-n="7"><i>7</i><b>瓜拉登嘉楼</b><span>3001–3500</span></button></li>
+          <li class="off"><button type="button" data-n="8"><i>8</i><b>哥打巴鲁</b><span>3501–4000</span></button></li>
+          <li class="off"><button type="button" data-n="9"><i>9</i><b>古晋</b><span>4001–4500</span></button></li>
+          <li class="off"><button type="button" data-n="10"><i>10</i><b>亚庇</b><span>4501–5000</span></button></li>
+        </ol>
+        <p class="stop-detail" id="stopDetail" aria-live="polite"><b>第 1 站 · 吉隆坡</b> Kuala Lumpur · 第 1–500 个词 · 双子塔下出发 · 已上线</p>
+        <p class="legend"><span><i></i>已上线，可以学</span><span><i class="off"></i>整理中，陆续上线</span></p>
+      </div>
+      <div class="route-vis">
+        <div class="route-static"><!--ROUTE_SVG--></div>
+        <div class="route-3d" id="route3d" hidden><canvas aria-hidden="true"></canvas><div class="r3-labels" aria-hidden="true"></div></div>
+        <p class="route-loading" id="routeLoading" hidden>正在加载立体路线…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-alt" id="content" aria-labelledby="contentH">
+  <div class="wrap content-in">
+    <div class="sec-h">
+      <p class="eyebrow">课程内容</p>
+      <h2 id="contentH">一个词条里有什么</h2>
+      <p>词表按马来语的使用频率从高到低排，前面是日常和新闻里最常见的词。</p>
+    </div>
+    <div class="entry-wrap">
+      <article class="entry" aria-label="词条示例：makan">
+        <p class="entry-head"><span class="ms">makan</span><span class="pos">动词</span><span class="no">第 349 个词 · 第 1 站</span></p>
+        <ol class="senses">
+          <li><b>吃；用餐</b><span class="ex"><span class="ms-i">Kami makan nasi bersama-sama.</span>我们一起吃饭。</span></li>
+        </ol>
+        <p class="entry-foot">相关词 <span class="ms-i">makanan</span> 食物；食品 · 第 324 个词</p>
+      </article>
+      <dl class="spec">
+        <div><dt>发音</dt><dd>每个词都有马来语真人录音，学和复习时都能点开再听。</dd></div>
+        <div><dt>释义</dt><dd>中文释义和词性。一个词有几种常见意思的，分开列出；派生词标出词根。</dd></div>
+        <div><dt>例句</dt><dd>每个意思配一句马来语例句和中文翻译。</dd></div>
+        <div><dt>练习</dt><dd>看词选义、听音选词、看中文拼写，越熟题越难。</dd></div>
+        <div><dt>复习</dt><dd>每天先复习到期的词，再学新词。新词默认每天 20 个，可以改成 10、30 或 50 个。</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="team" aria-labelledby="teamH">
   <div class="wrap">
-    <div class="sec-h reveal">
+    <div class="sec-h">
+      <p class="eyebrow">团队</p>
       <h2 id="teamH">做这门课的人</h2>
       <p>一位大学老师主持内容，一位学生整理词表，一位工程师负责技术。</p>
     </div>
-    <div class="team reveal">
-      <article class="person">
+    <div class="team">
+      <article class="person lead">
         <figure><img src="/img/team/zhang.jpg" alt="张静灵" width="525" height="720" loading="lazy"></figure>
         <div>
           <p class="role">课程主持</p>
@@ -139,7 +202,7 @@
       </article>
     </div>
 
-    <div class="books reveal">
+    <div class="books">
       <div class="books-h"><h3>张静灵老师的著作与教材</h3><span>专著、译著和参与编撰的教材</span></div>
       <ul class="books-row">
         <li class="bk"><img src="/img/books/tongyuan.jpg" alt="《同源异流》封面" width="373" height="560" loading="lazy"><b>同源异流</b><span>专著 · 光明日报出版社</span></li>
@@ -150,60 +213,69 @@
         <li class="bk"><img src="/img/books/writing.jpg" alt="《马来语写作教程》封面" width="373" height="560" loading="lazy"><b>马来语写作教程</b><span>教材 · 中国传媒大学出版社</span></li>
       </ul>
     </div>
-  </div>
-</section>
 
-<section class="sec" id="media" aria-labelledby="mediaH">
-  <div class="wrap press reveal">
-    <figure><img src="/img/media/rtm-live.jpg" alt="杨启航在 RTM《早安马来西亚》直播中" width="1200" height="672" loading="lazy"><figcaption>2026 年 4 月 28 日，RTM《早安马来西亚》直播画面</figcaption></figure>
-    <div>
-      <h2 id="mediaH">媒体报道</h2>
-      <p class="intro">杨启航受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈，同场嘉宾有马来西亚高等教育部官员和北京外国语大学教授。</p>
-      <ul class="vlist">
-        <li><a href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener"><img src="/img/media/W1hjFnL5-jY.jpg" alt="" width="800" height="450" loading="lazy"><span><small>Berita RTM · 2026-04-28</small>Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</span></a></li>
-        <li><a href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener"><img src="/img/media/hRMBC_EC-uE.jpg" alt="" width="800" height="450" loading="lazy"><span><small>NST Online · 马来西亚《新海峡时报》</small>Bahasa Melayu thrives in China! A growing wave of fluency</span></a></li>
-      </ul>
-      <p class="fine">视频在 YouTube 播放</p>
-    </div>
-  </div>
-</section>
-
-<section class="sec sec-alt" aria-labelledby="whoH">
-  <div class="wrap">
-    <div class="sec-h reveal"><h2 id="whoH">适合谁</h2></div>
-    <div class="two reveal">
-      <div><h3>没学过马来语的中国学生</h3><p>马来语用拉丁字母，基本照读音拼写，没有声调。从最常用的词背起，很快就能看懂简单的句子。</p>
-        <p class="loan-line">很多日常词来自闽南话：<b>teh</b> 茶、<b>tauhu</b> 豆腐、<b>bihun</b> 米粉、<b>kuih</b> 糕点、<b>mi</b> 面</p></div>
-      <div><h3>会说一些的马来西亚华人</h3><p>口语会，但书面词汇不够的话，从第三、四站开始背报纸和公文里常见的词，太简单的直接设为已掌握。</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec" id="open" aria-labelledby="openH">
-  <div class="wrap end">
-    <div class="open reveal">
+    <div class="press" id="media">
+      <figure><img src="/img/media/rtm-live.jpg" alt="杨启航在 RTM《早安马来西亚》直播中" width="1200" height="672" loading="lazy"><figcaption>2026 年 4 月 28 日，RTM《早安马来西亚》直播画面</figcaption></figure>
       <div>
-<!--IF_SITE_MP_QR-->        <p class="status">用微信扫码打开</p>
-<!--/IF_SITE_MP_QR-->
-<!--IFNOT_SITE_MP_QR-->        <p class="status"><i></i>小程序即将上线</p>
-<!--/IFNOT_SITE_MP_QR-->
-        <h2 id="openH">打开小程序</h2>
-        <p>在微信里搜索「{{SITE_BRAND}}」就能打开，不用下载 App。学习记录跟着微信账号保存。</p>
-<!--IF_SITE_MP_LINK-->        <p><a class="btn btn-ghost btn-sm" href="{{SITE_MP_LINK}}">在微信里打开</a></p>
-<!--/IF_SITE_MP_LINK-->
+        <h3>媒体报道</h3>
+        <p class="intro">杨启航受邀参加马来西亚国家广播电视台（RTM）《早安马来西亚》直播访谈，同场嘉宾有马来西亚高等教育部官员和北京外国语大学教授。</p>
+        <ul class="vlist">
+          <li><a href="https://www.youtube.com/watch?v=W1hjFnL5-jY" target="_blank" rel="noopener"><img src="/img/media/W1hjFnL5-jY.jpg" alt="" width="800" height="450" loading="lazy"><span><small>Berita RTM · 2026-04-28</small>Kem Interaksi Bahasa &amp; Budaya Belia China-Malaysia 2026</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=hRMBC_EC-uE" target="_blank" rel="noopener"><img src="/img/media/hRMBC_EC-uE.jpg" alt="" width="800" height="450" loading="lazy"><span><small>NST Online · 马来西亚《新海峡时报》</small>Bahasa Melayu thrives in China! A growing wave of fluency</span></a></li>
+        </ul>
+        <p class="fine">视频在 YouTube 播放</p>
       </div>
-<!--IF_SITE_MP_QR-->      <img class="qr" src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="140" height="140">
-<!--/IF_SITE_MP_QR-->
-<!--IFNOT_SITE_MP_QR-->      <img class="bird" src="/img/bird/welcome.webp" alt="" width="506" height="520" loading="lazy">
-<!--/IFNOT_SITE_MP_QR-->
     </div>
-    <div class="faq reveal">
-      <h2>常见问题</h2>
-      <details><summary>需要下载 App 吗？</summary><p>不需要。这是微信小程序，在微信里搜索名字或扫码就能打开。</p></details>
+  </div>
+</section>
+
+<section class="sec sec-alt" id="who" aria-labelledby="whoH">
+  <div class="wrap who-in">
+    <div class="sec-h">
+      <p class="eyebrow">适合人群</p>
+      <h2 id="whoH">适合谁</h2>
+    </div>
+    <div class="who-list">
+      <div><h3>没学过马来语的初学者</h3><p>马来语用拉丁字母，基本照读音拼写，没有声调。从第一站最常用的词背起，很快就能看懂简单的句子。</p>
+        <p class="loan-line">不少日常词来自闽南话：<b>teh</b> 茶、<b>tauhu</b> 豆腐、<b>bihun</b> 米粉、<b>kuih</b> 糕点、<b>mi</b> 面</p></div>
+      <div><h3>需要补书面词汇的人</h3><p>口语会一些，但报纸、公文里的词不够用。可以从第三、四站开始，太简单的词直接设为已掌握。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq" aria-labelledby="faqH">
+  <div class="wrap faq-in">
+    <div class="sec-h"><p class="eyebrow">常见问题</p><h2 id="faqH">常见问题</h2></div>
+    <div class="faq">
+      <details open><summary>可以在网页上学吗？</summary><p>不能。官网只做介绍，背词、复习、错词本都在微信小程序里，学习记录跟着微信账号保存。</p></details>
+      <details><summary>需要下载 App 吗？</summary><p>不需要。这是微信小程序，在微信里扫码就能打开。</p></details>
       <details><summary>5000 个词是怎么选的？</summary><p>按马来语的使用频率从高到低排，前面的是日常和新闻里最常见的词。每个词配中文释义、马来语例句和发音。</p></details>
       <details><summary>完全没学过马来语，可以学吗？</summary><p>可以。从第一站最常用的词开始，每个词都有中文释义，例句也有中文翻译。</p></details>
       <details><summary>马来语和印尼语一样吗？</summary><p>大部分相通，但拼写、用词和发音有差别。这里教的是马来西亚的马来语。</p></details>
-      <details><summary>内容由谁编写？</summary><p>词表和例句由中国传媒大学马来语专业教师张静灵主持审定，团队成员杨启航整理。现在前 3000 个词已经审好，后面的陆续更新。</p></details>
+      <details><summary>内容由谁编写？</summary><p>词表和例句由中国传媒大学马来语专业教师张静灵主持审定，团队成员杨启航整理。前六站已经上线，后面四站陆续更新。</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec open-sec" id="open" aria-labelledby="openH">
+  <div class="wrap">
+    <div class="open">
+      <div class="open-copy">
+        <p class="eyebrow">打开小程序</p>
+        <h2 id="openH">在微信里，从第一站出发</h2>
+<!--IF_SITE_MP_QR-->        <p>用微信扫右边的小程序码打开<!--IF_SITE_MP_NAME-->，或在微信里搜索「{{SITE_MP_NAME}}」<!--/IF_SITE_MP_NAME-->。不用下载 App，学习记录跟着微信账号保存。</p>
+<!--/IF_SITE_MP_QR-->
+<!--IFNOT_SITE_MP_QR-->        <p class="status"><i></i>小程序正在上线，上线后这里会放小程序码。</p>
+        <p>学习功能只在微信小程序里提供。不用下载 App，学习记录跟着微信账号保存。</p>
+<!--/IFNOT_SITE_MP_QR-->
+<!--IF_SITE_MP_LINK-->        <p><a class="btn btn-main" href="{{SITE_MP_LINK}}">在微信里打开</a></p>
+        <p class="fine">在微信里点按钮可以直接进入；在电脑或其他浏览器里，请用微信扫码。</p>
+<!--/IF_SITE_MP_LINK-->
+      </div>
+<!--IF_SITE_MP_QR-->      <figure class="qr-box"><img src="{{SITE_MP_QR}}" alt="{{SITE_BRAND}} 小程序码" width="200" height="200"><figcaption>微信扫码</figcaption></figure>
+<!--/IF_SITE_MP_QR-->
+<!--IFNOT_SITE_MP_QR-->      <figure class="qr-box qr-wait"><span>小程序码<br>上线后放这里</span><img class="bird" src="/img/bird/welcome.webp" alt="" width="506" height="520" loading="lazy"></figure>
+<!--/IFNOT_SITE_MP_QR-->
     </div>
   </div>
 </section>
