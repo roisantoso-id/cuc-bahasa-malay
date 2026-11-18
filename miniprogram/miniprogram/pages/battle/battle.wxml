@@ -15,21 +15,21 @@
 
     <!-- 两个入口：并排小卡片 -->
     <view class="duo">
-      <view class="tile arena" hover-class="hover" bindtap="arena">
-        <image class="tile-bird" src="/assets/pass.jpg" mode="aspectFill" />
-        <view class="tile-t">每周擂台</view>
-        <view class="tile-s">20 题 · 还剩 {{arena ? arena.triesLeft : 3}} 次</view>
-        <view class="tile-s">{{cd.d}} 天 {{cd.h}} 小时后结束</view>
-        <view class="tile-go">进入 ›</view>
+      <view class="dc arena" hover-class="hover" bindtap="arena">
+        <image class="dc-bird" src="/assets/pass.jpg" mode="aspectFill" />
+        <view class="dc-t">每周擂台</view>
+        <view class="dc-s">20 题 · 还剩 {{arena ? arena.triesLeft : 3}} 次</view>
+        <view class="dc-s">{{cd.d}} 天 {{cd.h}} 小时后结束</view>
+        <view class="dc-go">进入 ›</view>
       </view>
-      <view class="tile pk">
-        <image class="tile-bird" src="/assets/cheer.jpg" mode="aspectFill" />
-        <view class="tile-t">好友 PK</view>
-        <view class="tile-s">10 题</view>
-        <view class="tile-s">发给同学比一比</view>
-        <view class="tile-row">
+      <view class="dc pk">
+        <image class="dc-bird" src="/assets/cheer.jpg" mode="aspectFill" />
+        <view class="dc-t">好友 PK</view>
+        <view class="dc-s">10 题</view>
+        <view class="dc-s">发给同学比一比</view>
+        <view class="dc-row">
           <picker wx:if="{{levels.length}}" range="{{levelNames}}" value="{{levelIdx}}" bindchange="pickLevelIdx"><view class="sel">{{levelNames[levelIdx]}} ▾</view></picker>
-          <view class="tile-go go-amber {{busy ? 'dis' : ''}}" bindtap="create">{{busy ? '…' : '发起 ›'}}</view>
+          <view class="dc-go go-amber {{busy ? 'dis' : ''}}" bindtap="create">{{busy ? '…' : '发起 ›'}}</view>
         </view>
       </view>
     </view>
@@ -41,7 +41,7 @@
     <view wx:if="{{boardLoading && !podium.length}}" class="muted small note">正在排名…</view>
     <view wx:elif="{{boardNote}}" class="muted small note">{{boardNote}}</view>
     <block wx:else>
-      <view class="podium">
+      <view wx:if="{{podium.length >= 3}}" class="podium">
         <view wx:for="{{podium}}" wx:key="place" class="pd p{{item.place}} {{item.me ? 'me' : ''}}">
           <image wx:if="{{item.av}}" class="pd-av" src="{{item.av}}" mode="aspectFill" />
           <view wx:else class="pd-av pd-mark">{{item.mark}}</view>
