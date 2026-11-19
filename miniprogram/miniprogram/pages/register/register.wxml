@@ -5,7 +5,7 @@
     <view class="rg-av-t">我的犀鸟形象 <text class="muted small">去换装 ›</text></view>
   </view>
 
-  <view class="field"><view class="label">昵称</view><input class="input" type="nickname" placeholder-class="ph" value="{{form.name}}" maxlength="30" data-k="name" bindinput="input" bindblur="input" placeholder="怎么称呼你（可以一键填微信昵称）" /></view>
+  <view class="field"><view class="label">昵称</view><input class="input" type="text" placeholder-class="ph" value="{{form.name}}" maxlength="30" data-k="name" bindinput="input" bindblur="input" placeholder="怎么称呼你（选填，可以用化名）" /></view>
   <view class="field"><view class="label">学校</view><input class="input" placeholder-class="ph" value="{{form.school}}" maxlength="60" data-k="school" bindinput="input" placeholder="例如：中国传媒大学（选填）" /></view>
   <view class="field"><view class="label">班级</view><input class="input" placeholder-class="ph" value="{{form.className}}" maxlength="40" data-k="className" bindinput="input" placeholder="例如：马来语 2025 级（没有可不填）" /></view>
   <view class="field">
