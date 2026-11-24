@@ -1,3 +1,4 @@
+<wxs src="../../utils/fit.wxs" module="fit" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在出题…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}">
@@ -24,7 +25,7 @@
         <view class="pl-play" hover-class="hover" bindtap="replay"><view class="pl-cone" /><view class="pl-wave" /></view>
         <view class="muted small">没听清就再点一下</view>
       </view>
-      <view wx:else class="pl-prompt {{q.type === 'ms2zh' ? 'ms' : ''}}">{{q.prompt}}</view>
+      <view wx:else class="pl-prompt {{q.type === 'ms2zh' ? 'ms' : ''}}" style="{{q.type === 'ms2zh' ? 'font-size:' + fit.fs(q.prompt, 88, 600) + 'rpx' : ''}}">{{q.prompt}}</view>
     </view>
 
     <view>

@@ -1,3 +1,4 @@
+<wxs src="../../utils/fit.wxs" module="fit" />
 <view class="at-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在点亮星星…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
@@ -31,7 +32,7 @@
   <view wx:if="{{pop}}" class="at-mask {{popOn ? 'on' : ''}}" bindtap="close" catchtouchmove="noop">
     <view class="sheet at-pop {{popOn ? 'on' : ''}}" style="transform-origin:{{popOx}}px {{popOy}}px" catchtap="noop">
       <view class="at-pop-h">
-        <view class="at-pop-ms">{{pop.ms}}</view>
+        <view class="at-pop-ms" style="font-size:{{fit.fs(pop.ms, 64, 420)}}rpx">{{pop.ms}}</view>
         <say-btn src="{{pop.audio}}" size="md" tone="ivory" />
       </view>
       <view wx:if="{{pop.root}}" class="at-pop-root">词根 {{pop.root}}</view>

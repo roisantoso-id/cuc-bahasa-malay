@@ -34,7 +34,7 @@
 .at-pop { width: 86vw; max-height: 62vh; display: flex; flex-direction: column; padding-bottom: var(--s2); transform: scale(.08); opacity: 0; transition: transform .28s cubic-bezier(.3,1.3,.5,1), opacity .2s; }
 .at-pop.on { transform: scale(1); opacity: 1; }
 .at-pop-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
-.at-pop-ms { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: 64rpx; color: var(--leaf); line-height: 1.15; word-break: break-word; }
+.at-pop-ms { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: 64rpx; color: var(--leaf); line-height: 1.15; white-space: nowrap; }
 .at-pop-root { font-size: var(--t-caption); color: var(--dark-ink2); margin-top: var(--s1); }
 .at-pop-body { margin-top: var(--s2); max-height: 40vh; }
 .at-pop-s { padding: var(--s2) 0; border-top: 2rpx solid var(--dark-hair); }

@@ -1,3 +1,4 @@
+<wxs src="../../utils/fit.wxs" module="fit" />
 <view class="ln-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在准备单词…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="back">返回</button></hb-empty>
@@ -19,7 +20,7 @@
       <view class="ln-card {{flipped ? 'flipped' : ''}} {{fly ? 'fly-' + fly : ''}}" style="transform: translate({{dx}}px, {{dy < 0 ? dy : dy * 0.25}}px) rotate({{dx / 18}}deg); transition: {{drag ? 'none' : 'transform .28s ease, opacity .28s'}};" bindtap="flip" bindtouchstart="tStart" bindtouchmove="tMove" bindtouchend="tEnd" bindtouchcancel="tEnd">
         <view class="ln-badge {{hint}}" wx:if="{{hint}}">{{hint === 'know' ? '认识' : hint === 'forgot' ? '不认识' : '模糊'}}</view>
         <view class="ln-card-in">
-          <view class="ln-w">{{card.ms}}</view>
+          <view class="ln-w" style="font-size:{{flipped ? fit.fs(card.ms, 64, 400) : fit.fs(card.ms, 88, 590)}}rpx">{{card.ms}}</view>
           <view wx:if="{{!flipped}}" class="ln-card-hint">点卡片翻看释义</view>
         </view>
         <view class="ln-say"><say-btn src="{{card.audio}}" size="md" tone="ivory" /></view>
@@ -47,7 +48,7 @@
       <view class="ln-q-k">{{quiz.type === 'ms2zh' ? '看词选义' : quiz.type === 'listen' ? '听音选义' : quiz.type === 'zh2ms' ? '看义选词' : quiz.type === 'cloze' ? '选词填空' : '拼写'}}</view>
       <view wx:if="{{quiz.type === 'listen'}}" class="ln-q-listen"><view class="ln-q-ring"><say-btn src="{{quiz.word.audio}}" size="lg" tone="big" /></view><view class="muted small">没听清就再点一下</view></view>
       <view wx:elif="{{quiz.type === 'cloze'}}" class="ln-q-cloze"><view class="ln-cl-ms">{{quiz.cloze.before}}<text class="ln-cl-gap">{{picked ? quiz.answer : '＿＿＿'}}</text>{{quiz.cloze.after}}</view><view class="muted small">{{quiz.cloze.zh}}</view></view>
-      <view wx:else class="ln-q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}">{{quiz.prompt}}</view>
+      <view wx:else class="ln-q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}" style="{{quiz.type === 'ms2zh' ? 'font-size:' + fit.fs(quiz.prompt, 88, 680) + 'rpx' : ''}}">{{quiz.prompt}}</view>
 
       <block wx:if="{{quiz.type === 'spell'}}">
         <input class="input ln-spell {{picked ? (picked === quiz.answer ? 'ok' : 'bad') : ''}}" placeholder-class="ph" value="{{typed}}" placeholder="{{quiz.hint}}" focus confirm-type="done" bindinput="typing" bindconfirm="checkSpell" disabled="{{!!picked}}" />
@@ -64,7 +65,7 @@
     <!-- 题目底部反馈条 -->
     <view wx:if="{{view === 'quiz' && picked}}" class="ln-fb {{fbOk ? 'ok' : 'bad'}}">
       <image class="ln-fb-bird" src="/assets/{{fbOk ? 'cheer' : 'fail'}}.jpg" mode="aspectFill" />
-      <view class="item-main"><view class="ms ln-fb-w one">{{quiz.word.ms}}</view><view class="ln-fb-l {{fbOk ? 'ok' : ''}}">{{fbLine}}</view></view>
+      <view class="item-main"><view class="ms ln-fb-w one" style="font-size:{{fit.fs(quiz.word.ms, 40, 320)}}rpx">{{quiz.word.ms}}</view><view class="ln-fb-l {{fbOk ? 'ok' : ''}}">{{fbLine}}</view></view>
       <button class="btn btn-main ln-fb-b" hover-class="hover" bindtap="cont">继续</button>
     </view>
 

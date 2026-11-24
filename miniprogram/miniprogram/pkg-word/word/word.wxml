@@ -1,3 +1,4 @@
+<wxs src="../../utils/fit.wxs" module="fit" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="加载中…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />
@@ -7,7 +8,7 @@
       <view class="wd-fav-wrap"><view class="wd-fav {{w.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" bindtap="fav"><image class="wd-fav-i" src="/assets/fx/{{w.fav ? 'star-amber' : 'star-line'}}.svg" />{{w.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
     </view>
     <view class="wd-head">
-      <view class="wd-w" bindlongpress="copy">{{w.ms}}</view>
+      <view class="wd-w" style="font-size:{{fit.fs(w.ms, 88, 520)}}rpx" bindlongpress="copy">{{w.ms}}</view>
       <say-btn src="{{w.audio}}" />
     </view>
     <view wx:if="{{w.root}}" class="muted small">词根 <text class="serif">{{w.root}}</text></view>

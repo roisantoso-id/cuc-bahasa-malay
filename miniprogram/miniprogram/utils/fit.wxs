@@ -1,0 +1,10 @@
+// 长词缩字号，保证单词一行放下（库里最长 21 个字母：dipertanggungjawabkan）
+//   Georgia 斜体粗体，一个字母平均约 0.6 个字号宽
+//   用法：style="font-size:{{fit.fs(w.ms, 88, 590)}}rpx"，88 是原字号，590 是能放的宽度（rpx），最小不低于 30rpx
+function fs(word, base, width) {
+  var n = (word || '').length
+  if (!n) return base
+  var s = Math.floor(width / (n * 0.6))
+  return Math.max(30, Math.min(base, s))
+}
+module.exports = { fs: fs }

@@ -7,12 +7,12 @@
 /* 词卡 */
 .ln-card { position: relative; flex: none; height: 400rpx; border-radius: var(--r-lg); background: var(--ivory); padding: var(--s2); box-sizing: border-box; will-change: transform; }
 .ln-card-in { height: 100%; border: 2rpx solid var(--dark-hair); border-radius: var(--r-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 var(--s3); box-sizing: border-box; }
-.ln-w { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; word-break: break-word; text-align: center; color: var(--leaf); }
+.ln-w { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; white-space: nowrap; text-align: center; color: var(--leaf); }
 .ln-card-hint { margin-top: var(--s2); font-size: var(--t-caption); color: var(--dark-ink2); }
 .ln-say { position: absolute; right: var(--s4); bottom: var(--s4); }
 /* 翻开后卡片收矮，把位置让给释义和例句，一屏看完 */
 .ln-card.flipped { height: 208rpx; }
-.ln-card.flipped .ln-w { font-size: 64rpx; padding: 0 96rpx; }
+.ln-card.flipped .ln-w { padding: 0 96rpx; }
 .ln-card.flipped .ln-say { bottom: 50%; transform: translateY(50%); }
 
 /* 释义 */
@@ -57,7 +57,7 @@
 .ln-quiz { flex: 1; display: flex; flex-direction: column; padding-bottom: 160rpx; }
 .ln-q-k { font-size: var(--t-caption); color: var(--ink2); text-align: center; }
 .ln-q-p { text-align: center; margin: var(--s5) 0; }
-.ln-q-p.ms { font-size: var(--t-display); line-height: 1.15; }
+.ln-q-p.ms { font-size: var(--t-display); line-height: 1.15; white-space: nowrap; }
 .ln-q-p.zhp { font-family: var(--f-zh); font-size: var(--t-title); font-weight: 700; }
 .ln-q-listen { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin: var(--s4) 0 var(--s5); }
 .ln-q-ring { width: 264rpx; height: 264rpx; border-radius: 50%; border: 2rpx solid var(--hair); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }

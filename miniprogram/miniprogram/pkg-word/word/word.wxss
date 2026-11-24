@@ -6,7 +6,7 @@
 .wd-fav.pop { animation: wd-favpop .4s cubic-bezier(.3,1.6,.5,1); }
 @keyframes wd-favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
 .wd-head { display: flex; align-items: center; gap: var(--s3); margin: var(--s2) 0 var(--s1); }
-.wd-w { min-width: 0; font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; word-break: break-word; }
+.wd-w { min-width: 0; font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; white-space: nowrap; }
 .wd-lv { display: flex; align-items: center; gap: var(--s1); margin-top: var(--s3); }
 .wd-lv-d { width: 32rpx; height: 8rpx; border-radius: var(--r-pill); background: var(--hair); }
 .wd-lv-d.on { background: var(--star); }
