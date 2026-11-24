@@ -9,7 +9,7 @@
 //   - 周榜：本周学习分 = 新学 ×2 + 复习 ×1 + 答对 ×1（来自 daily 表），按个人 / 同校 / 同班排；学校榜按全校总分排。
 import { randomBytes, createHash } from 'node:crypto'
 
-export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avatarOf = () => '' }) {
+export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, alikeOf, avatarOf = () => '' }) {
   const SCHEMA = [
     `CREATE TABLE IF NOT EXISTS pk (id VARCHAR(16) PRIMARY KEY, creator INT NOT NULL, level INT NOT NULL, questions MEDIUMTEXT NOT NULL, created_at VARCHAR(32), expires_at BIGINT NOT NULL, INDEX pk_creator (creator)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS pk_entry (pk_id VARCHAR(16) NOT NULL, student_id INT NOT NULL, score INT NOT NULL, correct INT NOT NULL, ms INT NOT NULL, answers TEXT, created_at VARCHAR(32), PRIMARY KEY (pk_id, student_id), INDEX pk_entry_student (student_id)) DEFAULT CHARSET = utf8mb4`,
@@ -37,9 +37,12 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, avata
     if (pool.length < n + 3) throw Object.assign(new Error('这一站的词还不够出题'), { code: 400 })
     const picks = shuffle([...pool], rnd).slice(0, n)
     const types = ['ms2zh', 'zh2ms', 'audio2ms']
+    const alike = alikeOf ? await alikeOf() : null
     return picks.map((w, i) => {
       const type = types[i % 3] === 'audio2ms' && !w.audio ? 'ms2zh' : types[i % 3]
-      const others = shuffle(pool.filter(o => o.rank !== w.rank && o.zh !== w.zh && o.ms !== w.ms), rnd).slice(0, 3)
+      // 选马来语的题（看义选词、听音选词）用听起来像的词当干扰项；选中文的题还是同一站随便抽
+      let others = type !== 'ms2zh' && alike ? alike(w, 3, rnd) : []
+      if (others.length < 3) others = shuffle(pool.filter(o => o.rank !== w.rank && o.zh !== w.zh && o.ms !== w.ms), rnd).slice(0, 3)
       const opts = shuffle([w, ...others], rnd)
       return {
         type, rank: w.rank,

@@ -17,6 +17,7 @@ import mysql from 'mysql2/promise'
 import { makeAdminApi } from './admin-api.mjs'
 import { createBattle } from './battle.mjs'
 import { createAchievements } from './achievements.mjs'
+import { alikeSource } from './alike.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -113,7 +114,9 @@ async function tx(fn) {
 let STOPS = DEFAULT_STOPS.map(s => ({ ...s, published: true })) // 启动后从 courses 表读
 async function reloadStops() { STOPS = (await all('SELECT level, city, ms, note, intro, published FROM courses ORDER BY level')).map(c => ({ ...c, intro: c.intro || '', published: !!c.published })) }
 const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
-const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels, avatarOf: s => ach.imgOf(s.mascot) })
+// 听起来像的干扰项（alike.mjs）：全部已审核的词，内存里缓存 10 分钟
+const alikeOf = alikeSource(async () => (await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved'`)).map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses || '[]').find(s => !s.check) || {}).zh || '' })))
+const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels, alikeOf, avatarOf: s => ach.imgOf(s.mascot) })
 const ach = createAchievements({ all, one, run, day: (o = 0) => day(o), levelsOf: sid => levelsOf(sid), weekStart: () => battle.weekStart() }) // 成就与犀鸟形象（achievements.mjs） // 好友 PK、周榜、每周擂台（battle.mjs）
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
@@ -229,6 +232,9 @@ async function start(st, b) {
   // 出题用的干扰项:同一站的其他词
   const levels = [...new Set(items.map(i => i.level))]
   const pool = levels.length ? await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved' AND level IN (${levels.map(() => '?').join(',')}) ORDER BY RAND() LIMIT 80`, ...levels) : []
+  // 每个词带三个听起来像的词，听音选词 / 看义选词用它们当干扰项
+  const pick = await alikeOf()
+  for (const it of items) it.alike = pick({ rank: it.rank, ms: it.ms, zh: (it.senses[0] || {}).zh || '' }).map(o => ({ rank: o.rank, ms: o.ms, zh: o.zh }))
   return { mode, items, pool: pool.map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses).find(s => !s.check) || {}).zh || '' })) }
 }
 

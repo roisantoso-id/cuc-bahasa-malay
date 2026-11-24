@@ -154,8 +154,12 @@ Page({
     let type = types[(w.rank + this.data.idx) % types.length]
     const cloze = type === 'cloze' ? clozeOf(w) : null
     if (type === 'cloze' && !cloze) type = 'zh2ms'   // 例句里找不到原词就换成看义选词
-    const others = shuffle(this.pool.filter(x => x.rank !== w.rank && x.zh && norm(x.ms) !== norm(w.ms))).slice(0, 3)
-    const toZh = type === 'ms2zh' || type === 'listen'   // cloze 和 zh2ms 一样选马来语词
+    // 听音选词 / 看义选词：干扰项用服务端挑好的「听起来像的词」（w.alike），不然马来语词差太多，一听就排除
+    //   看词选义、选词填空还是同一站随便抽（选词填空要看句子意思，太像反而不公平）
+    const alike = (w.alike || []).filter(x => norm(x.ms) !== norm(w.ms))
+    const others = (type === 'listen' || type === 'zh2ms') && alike.length >= 3 ? alike.slice(0, 3)
+      : shuffle(this.pool.filter(x => x.rank !== w.rank && x.zh && norm(x.ms) !== norm(w.ms))).slice(0, 3)
+    const toZh = type === 'ms2zh'   // 其余题型都选马来语词
     const answer = toZh ? zhOf(w) : w.ms
     const options = shuffle([{ rank: w.rank, ms: w.ms, zh: zhOf(w) }, ...others]).map(x => (toZh ? x.zh : x.ms))
     if (type === 'listen') setTimeout(() => audio.play(w.audio), 200)

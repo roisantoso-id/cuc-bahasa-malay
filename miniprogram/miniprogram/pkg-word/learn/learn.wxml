@@ -45,7 +45,7 @@
 
     <!-- 题 -->
     <view wx:else class="ln-quiz">
-      <view class="ln-q-k">{{quiz.type === 'ms2zh' ? '看词选义' : quiz.type === 'listen' ? '听音选义' : quiz.type === 'zh2ms' ? '看义选词' : quiz.type === 'cloze' ? '选词填空' : '拼写'}}</view>
+      <view class="ln-q-k">{{quiz.type === 'ms2zh' ? '看词选义' : quiz.type === 'listen' ? '听音选词' : quiz.type === 'zh2ms' ? '看义选词' : quiz.type === 'cloze' ? '选词填空' : '拼写'}}</view>
       <view wx:if="{{quiz.type === 'listen'}}" class="ln-q-listen"><view class="ln-q-ring"><say-btn src="{{quiz.word.audio}}" size="lg" tone="big" /></view><view class="muted small">没听清就再点一下</view></view>
       <view wx:elif="{{quiz.type === 'cloze'}}" class="ln-q-cloze"><view class="ln-cl-ms">{{quiz.cloze.before}}<text class="ln-cl-gap">{{picked ? quiz.answer : '＿＿＿'}}</text>{{quiz.cloze.after}}</view><view class="muted small">{{quiz.cloze.zh}}</view></view>
       <view wx:else class="ln-q-p {{quiz.type === 'ms2zh' ? 'ms' : 'zhp'}}" style="{{quiz.type === 'ms2zh' ? 'font-size:' + fit.fs(quiz.prompt, 88, 680) + 'rpx' : ''}}">{{quiz.prompt}}</view>
@@ -56,7 +56,7 @@
         <view class="btns"><button class="btn btn-main" hover-class="hover" bindtap="checkSpell" disabled="{{!!picked}}">确定</button></view>
       </block>
       <view wx:else class="ln-opts">
-        <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type === 'zh2ms' || quiz.type === 'cloze' ? 'ms' : ''}} {{picked && item !== quiz.answer && picked !== item ? 'dim' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
+        <view wx:for="{{quiz.options}}" wx:key="*this" class="opt {{picked && item === quiz.answer ? 'right' : ''}} {{picked === item && item !== quiz.answer ? 'wrong' : ''}} {{quiz.type !== 'ms2zh' ? 'ms' : ''}} {{picked && item !== quiz.answer && picked !== item ? 'dim' : ''}}" data-o="{{item}}" bindtap="pick">{{item}}</view>
       </view>
       <view wx:if="{{quiz.graded && !picked}}" class="btn-text" hover-class="hover" bindtap="dontKnow">想不起来</view>
       <view class="ln-grow" />
