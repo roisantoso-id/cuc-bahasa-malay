@@ -224,7 +224,9 @@ button.btn-danger[disabled] { color: var(--bad); }
 .sense { padding: var(--s3) 0; border-top: 2rpx solid var(--hair); }
 .sense:first-child { border-top: 0; }
 .pos { font-family: var(--f-ms); font-style: italic; font-size: var(--t-caption); color: var(--ink2); margin-right: var(--s2); }
-.example { margin-top: var(--s1); padding-left: var(--s3); border-left: 2rpx solid var(--hair2); }
+.example { margin-top: var(--s1); padding-left: var(--s3); border-left: 2rpx solid var(--hair2); font-size: 32rpx; line-height: 1.5; }
+/* 深色底上细字显小：例句和译文比正文大一号（2026-11-24 老师反馈，对齐 v1 旅行手账的大小） */
+.example .small { font-size: 26rpx; line-height: 1.45; }
 
 /* ---------- 成绩头 ---------- */
 .res { text-align: center; padding: var(--s3) 0 var(--s4); }

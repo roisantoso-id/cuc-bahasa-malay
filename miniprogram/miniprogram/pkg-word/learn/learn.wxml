@@ -20,7 +20,7 @@
       <view class="ln-card {{flipped ? 'flipped' : ''}} {{fly ? 'fly-' + fly : ''}}" style="transform: translate({{dx}}px, {{dy < 0 ? dy : dy * 0.25}}px) rotate({{dx / 18}}deg); transition: {{drag ? 'none' : 'transform .28s ease, opacity .28s'}};" bindtap="flip" bindtouchstart="tStart" bindtouchmove="tMove" bindtouchend="tEnd" bindtouchcancel="tEnd">
         <view class="ln-badge {{hint}}" wx:if="{{hint}}">{{hint === 'know' ? '认识' : hint === 'forgot' ? '不认识' : '模糊'}}</view>
         <view class="ln-card-in">
-          <view class="ln-w" style="font-size:{{flipped ? fit.fs(card.ms, 64, 400) : fit.fs(card.ms, 88, 590)}}rpx">{{card.ms}}</view>
+          <view class="ln-w" style="font-size:{{flipped ? fit.fs(card.ms, 80, 400) : fit.fs(card.ms, 96, 590)}}rpx">{{card.ms}}</view>
           <view wx:if="{{!flipped}}" class="ln-card-hint">点卡片翻看释义</view>
         </view>
         <view class="ln-say"><say-btn src="{{card.audio}}" size="md" tone="ivory" /></view>

@@ -12,4 +12,4 @@
 .wd-lv-d.on { background: var(--star); }
 .wd-lv-t { margin-left: var(--s1); }
 .wd-senses { margin-top: var(--s4); border-top: 2rpx solid var(--hair); }
-.wd-zh { font-family: var(--f-zh); font-size: var(--t-section); font-weight: 700; line-height: 1.4; }
+.wd-zh { font-family: var(--f-zh); font-size: 36rpx; font-weight: 700; line-height: 1.4; }

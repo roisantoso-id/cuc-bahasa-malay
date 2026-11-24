@@ -11,7 +11,7 @@
 .ln-card-hint { margin-top: var(--s2); font-size: var(--t-caption); color: var(--dark-ink2); }
 .ln-say { position: absolute; right: var(--s4); bottom: var(--s4); }
 /* 翻开后卡片收矮，把位置让给释义和例句，一屏看完 */
-.ln-card.flipped { height: 208rpx; }
+.ln-card.flipped { height: 248rpx; }
 .ln-card.flipped .ln-w { padding: 0 96rpx; }
 .ln-card.flipped .ln-say { bottom: 50%; transform: translateY(50%); }
 
@@ -26,8 +26,8 @@
 .ln-fav.pop { animation: ln-favpop .4s cubic-bezier(.3,1.6,.5,1); }
 @keyframes ln-favpop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
 .ln-sn { padding: var(--s2) 0; border-top: 2rpx solid var(--hair); }
-.ln-mean { font-family: var(--f-zh); font-size: var(--t-section); font-weight: 700; line-height: 1.4; }
-.ln-ex-ms { font-family: var(--f-ms); font-size: 28rpx; line-height: 1.45; }
+.ln-mean { font-family: var(--f-zh); font-size: 36rpx; font-weight: 700; line-height: 1.4; }
+.ln-ex-ms { font-family: var(--f-ms); font-size: 32rpx; line-height: 1.5; }
 .ln-hit { background: var(--hair2); border-radius: 6rpx; padding: 0 6rpx; }
 .ln-root { padding: var(--s2) 0; border-top: 2rpx solid var(--hair); font-size: var(--t-caption); color: var(--ink2); }
 .ln-root-w { font-size: 28rpx; color: var(--ivory); }
