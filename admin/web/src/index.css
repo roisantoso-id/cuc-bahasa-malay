@@ -153,3 +153,7 @@ button, a[data-press] { transition: scale .12s var(--ease-out), background-color
 @keyframes jb-shake { 10%, 90% { translate: -1px 0; } 20%, 80% { translate: 3px 0; } 30%, 50%, 70% { translate: -5px 0; } 40%, 60% { translate: 5px 0; } }
 .jb-shake { animation: jb-shake .45s cubic-bezier(.36,.07,.19,.97) both; }
 @media (prefers-reduced-motion: reduce) { .jb-stream-row, .jb-auth-card, .jb-shake { animation: none !important; } }
+
+/* 列表 + 右侧详情:当前选中的那一行浅蓝底、左边一道蓝线 */
+.jb-table tbody tr[aria-selected="true"] td { background: var(--blue-bg, #EEF3FF); }
+.jb-table tbody tr[aria-selected="true"] td:first-child { box-shadow: inset 3px 0 0 var(--blue, #2563EB); }

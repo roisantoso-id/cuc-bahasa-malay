@@ -208,6 +208,30 @@ export function SidePanel({ open, onClose, title, sub, head, children, footer, w
   )
 }
 
+// 屏幕够宽(≥1280)时用:列表左边、详情固定在右边一栏,点哪行右边就换成哪行,不再滑出盖住列表
+export function useWide(px = 1280) {
+  const q = `(min-width: ${px}px)`
+  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.matchMedia(q).matches)
+  useEffect(() => { const m = window.matchMedia(q); const f = () => setWide(m.matches); m.addEventListener('change', f); return () => m.removeEventListener('change', f) }, [q])
+  return wide
+}
+export function DockPanel({ title, sub, head, children, footer, onClose }: { title: ReactNode; sub?: ReactNode; head?: ReactNode; children: ReactNode; footer?: ReactNode; onClose?: () => void }) {
+  return (
+    <aside className="jb-card sticky top-6 flex max-h-[calc(100vh-3rem)] min-h-[420px] min-w-0 flex-col overflow-hidden">
+      <div className="flex items-start gap-3 border-b px-5 py-3.5">
+        {head}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-base font-semibold">{title}</div>
+          {sub ? <div className="mt-0.5 truncate text-xs text-text-3">{sub}</div> : null}
+        </div>
+        {onClose && <button type="button" aria-label="关掉" onClick={onClose} className="-mr-2 flex size-8 flex-none items-center justify-center rounded-md text-text-4 hover:bg-secondary hover:text-foreground"><X className="size-4" /></button>}
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4">{children}</div>
+      {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t bg-white px-5 py-3">{footer}</div>}
+    </aside>
+  )
+}
+
 // 小卡(面板里 4 个一排)
 export function MiniStats({ items }: { items: { label: string; value: ReactNode; tone?: 'bad' | 'ok' | 'warn' }[] }) {
   return (

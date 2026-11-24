@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronRight, Download, FileUp, Loader2, Plus, RotateCcw, Sparkles, Trash2, Volume2 } from 'lucide-react'
+import { ChevronRight, Download, FileUp, Loader2, Pencil, Plus, RotateCcw, Sparkles, Trash2, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +13,7 @@ import { api, qs } from '@/lib/api'
 import { useAuth } from '@/lib/auth'
 import { useDebounced, useFetch } from '@/lib/use-fetch'
 import { ago, full, n } from '@/lib/format'
-import { ActiveFilters, Chips, Dot, Empty, ErrorLine, Field, Loading, MiniStats, PageHeader, Pager, Panel, Pill, SearchBox, Section, Segmented, SidePanel, Toolbar, rowClick, useConfirm } from '@/components/app/ui'
+import { ActiveFilters, Chips, DockPanel, Dot, Empty, ErrorLine, Field, Loading, MiniStats, PageHeader, Pager, Panel, Pill, SearchBox, Section, Segmented, SidePanel, Toolbar, rowClick, useConfirm, useWide } from '@/components/app/ui'
 import { actionLabel } from './Audit'
 
 type Sense = { pos: string; zh: string; en?: string; exMs?: string; exZh?: string; check?: boolean }
@@ -47,7 +47,35 @@ export function Words() {
   const { data, error, loading, reload } = useFetch<List>('/words' + qs({ q: dq, status, topic, level, page, size: 50 }))
   const { data: courses } = useFetch<Course[]>(can('courses.view') ? '/courses' : null)
   const openRank = sp.get('rank')
-  const setParam = (k: string, v: string) => { const p = new URLSearchParams(sp); if (v) p.set(k, v); else p.delete(k); setSp(p) }
+  const setParam = (k: string, v: string, replace = false) => { const p = new URLSearchParams(sp); if (v) p.set(k, v); else p.delete(k); setSp(p, { replace }) }
+  // 宽屏:列表在左、详情固定在右边一栏;点一行右边就换成这个词(有没保存的修改先问一声)
+  const wide = useWide()
+  const confirm = useConfirm()
+  const dirtyRef = useRef(false)
+  const [editing, setEditing] = useState(false)
+  const [viewStamp, setViewStamp] = useState(0)
+  const pick = useCallback(async (r: string) => {
+    if (r === openRank) return
+    if (dirtyRef.current && !await confirm({ title: '有没保存的修改', desc: '换到别的词会丢掉这些修改。', ok: '不保存,换过去', danger: true })) return
+    dirtyRef.current = false
+    const p = new URLSearchParams(sp); p.set('rank', r); setSp(p, { replace: true })
+  }, [openRank, sp, setSp, confirm])
+  // 宽屏打开时右边不空着:默认选中这一页第一个词
+  useEffect(() => { if (wide && !openRank && data?.words.length) setParam('rank', String(data.words[0].rank), true) }, [wide, openRank, data]) // eslint-disable-line react-hooks/exhaustive-deps
+  // ↑ ↓ 在列表里换词(光标在输入框里时不管)
+  useEffect(() => {
+    if (!wide || !data?.words.length) return
+    const f = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+      const t = e.target as HTMLElement
+      if (t.closest('input, textarea, select, [contenteditable], [role="dialog"], [role="listbox"]')) return
+      const i = data.words.findIndex(w => String(w.rank) === openRank)
+      const j = Math.min(Math.max(i + (e.key === 'ArrowDown' ? 1 : -1), 0), data.words.length - 1)
+      if (j !== i) { e.preventDefault(); pick(String(data.words[j].rank)); document.querySelector(`[data-rank="${data.words[j].rank}"]`)?.scrollIntoView({ block: 'nearest' }) }
+    }
+    window.addEventListener('keydown', f)
+    return () => window.removeEventListener('keydown', f)
+  }, [wide, data, openRank, pick])
   const setStatus = (v: string) => setParam('status', v)
   const c = data?.counts
   const city = (lv: number) => courses?.find(x => x.level === lv)?.city || `第 ${lv} 站`
@@ -73,7 +101,8 @@ export function Words() {
           {can('words.import') && <Button variant="outline" onClick={() => setImportOpen(true)}><FileUp />导入</Button>}
           {can('words.edit') && <Button onClick={() => setParam('rank', 'new')}><Plus />新增单词</Button>}
         </>} />
-      <Panel>
+      <div className={wide ? 'grid grid-cols-[minmax(0,1fr)_540px] items-start gap-4 2xl:grid-cols-[minmax(0,1fr)_620px]' : ''}>
+      <Panel className="min-w-0">
         <Toolbar>
           <SearchBox value={q} onChange={setQ} placeholder="搜马来语、词根、中文释义或序号  /" />
           <Segmented label="状态" value={status} onChange={setStatus} options={[
@@ -105,24 +134,31 @@ export function Words() {
           <table className="jb-table">
             <thead><tr>
               {can('words.publish') && <th className="hidden w-10 sm:table-cell"><Checkbox aria-label="全选这一页" checked={all} onCheckedChange={v => setSel(v ? new Set(data.words.map(w => w.rank)) : new Set())} /></th>}
-              <th>单词</th><th>释义</th><th className="hidden lg:table-cell">站</th><th className="hidden sm:table-cell">状态</th><th className="w-10" /><th className="w-8" />
+              <th>单词</th>{!wide && <th>释义</th>}{!wide && <th className="hidden lg:table-cell">站</th>}<th className="hidden sm:table-cell">状态</th><th className="w-10" />{!wide && <th className="w-8" />}
             </tr></thead>
             <tbody>
               {data.words.map(w => {
                 const checks = w.senses.filter(s => s.check).length
                 return (
-                  <tr key={w.rank} {...rowClick(() => setParam('rank', String(w.rank)))}>
+                  <tr key={w.rank} data-rank={w.rank} aria-selected={wide && String(w.rank) === openRank} {...rowClick(() => wide ? pick(String(w.rank)) : setParam('rank', String(w.rank)))}>
                     {can('words.publish') && <td data-stop className="hidden sm:table-cell"><Checkbox aria-label={`选择 ${w.ms}`} checked={sel.has(w.rank)} onCheckedChange={v => { const s = new Set(sel); if (v) s.add(w.rank); else s.delete(w.rank); setSel(s) }} /></td>}
-                    <td className="nw"><div className="flex items-center gap-1.5 font-mono text-[13px] font-semibold"><span className="sm:hidden" title={w.status === 'approved' ? '已上架' : '待补'}><Dot tone={w.status === 'approved' ? 'ok' : checks ? 'warn' : 'off'} /></span>{w.ms}</div><div className="num text-xs text-text-4">#{w.rank}{w.root && w.root !== w.ms ? ` · 词根 ${w.root}` : ''}</div></td>
-                    <td><div className="line-clamp-2 text-text-2" title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}>{w.senses.length ? w.senses.map((s, i) => <span key={i} className={s.check ? 'text-text-4' : ''}>{i > 0 && ';'}<span className="text-xs text-text-4">{s.pos} </span>{s.zh}</span>) : <span className="text-text-4">还没有释义</span>}</div></td>
-                    <td className="nw hidden text-text-3 lg:table-cell">{city(w.level)}</td>
-                    <td className="nw hidden sm:table-cell"><div className="flex flex-wrap gap-1">
+                    {wide ? (
+                      // 宽屏窄列表:一格两行——单词,下面「#序号 · 第一条释义」,长的省略、悬停看全
+                      <td className="min-w-0 max-w-0 w-full"><div className="truncate font-mono text-[13px] font-semibold" title={w.ms}>{w.ms}</div>
+                        <div className="truncate text-xs text-text-3" title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}><span className="num text-text-4">#{w.rank}</span>{w.senses.length ? <> · <span className="text-text-4">{w.senses[0].pos}</span> {w.senses.map(s => s.zh).join(';')}</> : <span className="text-text-4"> · 还没有释义</span>}</div></td>
+                    ) : <><td className="nw"><div className="flex items-center gap-1.5 font-mono text-[13px] font-semibold"><span className="sm:hidden" title={w.status === 'approved' ? '已上架' : '待补'}><Dot tone={w.status === 'approved' ? 'ok' : checks ? 'warn' : 'off'} /></span>{w.ms}</div><div className="num text-xs text-text-4">#{w.rank}{w.root && w.root !== w.ms ? ` · 词根 ${w.root}` : ''}</div></td>
+                    <td className="min-w-0"><div className={wide ? 'line-clamp-1 text-text-2' : 'line-clamp-2 text-text-2'} title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}>{w.senses.length ? w.senses.map((s, i) => <span key={i} className={s.check ? 'text-text-4' : ''}>{i > 0 && ';'}<span className="text-xs text-text-4">{s.pos} </span>{s.zh}</span>) : <span className="text-text-4">还没有释义</span>}</div></td></>}
+                    {!wide && <td className="nw hidden text-text-3 lg:table-cell">{city(w.level)}</td>}
+                    <td className="nw hidden sm:table-cell">{wide ? (
+                      // 窄的一栏里只放一个状态点 + 待复核数,别的在右边详情里
+                      <div className="flex items-center gap-1.5 text-xs text-text-3" title={`${w.status === 'approved' ? '已上架' : '待补 / 下架'}${checks ? ` · ${checks} 条待复核` : ''}${w.edited ? ' · 后台改过' : ''}`}><Dot tone={w.status === 'approved' ? 'ok' : 'off'} />{w.status === 'approved' ? '上架' : '待补'}{checks > 0 && <span className="text-warn">· 复核 {checks}</span>}</div>
+                    ) : <div className="flex flex-wrap gap-1">
                       {w.status === 'approved' ? <Pill tone="ok" dot>已上架</Pill> : <Pill tone="off" dot>待补</Pill>}
                       {checks > 0 && <Pill tone="warn">待复核 {checks}</Pill>}
                       {w.edited && <Pill tone="blue" title={`后台改过 · ${full(w.updatedAt)}`}>改过</Pill>}
-                    </div></td>
+                    </div>}</td>
                     <td>{w.audioUrl && <button type="button" aria-label={`播放 ${w.ms}`} onClick={() => play(w.audioUrl)} className="flex size-9 items-center justify-center rounded-md text-text-3 hover:bg-blue-bg hover:text-blue"><Volume2 className="size-4" /></button>}</td>
-                    <td className="text-text-4"><ChevronRight className="size-4" /></td>
+                    {!wide && <td className="text-text-4"><ChevronRight className="size-4" /></td>}
                   </tr>
                 )
               })}
@@ -131,17 +167,30 @@ export function Words() {
         )}
         {data && <Pager page={data.page} size={data.size} total={data.total} onPage={setPage} />}
       </Panel>
-      <WordPanel rank={openRank} courses={courses || []} onClose={() => setParam('rank', '')} onSaved={reload} onCreated={r => setParam('rank', String(r))} />
+      {wide && (openRank && openRank !== 'new'
+        ? <WordView key={openRank} rank={openRank} courses={courses || []} stamp={viewStamp} onEdit={() => setEditing(true)} onSaved={() => { reload(); setViewStamp(x => x + 1) }} />
+        : <DockPanel title="单词详情"><Empty>点左边一个词,这里显示它的释义、例句、发音和学习情况</Empty></DockPanel>)}
+      </div>
+      {/* 改词:宽屏点右边「编辑」、窄屏点一行,都从右边滑出编辑面板 */}
+      <WordPanel rank={wide ? (editing || openRank === 'new' ? openRank : null) : openRank} courses={courses || []}
+        onClose={() => { if (wide && openRank !== 'new') setEditing(false); else setParam('rank', '') }}
+        onSaved={() => { reload(); setViewStamp(x => x + 1) }} onCreated={r => { setEditing(false); setParam('rank', String(r)) }} />
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} onDone={reload} />
     </>
   )
 }
 
+// 宽屏:固定在列表右边;窄屏:从右边滑出来
+function PanelShell({ docked, open, onClose, title, sub, footer, children }: { docked?: boolean; open: boolean; onClose: () => void; title: React.ReactNode; sub?: React.ReactNode; footer?: React.ReactNode; children: React.ReactNode }) {
+  return docked
+    ? <DockPanel title={title} sub={sub} footer={footer}>{children}</DockPanel>
+    : <SidePanel open={open} onClose={onClose} width={720} title={title} sub={sub} footer={footer}>{children}</SidePanel>
+}
 const empty: Word = { rank: 0, ms: '', root: '', level: 1, topic: '', senses: [{ pos: '名词', zh: '' }], audio: '', audioUrl: '', status: 'pending', edited: false, updatedAt: '', extra: {} }
 const listText = (a?: string[]) => (a || []).join(', ')
 const textList = (s: string) => s.split(/[,，;；\n]/).map(x => x.trim()).filter(Boolean)
 
-function WordPanel({ rank, courses, onClose, onSaved, onCreated }: { rank: string | null; courses: Course[]; onClose: () => void; onSaved: () => void; onCreated: (r: number) => void }) {
+function WordPanel({ rank, courses, onClose, onSaved, onCreated, docked, onDirty }: { rank: string | null; courses: Course[]; onClose: () => void; onSaved: () => void; onCreated: (r: number) => void; docked?: boolean; onDirty?: (d: boolean) => void }) {
   const { can } = useAuth()
   const confirm = useConfirm()
   const isNew = rank === 'new'
@@ -155,6 +204,7 @@ function WordPanel({ rank, courses, onClose, onSaved, onCreated }: { rank: strin
     const src = isNew ? empty : d
     if (src) { setW(src); setLists({ col: listText(src.extra.col), fam: listText(src.extra.fam), syn: listText(src.extra.syn), ant: listText(src.extra.ant) }); setDirty(false) }
   }, [d, isNew])
+  useEffect(() => { onDirty?.(dirty) }, [dirty]) // eslint-disable-line react-hooks/exhaustive-deps
   const edit = can('words.edit')
   const up = (p: Partial<Word>) => { setW({ ...w, ...p }); setDirty(true) }
   const upSense = (i: number, p: Partial<Sense>) => up({ senses: w.senses.map((s, j) => j === i ? { ...s, ...p } : s) })
@@ -172,7 +222,7 @@ function WordPanel({ rank, courses, onClose, onSaved, onCreated }: { rank: strin
   const ok = w.senses.some(s => s.zh && !s.check)
   const course = courses.find(c => c.level === w.level)
   return (
-    <SidePanel open={!!rank} onClose={close} width={720}
+    <PanelShell docked={docked} open={!!rank} onClose={close}
       title={isNew ? '新增单词' : d ? <span className="font-mono">{d.ms}</span> : '单词'}
       sub={!isNew && d && <>#{d.rank} · 第 {d.level} 站 {course?.city || ''} · {d.edited ? `${ago(d.updatedAt)}在后台改过` : '没在后台改过'}</>}
       footer={(isNew || d) && <>
@@ -264,7 +314,7 @@ function WordPanel({ rank, courses, onClose, onSaved, onCreated }: { rank: strin
           )}
         </fieldset>
       )}
-    </SidePanel>
+    </PanelShell>
   )
 }
 
@@ -323,7 +373,7 @@ function ImportDialog({ open, onClose, onDone }: { open: boolean; onClose: () =>
 }
 
 // 发音：现在用的是哪个（启航原声 / AI 生成），AI 重新生成几条试听，挑一条「用这个」，随单词一起保存
-function AudioSection({ w, edit, up }: { w: Word; edit: boolean; up: (p: Partial<Word>) => void }) {
+function AudioSection({ w, edit, up, instant }: { w: Word; edit: boolean; up: (p: Partial<Word>) => void; instant?: boolean }) {
   const [voice, setVoice] = useState<Voice>('yasmin')
   const [rate, setRate] = useState<'normal' | 'slow'>('normal')
   const [text, setText] = useState('')
@@ -342,7 +392,7 @@ function AudioSection({ w, edit, up }: { w: Word; edit: boolean; up: (p: Partial
     // 第一次换成 AI 发音时记下启航原声，以后能改回去
     const orig = w.extra.audioOrig || (isAi(w.audio) ? '' : w.audio)
     up({ audio: t.audio, audioUrl: t.audioUrl, extra: { ...w.extra, audioOrig: orig, audioBy: `${t.voiceName}${t.rate === 'slow' ? ' · 慢速' : ''}` } })
-    toast.success('换好了，点底部「保存」生效')
+    if (!instant) toast.success('换好了，点底部「保存」生效')
   }
   const revert = () => up({ audio: w.extra.audioOrig || '', audioUrl: '', extra: { ...w.extra, audioOrig: '', audioBy: '' } })
   return (
@@ -378,5 +428,66 @@ function AudioSection({ w, edit, up }: { w: Word; edit: boolean; up: (p: Partial
         </div>
       )}
     </Section>
+  )
+}
+
+// 宽屏右边一栏:只看不改(释义、例句、发音、学习情况);发音可以直接 AI 重新生成并换上;改别的点「编辑」滑出编辑面板
+function WordView({ rank, courses, stamp, onEdit, onSaved }: { rank: string; courses: Course[]; stamp: number; onEdit: () => void; onSaved: () => void }) {
+  const { can } = useAuth()
+  const { data, error, reload } = useFetch<WordDetail>(`/words/${rank}?v=${stamp}`)
+  const [busy, setBusy] = useState(false)
+  const d = data && String(data.rank) === rank ? data : null
+  const course = d && courses.find(c => c.level === d.level)
+  const put = async (body: Partial<Word> & { status?: string }, msg: string) => {
+    setBusy(true)
+    try { await api(`/words/${rank}`, { method: 'PUT', body }); toast.success(msg); reload(); onSaved() } catch (e) { toast.error((e as Error).message) } finally { setBusy(false) }
+  }
+  const ok = !!d && d.senses.some(s => s.zh && !s.check)
+  return (
+    <DockPanel title={d ? <span className="font-mono">{d.ms}</span> : '单词'}
+      sub={d && <>#{d.rank} · 第 {d.level} 站 {course?.city || ''}{d.root && d.root !== d.ms ? ` · 词根 ${d.root}` : ''} · {d.edited ? `${ago(d.updatedAt)}在后台改过` : '没在后台改过'}</>}
+      footer={d && <>
+        {can('words.publish') && (d.status === 'approved'
+          ? <Button variant="outline" disabled={busy} onClick={() => put({ status: 'pending' }, '已下架')}>下架</Button>
+          : <Button variant="outline" disabled={busy || !ok} title={ok ? '' : '至少要有一条审过(没勾「待复核」)的释义'} onClick={() => put({ status: 'approved' }, '已上架')}>上架</Button>)}
+        {can('words.edit') && <Button onClick={onEdit}><Pencil />编辑</Button>}
+      </>}>
+      <ErrorLine msg={error} />
+      {!d ? <Loading /> : (
+        <>
+          <div className="mb-3 flex flex-wrap items-center gap-1.5">
+            {d.status === 'approved' ? <Pill tone="ok" dot>已上架</Pill> : <Pill dot>待补 / 下架</Pill>}
+            {d.senses.some(s => s.check) && <Pill tone="warn">{d.senses.filter(s => s.check).length} 条待复核</Pill>}
+            {d.topic && <Pill>{d.topic}</Pill>}
+          </div>
+          <MiniStats items={[{ label: '学过的学生', value: n(d.learners.n) }, { label: '已掌握', value: n(d.learners.mastered), tone: 'ok' }, { label: '被答错', value: `${n(d.learners.wrong)} 次`, tone: d.learners.wrong ? 'bad' : undefined }, { label: '义项', value: d.senses.length }]} />
+          <Section title={`释义 ${d.senses.length}`}>
+            {!d.senses.length ? <div className="text-xs text-text-4">还没有释义</div> : (
+              <ol className="divide-y rounded-xl border">
+                {d.senses.map((s, i) => (
+                  <li key={i} className={`px-3 py-2.5 ${s.check ? 'bg-[#FFFBEB]' : ''}`}>
+                    <div className="flex flex-wrap items-baseline gap-x-2 text-[13px]"><span className="text-xs text-text-4">{s.pos}</span><b className="font-medium">{s.zh}</b>{s.en && <span className="text-text-3">{s.en}</span>}{s.check && <span className="text-xs text-warn">待复核,学生看不到</span>}</div>
+                    {s.exMs && <div className="mt-1 border-l-2 pl-2 text-[13px]"><div className="font-mono">{s.exMs}</div><div className="text-xs text-text-3">{s.exZh}</div></div>}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </Section>
+          <AudioSection w={d} edit={can('words.edit')} instant up={p => put({ audio: p.audio, extra: p.extra }, '发音已换上,学生下次打开就是新的')} />
+          {!!(d.extra.ex || []).length && (
+            <Section title="更多例句">
+              <ul className="grid gap-1.5 text-[13px]">{d.extra.ex!.map((x, i) => <li key={i}><span className="font-mono">{x.ms}</span><span className="ml-2 text-xs text-text-3">{x.zh}</span></li>)}</ul>
+            </Section>
+          )}
+          {d.history.length > 0 && (
+            <Section title="最近改动">
+              <ul className="divide-y rounded-xl border text-[13px]">
+                {d.history.map((h, i) => <li key={i} className="flex justify-between gap-2 px-3 py-2"><span><b className="font-medium">{h.username}</b> <span className="text-text-3">{actionLabel(h.action)}</span></span><span className="nw text-xs text-text-4" title={full(h.at)}>{ago(h.at)}</span></li>)}
+              </ul>
+            </Section>
+          )}
+        </>
+      )}
+    </DockPanel>
   )
 }
