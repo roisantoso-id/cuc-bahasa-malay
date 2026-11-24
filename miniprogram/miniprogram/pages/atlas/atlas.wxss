@@ -8,29 +8,29 @@
 .at-dy { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 112rpx; height: 88rpx; padding: 0 var(--s2); border-radius: var(--r-sm); box-sizing: border-box; }
 .at-dy-t { font-size: 26rpx; line-height: 1.3; color: var(--ink2); }
 .at-dy-d { font-family: var(--f-ms); font-size: 22rpx; line-height: 1.3; color: var(--ink3); }
-.at-dy.on { background: var(--ivory); }
-.at-dy.on .at-dy-t { color: var(--dark-ink); font-weight: 600; }
-.at-dy.on .at-dy-d { color: var(--dark-ink2); }
+.at-dy.on { background: var(--btn); }
+.at-dy.on .at-dy-t { color: var(--on-btn); font-weight: 600; }
+.at-dy.on .at-dy-d { color: var(--on-btn); opacity: .75; }
 
 /* 词云是这一屏唯一的面板。左右各留 32rpx：atlas.js 按「屏宽 - 32px」排版，别改 */
 .at-cloud { position: relative; margin: var(--s2) var(--s4) 0; border-radius: var(--r-lg); background: var(--panel2); overflow: hidden; }
 .at-w { position: absolute; white-space: nowrap; font-family: var(--f-ms); font-style: italic; line-height: 1.2; padding: 2px 4px; opacity: 0; animation-name: at-pop, at-drift; animation-timing-function: cubic-bezier(.3,1.5,.5,1), ease-in-out; animation-fill-mode: both, none; animation-iteration-count: 1, infinite; animation-direction: normal, alternate; }
-.at-w.b0 { color: rgba(243,234,214,.5); }
-.at-w.b1 { color: rgba(243,234,214,.72); }
-.at-w.b2 { color: var(--ivory); }
-.at-w.b3 { color: var(--ivory); }
+.at-w.b0 { color: var(--ink3); }
+.at-w.b1 { color: var(--ink2); }
+.at-w.b2 { color: var(--strong); }
+.at-w.b3 { color: var(--strong); }
 .at-w.b4 { color: var(--star); font-weight: 700; }
 @keyframes at-pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
 @keyframes at-drift { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-5px); opacity: 1; } }
 /* 星星还在拼字时先把文字藏起来；拼好（formed）后再弹出来叠在星星上 */
 .at-cloud.wait .at-w { animation: none; opacity: 0; }
-.at-cloud .at-w { z-index: 1; text-shadow: 0 0 12px rgba(233,185,97,.35); }
+.at-cloud .at-w { z-index: 1; text-shadow: 0 0 12px var(--glow); }
 .at-hint { text-align: center; font-size: var(--t-caption); color: var(--ink2); margin-top: var(--s2); }
 @media (prefers-reduced-motion: reduce) { .at-w { animation: none; opacity: 1; } }
 
 /* 单词弹窗（.sheet）。宽 86vw、离顶 18vh：atlas.js 按这两个数算放大的原点，别改 */
 .at-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 200; background: rgba(5,16,18,0); transition: background-color .25s; display: flex; align-items: flex-start; justify-content: center; padding-top: 18vh; }
-.at-mask.on { background: rgba(5,16,18,.72); }
+.at-mask.on { background: var(--scrim); }
 .at-pop { width: 86vw; max-height: 62vh; display: flex; flex-direction: column; padding-bottom: var(--s2); transform: scale(.08); opacity: 0; transition: transform .28s cubic-bezier(.3,1.3,.5,1), opacity .2s; }
 .at-pop.on { transform: scale(1); opacity: 1; }
 .at-pop-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }

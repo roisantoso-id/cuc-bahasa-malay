@@ -69,6 +69,17 @@ page {
   --star-l: rgba(233,185,97,.14);
   --ok-l: rgba(143,192,160,.14);
   --bad-l: rgba(232,131,106,.12);
+  /* 两套主题共用的角色（白天的值在 utils/theme.js） */
+  --strong: #f3ead6;      /* 强调的字和描边 */
+  --raise: #f3ead6;       /* 浮起来的面：词卡、弹层、头像底 */
+  --raise-sh: none;       /* 白天：墨线框 + 纸影 */
+  --btn: #f3ead6;  --on-btn: #0a1f22;  --on-star: #0a1f22;
+  --sheet: #10292d;  --scrim: rgba(5,16,18,.72);
+  --wash: rgba(243,234,214,.08);  --inset: rgba(10,31,34,.55);  --glow: rgba(233,185,97,.35);
+  --star-line: rgba(233,185,97,.35);  --heat1: rgba(143,192,160,.3);  --heat2: rgba(143,192,160,.62);
+  --fb-ok: #1d3d37;  --fb-bad: #3a2a27;  --tag-blue: #9cc9e6;  --tag-blue-l: rgba(156,201,230,.14);
+  --bar: #0a1f22;
+  --photo: #f8f1e9;       /* 犀鸟图片的底（两套一样） */
 
   --t-display: 88rpx;
   --t-title: 44rpx;
@@ -117,7 +128,7 @@ page {
 .serif, .no, .num { font-family: var(--f-ms); }
 .num { font-size: var(--t-title); line-height: 1.15; }
 .num-xl { font-family: var(--f-ms); font-size: var(--t-display); line-height: 1.1; }
-.link { color: var(--ivory); text-decoration: underline; }
+.link { color: var(--strong); text-decoration: underline; }
 .c-green { color: var(--ok); } .c-coral { color: var(--bad); } .c-yellow, .c-amber { color: var(--star); } .c-blue { color: var(--ink2); }
 
 /* 小节标题行 */
@@ -126,15 +137,15 @@ page {
 .sec-x { font-size: var(--t-caption); color: var(--ink2); flex: none; }
 
 /* ---------- 按钮 ---------- */
-.btn, button.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--s1); vertical-align: top; width: auto; min-width: 280rpx; height: 96rpx; min-height: 0; margin: 0; padding: 0 var(--s5); border-radius: var(--r-pill); font-size: var(--t-section); font-weight: 600; line-height: 1; letter-spacing: 1rpx; box-sizing: border-box; background: transparent; color: var(--ivory); transition: opacity .12s; }
+.btn, button.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--s1); vertical-align: top; width: auto; min-width: 280rpx; height: 96rpx; min-height: 0; margin: 0; padding: 0 var(--s5); border-radius: var(--r-pill); font-size: var(--t-section); font-weight: 600; line-height: 1; letter-spacing: 1rpx; box-sizing: border-box; background: transparent; color: var(--strong); transition: opacity .12s; }
 .btn::after { border: 0; }
 /* 写成 button.xxx 是为了压住基础库给 button 的默认样式（它的优先级比单个类名高） */
-.btn-main, .btn-amber, button.btn-main, button.btn-amber { color: var(--dark-ink); background: var(--ivory); }
-.btn-ghost, .btn-teal, .btn-blue, button.btn-ghost, button.btn-teal, button.btn-blue { color: var(--ivory); border: 2rpx solid var(--hair2); }
+.btn-main, .btn-amber, button.btn-main, button.btn-amber { color: var(--on-btn); background: var(--btn); }
+.btn-ghost, .btn-teal, .btn-blue, button.btn-ghost, button.btn-teal, button.btn-blue { color: var(--strong); border: 2rpx solid var(--hair2); }
 .btn-danger, button.btn-danger { color: var(--bad); border: 2rpx solid var(--bad); }
 .btn.hover { opacity: .72; }
-.btn[disabled], button.btn[disabled] { opacity: .4; color: var(--ivory); background: transparent; }
-button.btn-main[disabled], button.btn-amber[disabled] { color: var(--dark-ink); background: var(--ivory); }
+.btn[disabled], button.btn[disabled] { opacity: .4; color: var(--strong); background: transparent; }
+button.btn-main[disabled], button.btn-amber[disabled] { color: var(--on-btn); background: var(--btn); }
 button.btn-danger[disabled] { color: var(--bad); }
 .btn-sm, button.btn-sm { height: 72rpx; min-width: 0; padding: 0 var(--s4); font-size: 26rpx; }
 .btn-sm::before { content: ''; position: absolute; left: 0; right: 0; top: -8rpx; bottom: -8rpx; }
@@ -162,8 +173,8 @@ button.btn-danger[disabled] { color: var(--bad); }
 /* ---------- 排行行 ---------- */
 .rk { display: flex; align-items: center; gap: var(--s2); min-height: 104rpx; padding: var(--s2) 0; border-bottom: 2rpx solid var(--hair); box-sizing: border-box; }
 .rk-p { flex: none; width: 48rpx; text-align: center; font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); }
-.rk-p.top { color: var(--ivory); font-size: var(--t-section); }
-.rk-av { flex: none; width: 72rpx; height: 72rpx; border-radius: 50%; background: var(--ivory); }
+.rk-p.top { color: var(--strong); font-size: var(--t-section); }
+.rk-av { flex: none; width: 72rpx; height: 72rpx; border-radius: 50%; background: var(--photo); }
 .rk-main { flex: 1; min-width: 0; }
 .rk-n { font-size: var(--t-body); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rk-sub { font-size: var(--t-caption); color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -185,27 +196,27 @@ button.btn-danger[disabled] { color: var(--bad); }
 /* ---------- 文字切换（下划线）：等分、不换行 ---------- */
 .tabs { display: flex; border-bottom: 2rpx solid var(--hair); }
 .tab { flex: 1; min-width: 0; min-height: 88rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 28rpx; color: var(--ink2); white-space: nowrap; border-bottom: 4rpx solid transparent; margin-bottom: -2rpx; box-sizing: border-box; }
-.tab.on { color: var(--ivory); font-weight: 600; border-bottom-color: var(--ivory); }
+.tab.on { color: var(--strong); font-weight: 600; border-bottom-color: var(--strong); }
 .tab-n { font-family: var(--f-ms); font-size: var(--t-caption); font-weight: 400; color: var(--ink2); line-height: 1.2; }
 
 /* ---------- 标签、胶囊 ---------- */
 .tag { display: inline-block; font-size: var(--t-caption); line-height: 1.5; padding: 0 var(--s2); border-radius: var(--r-pill); color: var(--ink2); border: 2rpx solid var(--hair2); white-space: nowrap; }
-.tag.amber { color: var(--star); border-color: rgba(233,185,97,.5); }
+.tag.amber { color: var(--star); border-color: var(--star-line); }
 .tag.coral { color: var(--bad); border-color: rgba(232,131,106,.5); }
 .tag.blue, .tag.gray { color: var(--ink2); border-color: var(--hair2); }
 .chips { display: flex; gap: var(--s2); }
 .chip { flex: none; display: inline-flex; align-items: center; height: 72rpx; padding: 0 var(--s4); border-radius: var(--r-pill); font-size: 26rpx; color: var(--ink2); border: 2rpx solid var(--hair2); white-space: nowrap; box-sizing: border-box; }
-.chip.on { background: var(--ivory); color: var(--dark-ink); border-color: var(--ivory); font-weight: 600; }
+.chip.on { background: var(--btn); color: var(--on-btn); border-color: var(--btn); font-weight: 600; }
 
 /* ---------- 进度条 ---------- */
 .bar { height: 8rpx; border-radius: var(--r-pill); background: var(--hair); overflow: hidden; }
 .bar-in { height: 100%; border-radius: var(--r-pill); background: var(--star); transition: width .4s; }
 
 /* ---------- 答题选项：对 = 绿线，错 = 橙线 ---------- */
-.opt { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s2); min-height: 104rpx; padding: var(--s2) var(--s4); margin-bottom: var(--s2); border: 2rpx solid var(--hair2); border-radius: var(--r-sm); box-sizing: border-box; font-size: var(--t-body); color: var(--ivory); word-break: break-word; }
+.opt { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--s2); min-height: 104rpx; padding: var(--s2) var(--s4); margin-bottom: var(--s2); border: 2rpx solid var(--hair2); border-radius: var(--r-sm); box-sizing: border-box; font-size: var(--t-body); color: var(--strong); word-break: break-word; }
 .opt.ms { font-size: 34rpx; }
 .opt.hover { opacity: .72; }
-.opt.on { border-color: var(--ivory); background: var(--hair); }
+.opt.on { border-color: var(--strong); background: var(--hair); }
 .opt.right { color: var(--ok); border-color: var(--ok); background: var(--ok-l); }
 .opt.right::after { content: ''; flex: none; width: 24rpx; height: 12rpx; border-left: 4rpx solid var(--ok); border-bottom: 4rpx solid var(--ok); transform: rotate(-45deg) translateY(-4rpx); }
 .opt.wrong { color: var(--bad); border-color: var(--bad); background: var(--bad-l); }
@@ -215,8 +226,8 @@ button.btn-danger[disabled] { color: var(--bad); }
 /* ---------- 表单 ---------- */
 .field { margin-bottom: var(--s4); }
 .label { font-size: var(--t-caption); color: var(--ink2); margin-bottom: var(--s1); }
-.input { height: 96rpx; padding: 0 var(--s3); border: 2rpx solid var(--hair2); border-radius: var(--r-sm); background: transparent; color: var(--ivory); font-size: var(--t-body); box-sizing: border-box; }
-.input-focus { border-color: var(--ivory); }
+.input { height: 96rpx; padding: 0 var(--s3); border: 2rpx solid var(--hair2); border-radius: var(--r-sm); background: transparent; color: var(--strong); font-size: var(--t-body); box-sizing: border-box; }
+.input-focus { border-color: var(--strong); }
 .ph { color: var(--ink3); }
 .err { color: var(--bad); font-size: var(--t-caption); margin-top: var(--s1); }
 
@@ -230,12 +241,12 @@ button.btn-danger[disabled] { color: var(--bad); }
 
 /* ---------- 成绩头 ---------- */
 .res { text-align: center; padding: var(--s3) 0 var(--s4); }
-.res-bird { display: block; width: 176rpx; height: 176rpx; border-radius: 50%; margin: 0 auto var(--s3); background: var(--ivory); }
+.res-bird { display: block; width: 176rpx; height: 176rpx; border-radius: 50%; margin: 0 auto var(--s3); background: var(--photo); }
 .res-n { font-family: var(--f-ms); font-size: var(--t-display); line-height: 1.1; color: var(--star); }
 .res-u { font-family: var(--f-body); font-size: var(--t-body); color: var(--ink2); }
 
 /* ---------- 象牙色弹层 ---------- */
-.sheet { background: var(--ivory); color: var(--dark-ink); border-radius: var(--r-lg); padding: var(--s4); box-sizing: border-box; }
+.sheet { background: var(--raise); box-shadow: var(--raise-sh); color: var(--dark-ink); border-radius: var(--r-lg); padding: var(--s4); box-sizing: border-box; }
 
 /* ---------- 印章（旅程里盖章用）---------- */
 .stamp { width: 132rpx; height: 132rpx; border-radius: 50%; border: 2rpx solid var(--star); color: var(--star); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; box-sizing: border-box; text-align: center; line-height: 1.2; flex: none; }
@@ -251,4 +262,4 @@ button.btn-danger[disabled] { color: var(--bad); }
 .tile .n { font-family: var(--f-ms); font-size: var(--t-title); line-height: 1.2; }
 .tile.hover { opacity: .72; }
 .medal { width: 48rpx; flex: none; text-align: center; font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); }
-.medal.m1, .medal.m2, .medal.m3 { color: var(--ivory); font-size: var(--t-section); }
+.medal.m1, .medal.m2, .medal.m3 { color: var(--strong); font-size: var(--t-section); }

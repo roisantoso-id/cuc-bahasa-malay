@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <wxs src="../../utils/avatar.wxs" module="av" />
 <view class="wrap rp-wrap">
   <view class="tabs">

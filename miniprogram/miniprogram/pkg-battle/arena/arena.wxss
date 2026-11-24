@@ -1,6 +1,6 @@
 @import '../common.wxss';
 /* 擂台：规则一句话、我的最好成绩、一个主按钮、排名 */
 .ar-head { display: flex; align-items: center; gap: var(--s3); }
-.ar-bird { flex: none; width: 128rpx; height: 128rpx; border-radius: 50%; background: var(--ivory); }
+.ar-bird { flex: none; width: 128rpx; height: 128rpx; border-radius: 50%; background: var(--raise); }
 .ar-best { margin: var(--s4) 0; }
 .ar-time { font-size: var(--t-section); line-height: 1.65; }

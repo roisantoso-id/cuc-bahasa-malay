@@ -5,6 +5,7 @@ const audio = require('../../utils/vocab-audio')
 const sfx = require('../../utils/sfx')
 const { ensureStudent } = require('../../utils/student')
 const { draw } = require('../../utils/canvas')
+const theme = require('../../utils/theme')
 
 const bj = () => new Date(Date.now() + 8 * 3600e3)
 const greet = () => { const h = bj().getUTCHours(); return h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好' }
@@ -64,16 +65,19 @@ Page({
       this.setData({ view: 'error', error: e.message })
     }
   },
+  // 换了白天 / 夜晚：进度环重画
+  onTheme() { this.ring() },
   ring() {
     const { pct } = this.data
     draw(this, '#ring', (ctx, w, hh) => {
       const cx = w / 2, cy = hh / 2, r = Math.min(w, hh) / 2 - 8
       ctx.lineWidth = 8
       ctx.lineCap = 'round'
-      ctx.strokeStyle = 'rgba(243,234,214,0.12)'
+      const day = theme.isDay()
+      ctx.strokeStyle = day ? 'rgba(28,36,32,0.1)' : 'rgba(243,234,214,0.12)'
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke()
       if (pct > 0) {
-        ctx.strokeStyle = '#e9b961'
+        ctx.strokeStyle = day ? '#c46d1c' : '#e9b961'
         ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0.02, pct)); ctx.stroke()
       }
     })

@@ -37,19 +37,19 @@
     }
   ],
   "window": {
-    "navigationBarBackgroundColor": "#0a1f22",
-    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "@navBg",
+    "navigationBarTextStyle": "@navText",
     "navigationBarTitleText": "词光夜航",
-    "backgroundColor": "#0a1f22",
-    "backgroundTextStyle": "light",
-    "backgroundColorTop": "#0a1f22",
-    "backgroundColorBottom": "#0a1f22"
+    "backgroundColor": "@bg",
+    "backgroundTextStyle": "@bgText",
+    "backgroundColorTop": "@bg",
+    "backgroundColorBottom": "@bg"
   },
   "tabBar": {
-    "color": "#9aa59f",
-    "selectedColor": "#e9b961",
-    "backgroundColor": "#0a1f22",
-    "borderStyle": "white",
+    "color": "@tabColor",
+    "selectedColor": "@tabSel",
+    "backgroundColor": "@bg",
+    "borderStyle": "@tabBorder",
     "list": [
       {
         "pagePath": "pages/home/home",
@@ -93,5 +93,7 @@
         "pkg-battle"
       ]
     }
-  }
+  },
+  "darkmode": true,
+  "themeLocation": "theme.json"
 }

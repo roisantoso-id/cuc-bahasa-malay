@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <wxs src="../../utils/fit.wxs" module="fit" />
 <view class="ln-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在准备单词…" />
@@ -29,7 +30,7 @@
         <!-- 一行说明代替一排标签；右边是收藏 -->
         <view class="ln-meta">
           <view class="ln-meta-t one"><text class="no">№ {{card.rank}}</text>{{card.level ? ' · T' + card.level : ''}}{{card.senses[0].pos ? ' · ' + card.senses[0].pos : ''}} · {{card.first ? '初次见面' : card.again ? '再来一次' : '第 ' + (card.seen || 2) + ' 次见'}}</view>
-          <view class="ln-fav-wrap"><view class="ln-fav {{card.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" catchtap="fav"><image class="ln-fav-i" src="/assets/fx/{{card.fav ? 'star-amber' : 'star-line'}}.svg" />{{card.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
+          <view class="ln-fav-wrap"><view class="ln-fav {{card.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" catchtap="fav"><image class="ln-fav-i" src="/assets/fx/{{card.fav ? 'star-amber' : (th.day ? 'star-line-day' : 'star-line')}}.svg" />{{card.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
         </view>
         <view wx:for="{{card.senses}}" wx:key="index" class="ln-sn">
           <view class="ln-mean"><text class="pos">{{item.pos}}</text>{{item.zh}}</view>

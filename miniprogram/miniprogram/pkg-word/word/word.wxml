@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <wxs src="../../utils/fit.wxs" module="fit" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="加载中…" />
@@ -5,7 +6,7 @@
   <block wx:else>
     <view class="between">
       <text class="no muted small">№ {{w.rank}} · 第 {{w.level}} 站</text>
-      <view class="wd-fav-wrap"><view class="wd-fav {{w.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" bindtap="fav"><image class="wd-fav-i" src="/assets/fx/{{w.fav ? 'star-amber' : 'star-line'}}.svg" />{{w.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
+      <view class="wd-fav-wrap"><view class="wd-fav {{w.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" bindtap="fav"><image class="wd-fav-i" src="/assets/fx/{{w.fav ? 'star-amber' : (th.day ? 'star-line-day' : 'star-line')}}.svg" />{{w.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
     </view>
     <view class="wd-head">
       <view class="wd-w" style="font-size:{{fit.fs(w.ms, 96, 520)}}rpx" bindlongpress="copy">{{w.ms}}</view>

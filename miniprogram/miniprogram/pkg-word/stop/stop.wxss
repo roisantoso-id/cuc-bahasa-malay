@@ -9,7 +9,7 @@ button.st-go { margin-top: var(--s4); }
 /* 熟练度：没学 = 空心，在学 = 绿，熟悉 = 象牙，掌握 = 星光 */
 .st-dot { flex: none; width: 12rpx; height: 12rpx; border-radius: 50%; border: 2rpx solid var(--hair2); box-sizing: border-box; }
 .st-cell.learn .st-dot { background: var(--ok); border-color: var(--ok); }
-.st-cell.good .st-dot { background: var(--ivory); border-color: var(--ivory); }
+.st-cell.good .st-dot { background: var(--strong); border-color: var(--strong); }
 .st-cell.done .st-dot { background: var(--star); border-color: var(--star); }
 .st-cell.none .st-ms { color: var(--ink2); }
 .st-none { padding: var(--s5) 0; }

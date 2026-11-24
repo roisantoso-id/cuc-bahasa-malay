@@ -1,15 +1,15 @@
 @import '../common.wxss';
 /* 答题：进度 + 题 + 选项，没有盒子。星光只给进度条 */
 .pl-top { margin-top: var(--s1); font-size: var(--t-caption); color: var(--ink2); }
-.pl-clock { color: var(--ivory); }
+.pl-clock { color: var(--strong); }
 .pl-q { text-align: center; padding: var(--s5) 0; }
 .pl-prompt { margin-top: var(--s3); font-family: var(--f-zh); font-size: var(--t-title); font-weight: 700; line-height: 1.35; word-break: break-word; }
 .pl-prompt.ms { font-family: var(--f-ms); font-size: var(--t-display); font-weight: 400; line-height: 1.15; white-space: nowrap; }
 /* 听音题：大的重播按钮 */
 .pl-listen { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin-top: var(--s3); }
-.pl-play { width: 168rpx; height: 168rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--ivory); }
+.pl-play { width: 168rpx; height: 168rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--btn); }
 .pl-play.hover { opacity: .72; }
-.pl-cone { width: 0; height: 0; border-top: 26rpx solid transparent; border-bottom: 26rpx solid transparent; border-right: 34rpx solid var(--dark-ink); margin-right: 6rpx; }
+.pl-cone { width: 0; height: 0; border-top: 26rpx solid transparent; border-bottom: 26rpx solid transparent; border-right: 34rpx solid var(--on-btn); margin-right: 6rpx; }
 .pl-wave { width: 26rpx; height: 50rpx; border: 8rpx solid var(--dark-ink); border-left: 0; border-radius: 0 50rpx 50rpx 0; }
 .pl-opt { justify-content: center; text-align: center; }
 .pl-tip { margin-top: var(--s2); }

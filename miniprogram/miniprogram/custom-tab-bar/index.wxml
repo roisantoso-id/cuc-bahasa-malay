@@ -1,9 +1,9 @@
 <!-- 自定义底栏：线条图标；当前这一项换成该 tab 专属姿势的犀鸟 -->
-<view class="bar">
+<view class="bar" style="{{th.style}}">
   <view wx:for="{{list}}" wx:key="path" class="it {{selected === index ? 'on' : ''}}" data-i="{{index}}" bindtap="go">
     <view class="ic">
       <image wx:if="{{selected === index}}" class="bird" src="/assets/{{item.bird}}.jpg" mode="aspectFill" />
-      <image wx:else class="svg" src="/assets/tab/{{item.icon}}.svg" />
+      <image wx:else class="svg" src="/assets/tab/{{th.day ? 'day/' : ''}}{{item.icon}}.svg" />
     </view>
     <text class="t">{{item.text}}</text>
   </view>

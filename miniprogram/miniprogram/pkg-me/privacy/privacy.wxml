@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <view class="wrap pv">
   <!-- 先说结论：三条承诺 -->
   <view class="pv-hero">

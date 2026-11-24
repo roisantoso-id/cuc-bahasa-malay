@@ -18,6 +18,9 @@ function rng(seed) { let s = seed >>> 0 || 1; return () => ((s = (Math.imul(1664
 
 // 词的熟练度 b 0–4 对应颜色：越熟越接近金色
 const TINT = [[0.95, 0.92, 0.84], [0.95, 0.92, 0.84], [0.98, 0.94, 0.86], [0.99, 0.9, 0.7], [0.91, 0.73, 0.38]]
+// 白天版（纸色底）：叠加混合在浅底上看不见，改成正常混合的墨点，越熟越深，熟词用琥珀
+const TINT_DAY = [[0.45, 0.5, 0.47], [0.33, 0.38, 0.35], [0.2, 0.26, 0.23], [0.12, 0.35, 0.26], [0.77, 0.43, 0.11]]
+const isDay = () => require('../../utils/theme').isDay()
 
 Component({
   properties: {
@@ -119,6 +122,7 @@ Component({
         ang: new Float32Array(n), rad: new Float32Array(n), spin: new Float32Array(n),
         tx: new Float32Array(n), ty: new Float32Array(n), delay: new Float32Array(n), tw: new Float32Array(n)
       }
+      const T = isDay() ? TINT_DAY : TINT
       const pos = new Float32Array(n * 3), size = new Float32Array(n), alpha = new Float32Array(n), color = new Float32Array(n * 3)
       for (let i = 0; i < n; i++) {
         const arm = i % 3
@@ -127,17 +131,17 @@ Component({
         s.ang[i] = arm * (Math.PI * 2 / 3) + rr / R * 4.2 + (r() - 0.5) * 0.9
         s.spin[i] = (0.35 + r() * 0.5) * (1.2 - rr / R * 0.6) // 里圈转得快
         s.tw[i] = r() * Math.PI * 2
-        let c = TINT[1], sz = 1.6 + r() * 2.2
+        let c = T[1], sz = 1.6 + r() * 2.2
         if (i < tg.length) {
           const [x, y, wi] = tg[i]
           s.tx[i] = x; s.ty[i] = y
           s.delay[i] = r() * SPREAD + (x / W) * 260 // 从左往右陆续落下
           const b = (words[wi] && words[wi].b) || 0
-          c = TINT[b]
+          c = T[b]
           sz = 2.4 + b * 0.35 + r() * 0.8
         } else {
           s.tx[i] = -1
-          c = r() < 0.15 ? TINT[4] : TINT[1]
+          c = r() < 0.15 ? T[4] : T[1]
         }
         size[i] = sz
         alpha[i] = i < tg.length ? 0.95 : 0.35 + r() * 0.45
@@ -169,7 +173,7 @@ Component({
           '  float a = (core + halo) * vA; if (a < 0.01) discard;',
           '  gl_FragColor = vec4(vC * (0.7 + core * 0.6), a); }'
         ].join('\n'),
-        transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending
+        transparent: true, depthTest: false, depthWrite: false, blending: isDay() ? THREE.NormalBlending : THREE.AdditiveBlending
       })
       this.points = new THREE.Points(geo, mat)
       this.points.frustumCulled = false

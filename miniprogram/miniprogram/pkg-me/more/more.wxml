@@ -1,12 +1,18 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <!-- 设置与关于：护照右上角「···」进来。上面两项设置，下面是资料、老师、反馈、客服、隐私 -->
 <view class="wrap">
+  <view class="sec"><text class="sec-t">外观</text><text class="sec-x">{{themeMode === 'auto' ? (th.day ? '手机现在是浅色，用白天' : '手机现在是深色，用夜晚') : ''}}</text></view>
+  <view class="chips mo-goals">
+    <view wx:for="{{themes}}" wx:key="v" class="chip {{item.v === themeMode ? 'on' : ''}}" hover-class="hover" data-v="{{item.v}}" bindtap="setTheme">{{item.t}}</view>
+  </view>
+
   <view class="sec"><text class="sec-t">每天新词</text><text class="sec-x">明天起按新的数量排</text></view>
   <view class="chips mo-goals">
     <view wx:for="{{goals}}" wx:key="*this" class="chip {{item === dailyNew ? 'on' : ''}}" hover-class="hover" data-n="{{item}}" bindtap="setGoal">{{item}} 个</view>
   </view>
 
   <view class="list mo-list">
-    <view class="item"><view class="item-main">音效</view><switch checked="{{sfxOn}}" color="#e9b961" bindchange="toggleSfx" /></view>
+    <view class="item"><view class="item-main">音效</view><switch checked="{{sfxOn}}" color="{{th.day ? '#c46d1c' : '#e9b961'}}" bindchange="toggleSfx" /></view>
     <view class="item" hover-class="hover-row" data-url="/pages/register/register" bindtap="go"><view class="item-main">修改资料</view><text class="item-x">姓名、学校、班级</text><text class="arrow">›</text></view>
   </view>
 

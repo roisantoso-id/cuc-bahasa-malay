@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <view class="wrap">
   <!-- 头像：只能用已解锁的犀鸟形象，去「换装」里选 -->
   <view class="rg-av" bindtap="wardrobe">

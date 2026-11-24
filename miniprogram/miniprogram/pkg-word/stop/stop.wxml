@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻词表…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />

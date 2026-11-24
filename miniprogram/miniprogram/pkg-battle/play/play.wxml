@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <wxs src="../../utils/fit.wxs" module="fit" />
 <view class="wrap">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在出题…" />

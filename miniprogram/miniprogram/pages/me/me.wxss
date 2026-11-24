@@ -1,8 +1,8 @@
 /* 护照：只回答三个问题——记得多牢、接下来要复习多少、最近有没有坚持。星光只给「牢固」 */
 /* 顶部：头像在左、身份和这一站进度在右；「下一个目标」= 这一站学完能解锁的两套衣服；底下一行四个数（错词本、收藏可点） */
 .me-hero { position: relative; padding: var(--s3); background: var(--panel); border-radius: var(--r-lg); }
-.me-more { position: absolute; top: var(--s2); right: var(--s2); width: 64rpx; height: 64rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: rgba(243,234,214,.08); z-index: 2; }
-.me-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--ivory); }
+.me-more { position: absolute; top: var(--s2); right: var(--s2); width: 64rpx; height: 64rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6rpx; background: var(--wash); z-index: 2; }
+.me-dot { width: 8rpx; height: 8rpx; border-radius: 50%; background: var(--raise); }
 .me-top { display: flex; align-items: center; gap: var(--s3); padding-right: 64rpx; }
 .me-id { flex: 1; min-width: 0; }
 .me-name { font-size: var(--t-title); font-weight: 700; font-family: var(--f-zh); line-height: 1.3; }
@@ -12,13 +12,13 @@
 .me-lv-p { color: var(--ink2); font-family: var(--f-ms); }
 .me-lv-bar { height: 10rpx; margin-top: 8rpx; border-radius: var(--r-pill); background: var(--hair); overflow: hidden; }
 .me-lv-f { height: 100%; border-radius: var(--r-pill); background: var(--star); min-width: 10rpx; }
-.me-goal { display: flex; align-items: center; gap: var(--s2); margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-sm); background: rgba(10,31,34,.55); }
+.me-goal { display: flex; align-items: center; gap: var(--s2); margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-sm); background: var(--inset); }
 .me-goal-imgs { display: flex; flex: none; }
-.me-goal-box { width: 88rpx; height: 88rpx; border-radius: 16rpx; background: #f8f1e9; display: flex; align-items: center; justify-content: center; border: 3rpx solid var(--panel); box-sizing: border-box; }
+.me-goal-box { width: 88rpx; height: 88rpx; border-radius: 16rpx; background: var(--photo); display: flex; align-items: center; justify-content: center; border: 3rpx solid var(--panel); box-sizing: border-box; }
 .me-goal-box + .me-goal-box { margin-left: -20rpx; }
 .me-goal-img { width: 80rpx; height: 80rpx; }
 .me-goal-m { flex: 1; min-width: 0; }
-.me-goal-t { font-size: 28rpx; font-weight: 600; color: var(--ivory); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.me-goal-t { font-size: 28rpx; font-weight: 600; color: var(--strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .me-goal-x { font-size: var(--t-caption); color: var(--ink2); margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .me-stats { display: flex; margin-top: var(--s3); }
 .me-st { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
@@ -38,13 +38,13 @@
 .me-bn { font-family: var(--f-ms); font-size: 22rpx; color: var(--ink2); height: 32rpx; line-height: 32rpx; }
 .me-bt { flex: 1; width: 100%; display: flex; align-items: flex-end; }
 .me-bf { width: 100%; border-radius: 8rpx; background: var(--hair2); }
-.me-bf.today { background: var(--ivory); }
+.me-bf.today { background: var(--raise); }
 .me-bl { font-size: 22rpx; color: var(--ink2); height: 36rpx; line-height: 36rpx; }
-.me-bl.today { color: var(--ivory); }
+.me-bl.today { color: var(--strong); }
 
 .me-heat { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 6rpx; }
 .me-hc { height: 28rpx; border-radius: 6rpx; background: var(--hair); }
-.me-hc.l1 { background: rgba(143,192,160,.3); } .me-hc.l2 { background: rgba(143,192,160,.62); } .me-hc.l3 { background: var(--ok); }
+.me-hc.l1 { background: var(--heat1); } .me-hc.l2 { background: var(--heat2); } .me-hc.l3 { background: var(--ok); }
 
 
 /* 一屏看完：这一页的小节间距收紧（全局 .sec 是 48rpx 上边距） */

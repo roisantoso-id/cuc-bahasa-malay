@@ -31,6 +31,8 @@ function layout(words, W, H) {
 
 Page({
   data: { view: 'loading', error: '', days: [], sel: 0, cur: null, cloud: [], cloudH: 420, W: 0, learned: 0, more: false, shownN: 0, intoView: '', skyPlay: 0, formed: false },
+  // 换了白天 / 夜晚：星空换颜色重放一遍
+  onTheme() { if (this.data.cloud.length) this.setData({ formed: false, skyPlay: this.data.skyPlay + 1 }) },
   onShow() {
     setTab(this, 1)
     if (getApp().globalData.dirty || !this.data.days.length) this.load()

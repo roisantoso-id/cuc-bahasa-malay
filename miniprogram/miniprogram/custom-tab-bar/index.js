@@ -1,7 +1,9 @@
 // 自定义底栏（app.json tabBar.custom = true）。每个 tab 页 onShow 时调 setTab(this, i) 标出当前项。
 // 选中项显示该 tab 专属姿势的犀鸟：今日打卡、图鉴读书、对战举奖杯、护照欢呼；切换时安静换图，不做跳动
+const theme = require('../utils/theme')
 Component({
   data: {
+    th: theme.data(),
     selected: 0,
     list: [
       { path: '/pages/home/home', text: '今日', icon: 'today', bird: 'checkin' },
@@ -17,8 +19,9 @@ Component({
       wx.switchTab({ url: this.data.list[i].path })
     },
     mark(i) {
-      if (this.data.selected === i) return
-      this.setData({ selected: i })
+      const th = theme.data()
+      if (this.data.selected === i && this.data.th.day === th.day) return
+      this.setData({ selected: i, th })
     }
   }
 })

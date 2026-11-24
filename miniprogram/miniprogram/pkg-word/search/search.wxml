@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <view class="wrap">
   <input class="input" focus placeholder-class="ph" placeholder="输入马来语或中文，例如 makan / 吃" value="{{q}}" bindinput="input" confirm-type="search" />
   <view wx:if="{{list.length}}" class="list sr-list">

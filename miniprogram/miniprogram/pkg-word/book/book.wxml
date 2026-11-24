@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <view class="tabs bk-tabs">
   <view wx:for="{{tabs}}" wx:key="k" class="tab {{type === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="tab">{{item.t}}</view>
 </view>
@@ -16,7 +17,7 @@
           <view class="ms bk-ms one">{{item.ms}}</view>
           <view class="muted small one">{{item.zh}}{{type === 'wrong' ? ' · 错 ' + item.wrong + ' 次' : ''}}</view>
         </view>
-        <view class="bk-star" data-i="{{index}}" catchtap="toggleFav"><image class="bk-star-i" src="/assets/fx/{{item.fav ? 'star-amber' : 'star-line'}}.svg" /></view>
+        <view class="bk-star" data-i="{{index}}" catchtap="toggleFav"><image class="bk-star-i" src="/assets/fx/{{item.fav ? 'star-amber' : (th.day ? 'star-line-day' : 'star-line')}}.svg" /></view>
       </view>
     </view>
   </block>

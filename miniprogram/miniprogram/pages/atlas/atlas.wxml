@@ -1,3 +1,4 @@
+<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
 <wxs src="../../utils/fit.wxs" module="fit" />
 <view class="at-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在点亮星星…" />
@@ -44,7 +45,7 @@
         <view wx:if="{{!pop.senses}}" class="at-pop-exz">正在加载释义…</view>
       </scroll-view>
       <view class="at-pop-f">
-        <view class="at-fav-wrap"><view class="at-fav {{pop.fav ? 'on' : ''}} {{favPop ? 'popa' : ''}}" bindtap="fav"><image class="at-fav-i" src="/assets/fx/{{pop.fav ? 'star-amber' : 'star-line'}}.svg" />{{pop.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
+        <view class="at-fav-wrap"><view class="at-fav {{pop.fav ? 'on' : ''}} {{favPop ? 'popa' : ''}}" bindtap="fav"><image class="at-fav-i" src="/assets/fx/{{pop.fav ? 'star-amber' : (th.day ? 'star-line-day' : 'star-line')}}.svg" />{{pop.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
         <view class="at-pop-x" bindtap="close">收起</view>
       </view>
     </view>
