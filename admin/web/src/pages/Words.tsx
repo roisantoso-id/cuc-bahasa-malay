@@ -26,7 +26,16 @@ type WordDetail = Word & { learners: { n: number; mastered: number; wrong: numbe
 // 词库里出现最多的词性(content/vocab5000/words.json),其它的选「其它…」自己写
 const POS = ['名词', '动词', '形容词', '副词', '专有名词', '被动动词', '介词', '连词', '代词', '数词', '助动词', '及物动词', '量词', '感叹词', '否定词', '疑问词', '助词', '短语']
 let audioEl: HTMLAudioElement | null = null
-const play = (url: string) => { if (!url) return; audioEl?.pause(); audioEl = new Audio(url); audioEl.play().catch(() => toast.error('音频放不出来:文件可能还没传到 COS')) }
+// 播放发音。只有文件真的打不开(error 事件)才提示;连点换一个(浏览器打断上一个)不提示;
+// 浏览器拦了自动播放(AI 生成完自动试听时)轻提示一下。同一时间只留一条提示,不叠
+const play = (url: string) => {
+  if (!url) return
+  audioEl?.pause()
+  const a = new Audio(url)
+  audioEl = a
+  a.addEventListener('error', () => { if (audioEl === a) toast.error('这个音频打不开:文件不存在或地址失效', { id: 'audio' }) }, { once: true })
+  a.play().catch(e => { if ((e as DOMException).name === 'NotAllowedError' && audioEl === a) toast('浏览器没让自动播放,点一下喇叭再听', { id: 'audio' }) })
+}
 const VOICES = [{ value: 'yasmin', label: 'Yasmin 女声' }, { value: 'nadira', label: 'Nadira 女声' }, { value: 'osman', label: 'Osman 男声' }] as const
 type Voice = typeof VOICES[number]['value']
 type Take = { audio: string; audioUrl: string; voice: Voice; voiceName: string; rate: 'slow' | 'normal' }
