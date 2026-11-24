@@ -27,7 +27,7 @@ const sha = s => createHash('sha256').update(String(s)).digest('hex')
 const now = () => new Date().toISOString()
 
 export function makeAdminApi(ctx) {
-  const { all, one, run, tx, body, send, fail, str, ip, cookie, day, csvCell, importWords, cleanSense, savePhoto, levelsOf, streakOf, reloadStops, hashPassword, checkPassword, AUDIO_BASE, DEMO } = ctx
+  const { all, one, run, tx, body, send, fail, str, ip, cookie, day, csvCell, importWords, cleanSense, savePhoto, levelsOf, streakOf, reloadStops, hashPassword, checkPassword, AUDIO_BASE, audioUrl, tts, DEMO } = ctx
   const ipFails = new Map(), userFails = new Map()
   const recent = (m, k, ms) => { const t = (m.get(k) || []).filter(x => x > Date.now() - ms); m.set(k, t); return t }
 
@@ -96,13 +96,15 @@ export function makeAdminApi(ctx) {
   function wordAdminOut(w) {
     let extra = {}
     try { extra = JSON.parse(w.extra || '{}') || {} } catch {}
-    return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, topic: w.topic || '', senses: JSON.parse(w.senses || '[]'), audio: w.audio, audioUrl: w.audio ? AUDIO_BASE + w.audio : '', status: w.status, edited: !!w.edited, updatedAt: w.updated_at, extra }
+    return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, topic: w.topic || '', senses: JSON.parse(w.senses || '[]'), audio: w.audio, audioUrl: audioUrl(w.audio), status: w.status, edited: !!w.edited, updatedAt: w.updated_at, extra }
   }
   const listOf = (v, n = 20, max = 80) => (Array.isArray(v) ? v : String(v || '').split(/[,，;；\n]/)).map(x => str(x, max)).filter(Boolean).slice(0, n)
   const cleanExtra = e => ({
     ex: (Array.isArray(e.ex) ? e.ex : []).map(x => ({ ms: str(x.ms, 400), zh: str(x.zh, 400) })).filter(x => x.ms).slice(0, 10),
     col: listOf(e.col), fam: listOf(e.fam), syn: listOf(e.syn), ant: listOf(e.ant),
-    tip: str(e.tip, 500), note: str(e.note, 500), image: str(e.image, 300)
+    tip: str(e.tip, 500), note: str(e.note, 500), image: str(e.image, 300),
+    // 换成 AI 发音前的启航原声文件名，后台可以「改回原声」；audioBy 记是哪个声音生成的
+    audioOrig: str(e.audioOrig, 200), audioBy: str(e.audioBy, 60)
   })
   const cleanSenseFull = s => { const o = cleanSense(s); const en = str(s.en, 200); if (en) o.en = en; return o }
 
@@ -330,6 +332,18 @@ export function makeAdminApi(ctx) {
         rank, ms, str(b.root, 80), level, str(b.topic, 32), JSON.stringify(senses), JSON.stringify(cleanExtra(b.extra || {})), str(b.audio, 200), 'pending', now())
       await audit(s, req, 'word.create', `${ms} #${rank}`)
       return send(res, 200, { ok: true, rank })
+    }
+    // AI 生成发音：只生成文件、返回试听地址，不改库；老师听了点「用这个」再随单词一起保存
+    const ttsm = /^\/api\/admin\/words\/(\d+)\/tts$/.exec(p)
+    if (ttsm && req.method === 'GET') { need(s, 'words.edit'); return send(res, 200, { ready: tts.ready }) }
+    if (ttsm && req.method === 'POST') {
+      need(s, 'words.edit')
+      const b = await body(req, 4 * 1024), rank = Number(ttsm[1])
+      const w = await one('SELECT ms FROM words WHERE rank = ?', rank)
+      if (!w) return fail(res, 404, '没有这个词')
+      const r = await tts.make({ rank, text: b.text || w.ms, voice: b.voice, rate: b.rate })
+      await audit(s, req, 'word.tts', `${w.ms} #${rank}`, `${r.voice} ${r.rate}`)
+      return send(res, 200, { ...r, audioUrl: audioUrl(r.audio) })
     }
     const wm = /^\/api\/admin\/words\/(\d+)$/.exec(p)
     if (wm && req.method === 'GET') {

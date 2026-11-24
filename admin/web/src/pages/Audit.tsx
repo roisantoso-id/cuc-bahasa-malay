@@ -8,7 +8,7 @@ import { ActiveFilters, Avatar, Chips, Empty, ErrorLine, Loading, PageHeader, Pa
 const ACTIONS: Record<string, string> = {
   'login': '登录了', 'login.fail': '登录失败', 'me.password': '改了自己的密码',
   'student.edit': '改了学生资料', 'student.disable': '停用了学生', 'student.enable': '恢复了学生', 'students.export': '导出了学生名单',
-  'word.create': '新增了单词', 'word.edit': '改了单词', 'word.publish': '上架了', 'word.unpublish': '下架了',
+  'word.create': '新增了单词', 'word.edit': '改了单词', 'word.tts': 'AI 生成了发音', 'word.publish': '上架了', 'word.unpublish': '下架了',
   'words.publish': '批量上架', 'words.unpublish': '批量下架', 'words.import': '导入了词库', 'words.export': '导出了词库',
   'course.edit': '改了课程', 'course.open': '开放了', 'course.close': '关闭了',
   'teacher.create': '添加了老师', 'teacher.edit': '改了老师介绍', 'teacher.delete': '删除了老师',

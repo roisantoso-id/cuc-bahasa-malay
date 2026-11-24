@@ -43,6 +43,9 @@ services:
       ADMIN_USER: ${ADMIN_USER:-admin}
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
       AUDIO_BASE: ${AUDIO_BASE:?请在 .env 里填 AUDIO_BASE}
+      # 后台 AI 生成发音（admin/tts.mjs）；不填只是这个功能不能用
+      AZURE_TTS_KEY: ${AZURE_TTS_KEY:-}
+      AZURE_TTS_REGION: ${AZURE_TTS_REGION:-eastus}
     volumes:
       - uploads:/data
 

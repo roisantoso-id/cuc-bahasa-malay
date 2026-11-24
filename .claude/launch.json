@@ -32,6 +32,32 @@
         "dev"
       ],
       "port": 5188
+    },
+    {
+      "name": "admin-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "admin/web",
+        "run",
+        "dev"
+      ],
+      "port": 5190
+    },
+    {
+      "name": "admin-web-mock",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "admin/web",
+        "run",
+        "dev"
+      ],
+      "env": {
+        "API_PORT": "4201",
+        "WEB_PORT": "5191"
+      },
+      "port": 5191
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronRight, Download, FileUp, Plus, Trash2, Volume2 } from 'lucide-react'
+import { ChevronRight, Download, FileUp, Loader2, Plus, RotateCcw, Sparkles, Trash2, Volume2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ import { ActiveFilters, Chips, Dot, Empty, ErrorLine, Field, Loading, MiniStats,
 import { actionLabel } from './Audit'
 
 type Sense = { pos: string; zh: string; en?: string; exMs?: string; exZh?: string; check?: boolean }
-type Extra = { ex?: { ms: string; zh: string }[]; col?: string[]; fam?: string[]; syn?: string[]; ant?: string[]; tip?: string; note?: string; image?: string }
+type Extra = { ex?: { ms: string; zh: string }[]; col?: string[]; fam?: string[]; syn?: string[]; ant?: string[]; tip?: string; note?: string; image?: string; audioOrig?: string; audioBy?: string }
 type Word = { rank: number; ms: string; root: string; level: number; topic: string; senses: Sense[]; audio: string; audioUrl: string; status: string; edited: boolean; updatedAt: string; extra: Extra }
 type List = { total: number; page: number; size: number; counts: { total: number; approved: number | null; pending: number | null; check: number | null; edited: number | null }; topics: { topic: string; n: number }[]; words: Word[] }
 type Course = { level: number; city: string; ms: string }
@@ -27,6 +27,10 @@ type WordDetail = Word & { learners: { n: number; mastered: number; wrong: numbe
 const POS = ['名词', '动词', '形容词', '副词', '专有名词', '被动动词', '介词', '连词', '代词', '数词', '助动词', '及物动词', '量词', '感叹词', '否定词', '疑问词', '助词', '短语']
 let audioEl: HTMLAudioElement | null = null
 const play = (url: string) => { if (!url) return; audioEl?.pause(); audioEl = new Audio(url); audioEl.play().catch(() => toast.error('音频放不出来:文件可能还没传到 COS')) }
+const VOICES = [{ value: 'yasmin', label: 'Yasmin 女声' }, { value: 'nadira', label: 'Nadira 女声' }, { value: 'osman', label: 'Osman 男声' }] as const
+type Voice = typeof VOICES[number]['value']
+type Take = { audio: string; audioUrl: string; voice: Voice; voiceName: string; rate: 'slow' | 'normal' }
+const isAi = (a: string) => a.startsWith('/uploads/tts/')
 
 export function Words() {
   const { can } = useAuth()
@@ -200,9 +204,9 @@ function WordPanel({ rank, courses, onClose, onSaved, onCreated }: { rank: strin
                 </Select>
               </Field>
               <Field label="主题" hint="词光按主题分组,例如 food、family"><Input value={w.topic} onChange={e => up({ topic: e.target.value })} placeholder="没有就空着" /></Field>
-              <Field label="音频文件" className="sm:col-span-2" hint="COS 上 vocab5000/audio/ 里的文件名"><Input value={w.audio} onChange={e => up({ audio: e.target.value })} className="font-mono text-xs" placeholder="0001_yang.mp3" /></Field>
             </div>
           </Section>
+          {!isNew && <AudioSection w={w} edit={edit} up={up} />}
           <Section title={`义项 ${w.senses.length}`} extra={edit && <Button type="button" size="sm" variant="outline" onClick={() => up({ senses: [...w.senses, { pos: '名词', zh: '' }] })}><Plus />加一条</Button>}>
             <div className="grid gap-2">
               {w.senses.map((s, i) => (
@@ -315,5 +319,64 @@ function ImportDialog({ open, onClose, onDone }: { open: boolean; onClose: () =>
         <DialogFooter><Button variant="outline" onClick={onClose}>取消</Button><Button onClick={go} disabled={!dry || busy || !dry.valid}>导入 {dry ? n(dry.valid) : ''} 个词</Button></DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+// 发音：现在用的是哪个（启航原声 / AI 生成），AI 重新生成几条试听，挑一条「用这个」，随单词一起保存
+function AudioSection({ w, edit, up }: { w: Word; edit: boolean; up: (p: Partial<Word>) => void }) {
+  const [voice, setVoice] = useState<Voice>('yasmin')
+  const [rate, setRate] = useState<'normal' | 'slow'>('normal')
+  const [text, setText] = useState('')
+  const [takes, setTakes] = useState<Take[]>([])
+  const [busy, setBusy] = useState(false)
+  useEffect(() => { setTakes([]); setText('') }, [w.rank])
+  const cur = isAi(w.audio) ? takes.find(t => t.audio === w.audio)?.audioUrl || w.audioUrl : w.audioUrl
+  const gen = async () => {
+    setBusy(true)
+    try {
+      const t = await api<Take>(`/words/${w.rank}/tts`, { body: { voice, rate, text: text.trim() || w.ms } })
+      setTakes(x => [t, ...x].slice(0, 5)); play(t.audioUrl)
+    } catch (e) { toast.error((e as Error).message) } finally { setBusy(false) }
+  }
+  const use = (t: Take) => {
+    // 第一次换成 AI 发音时记下启航原声，以后能改回去
+    const orig = w.extra.audioOrig || (isAi(w.audio) ? '' : w.audio)
+    up({ audio: t.audio, audioUrl: t.audioUrl, extra: { ...w.extra, audioOrig: orig, audioBy: `${t.voiceName}${t.rate === 'slow' ? ' · 慢速' : ''}` } })
+    toast.success('换好了，点底部「保存」生效')
+  }
+  const revert = () => up({ audio: w.extra.audioOrig || '', audioUrl: '', extra: { ...w.extra, audioOrig: '', audioBy: '' } })
+  return (
+    <Section title="发音" extra={isAi(w.audio) && w.extra.audioOrig && edit && <Button type="button" size="sm" variant="outline" onClick={revert}><RotateCcw />改回启航原声</Button>}>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 rounded-xl border bg-[#FCFCFD] p-3">
+        <button type="button" disabled={!cur} onClick={() => play(cur)} aria-label="听现在的发音" className="flex size-9 flex-none items-center justify-center rounded-md bg-blue-bg text-blue disabled:opacity-40"><Volume2 className="size-4" /></button>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-medium">{!w.audio ? '没有音频' : isAi(w.audio) ? `AI 生成 · ${w.extra.audioBy || ''}` : '启航原声'}</div>
+          <div className="truncate font-mono text-xs text-text-4" title={w.audio}>{w.audio || '—'}{!cur && w.audio ? ' · 保存后能听' : ''}</div>
+        </div>
+      </div>
+      {edit && (
+        <div className="mt-3 grid gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Segmented label="声音" options={VOICES.map(v => ({ value: v.value, label: v.label }))} value={voice} onChange={setVoice} />
+            <Segmented label="语速" options={[{ value: 'normal', label: '正常' }, { value: 'slow', label: '慢一点' }]} value={rate} onChange={setRate} />
+          </div>
+          <div className="flex min-w-0 gap-2">
+            <Input value={text} onChange={e => setText(e.target.value)} placeholder={w.ms} title="要读的内容，默认读这个词；读得不对可以改拼写或加连字符" aria-label="要读的内容" className="min-w-0 flex-1 font-mono" />
+            <Button type="button" onClick={gen} disabled={busy} className="flex-none">{busy ? <Loader2 className="animate-spin" /> : <Sparkles />}{busy ? '生成中…' : 'AI 生成'}</Button>
+          </div>
+          {takes.length > 0 && (
+            <div className="divide-y rounded-xl border">
+              {takes.map(t => (
+                <div key={t.audio} className="flex min-w-0 items-center gap-2 px-3 py-2">
+                  <button type="button" onClick={() => play(t.audioUrl)} aria-label="试听" className="flex size-8 flex-none items-center justify-center rounded-md text-blue hover:bg-blue-bg"><Volume2 className="size-4" /></button>
+                  <span className="min-w-0 flex-1 truncate text-[13px]">{t.voiceName}{t.rate === 'slow' ? ' · 慢一点' : ''}</span>
+                  {w.audio === t.audio ? <Pill tone="ok" dot>用这个</Pill> : <Button type="button" size="sm" variant="outline" onClick={() => use(t)}>用这个</Button>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </Section>
   )
 }

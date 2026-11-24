@@ -9,7 +9,7 @@
 //   - 周榜：本周学习分 = 新学 ×2 + 复习 ×1 + 答对 ×1（来自 daily 表），按个人 / 同校 / 同班排；学校榜按全校总分排。
 import { randomBytes, createHash } from 'node:crypto'
 
-export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, alikeOf, avatarOf = () => '' }) {
+export function createBattle({ all, one, run, day, AUDIO_BASE, audioUrl = a => (a ? AUDIO_BASE + a : ''), openLevels, alikeOf, avatarOf = () => '' }) {
   const SCHEMA = [
     `CREATE TABLE IF NOT EXISTS pk (id VARCHAR(16) PRIMARY KEY, creator INT NOT NULL, level INT NOT NULL, questions MEDIUMTEXT NOT NULL, created_at VARCHAR(32), expires_at BIGINT NOT NULL, INDEX pk_creator (creator)) DEFAULT CHARSET = utf8mb4`,
     `CREATE TABLE IF NOT EXISTS pk_entry (pk_id VARCHAR(16) NOT NULL, student_id INT NOT NULL, score INT NOT NULL, correct INT NOT NULL, ms INT NOT NULL, answers TEXT, created_at VARCHAR(32), PRIMARY KEY (pk_id, student_id), INDEX pk_entry_student (student_id)) DEFAULT CHARSET = utf8mb4`,
@@ -47,7 +47,7 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, openLevels, alike
       return {
         type, rank: w.rank,
         prompt: type === 'ms2zh' ? w.ms : type === 'zh2ms' ? w.zh : '',
-        audio: w.audio ? AUDIO_BASE + w.audio : '',
+        audio: audioUrl(w.audio),
         options: opts.map(o => (type === 'ms2zh' ? o.zh : o.ms)),
         answer: opts.indexOf(w)
       }

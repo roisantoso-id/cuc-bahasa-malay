@@ -18,6 +18,7 @@ import { makeAdminApi } from './admin-api.mjs'
 import { createBattle } from './battle.mjs'
 import { createAchievements } from './achievements.mjs'
 import { alikeSource } from './alike.mjs'
+import { createTts } from './tts.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -39,6 +40,10 @@ const HOST = ENV.ADMIN_HOST || '127.0.0.1'
 const PUBLIC_HOST = ENV.PUBLIC_HOST || `${HOST}:${PORT}`
 const DATA = ENV.DATA_DIR || join(HERE, 'data') // 老师照片
 const AUDIO_BASE = (ENV.AUDIO_BASE || (DEMO ? `http://${PUBLIC_HOST}/demo-audio/` : '')).replace(/\/?$/, '/')
+// 后台 AI 生成的发音存在本机 /uploads/tts/，要拼成完整地址给小程序（小程序在 api 域名下读）
+const API_ORIGIN = (ENV.API_ORIGIN || (DEMO ? `http://${PUBLIC_HOST}` : 'https://api.bahasa.cn')).replace(/\/$/, '')
+// 库里的 audio：启航原声只存文件名（拼 COS 的 AUDIO_BASE）；AI 生成的存 /uploads/tts/…（拼 API_ORIGIN）
+const audioUrl = a => !a ? '' : /^https?:\/\//.test(a) ? a : a.startsWith('/uploads/') ? API_ORIGIN + a : AUDIO_BASE + a
 const ADMIN_USER = ENV.ADMIN_USER || 'admin'
 // 演示模式默认密码 admin123;正式环境必须在 env 里配 ADMIN_PASSWORD_HASH(node admin/scripts/hash-password.mjs 生成)
 const ADMIN_HASH = ENV.ADMIN_PASSWORD_HASH || (DEMO ? hashPassword('admin123', 'demo-salt') : '')
@@ -116,7 +121,7 @@ async function reloadStops() { STOPS = (await all('SELECT level, city, ms, note,
 const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
 // 听起来像的干扰项（alike.mjs）：全部已审核的词，内存里缓存 10 分钟
 const alikeOf = alikeSource(async () => (await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved'`)).map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses || '[]').find(s => !s.check) || {}).zh || '' })))
-const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, openLevels, alikeOf, avatarOf: s => ach.imgOf(s.mascot) })
+const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, audioUrl, openLevels, alikeOf, avatarOf: s => ach.imgOf(s.mascot) })
 const ach = createAchievements({ all, one, run, day: (o = 0) => day(o), levelsOf: sid => levelsOf(sid), weekStart: () => battle.weekStart() }) // 成就与犀鸟形象（achievements.mjs） // 好友 PK、周榜、每周擂台（battle.mjs）
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
@@ -178,7 +183,7 @@ const REVIEW_MAX = 60
 
 function wordOut(w, p) {
   const senses = JSON.parse(w.senses || '[]').filter(s => !s.check)
-  return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, senses, audio: w.audio ? AUDIO_BASE + w.audio : '', box: p && p.box != null ? p.box : -1, fav: !!(p && p.fav), wrong: (p && p.wrong) || 0 }
+  return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, senses, audio: audioUrl(w.audio), box: p && p.box != null ? p.box : -1, fav: !!(p && p.fav), wrong: (p && p.wrong) || 0 }
 }
 async function streakOf(sid) {
   const days = new Set((await all('SELECT day FROM daily WHERE student_id = ? AND (new_cnt + review_cnt) > 0 AND day >= ?', sid, day(-400))).map(r => r.day))
@@ -431,7 +436,7 @@ async function appApi(req, res, p, url) {
       const d = new Date(new Date(r.first_at).getTime() + 8 * 3600e3).toISOString().slice(0, 10)
       if (!byDay.has(d)) byDay.set(d, [])
       const list = byDay.get(d)
-      if (list.length < 200) list.push({ rank: r.rank, ms: r.ms, zh: (JSON.parse(r.senses || '[]').find(x => !x.check) || {}).zh || '', box: r.box, audio: r.audio ? AUDIO_BASE + r.audio : '' })
+      if (list.length < 200) list.push({ rank: r.rank, ms: r.ms, zh: (JSON.parse(r.senses || '[]').find(x => !x.check) || {}).zh || '', box: r.box, audio: audioUrl(r.audio) })
     }
     return send(res, 200, { days: [...byDay.entries()].map(([day, words]) => ({ day, words })) })
   }
@@ -456,7 +461,7 @@ async function appApi(req, res, p, url) {
 }
 
 // ---------------- 后台接口(admin-api.mjs) ----------------
-const admin = makeAdminApi({ all, one, run, tx, body, send, fail, str, ip, cookie, day, csvCell, importWords, cleanSense, savePhoto: d => savePhoto(d), levelsOf, streakOf, reloadStops, hashPassword, checkPassword, AUDIO_BASE, DEMO })
+const admin = makeAdminApi({ all, one, run, tx, body, send, fail, str, ip, cookie, day, csvCell, importWords, cleanSense, savePhoto: d => savePhoto(d), levelsOf, streakOf, reloadStops, hashPassword, checkPassword, AUDIO_BASE, audioUrl, tts: createTts({ key: ENV.AZURE_TTS_KEY, region: ENV.AZURE_TTS_REGION || 'eastus', dir: join(DATA, 'uploads') }), DEMO })
 
 function savePhoto(dataUrl) {
   const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(String(dataUrl))
