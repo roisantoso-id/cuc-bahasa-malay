@@ -2,6 +2,47 @@
 <view class="wrap me-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在翻护照…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
+  <!-- 白天「旅行手账」排版（design/mp-v2 方向 A · A6 护照）；夜晚那套在下面 wx:else 里不动 -->
+  <block wx:elif="{{th.day}}">
+    <view class="dA dA-me">
+      <view class="dA-me-pp">
+        <view class="dA-me-pt dA-mono"><text>PASPORT · 护照</text><text>JOMBELAJAR</text></view>
+        <view class="dA-me-id">
+          <image class="dA-me-ph" src="{{mascotImg || student.avatar || '/assets/avatar.jpg'}}" webp mode="aspectFill" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go" />
+          <view class="dA-me-dl">
+            <view class="dA-me-di"><view class="dA-me-dt">姓名</view><view class="dA-me-dd">{{student.name || '同学'}}</view></view>
+            <view class="dA-me-di"><view class="dA-me-dt">班级</view><view class="dA-me-dd">{{student.className || student.school || '未填'}}</view></view>
+            <view wx:if="{{dDepart}}" class="dA-me-di"><view class="dA-me-dt">出发日</view><view class="dA-me-dd dA-latin">{{dDepart}}</view></view>
+            <view class="dA-me-di"><view class="dA-me-dt">连续</view><view class="dA-me-dd">{{s.streak}} 天</view></view>
+            <view wx:if="{{dCur}}" class="dA-me-di wide"><view class="dA-me-dt">当前站</view><view class="dA-me-dd">{{dCur}}</view></view>
+          </view>
+        </view>
+        <view class="dA-me-mrz dA-mono">{{dMrz}}</view>
+      </view>
+
+      <view class="dA-sec"><text class="t">签证页</text><text class="x">已盖 {{dGot}} / {{dStops.length}} 个章</text></view>
+      <view class="dA-me-stamps">
+        <view wx:for="{{dStops}}" wx:key="level" class="dA-me-sp {{item.got ? 'got' : item.cur ? 'cur' : ''}}">
+          <view class="dA-me-ring"><view class="dA-me-in">{{item.mark}}</view></view>
+          <view class="dA-me-city">{{item.city}}</view>
+        </view>
+      </view>
+
+      <view class="dA-me-stats">
+        <view class="dA-me-st"><text class="dA-me-sn">{{total.learned}}</text><text class="dA-me-sl">学过的词</text></view>
+        <view class="dA-me-st"><text class="dA-me-sn">{{memory ? memory.strong : total.mastered}}</text><text class="dA-me-sl">已记牢</text></view>
+        <view class="dA-me-st"><text class="dA-me-sn">{{s.studyDays}}</text><text class="dA-me-sl">共学天数</text></view>
+      </view>
+
+      <view class="dA-me-menu">
+        <view class="dA-me-row" hover-class="hover" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><text class="dA-me-rt">错词本</text><text class="dA-me-rx">{{total.wrong}} 个 ›</text></view>
+        <view class="dA-me-row" hover-class="hover" data-url="/pkg-word/book/book?type=fav" bindtap="go"><text class="dA-me-rt">收藏</text><text class="dA-me-rx">{{total.fav}} 个 ›</text></view>
+        <view class="dA-me-row" hover-class="hover" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><text class="dA-me-rt">犀鸟衣柜</text><text class="dA-me-rx">{{costumeN}} 套 · {{badgeN}} 枚徽章 ›</text></view>
+        <view class="dA-me-row" hover-class="hover" data-url="/pkg-me/more/more" bindtap="go"><text class="dA-me-rt">设置与关于</text><text class="dA-me-rx">›</text></view>
+      </view>
+    </view>
+  </block>
+
   <block wx:else>
     <!-- 顶部：左边头像（进度圈 + L 等级），右边名字和这一站进度；下面一条「下一个目标」（这一站能解锁的两套衣服），再一行四个数 -->
     <view class="me-hero">

@@ -3,6 +3,56 @@
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在整理今天的词…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
+  <!-- 白天「旅行手账」：一张车票说清今天要做什么，下面是这一周和路线 -->
+  <block wx:elif="{{th.day}}"><view class="dA">
+    <view class="dA-hm-greet">
+      <view class="dA-hm-greet-t">
+        <view class="dA-eb">{{date}} · {{wkday}}</view>
+        <view class="dA-h1">{{greet}}，{{h.student.name || '同学'}}。</view>
+      </view>
+      <image class="dA-hm-av" src="{{h.student.avatar || '/assets/avatar.jpg'}}" mode="aspectFill" />
+    </view>
+
+    <view class="dA-card dA-hm-tk">
+      <view class="dA-hm-tk-top">
+        <view class="dA-hm-tk-r"><text>今日车票</text><text>连续第 {{h.streak}} 天</text></view>
+        <view class="dA-hm-tk-od">
+          <view class="dA-hm-tk-n"><view class="dA-hm-tk-b">{{h.today.due}}</view><view class="dA-hm-tk-s">温故 · 到期复习</view></view>
+          <view class="dA-hm-tk-ln"><view class="dA-hm-tk-dot" /></view>
+          <view class="dA-hm-tk-n dA-hm-tk-rt"><view class="dA-hm-tk-b">{{h.today.newLeft}}</view><view class="dA-hm-tk-s">知新 · 新词</view></view>
+        </view>
+      </view>
+      <view class="dA-hm-tk-meta">
+        <view class="dA-hm-tk-m"><text>站点</text><view class="dA-hm-tk-mb">{{cur ? (cur.level < 10 ? '0' : '') + cur.level + ' ' + cur.city : '—'}}</view></view>
+        <view wx:if="{{seq}}" class="dA-hm-tk-m"><text>词序</text><view class="dA-hm-tk-mb dA-latin">{{seq}}</view></view>
+        <view class="dA-hm-tk-m"><text>预计</text><view class="dA-hm-tk-mb">{{mins}} 分钟</view></view>
+      </view>
+      <view class="dA-hm-tk-cut"><view class="dA-hm-tk-nt l" /><view class="dA-hm-tk-nt r" /></view>
+      <view class="dA-hm-tk-go">
+        <button wx:if="{{todo}}" class="dA-btn" hover-class="hover" bindtap="start">检票出发<text class="arr">→</text></button>
+        <button wx:else class="dA-btn" hover-class="hover" bindtap="more">再多学 10 个<text class="arr">→</text></button>
+      </view>
+    </view>
+
+    <view wx:if="{{week.length}}" class="dA-hm-wk">
+      <view wx:for="{{week}}" wx:key="k" class="dA-hm-wd {{item.now ? 'now' : item.on ? 'on' : ''}}"><view class="dA-hm-wi" />{{item.lab}}</view>
+    </view>
+
+    <view class="dA-sec" bindtap="atlas"><text class="t">路线</text><text class="x">全部 {{h.levels.length}} 站 ›</text></view>
+    <view class="dA-rule" />
+    <view wx:for="{{route}}" wx:key="level" class="dA-hm-st" hover-class="hover" data-level="{{item.level}}" bindtap="stop">
+      <text class="dA-hm-no dA-mono">{{item.no}}</text>
+      <view class="dA-hm-nm">
+        <view class="dA-hm-nm-r"><text class="dA-hm-city">{{item.city}}</text><text wx:if="{{item.range}}" class="dA-hm-rg">{{item.range}}</text></view>
+        <view wx:if="{{item.cur && !item.stamped}}" class="dA-hm-bar"><view class="dA-hm-bar-in" style="width: {{item.pct}}%" /></view>
+      </view>
+      <text wx:if="{{item.stamped}}" class="dA-stamp">已盖章</text>
+      <view wx:elif="{{item.cur || item.learned}}" class="dA-hm-rt"><text class="dA-hm-rt-n">{{item.learned}}</text> / {{item.total}}</view>
+      <view wx:elif="{{!item.open}}" class="dA-hm-rt">未开放</view>
+      <view wx:else class="dA-hm-rt">未出发</view>
+    </view>
+  </view></block>
+
   <block wx:else>
     <view class="hm-date">{{date}} · 连续第 {{h.streak}} 天</view>
     <view class="h1">{{greet}}，{{h.student.name || '同学'}}。</view>

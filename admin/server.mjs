@@ -193,13 +193,13 @@ async function streakOf(sid) {
   return { streak: n, checkedToday: days.has(day()) }
 }
 async function levelsOf(sid, all_ = false) {
-  const rows = await all(`SELECT w.level, COUNT(*) total, SUM(CASE WHEN p.seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN p.box = 6 THEN 1 ELSE 0 END) mastered
+  const rows = await all(`SELECT w.level, COUNT(*) total, MIN(w.rank) first, MAX(w.rank) last, SUM(CASE WHEN p.seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN p.box = 6 THEN 1 ELSE 0 END) mastered
     FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.status = 'approved' GROUP BY w.level`, sid)
   const by = Object.fromEntries(rows.map(r => [r.level, r]))
   return STOPS.filter(s => all_ || s.published).map(s => {
     const r = by[s.level] || {}
     const total = Number(r.total || 0), learned = Number(r.learned || 0)
-    return { ...s, total, learned, mastered: Number(r.mastered || 0), open: total > 0, stamped: total > 0 && learned >= total }
+    return { ...s, total, learned, mastered: Number(r.mastered || 0), first: Number(r.first || 0), last: Number(r.last || 0), open: total > 0, stamped: total > 0 && learned >= total }
   })
 }
 function currentLevel(levels) { const l = levels.find(l => l.open && !l.stamped); return l ? l.level : ((levels.filter(l => l.open).pop() || levels[0]) || { level: 1 }).level }

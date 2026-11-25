@@ -5,6 +5,6 @@
       <image wx:if="{{selected === index}}" class="bird" src="/assets/{{item.bird}}.jpg" mode="aspectFill" />
       <image wx:else class="svg" src="/assets/tab/{{th.day ? 'day/' : ''}}{{item.icon}}.svg" />
     </view>
-    <text class="t">{{item.text}}</text>
+    <text class="t">{{th.day && index === 0 ? '旅程' : item.text}}</text>
   </view>
 </view>

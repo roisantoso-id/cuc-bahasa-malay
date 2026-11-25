@@ -51,3 +51,37 @@
 .bt-page .bt-note { padding: var(--s2) 0; }
 .bt-page .rk.me { min-height: 88rpx; padding-top: var(--s1); padding-bottom: var(--s1); margin-top: var(--s2); }
 .bt-page .rk.me .rk-av { width: 64rpx; height: 64rpx; }
+
+/* ================= 白天「旅行手账」排版（A5 对战）：只在 th.day 时出现，类名 dA-bt- 开头 ================= */
+.dA-bt { margin: 0 8rpx; }
+.dA-bt-arena { position: relative; overflow: hidden; margin-top: 20rpx; padding: 32rpx; border-radius: 28rpx; background: var(--tl); color: #f7f2e8; }
+.dA-bt-bird { position: absolute; right: -12rpx; top: 12rpx; width: 224rpx; height: 224rpx; }
+.dA-bt-k { font-size: 24rpx; letter-spacing: .1em; opacity: .82; padding-right: 200rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-bt-h { font-family: var(--serif); font-size: 52rpx; line-height: 1.2; font-weight: 700; margin-top: 8rpx; padding-right: 200rpx; }
+.dA-bt-p { font-size: 26rpx; opacity: .82; margin-top: 8rpx; padding-right: 180rpx; }
+.dA-bt-kv { display: flex; margin: 24rpx 0 28rpx; }
+.dA-bt-kvi { min-width: 0; margin-right: 44rpx; display: flex; flex-direction: column; }
+.dA-bt-kvn { font-family: var(--latin); font-size: 48rpx; line-height: 1.2; }
+.dA-bt-kvl { font-size: 24rpx; opacity: .75; white-space: nowrap; }
+.dA-bt-go { background: #f7f2e8; color: var(--tl); }
+.dA-bt-pk { display: flex; align-items: center; padding: 28rpx 0; border-bottom: 2rpx solid var(--ln); }
+.dA-bt-pk-m { flex: 1; min-width: 0; margin-right: 24rpx; }
+.dA-bt-pk-t { font-family: var(--serif); font-size: 36rpx; font-weight: 700; }
+.dA-bt-pk-d { font-size: 26rpx; color: var(--mu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-bt-pk-b { flex: none; width: 192rpx; height: 88rpx; font-size: 30rpx; background: var(--am); }
+.dA-bt-last { padding: 20rpx 0; }
+.dA-bt-last-m { flex: 1; min-width: 0; font-size: 26rpx; color: var(--ik2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-bt-sc { font-family: var(--latin); font-size: 32rpx; font-weight: 700; color: var(--ik); }
+.dA-bt-all { flex: none; margin-left: 20rpx; font-size: 26rpx; color: var(--mu); }
+.dA-bt-sec { align-items: center; margin-top: 28rpx; }
+.dA-bt-sec .dA-seg { flex: none; margin-left: 16rpx; }
+.dA-bt-lbw { border-top: 3rpx solid var(--ik); }
+.dA-bt-lb { display: flex; align-items: center; height: 88rpx; border-bottom: 2rpx solid var(--ln); font-size: 30rpx; }
+.dA-bt-rk { flex: none; width: 64rpx; font-family: var(--latin); font-size: 36rpx; color: var(--mu); }
+.dA-bt-rk.top { color: var(--am); font-weight: 700; }
+.dA-bt-nm { flex: 1; min-width: 0; margin-right: 20rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-bt-pt { flex: none; font-family: var(--latin); }
+.dA-bt-lb.me { background: var(--am-l); margin: 0 -40rpx; padding: 0 40rpx; border-bottom: 0; font-weight: 700; }
+.dA-bt-gap { text-align: center; color: var(--mu); font-size: 26rpx; line-height: 48rpx; border-bottom: 2rpx solid var(--ln); }
+.dA-bt-note { padding: 28rpx 0; font-size: 26rpx; color: var(--mu); }
+.dA-bt-more { padding: 24rpx 0; text-align: right; font-size: 26rpx; color: var(--mu); }

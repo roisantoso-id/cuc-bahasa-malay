@@ -263,3 +263,35 @@ button.btn-danger[disabled] { color: var(--bad); }
 .tile.hover { opacity: .72; }
 .medal { width: 48rpx; flex: none; text-align: center; font-family: var(--f-ms); font-size: 28rpx; color: var(--ink2); }
 .medal.m1, .medal.m2, .medal.m3 { color: var(--strong); font-size: var(--t-section); }
+
+/* ================= 白天「旅行手账」排版（2026-11-25，照 design/mp-v2 方向 A）=================
+   只在 th.day 时用：每页 <block wx:if="{{th.day}}"> 里用 dA- 开头的类，夜晚那套不动。
+   尺寸 = 设计稿 px × 2 rpx。颜色写死成手账色（这些类只在白天出现）。 */
+.dA { --pa: #f7f2e8; --pa2: #efe6d3; --cd: #fcf9f3; --ik: #1c2420; --ik2: #47524c; --mu: #727a74; --ln: #dcd1bb; --gr: #1f5a43; --gr-d: #15402f; --gr-l: #e3ece4; --tl: #123f45; --am: #c46d1c; --am-l: #f5e2c7; --rd: #b4472f;
+  --serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif; --latin: Georgia, "Times New Roman", serif; --mono: Menlo, "SF Mono", Consolas, monospace;
+  color: var(--ik); font-size: 30rpx; line-height: 1.5; }
+.dA-pad { padding: 8rpx 40rpx 0; }
+.dA-eb { font-size: 24rpx; letter-spacing: .12em; color: var(--mu); }
+.dA-h1 { font-family: var(--serif); font-size: 56rpx; line-height: 1.25; font-weight: 700; margin-top: 4rpx; }
+.dA-rule { height: 3rpx; background: var(--ik); }
+.dA-latin { font-family: var(--latin); }
+.dA-mono { font-family: var(--mono); }
+.dA-btn { display: flex; align-items: center; justify-content: center; height: 104rpx; border-radius: 16rpx; background: var(--gr); color: #fff; font-weight: 700; font-size: 34rpx; padding: 0; margin: 0; line-height: 1; width: auto; }
+.dA-btn::after { border: 0; }
+.dA-btn.ghost { background: transparent; color: var(--ik); border: 3rpx solid var(--ik); }
+.dA-btn .arr { margin-left: 16rpx; font-family: var(--latin); font-weight: 400; }
+.dA-sec { display: flex; justify-content: space-between; align-items: baseline; margin: 40rpx 0 16rpx; }
+.dA-sec .t { font-family: var(--serif); font-size: 36rpx; font-weight: 700; }
+.dA-sec .x { font-size: 26rpx; color: var(--mu); }
+.dA-card { background: var(--cd); border: 3rpx solid var(--ik); border-radius: 28rpx; box-shadow: 8rpx 10rpx 0 var(--pa2); }
+.dA-stamp { display: inline-flex; align-items: center; justify-content: center; border: 3rpx solid var(--rd); color: var(--rd); border-radius: 8rpx; font-size: 22rpx; font-weight: 700; padding: 2rpx 12rpx; transform: rotate(-6deg); letter-spacing: .1em; }
+.dA-lv { display: flex; align-items: center; }
+.dA-lv .d { width: 14rpx; height: 14rpx; border-radius: 50%; border: 2.4rpx solid var(--gr); margin-left: 6rpx; box-sizing: border-box; }
+.dA-lv .d.f { background: var(--gr); }
+.dA-chips { display: flex; flex-wrap: wrap; margin: 24rpx -8rpx 0; }
+.dA-chip { height: 68rpx; padding: 0 26rpx; margin: 8rpx; border-radius: 34rpx; border: 2rpx solid var(--ln); display: flex; align-items: center; font-size: 28rpx; color: var(--ik2); background: var(--cd); }
+.dA-chip.on { background: var(--ik); color: var(--pa); border-color: var(--ik); }
+.dA-seg { display: flex; border: 3rpx solid var(--ik); border-radius: 16rpx; overflow: hidden; }
+.dA-seg .s { padding: 0 24rpx; height: 64rpx; display: flex; align-items: center; font-size: 26rpx; }
+.dA-seg .s.on { background: var(--ik); color: var(--pa); }
+.dA .hover { opacity: .72; }

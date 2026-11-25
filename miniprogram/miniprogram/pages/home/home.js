@@ -12,6 +12,10 @@ const greet = () => { const h = bj().getUTCHours(); return h < 5 ? '夜深了' :
 const dateText = () => { const d = bj(); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日` }
 // 今日一词：按日期定一个，同一天不变
 const dayIndex = n => Math.floor(bj().getTime() / 86400e3) % Math.max(1, n)
+const WD = '日一二三四五六'
+const pad2 = n => (n < 10 ? '0' : '') + n
+// 白天车票 / 路线用：第几站的词序范围（服务端 levels 带 first / last；没有就不显示）
+const rangeOf = l => (l && l.first && l.last ? `№ ${l.first}–${l.last}` : '')
 
 Page({
   data: { view: 'loading', h: null, error: '', greet: '', date: '', todo: 0, mins: 0, pct: 0, wod: null },
@@ -50,6 +54,7 @@ Page({
       if (!st) return
       const h = await vocab.home()
       getApp().globalData.dirty = false
+      this.loadId = (this.loadId || 0) + 1
       const t = h.today
       const todo = t.due + t.newLeft
       const done = t.learned + t.reviewed
@@ -59,14 +64,56 @@ Page({
         view: 'ok', h, cur, todo, pct,
         mins: Math.max(1, Math.round(todo * 0.25)),
         greet: greet(), date: dateText(),
-        left: cur ? cur.total - cur.learned : 0
-      }, () => { this.ring(); this.wordOfDay(h.level); this.checkUnlock() })
+        left: cur ? cur.total - cur.learned : 0,
+        wkday: '星期' + WD[bj().getUTCDay()],
+        route: this.routeOf(h)
+      }, () => { this.ring(); this.wordOfDay(h.level); this.checkUnlock(); if (this.data.th && this.data.th.day) this.dayExtras() })
     } catch (e) {
       this.setData({ view: 'error', error: e.message })
     }
   },
-  // 换了白天 / 夜晚：进度环重画
-  onTheme() { this.ring() },
+  // 换了白天 / 夜晚：进度环重画；换到白天补上车票词序和这一周
+  onTheme(th) { this.ring(); if (th && th.day && this.data.h && this.extrasFor !== this.loadId) this.dayExtras() },
+  // ---- 白天「旅行手账」用 ----
+  // 路线：上一站（已走过）、当前站、下一站，最多 3 行
+  routeOf(h) {
+    const ls = h.levels || []
+    const i = Math.max(0, ls.findIndex(l => l.level === h.level))
+    const from = Math.max(0, Math.min(i - 1, ls.length - 3))
+    return ls.slice(from, from + 3).map(l => ({
+      level: l.level, no: pad2(l.level), city: l.city, range: rangeOf(l),
+      cur: l.level === h.level, stamped: l.stamped, open: l.open,
+      learned: l.learned, total: l.total,
+      pct: l.total ? Math.round(l.learned / l.total * 100) : 0
+    }))
+  },
+  // 车票上的「词序」：今天的新词就是当前站里还没学过的前 newLeft 个；这一周：最近 7 天学没学
+  async dayExtras() {
+    const h = this.data.h
+    if (!h) return
+    const id = this.extrasFor = this.loadId
+    const [lv, st] = await Promise.all([vocab.stop(h.level).catch(() => null), vocab.stats().catch(() => null)])
+    if (this.loadId !== id) return
+    const up = {}
+    if (lv && lv.words && lv.words.length) {
+      const n = h.today.newLeft
+      const fresh = lv.words.filter(w => w.box < 0)
+      up.seq = !n || !fresh.length ? '' : fresh.length >= n ? `№ ${fresh[0].rank}–${fresh[n - 1].rank}` : `№ ${fresh[0].rank} 起`
+      // 当前站没带 first / last 时用词表补上
+      const ri = this.data.route.findIndex(r => r.cur)
+      if (ri >= 0 && !this.data.route[ri].range) up[`route[${ri}].range`] = `№ ${lv.words[0].rank}–${lv.words[lv.words.length - 1].rank}`
+    }
+    if (st && st.days && st.days.length) {
+      const last = st.days.slice(-7)
+      up.week = last.map((d, k) => {
+        const now = k === last.length - 1
+        const wd = new Date(d.day + 'T00:00:00Z').getUTCDay()
+        return { k: d.day, lab: now ? '今天' : WD[wd], on: d.new + d.review > 0, now }
+      })
+    }
+    this.setData(up)
+  },
+  stop(e) { wx.navigateTo({ url: `/pkg-word/stop/stop?level=${e.currentTarget.dataset.level}` }) },
   ring() {
     const { pct } = this.data
     draw(this, '#ring', (ctx, w, hh) => {

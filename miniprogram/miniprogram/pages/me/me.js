@@ -5,6 +5,10 @@ const { ensureStudent } = require('../../utils/student')
 const lvOf = require('../../utils/level')
 
 const TRACK = { zero: '零基础', some: '会说一些' }
+const pad = (n, w) => String(n).padStart(w, '0')
+// 北京时间日期 YYYY.MM.DD（出发日 = 注册那天）
+const ymd = iso => { if (!iso) return ''; const d = new Date(new Date(iso).getTime() + 8 * 3600e3); return isNaN(d) ? '' : `${d.getUTCFullYear()}.${pad(d.getUTCMonth() + 1, 2)}.${pad(d.getUTCDate(), 2)}` }
+const latin = t => String(t || '').toUpperCase().replace(/[^A-Z]+/g, '<').replace(/^<+|<+$/g, '')
 
 Page({
   data: { view: 'loading', student: null, s: null, mascotImg: '', myBadges: [], costumeN: 0, badgeN: 0 },
@@ -29,8 +33,19 @@ Page({
         const top = mem.next7.reduce((m, d, i) => (d.n > m.n ? { n: d.n, i } : m), { n: -1, i: 0 }).i
         memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
       }
-      this.setData({ view: 'ok', student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv: this.lvData(s.levels), goal: this.goalData(ach, s.levels) })
+      const lv = this.lvData(s.levels)
+      this.setData({ view: 'ok', ...this.dayData(h, s, lv), student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv, goal: this.goalData(ach, s.levels) })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
+  },
+  // 白天「护照」排版：资料页（出发日、当前站、MRZ 一行）+ 签证页印章（每站一个）
+  dayData(h, s, lv) {
+    const st = h.student || {}
+    const stops = (s.levels || []).map(l => ({ level: l.level, city: l.city || l.name || '', no: pad(l.level, 2), got: !!l.stamped, cur: !l.stamped && l.level === lv.level, mark: l.stamped ? (l.city || '').slice(0, 1) : pad(l.level, 2) }))
+    const cur = (s.levels || []).find(l => l.level === lv.level) || {}
+    const code = latin(cur.ms).replace(/</g, '').slice(0, 3)
+    const nm = latin(st.name)
+    const mrz = `P<JOM<<${nm ? nm + '<<' : ''}${pad(h.total ? h.total.learned : 0, 4)}<<${pad(lv.level, 2)}${code}<<<<<<<<<<<<<<<<<<<<<<<<`
+    return { dStops: stops, dGot: stops.filter(x => x.got).length, dDepart: ymd(st.createdAt), dCur: cur.level ? `${pad(cur.level, 2)} ${cur.city || ''}` : '', dMrz: mrz }
   },
   lvData(levels) { const v = lvOf(levels); const l = (levels || []).find(x => x.level === v.level); return { ...v, name: l ? (l.city || l.name || '') : '' } },
   // 下一个目标：当前这一站学完能解锁的服装（都解锁了就指向下一枚还没拿的徽章）

@@ -29,3 +29,53 @@
 .hm-ul-t { font-size: 38rpx; font-weight: 800; }
 .hm-ul-d { font-size: 24rpx; color: var(--dark-ink2); margin: 8rpx 0 28rpx; }
 .hm-ul .btn-text { color: var(--dark-ink2); margin-top: 8rpx; }
+
+/* ================= 白天「旅行手账」首页（design/mp-v2 方向 A · A1）：尺寸 = 设计稿 px × 2 ================= */
+.dA-hm-greet { display: flex; justify-content: space-between; align-items: flex-end; }
+.dA-hm-greet-t { flex: 1; min-width: 0; margin-right: 24rpx; word-break: break-all; }
+.dA-hm-av { flex: none; width: 124rpx; height: 124rpx; border-radius: 50%; border: 3rpx solid var(--ik); box-sizing: border-box; background: var(--pa2); }
+/* 车票 */
+.dA-hm-tk { position: relative; margin-top: 28rpx; }
+.dA-hm-tk-top { background: var(--tl); color: #f7f2e8; border-radius: 25rpx 25rpx 0 0; padding: 24rpx 32rpx 32rpx; }
+.dA-hm-tk-r { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 24rpx; letter-spacing: .08em; opacity: .8; }
+.dA-hm-tk-od { display: flex; align-items: center; margin-top: 20rpx; }
+.dA-hm-tk-n { flex: none; max-width: 40%; }
+.dA-hm-tk-rt { text-align: right; }
+.dA-hm-tk-b { font-family: var(--serif); font-size: 68rpx; line-height: 1.1; font-weight: 700; }
+.dA-hm-tk-s { font-size: 26rpx; opacity: .8; white-space: nowrap; }
+.dA-hm-tk-ln { flex: 1; min-width: 40rpx; margin: 0 24rpx; border-top: 3rpx dashed rgba(247,242,232,.5); position: relative; height: 0; }
+.dA-hm-tk-dot { position: absolute; left: 50%; top: -24rpx; margin-left: -22rpx; width: 44rpx; height: 44rpx; border-radius: 50%; background: var(--am); border: 4rpx solid var(--tl); box-sizing: border-box; }
+.dA-hm-tk-meta { display: flex; padding: 24rpx 32rpx; }
+.dA-hm-tk-m { flex: 1; min-width: 0; font-size: 24rpx; color: var(--mu); }
+.dA-hm-tk-m + .dA-hm-tk-m { margin-left: 16rpx; }
+.dA-hm-tk-mb { font-size: 30rpx; color: var(--ik); font-family: var(--serif); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-hm-tk-mb.dA-latin { font-family: var(--latin); font-weight: 400; }
+/* 撕票线：两头的半圆缺口 = 纸色圆（墨线）+ 外侧一块纸色盖住另一半 */
+.dA-hm-tk-cut { position: relative; margin: 0 24rpx; border-top: 3rpx dashed var(--ln); height: 0; }
+.dA-hm-tk-nt { position: absolute; top: -19rpx; width: 32rpx; height: 32rpx; border-radius: 50%; background: var(--night, var(--pa)); border: 3rpx solid var(--ik); box-sizing: border-box; }
+.dA-hm-tk-nt.l { left: -42rpx; }
+.dA-hm-tk-nt.r { right: -42rpx; }
+.dA-hm-tk-nt.l::after, .dA-hm-tk-nt.r::after { content: ''; position: absolute; top: -6rpx; width: 20rpx; height: 40rpx; background: var(--night, var(--pa)); }
+.dA-hm-tk-nt.l::after { left: -6rpx; }
+.dA-hm-tk-nt.r::after { right: -6rpx; }
+.dA-hm-tk-go { padding: 28rpx 32rpx 32rpx; }
+/* 这一周 */
+.dA-hm-wk { display: flex; margin-top: 24rpx; }
+.dA-hm-wd { flex: 1; min-width: 0; text-align: center; font-size: 22rpx; color: var(--mu); white-space: nowrap; }
+.dA-hm-wd + .dA-hm-wd { margin-left: 12rpx; }
+.dA-hm-wi { height: 12rpx; border-radius: 6rpx; background: var(--pa2); margin-bottom: 8rpx; }
+.dA-hm-wd.on .dA-hm-wi { background: var(--gr); }
+.dA-hm-wd.now .dA-hm-wi { background: var(--am); }
+.dA-hm-wd.now { color: var(--ik); }
+/* 路线 */
+.dA-hm-st { display: flex; align-items: center; min-height: 112rpx; padding: 12rpx 0; box-sizing: border-box; }
+.dA-hm-st + .dA-hm-st { border-top: 2rpx solid var(--ln); }
+.dA-hm-no { flex: none; width: 44rpx; font-size: 26rpx; color: var(--mu); margin-right: 24rpx; }
+.dA-hm-nm { flex: 1; min-width: 0; margin-right: 24rpx; }
+.dA-hm-nm-r { display: flex; align-items: baseline; min-width: 0; }
+.dA-hm-city { flex: 0 1 auto; min-width: 0; font-family: var(--serif); font-size: 34rpx; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-hm-rg { flex: none; font-size: 24rpx; color: var(--mu); margin-left: 12rpx; font-family: var(--latin); white-space: nowrap; }
+.dA-hm-bar { height: 8rpx; border-radius: 4rpx; background: var(--pa2); margin-top: 10rpx; overflow: hidden; }
+.dA-hm-bar-in { height: 100%; background: var(--gr); }
+.dA-hm-rt { flex: none; font-size: 26rpx; color: var(--mu); text-align: right; white-space: nowrap; }
+.dA-hm-rt-n { color: var(--ik); font-weight: 700; }

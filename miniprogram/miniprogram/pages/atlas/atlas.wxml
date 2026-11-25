@@ -3,6 +3,44 @@
 <view class="at-page">
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在点亮星星…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
+
+  <!-- 白天「旅行手账」：十站 = 十段词频，选一站看词表；可按词性筛；三个小圆点是记得多牢 -->
+  <block wx:elif="{{th.day}}">
+    <view class="dA dA-pad dA-at">
+      <view class="dA-eb">已开放 {{dA.words}} 词 · 学过 {{dA.learned}}</view>
+      <view class="dA-h1">每个词，都能听见。</view>
+      <view class="dA-at-srch" hover-class="hover" bindtap="goSearch">
+        <view class="dA-at-srch-i"></view>
+        <text>搜马来语或中文</text>
+      </view>
+
+      <view class="dA-at-bands">
+        <view wx:for="{{bands}}" wx:key="level" class="dA-at-band {{item.level === band ? 'on' : ''}} {{item.open ? '' : 'off'}}" data-i="{{index}}" bindtap="pickBand">
+          <view class="dA-at-bar"><view class="dA-at-fill" style="height:{{item.pct}}%"></view></view>
+          <view class="dA-at-no">{{item.no}}</view>
+        </view>
+      </view>
+      <view class="dA-at-cap"><text class="dA-at-cap-h">{{bandCap.head}}</text>{{bandCap.rest}}</view>
+
+      <view wx:if="{{posTabs.length > 1}}" class="dA-chips dA-at-chips">
+        <view wx:for="{{posTabs}}" wx:key="k" class="dA-chip {{posSel === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickPos">{{item.t}}</view>
+      </view>
+
+      <view class="dA-rule dA-at-rule"></view>
+      <view wx:for="{{rows}}" wx:key="rank" class="dA-at-row" hover-class="hover" data-r="{{item.rank}}" bindtap="openWord">
+        <text class="dA-at-rk">{{item.no}}</text>
+        <text class="dA-at-ms" style="font-size:{{fit.fs(item.ms, 40, 172)}}rpx">{{item.ms}}</text>
+        <text class="dA-at-pos">{{item.pc}}</text>
+        <text class="dA-at-zh">{{item.zh}}</text>
+        <view class="dA-lv dA-at-lv"><view class="d {{item.lv >= 1 ? 'f' : ''}}"></view><view class="d {{item.lv >= 2 ? 'f' : ''}}"></view><view class="d {{item.lv >= 3 ? 'f' : ''}}"></view></view>
+      </view>
+      <view wx:if="{{listBusy && !rows.length}}" class="dA-at-foot">正在翻词表…</view>
+      <view wx:elif="{{!rows.length}}" class="dA-at-foot">这一站还没有词</view>
+      <view wx:elif="{{rowsMore}}" class="dA-at-foot" bindtap="moreRows">再往下滑，看更多</view>
+      <view wx:else class="dA-at-foot">共 {{rowsN}} 词</view>
+    </view>
+  </block>
+
   <hb-empty wx:elif="{{!days.length}}" image="study" title="还没有学过的词" desc="去「今日」开始学，学过的词会按天出现在这里。" />
 
   <block wx:else>

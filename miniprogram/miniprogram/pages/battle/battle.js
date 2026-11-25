@@ -6,6 +6,7 @@ const day = iso => (iso ? `${Number(iso.slice(5, 7))}月${Number(iso.slice(8, 10
 // 犀鸟头像：按用户编号固定选一只（以后接入微信头像后换成真头像）
 const POSES = ['avatar', 'study', 'cheer', 'pass', 'welcome', 'checkin']
 const av = id => `/assets/${POSES[Math.abs(Number(id) || 0) % POSES.length]}.jpg`
+const ZH = '零一二三四五六七八九十'
 const TABS = [{ k: 'all', t: '全站' }, { k: 'school', t: '本校' }, { k: 'class', t: '本班' }, { k: 'schools', t: '学校榜' }]
 
 // 到下周一 00:00（北京时间）还有多久
@@ -34,7 +35,7 @@ function nearby(list) {
 }
 
 Page({
-  data: { view: 'loading', error: '', levels: [], level: 0, arena: null, me: null, pks: [], busy: false, showPk: false, tabs: TABS, tab: 'all', podium: [], board: [], boardLoading: false, boardNote: '', chase: '', cd: { d: 0, h: 0, m: 0, week: 0 } },
+  data: { view: 'loading', error: '', levels: [], level: 0, arena: null, me: null, pks: [], busy: false, showPk: false, tabs: TABS, tab: 'all', podium: [], dayRows: [], da: null, board: [], boardLoading: false, boardNote: '', chase: '', cd: { d: 0, h: 0, m: 0, week: 0 } },
   onShow() {
     setTab(this, 2); this.tick(); this.timer = setInterval(() => this.tick(), 30000); this.load() },
   onHide() { clearInterval(this.timer) },
@@ -57,7 +58,10 @@ Page({
       const pks = (Array.isArray(mine) ? mine : (mine && mine.list) || []).map(p => ({ ...p, date: day(p.createdAt) })).slice(0, 5)
       const tries = arena ? Math.max(0, Math.min(3, arena.triesLeft)) : 3
       const levelIdx = Math.max(0, levels.findIndex(l => l.level === level))
-      this.setData({ view: 'ok', levels, level, levelIdx, levelNames: levels.map(l => '第' + l.level + '站'), arena, pks, tries: [0, 1, 2].map(i => i < tries) })
+      // 白天排版用：擂台题数 / 机会数 / 本周最高 / 剩余 / 全站名次（服务器没给的就不显示）
+      const n = arena && arena.tries ? arena.tries : 3
+      const da = arena ? { total: arena.total, triesZh: ZH[n] || n, triesLeft: Math.max(0, arena.triesLeft), best: arena.best ? arena.best.score : null, place: arena.place || null, players: arena.players } : null
+      this.setData({ view: 'ok', levels, level, levelIdx, levelNames: levels.map(l => '第' + l.level + '站'), arena, da, pks, tries: [0, 1, 2].map(i => i < tries) })
       this.board()
     } catch (e) {
       if (this.data.view !== 'ok') this.setData({ view: 'error', error: e.message })
@@ -73,7 +77,7 @@ Page({
     try {
       const r = tab === 'schools' ? await vocab.schools() : await vocab.rank(tab)
       if (seq !== this.seq) return
-      if (r.needProfile) return this.setData({ board: [], chase: '', boardLoading: false, boardNote: `完善资料，填上学校${tab === 'class' ? '和班级' : ''}才能看` })
+      if (r.needProfile) return this.setData({ board: [], dayRows: [], chase: '', boardLoading: false, boardNote: `完善资料，填上学校${tab === 'class' ? '和班级' : ''}才能看` })
       const school = tab === 'schools'
       const list = (r.list || []).map(x => school
         ? { place: x.place, name: x.school, sub: x.members + ' 人在学', points: x.points, me: !!x.mine, mark: (x.school || '?').slice(0, 1) }
@@ -82,9 +86,14 @@ Page({
       // 前三名上领奖台（显示顺序 2-1-3），下面只列第 4 名以后、我附近的几行
       const podium = list.length >= 3 ? [list[1], list[0], list[2]] : list.slice(0, 2).reverse()
       const me = r.me ? { ...r.me, av: this.myAvatar || r.me.avatar || av(r.me.aid) } : null
-      this.setData({ podium, board: list.length >= 3 ? rows.filter(x => x.place > 3) : rows, chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
+      // 白天排版：前三名 + 我（不在前三时另起一行；没上榜也给自己一行）
+      const mi = list.findIndex(x => x.me)
+      const dayRows = list.slice(0, 3).map(x => ({ ...x }))
+      if (mi >= 3) dayRows.push({ ...list[mi], gap: mi > 3 })
+      else if (mi < 0 && !school && me) dayRows.push({ place: '—', name: me.name || '我', points: me.points || 0, me: true, gap: list.length > 3 })
+      this.setData({ podium, dayRows, board: list.length >= 3 ? rows.filter(x => x.place > 3) : rows, chase: school ? '' : chase, boardLoading: false, boardNote: list.length ? '' : '本周还没有人上榜，学几个词就能上榜', me })
     } catch (e) {
-      if (seq === this.seq) this.setData({ board: [], boardLoading: false, boardNote: e.message })
+      if (seq === this.seq) this.setData({ board: [], dayRows: [], boardLoading: false, boardNote: e.message })
     }
   },
   pickTab(e) {

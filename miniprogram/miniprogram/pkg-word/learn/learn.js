@@ -42,6 +42,8 @@ const marks = (ex, ms) => {
 }
 const prep = c => ({ ...c, hints: hintsOf(c), first: c.kind === 'new' && !c.again, senses: (c.senses || []).map(s => ({ ...s, parts: marks(s.exMs, c.ms) })) })
 const TITLES = { today: '今日车票', review: '复习', new: '新词', wrong: '错词重练', fav: '收藏重练' }
+// 白天版小测顶上的小格子：每格一题，y 对 n 错 v 模糊；超过 30 格太密，改用细进度条（list 为 null）
+const pipsOf = (marks, n, cur) => ({ n, cur, list: n <= 30 ? Array.from({ length: n }, (_, i) => marks[i] || '') : null })
 const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 10).replace('-', '.')
 
 Page({
@@ -58,6 +60,7 @@ Page({
       this.pool = pool.length >= 4 ? pool : items.map(w => ({ rank: w.rank, ms: w.ms, zh: zhOf(w) }))
       this.recent = []
       this.retried = new Set()
+      this.marks = []
       this.levelSeen = items[items.length - 1].level
       this.setData({ total: items.length })
       this.next()
@@ -73,7 +76,7 @@ Page({
     if (!card) return this.finish()
     const idx = this.data.total - this.queue.length
     // 复习词先考;新词、重来的词直接看卡片
-    if (card.kind === 'review' && !card.again) return this.setData({ view: 'quiz', quiz: this.makeQuiz(card, true), picked: '', typed: '', card: prep(card), idx, flipped: false, wrongShown: false })
+    if (card.kind === 'review' && !card.again) return this.setData({ view: 'quiz', quiz: this.makeQuiz(card, true), qp: pipsOf(this.marks, this.data.total, idx - 1), picked: '', typed: '', card: prep(card), idx, flipped: false, wrongShown: false })
     this.setData({ view: 'card', card: prep(card), flipped: false, idx, wrongShown: false })
     audio.play(card.audio)
   },
@@ -143,6 +146,7 @@ Page({
       this.setData({ total: this.data.total + 1 })
     }
     if (card.kind === 'new' && !card.again && result !== 'mastered') this.recent.push(card)
+    this.marks[this.data.idx - 1] = result === 'forgot' ? 'n' : result === 'vague' ? 'v' : 'y'
     this.setData({ busy: false })
     this.next()
   },
@@ -163,7 +167,7 @@ Page({
     const answer = toZh ? zhOf(w) : w.ms
     const options = shuffle([{ rank: w.rank, ms: w.ms, zh: zhOf(w) }, ...others]).map(x => (toZh ? x.zh : x.ms))
     if (type === 'listen') setTimeout(() => audio.play(w.audio), 200)
-    return { type, graded, word: w, answer, options, prompt: type === 'ms2zh' ? w.ms : type === 'listen' ? '' : zhOf(w), hint: type === 'spell' ? w.ms[0] + '…' : '', cloze }
+    return { type, graded, word: w, answer, options, prompt: type === 'ms2zh' ? w.ms : type === 'listen' ? '' : zhOf(w), hint: type === 'spell' ? w.ms[0] + '…' : '', cloze, zh: zhOf(w) }
   },
   replay() { audio.play(this.data.quiz.word.audio) },
   pick(e) {
@@ -182,6 +186,7 @@ Page({
   dontKnow() { if (!this.data.picked) { this.setData({ picked: '__skip' }); this.after(false) } },
   after(ok) {
     const quiz = this.data.quiz
+    if (!quiz.graded && this.pq) this.pq.marks.push(ok ? 'y' : 'n')
     // 连对：答对 +1，答错清零；连对 3 题以上出「连对 ×N」并换成上行琶音
     this.combo = ok ? (this.combo || 0) + 1 : 0
     if (ok && this.combo >= 3) { sfx.play('combo'); this.setData({ combo: this.combo, comboPop: true }); setTimeout(() => this.setData({ comboPop: false }), 450) }
@@ -209,12 +214,13 @@ Page({
   // 每 5 个新词:一轮练习
   practice() {
     this.practiceQueue = shuffle(this.recent.splice(0, QUIZ_EVERY)).map(w => this.makeQuiz({ ...w, box: 1 }, false))
+    this.pq = { n: this.practiceQueue.length, marks: [] }
     this.nextPractice()
   },
   nextPractice() {
     const quiz = this.practiceQueue && this.practiceQueue.shift()
     if (!quiz) return this.next()
-    this.setData({ view: 'quiz', quiz, picked: '', typed: '' })
+    this.setData({ view: 'quiz', quiz, qp: pipsOf(this.pq.marks, this.pq.n, this.pq.n - this.practiceQueue.length - 1), picked: '', typed: '' })
   },
 
   async finish() {

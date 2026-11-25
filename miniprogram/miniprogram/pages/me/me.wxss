@@ -53,3 +53,40 @@
 .me-page .me-hero { padding: var(--s2) var(--s3) var(--s3); }
 .me-page .me-goal { margin-top: var(--s2); }
 .me-page .me-stats { margin-top: var(--s2); }
+
+/* ================= 白天「旅行手账」排版（A6 护照）：只在 th.day 时出现，类名 dA-me- 开头 ================= */
+.dA-me { margin: 0 8rpx; }
+.dA-me-pp { margin-top: 16rpx; padding: 28rpx 32rpx; border-radius: 28rpx; background: var(--gr-d); color: #f3ead6; }
+.dA-me-pt { display: flex; justify-content: space-between; font-size: 22rpx; letter-spacing: .14em; opacity: .75; white-space: nowrap; }
+.dA-me-id { display: flex; margin-top: 24rpx; }
+.dA-me-ph { flex: none; width: 168rpx; height: 208rpx; margin-right: 28rpx; border-radius: 12rpx; border: 4rpx solid #f3ead6; background: #fff; box-sizing: border-box; }
+.dA-me-dl { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-content: flex-start; }
+.dA-me-di { width: 50%; min-width: 0; padding-right: 20rpx; margin-bottom: 12rpx; box-sizing: border-box; }
+.dA-me-di.wide { width: 100%; }
+.dA-me-dt { font-size: 20rpx; letter-spacing: .1em; opacity: .65; }
+.dA-me-dd { font-family: var(--serif); font-size: 32rpx; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-me-dd.dA-latin { font-family: var(--latin); font-size: 28rpx; line-height: 38rpx; }
+.dA-me-mrz { margin-top: 12rpx; font-size: 23rpx; letter-spacing: .06em; opacity: .6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.dA-me-stamps { display: flex; flex-wrap: wrap; margin-top: 8rpx; }
+.dA-me-sp { width: 20%; min-width: 0; display: flex; flex-direction: column; align-items: center; margin-bottom: 20rpx; font-size: 22rpx; color: var(--mu); }
+.dA-me-ring { width: 100rpx; height: 100rpx; border-radius: 50%; border: 3rpx dashed var(--ln); box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+.dA-me-in { width: 84rpx; height: 84rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 26rpx; box-sizing: border-box; }
+.dA-me-sp.got { color: var(--ik); }
+.dA-me-sp.got .dA-me-ring { border: 4rpx solid var(--rd); transform: rotate(-8deg); }
+.dA-me-sp.got .dA-me-in { border: 2rpx solid var(--rd); color: var(--rd); font-family: var(--serif); font-weight: 700; font-size: 30rpx; }
+.dA-me-sp.cur { color: var(--gr); }
+.dA-me-sp.cur .dA-me-ring { border: 4rpx solid var(--gr); background: var(--gr-l); }
+.dA-me-sp.cur .dA-me-in { color: var(--gr); font-weight: 700; }
+.dA-me-city { margin-top: 8rpx; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.dA-me-stats { display: flex; margin-top: 16rpx; border-top: 3rpx solid var(--ik); border-bottom: 2rpx solid var(--ln); }
+.dA-me-st { flex: 1; min-width: 0; padding: 20rpx 0; display: flex; flex-direction: column; }
+.dA-me-st + .dA-me-st { border-left: 2rpx solid var(--ln); padding-left: 24rpx; }
+.dA-me-sn { font-family: var(--latin); font-size: 52rpx; line-height: 1.1; }
+.dA-me-sl { font-size: 24rpx; color: var(--mu); white-space: nowrap; }
+
+.dA-me-row { display: flex; align-items: center; height: 90rpx; border-bottom: 2rpx solid var(--ln); font-size: 32rpx; }
+.dA-me-rt { flex: none; }
+.dA-me-rx { flex: 1; min-width: 0; margin-left: 24rpx; text-align: right; font-size: 26rpx; color: var(--mu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dA-me-menu { margin-top: 8rpx; }

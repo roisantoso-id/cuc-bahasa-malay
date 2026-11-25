@@ -124,7 +124,9 @@ export function createBattle({ all, one, run, day, AUDIO_BASE, audioUrl = a => (
     const mine = await one('SELECT score, correct, ms, tries FROM arena_entry WHERE week = ? AND student_id = ?', week, st.id)
     const players = (await one('SELECT COUNT(*) n FROM arena_entry WHERE week = ?', week)).n
     const started = await startedOf(week, st.id)
-    return { week, total: qs.length, triesLeft: Math.max(0, ARENA_TRIES - started), best: mine || null, players, questions: null }
+    // place：我这周最高一次在全站排第几（没打过为 null）
+    const place = mine ? (await one('SELECT COUNT(*) n FROM arena_entry WHERE week = ? AND (score > ? OR (score = ? AND ms < ?))', week, mine.score, mine.score, mine.ms)).n + 1 : null
+    return { week, total: qs.length, tries: ARENA_TRIES, triesLeft: Math.max(0, ARENA_TRIES - started), best: mine || null, place, players, questions: null }
   }
   async function arenaStart(st) {
     const week = weekStart()

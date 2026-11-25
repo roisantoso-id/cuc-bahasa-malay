@@ -3,6 +3,67 @@
   <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="正在摆擂台…" />
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error || '加载失败'}}"><button class="btn btn-main" hover-class="hover" bindtap="load">再试一次</button></hb-empty>
 
+  <!-- 白天「旅行手账」排版（design/mp-v2 方向 A · A5 对战）；夜晚那套在下面 wx:else 里不动 -->
+  <block wx:elif="{{th.day}}">
+    <view class="dA dA-bt">
+      <view class="dA-bt-arena">
+        <image class="dA-bt-bird" src="/assets/bird-hero.png" mode="aspectFit" />
+        <view class="dA-bt-k dA-mono">周擂台 · 第 {{cd.week}} 周</view>
+        <view class="dA-bt-h">{{da.total || 20}} 题，{{da.triesZh || '三'}}次机会</view>
+        <view class="dA-bt-p">周日 24:00 截止 · 还剩 {{cd.d}} 天 {{cd.h}} 小时，取最高一次</view>
+        <view wx:if="{{da}}" class="dA-bt-kv">
+          <view class="dA-bt-kvi"><text class="dA-bt-kvn">{{da.best === null ? '—' : da.best}}</text><text class="dA-bt-kvl">本周最高分</text></view>
+          <view class="dA-bt-kvi"><text class="dA-bt-kvn">{{da.triesLeft}}</text><text class="dA-bt-kvl">剩余次数</text></view>
+          <view wx:if="{{da.place}}" class="dA-bt-kvi"><text class="dA-bt-kvn">{{da.place}}</text><text class="dA-bt-kvl">全站名次</text></view>
+          <view wx:else class="dA-bt-kvi"><text class="dA-bt-kvn">{{da.players}}</text><text class="dA-bt-kvl">本周参加</text></view>
+        </view>
+        <button class="dA-btn dA-bt-go" hover-class="hover" bindtap="arena">进入擂台</button>
+      </view>
+
+      <view class="dA-bt-pk">
+        <view class="dA-bt-pk-m"><view class="dA-bt-pk-t">好友 PK</view><view class="dA-bt-pk-d">同一套 10 题，发到微信比一比</view></view>
+        <button class="dA-btn dA-bt-pk-b" hover-class="hover" disabled="{{busy}}" bindtap="openPick">{{busy ? '出题中' : '发起'}}</button>
+      </view>
+      <view wx:if="{{!pks.length}}" class="dA-bt-pk dA-bt-last"><view class="dA-bt-pk-d">还没有 PK，发起一场，答完发给同学</view></view>
+      <block wx:else>
+        <view class="dA-bt-pk dA-bt-last">
+          <view class="dA-bt-last-m" hover-class="hover" data-id="{{pks[0].id}}" bindtap="open">{{pks[0].date}}　第{{pks[0].level}}站 · 答对 <text class="dA-bt-sc">{{pks[0].correct}}/10</text> · {{pks[0].score}} 分</view>
+          <view wx:if="{{pks.length > 1}}" class="dA-bt-all" hover-class="hover" bindtap="togglePk">{{showPk ? '收起' : '全部战绩 ›'}}</view>
+        </view>
+        <block wx:if="{{showPk}}">
+          <block wx:for="{{pks}}" wx:key="id">
+            <view wx:if="{{index > 0}}" class="dA-bt-pk dA-bt-last" hover-class="hover" data-id="{{item.id}}" bindtap="open">
+              <view class="dA-bt-last-m">{{item.date}}　第{{item.level}}站 · {{item.isCreator ? '我发起' : '应战'}} · 答对 {{item.correct}}/10 · {{item.score}} 分</view>
+              <text class="dA-bt-all">›</text>
+            </view>
+          </block>
+        </block>
+      </block>
+
+      <view class="dA-sec dA-bt-sec">
+        <text class="t">周榜</text>
+        <view class="dA-seg">
+          <view wx:for="{{tabs}}" wx:key="k" class="s {{tab === item.k ? 'on' : ''}}" data-k="{{item.k}}" bindtap="pickTab">{{item.t}}</view>
+        </view>
+      </view>
+      <view class="dA-bt-lbw">
+        <view wx:if="{{boardLoading && !dayRows.length}}" class="dA-bt-note">正在排名…</view>
+        <view wx:elif="{{boardNote}}" class="dA-bt-note">{{boardNote}}</view>
+        <block wx:else>
+          <block wx:for="{{dayRows}}" wx:key="place">
+            <view wx:if="{{item.gap}}" class="dA-bt-gap">···</view>
+            <view class="dA-bt-lb {{item.me ? 'me' : ''}}">
+              <text class="dA-bt-rk {{item.place <= 3 ? 'top' : ''}}">{{item.place}}</text>
+              <text class="dA-bt-nm">{{item.name}}{{item.me ? '（我）' : ''}}</text>
+              <text class="dA-bt-pt">{{item.points}}</text>
+            </view>
+          </block>
+          <view class="dA-bt-more" hover-class="hover" bindtap="rank">完整榜单 ›</view>
+        </block>
+      </view>
+    </view>
+  </block>
+
   <block wx:else>
     <!-- 顶部一块：擂台倒计时 + 剩几次 + 两个按钮，犀鸟缩小放左边 -->
     <view class="bt-hero">
