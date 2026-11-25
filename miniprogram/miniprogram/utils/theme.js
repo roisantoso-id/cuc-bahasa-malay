@@ -82,6 +82,8 @@ function apply(page) {
   wx.setNavigationBarColor({ frontColor: th.front, backgroundColor: th.bg, fail() {} })
   wx.setBackgroundColor && wx.setBackgroundColor({ backgroundColor: th.bg, backgroundColorTop: th.bg, backgroundColorBottom: th.bg })
   wx.setBackgroundTextStyle && wx.setBackgroundTextStyle({ textStyle: th.day ? 'dark' : 'light' })
+  // 首页标题：白天叫「旅程」（手账稿），夜晚还是「今日」
+  if (page.route === 'pages/home/home') wx.setNavigationBarTitle({ title: th.day ? '旅程' : '今日' })
   const bar = typeof page.getTabBar === 'function' && page.getTabBar()
   if (bar) bar.setData({ th })
   // 画在 canvas 上的东西（首页进度环、图鉴星空）要重画：页面写 onTheme() 就会被叫到
