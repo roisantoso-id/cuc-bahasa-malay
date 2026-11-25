@@ -1,0 +1,30 @@
+{
+ "s1": {
+  "file": "promo/vo/s1.mp3",
+  "sec": 4.08
+ },
+ "s2": {
+  "file": "promo/vo/s2.mp3",
+  "sec": 7.61
+ },
+ "s3": {
+  "file": "promo/vo/s3.mp3",
+  "sec": 5.76
+ },
+ "s4": {
+  "file": "promo/vo/s4.mp3",
+  "sec": 2.72
+ },
+ "s5": {
+  "file": "promo/vo/s5.mp3",
+  "sec": 2.72
+ },
+ "s6": {
+  "file": "promo/vo/s6.mp3",
+  "sec": 9.89
+ },
+ "s7": {
+  "file": "promo/vo/s7.mp3",
+  "sec": 1.44
+ }
+}

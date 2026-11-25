@@ -1,0 +1,13 @@
+{
+  "voice": "XHHq0T7TrxYsw8u6d5SL",
+  "model": "eleven_v3",
+  "lines": [
+    { "key": "s1", "ms": "Nak belajar bahasa Melayu, tapi tak tahu nak mula dari mana?", "zh": "想学马来语，却不知道从哪儿开始？" },
+    { "key": "s2", "ms": "Setiap hari, satu tiket perjalanan. Ulang kaji dahulu, kemudian belajar perkataan baharu.", "zh": "每天一张车票：先温故，再学新词。" },
+    { "key": "s3", "ms": "Hampir tiga ribu perkataan yang paling kerap digunakan, dan setiap satunya boleh didengar.", "zh": "近三千个最常用的词，每一个都能听见。" },
+    { "key": "s4", "ms": "Kuiz pendek membantu anda ingat lebih lama.", "zh": "小测验，帮你记得更久。" },
+    { "key": "s5", "ms": "Cabar rakan-rakan anda di gelanggang mingguan.", "zh": "每周擂台，和同学比一比。" },
+    { "key": "s6", "ms": "Sepuluh stesen, dari Kuala Lumpur hingga Kota Kinabalu. Tamat satu stesen, dapat satu cap di pasport anda.", "zh": "十站路线，从吉隆坡到亚庇。学完一站，护照上盖一个章。" },
+    { "key": "s7", "ms": "Jom belajar bahasa Melayu!", "zh": "一起学马来语吧！" }
+  ]
+}

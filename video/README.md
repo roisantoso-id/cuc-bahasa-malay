@@ -21,3 +21,12 @@
 
 - 只写个人身份：张静灵（中国传媒大学马来语专业教师）、杨启航（中国传媒大学马来语专业本科生），不以学校名义。
 - 小程序界面是按真实页面复刻的演示画面。
+
+## 宣传片（横屏，全马来语旁白）2026-11-25
+
+- 成片：`JomBelajar-宣传片-马来语-横屏.mp4`，1920×1080，41 秒，全马来语旁白 + 中文字幕。
+- 源码：`source/src/Promo.tsx`（Composition `Promo`），台词 `source/voice/promo/script.json`。
+- 画面：小程序白天「旅行手账」版的真实截图（开发者工具模拟器），`source/public/promo/shots/`。
+- 声音：ElevenLabs 马来西亚女声 Aisyah（eleven_v3，语言 ms）。密钥只放本机 `ops/elevenlabs.env`，不进仓库。
+- 核对：每句配音和整条成片都用语音转写回听过，和台词逐字一致。
+- 出片：`npx remotion render Promo out/promo-ms-横屏.mp4`。
