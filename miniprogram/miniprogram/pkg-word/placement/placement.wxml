@@ -1,83 +1,91 @@
-<page-meta page-style="{{th.style}}" background-color="{{th.bg}}" background-text-style="{{th.day ? 'dark' : 'light'}}" />
+<!-- 测评页不跟白天 / 夜晚走：固定「夜航」场景（照 design/placement-v1/mockup-1.png），所以 page-meta 写死深色 -->
+<page-meta background-color="#0a1f22" background-text-style="light" />
 <wxs src="../../utils/fit.wxs" module="fit" />
 <wxs module="u">module.exports = { L: ['A', 'B', 'C', 'D'] }</wxs>
-<!-- 版面照 design/placement-v1/mockup-1.png；颜色全走主题变量，白天 / 夜晚都能用 -->
-<view class="pt {{th.day ? 'pt-day' : ''}}">
-  <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="{{busy ? '正在算你的推荐难度…' : '正在准备题目…'}}" />
-  <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="again">再试一次</button><view class="pt-link" hover-class="hover" bindtap="back">返回</view></hb-empty>
+<view class="pt">
+  <!-- 星空底（banana 画的），铺满全屏，在最下面 -->
+  <image class="pt-bg" src="./img/bg-stars.webp" mode="aspectFill" />
 
-  <!-- ① 开始：五块石阶一路往上，犀鸟拿着地图站在起点 -->
-  <block wx:elif="{{view === 'intro'}}">
-    <view class="pt-h">{{from > 1 ? '太简单了？往上测一测' : '找到你的起点'}}</view>
-    <view class="pt-sub">{{from > 1 ? '从「' + fromLabel + '」测起，下面几档算你已会' : '测测你认识多少马来语高频词'}} · 最多 {{total}} 题</view>
-    <view class="pt-scene">
-      <view class="pt-trail" />
-      <view wx:for="{{stones}}" wx:key="d" class="pt-stone {{item.done ? 'done' : ''}} {{item.start ? 'start' : ''}} {{item.far ? 'far' : ''}}" style="left:{{item.x}}%;top:{{item.y}}%;animation-delay:{{item.delay}}ms">
-        <text wx:if="{{item.done}}" class="pt-stone-ck">✓</text>{{item.label}}
-        <view wx:if="{{item.start}}" class="pt-stone-tip">{{from > 1 ? '从这里测' : '起点'}}</view>
-      </view>
-    </view>
-    <view class="pt-guide">
-      <image class="pt-bird-map" src="./img/bird-map.webp" mode="aspectFit" />
-      <view wx:if="{{from > 1}}" class="pt-bubble">背得很顺？测完直接跳到合适的难度</view>
-      <view wx:else class="pt-bubble">看词选意思，不会就点<text class="pt-nw">「不认识」</text>· 约 3 分钟</view>
-    </view>
-    <view class="pt-foot">
-      <button class="btn btn-main btn-block pt-cta" hover-class="hover" bindtap="begin">开始测评<text class="btn-arr">→</text></button>
-      <view wx:if="{{from > 1}}" class="pt-link" hover-class="hover" bindtap="fromStart">从入门重新测</view>
-      <view wx:else class="pt-link" hover-class="hover" bindtap="skip">{{src === 'home' ? '先跳过，从入门学起' : '返回'}}</view>
-    </view>
-  </block>
+  <!-- 自定义顶栏：返回键和微信胶囊同一行 -->
+  <view class="pt-nav" style="top:{{navTop}}rpx;height:{{navH}}rpx">
+    <view class="pt-back" hover-class="hover" bindtap="{{view === 'quiz' ? 'quit' : 'back'}}">{{view === 'quiz' ? '×' : '‹'}}</view>
+    <text class="pt-nav-t">入门测评</text>
+  </view>
 
-  <!-- ② 答题：犀鸟扒在词卡上沿陪考；选中只描金边，不打勾 -->
-  <block wx:elif="{{view === 'quiz'}}">
-    <view class="pt-top">
-      <view class="pt-x" hover-class="hover" bindtap="quit">×</view>
-      <view class="pt-bar"><view class="pt-bar-in" style="width:{{(idx - 1) / total * 100}}%"><view class="pt-bar-star" /></view></view>
-      <text class="pt-no">{{idx}} / {{total}}</text>
-    </view>
-    <view class="pt-chip">第 {{lvNo}} 档 · {{lvLabel}} · {{lvQ}}/{{lvTotal}}</view>
-    <view class="pt-q">
-    <view class="pt-stage">
-      <image class="pt-bird-peek {{nod ? 'nod' : ''}}" src="./img/bird-peek.webp" mode="aspectFit" />
-      <view class="pt-card {{slide}}">
-        <view class="pt-word">
-          <text class="ms pt-w" style="font-size:{{fit.fs(q.ms, 84, 470)}}rpx">{{q.ms}}</text>
-          <view wx:if="{{q.audio}}" class="pt-say"><say-btn src="{{q.audio}}" size="md" tone="ivory" /></view>
+  <view class="pt-body" style="padding-top:{{head}}rpx">
+    <hb-empty wx:if="{{view === 'loading'}}" image="loading" title="{{busy ? '正在算你的推荐难度…' : '正在准备题目…'}}" />
+    <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}"><button class="btn btn-main" hover-class="hover" bindtap="again">再试一次</button><view class="pt-link" hover-class="hover" bindtap="back">返回</view></hb-empty>
+
+    <!-- ① 开始：banana 画的整幅场景（星空、发光小路、五块石板），档位名叠在石板上，犀鸟拿着地图站在左下 -->
+    <block wx:elif="{{view === 'intro'}}">
+      <view class="pt-h">{{from > 1 ? '太简单了？往上测一测' : '找到你的起点'}}</view>
+      <view class="pt-sub">{{from > 1 ? '从「' + fromLabel + '」测起，下面几档算你已会' : '测测你认识多少马来语高频词'}} · 最多 {{total}} 题</view>
+      <view class="pt-scene-wrap"><view class="pt-scene" style="width:{{sceneW}}rpx;height:{{sceneH}}rpx;font-size:{{fs}}rpx">
+        <image class="pt-scene-img" src="./img/scene.webp" mode="scaleToFill" />
+        <view wx:for="{{stones}}" wx:key="d" class="pt-stone {{item.done ? 'done' : ''}} {{item.start ? 'start' : ''}} {{item.far ? 'far' : ''}}" style="left:{{item.x}}%;top:{{item.y}}%;animation-delay:{{item.delay}}ms">
+          <view wx:if="{{item.start}}" class="pt-stone-tip">{{from > 1 ? '从这里测' : '起点'}}</view>
+          <text wx:if="{{item.done}}" class="pt-stone-ck">✓ </text>{{item.label}}
         </view>
-        <view class="pt-opts">
-          <view wx:for="{{q.options}}" wx:key="*this" class="pt-opt {{picked === item ? 'on' : ''}} {{picked && picked !== item ? 'dim' : ''}}" hover-class="{{picked ? 'none' : 'press'}}" data-o="{{item}}" bindtap="pick">
-            <text class="pt-l">{{u.L[index]}}</text><text class="pt-ot">{{item}}</text>
+        <image class="pt-bird-map" src="./img/bird-map.webp" mode="widthFix" />
+        <view wx:if="{{from > 1}}" class="pt-bubble">背得很顺？测完直接跳到合适的难度</view>
+        <view wx:else class="pt-bubble">看词选意思，不会就点<text class="pt-nw">「不认识」</text>，约 3 分钟</view>
+      </view></view>
+      <view class="pt-foot">
+        <button class="btn btn-main btn-block pt-cta" hover-class="hover" bindtap="begin">开始测评<text class="btn-arr">→</text></button>
+        <view wx:if="{{from > 1}}" class="pt-link" hover-class="hover" bindtap="fromStart">从入门重新测</view>
+        <view wx:else class="pt-link" hover-class="hover" bindtap="skip">{{src === 'home' ? '先跳过，从入门学起' : '返回'}}</view>
+      </view>
+    </block>
+
+    <!-- ② 答题：犀鸟扒在词卡上沿陪考；选中只描金边，不打勾 -->
+    <block wx:elif="{{view === 'quiz'}}">
+      <view class="pt-top">
+        <view class="pt-bar"><view class="pt-bar-in" style="width:{{(idx - 1) / total * 100}}%"><view class="pt-bar-star" /></view></view>
+        <text class="pt-no">{{idx}} / {{total}}</text>
+      </view>
+      <view class="pt-chip">第 {{lvNo}} 档 · {{lvLabel}} · {{lvQ}}/{{lvTotal}}</view>
+      <view class="pt-q">
+        <view class="pt-stage">
+          <image class="pt-bird-peek {{nod ? 'nod' : ''}}" src="./img/bird-peek.webp" mode="aspectFit" />
+          <view class="pt-card {{slide}}">
+            <view class="pt-word">
+              <text class="ms pt-w" style="font-size:{{fit.fs(q.ms, 84, 470)}}rpx">{{q.ms}}</text>
+              <view wx:if="{{q.audio}}" class="pt-say"><say-btn src="{{q.audio}}" size="md" tone="ivory" /></view>
+            </view>
+            <view class="pt-opts">
+              <view wx:for="{{q.options}}" wx:key="*this" class="pt-opt {{picked === item ? 'on' : ''}} {{picked && picked !== item ? 'dim' : ''}}" hover-class="{{picked ? 'none' : 'press'}}" data-o="{{item}}" bindtap="pick">
+                <text class="pt-l">{{u.L[index]}}</text><text class="pt-ot">{{item}}</text>
+              </view>
+            </view>
           </view>
         </view>
+        <view class="pt-none {{picked === '__none' ? 'on' : ''}}" hover-class="{{picked ? 'none' : 'press'}}" data-o="" bindtap="pick">不认识</view>
+        <view class="pt-hint">选你最确定的；不会就选「不认识」，别猜</view>
       </view>
-    </view>
-    <view class="pt-none {{picked === '__none' ? 'on' : ''}}" hover-class="{{picked ? 'none' : 'press'}}" data-o="" bindtap="pick">不认识</view>
-    <view class="pt-hint">选你最确定的；不会就选「不认识」，别猜</view>
-    </view>
-  </block>
+    </block>
 
-  <!-- ③ 结果：犀鸟跳起来，推荐档徽章 + 词汇量 + 五级台阶 -->
-  <block wx:elif="{{view === 'result'}}">
-    <view class="pt-res">
-      <image class="pt-bird-jump" src="./img/bird-jump.webp" mode="aspectFit" />
-      <view class="pt-badge">推荐难度 · {{res.label}}</view>
-      <view class="pt-num">{{num}}</view>
-      <view class="pt-num-u">估算你认识的高频词 · 答了 {{res.answered}} 题</view>
-    </view>
-    <view class="pt-steps {{grow ? 'grow' : ''}}">
-      <view wx:for="{{res.steps}}" wx:key="d" class="pt-step {{item.done ? 'done' : ''}} {{item.rec ? 'rec' : ''}}">
-        <view wx:if="{{item.rec}}" class="pt-flag">从这里学</view>
-        <view class="pt-col" style="height:{{item.h}}rpx;transition-delay:{{item.delay}}ms"><text wx:if="{{item.done}}" class="pt-col-ck">✓</text></view>
-        <view class="pt-step-t">{{item.label}}</view>
-        <view class="pt-step-s">{{item.sub}}</view>
+    <!-- ③ 结果：犀鸟跳起来，推荐档徽章 + 词汇量 + 五级发光台阶 -->
+    <block wx:elif="{{view === 'result'}}">
+      <view class="pt-res">
+        <image class="pt-bird-jump" src="./img/bird-jump.webp" mode="aspectFit" />
+        <view class="pt-badge">推荐难度 · {{res.label}}</view>
+        <view class="pt-num">{{num}}</view>
+        <view class="pt-num-u">估算你认识的高频词 · 答了 {{res.answered}} 题</view>
       </view>
-    </view>
-    <view class="pt-note">{{res.note}}</view>
-    <view class="pt-foot">
-      <button class="btn btn-main btn-block pt-cta" hover-class="hover" bindtap="go">{{res.head}}<text class="btn-arr">→</text></button>
-      <view class="pt-link" hover-class="hover" bindtap="again">再测一次</view>
-    </view>
-  </block>
+      <view class="pt-steps {{grow ? 'grow' : ''}}">
+        <view wx:for="{{res.steps}}" wx:key="d" class="pt-step {{item.done ? 'done' : ''}} {{item.rec ? 'rec' : ''}}">
+          <view wx:if="{{item.rec}}" class="pt-flag">从这里学</view>
+          <view class="pt-col" style="height:{{item.h}}rpx;transition-delay:{{item.delay}}ms"><text wx:if="{{item.done}}" class="pt-col-ck">✓</text></view>
+          <view class="pt-step-t">{{item.label}}</view>
+          <view class="pt-step-s">{{item.sub}}</view>
+        </view>
+      </view>
+      <view class="pt-note">{{res.note}}</view>
+      <view class="pt-foot">
+        <button class="btn btn-main btn-block pt-cta" hover-class="hover" bindtap="go">{{res.head}}<text class="btn-arr">→</text></button>
+        <view class="pt-link" hover-class="hover" bindtap="again">再测一次</view>
+      </view>
+    </block>
+  </view>
 </view>
 <fx-confetti fire="{{cf}}" count="{{45}}" />

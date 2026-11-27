@@ -8,8 +8,10 @@ const vocab = require('../../api/vocab')
 const sfx = require('../../utils/sfx')
 
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-// 五块石阶在场景里的位置（中心点，百分比），从下往上之字形；越远越暗
-const STONES = [{ x: 74, y: 84 }, { x: 28, y: 63 }, { x: 70, y: 43 }, { x: 30, y: 24 }, { x: 66, y: 6 }]
+// 开始页场景图 img/scene-intro.webp（banana 画的，750×1004）里五块石板顶面的中心（百分比，design/placement-v1/scene.py 自动找的；最远那块偏灰没找到，手量）
+//   从下往上：入门 → 高级。档位名叠在石板上
+const STONES = [{ x: 76.8, y: 80 }, { x: 28.8, y: 43 }, { x: 72.8, y: 30 }, { x: 31.9, y: 19 }, { x: 71.3, y: 11 }]
+const SCENE_W = 750, SCENE_H = 1004
 const vibrate = () => { try { wx.vibrateShort({ type: 'light' }) } catch (e) {} }
 
 Page({
@@ -17,8 +19,27 @@ Page({
 
   onLoad(o) {
     this.src = o.src || ''
-    this.setData({ src: this.src })
+    this.setData({ src: this.src, ...this.layout() })
     this.load(0)
+  },
+  // 不管手机是白天还是夜晚，测评页都是「夜航」场景（像游戏里的一段旅程）：状态栏白字、深色底
+  onShow() {
+    wx.setNavigationBarColor({ frontColor: '#ffffff', backgroundColor: '#0a1f22', fail() {} })
+    wx.setBackgroundColor && wx.setBackgroundColor({ backgroundColor: '#0a1f22', backgroundColorTop: '#0a1f22', backgroundColorBottom: '#0a1f22' })
+  },
+  // 自定义顶栏：返回键和微信胶囊对齐；开始页的场景图按剩下的高度缩放，矮屏也放得下
+  layout() {
+    let wi = {}, mb = null
+    try { wi = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync() } catch (e) {}
+    try { mb = wx.getMenuButtonBoundingClientRect() } catch (e) {}
+    const k = 750 / (wi.windowWidth || 375)
+    const top = mb && mb.top ? mb.top : (wi.statusBarHeight || 20) + 4, h = mb && mb.height ? mb.height : 32
+    const inset = wi.safeArea ? Math.max(0, (wi.screenHeight || 0) - wi.safeArea.bottom) : 0
+    const navTop = Math.round(top * k), navH = Math.round(h * k), head = Math.round((top + h + 8) * k)
+    // 开始页：标题约 150rpx，底部按钮区约 230rpx + 底部留白；场景在中间剩下的高度里居中，最高 1004rpx
+    const avail = (wi.windowHeight || 667) * k - head - 150 - 230 - 24 - inset * k
+    const sh = Math.max(620, Math.min(SCENE_H, Math.round(avail)))
+    return { navTop, navH, head, sceneH: sh, sceneW: Math.round(sh * SCENE_W / SCENE_H), fs: Math.round(30 * sh / SCENE_H) }
   },
   onUnload() { clearInterval(this.numTimer); clearTimeout(this.nextTimer) },
 
@@ -33,7 +54,7 @@ Page({
       this.qs = r.questions
       this.byLevel = r.levels.map(l => r.questions.filter(q => q.d === l.d))
       this.levels = r.levels
-      const stones = r.all.map((l, i) => ({ ...l, ...STONES[i], done: l.d < r.from, start: l.d === r.from, far: i >= 3 && l.d > r.from, delay: i * 60 }))
+      const stones = r.all.map((l, i) => ({ ...l, ...STONES[i], done: l.d < r.from, start: l.d === r.from, far: i >= 3 && l.d > r.from, delay: 200 + i * 90 }))
       this.setData({ view: 'intro', stones, total: r.questions.length, from: r.from, current: r.current, currentLabel: r.currentLabel, fromLabel: (r.all.find(l => l.d === r.from) || {}).label || '' })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
