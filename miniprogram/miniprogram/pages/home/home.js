@@ -77,10 +77,10 @@ Page({
     const g = getApp().globalData
     if (!h.placement || h.placement.done || g.placementAsked) return false
     g.placementAsked = true
-    wx.navigateTo({ url: '/pkg-word/placement/placement?from=home' })
+    wx.navigateTo({ url: '/pkg-word/placement/placement?src=home' })
     return true
   },
-  placement() { wx.navigateTo({ url: '/pkg-word/placement/placement' }) },
+  placement() { wx.navigateTo({ url: '/pkg-word/placement/placement?src=home-entry' }) },
   // 换了白天 / 夜晚：进度环重画；换到白天补上车票词序和这一周
   onTheme(th) { this.ring(); if (th && th.day && this.data.h && this.extrasFor !== this.loadId) this.dayExtras() },
   // ---- 白天「旅行手账」用 ----

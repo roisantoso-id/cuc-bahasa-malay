@@ -2,6 +2,7 @@
 //   难度：每个词 1–5（入门 / 初级 / 中级 / 中高级 / 高级）。默认按词频自动定（见 AUTO_DIFF_SQL），老师在后台可以逐个或批量改
 //   测评：每个难度抽 6 个已上架的词，看词选义（4 个中文选项 + 「不认识」）。从入门考起，一档答对不到 4 个就停
 //         通过的最高一档 = 已经会的；推荐从下一档学起。答对的词直接算学过（15 天后复习一次确认），答错的词排到新词最前面
+//   自己去测：学的时候觉得太简单，可以从当前档测起（from = 当前档），下面的档默认已会，只测这一档往上，更快
 //   推词：先推测评答错的词，再按「难度从推荐档往上、同档按词频」推；每 5 个新词里夹 1 个更低档还没学的词查漏
 //   自动调档：推荐档里连续学 30 个新词，认识 ≥ 85% 升一档，≤ 40% 降一档
 export const DIFFS = [
@@ -34,9 +35,12 @@ export function createPlacement({ all, one, run, tx, day, openLevels, audioUrl }
     return DIFFS.map(x => ({ ...x, n: by[x.d] || 0 }))
   }
 
-  // 出一套题：每档 PER 题，干扰项是同一档别的词的中文意思
-  async function questions() {
-    const levels = (await sizes()).filter(x => x.n >= PER)
+  // 出一套题：每档 PER 题，干扰项是同一档别的词的中文意思。from：从第几档测起（下面的档算已会）
+  async function questions(st, from = 1) {
+    const all_ = (await sizes()).filter(x => x.n >= PER)
+    const top = all_.length ? all_[all_.length - 1].d : 1
+    const start = Math.min(Math.max(1, Number(from) || 1), top)
+    const levels = all_.filter(x => x.d >= start)
     const qs = []
     for (const lv of levels) {
       const words = await all(`SELECT rank, ms, senses, audio FROM words WHERE status = 'approved' AND level IN (?) AND difficulty = ? ORDER BY RAND() LIMIT ?`, open(), lv.d, PER)
@@ -50,7 +54,7 @@ export function createPlacement({ all, one, run, tx, day, openLevels, audioUrl }
         qs.push({ rank: w.rank, d: lv.d, ms: w.ms, audio: audioUrl(w.audio), options: shuffle([zh, ...wrong]), answer: zh })
       }
     }
-    return { per: PER, pass: PASS, levels: levels.map(({ d, label, note }) => ({ d, label, note })), questions: qs }
+    return { per: PER, pass: PASS, from: start, current: (st && st.diff_level) || 0, currentLabel: diffLabel(st && st.diff_level), all: all_.map(({ d, label, note }) => ({ d, label, note })), levels: levels.map(({ d, label, note }) => ({ d, label, note })), questions: qs }
   }
 
   // 交卷。answers: [{ rank, pick }]，pick 是选的中文（''= 不认识）。skip = 先不测，从入门学起
@@ -71,18 +75,22 @@ export function createPlacement({ all, one, run, tx, day, openLevels, audioUrl }
 
     const lv = await sizes()
     const testable = lv.filter(x => x.n >= PER)
+    const top = testable.length ? testable[testable.length - 1].d : 1
+    const from = Math.min(Math.max(1, Number(b.from) || 1), top)
+    // from 以下的档没测，算已会（skipped: true）
     const per = testable.map(x => {
       const mine = graded.filter(g => g.d === x.d)
-      return { d: x.d, label: x.label, asked: mine.length, correct: mine.filter(g => g.ok).length, size: x.n }
+      return x.d < from
+        ? { d: x.d, label: x.label, asked: 0, correct: PER, size: x.n, skipped: true }
+        : { d: x.d, label: x.label, asked: mine.length, correct: mine.filter(g => g.ok).length, size: x.n }
     })
-    // 从入门往上，连续通过的最高一档 = 已经会的
+    // 从最低档往上，连续通过的最高一档 = 已经会的
     let known = 0
-    for (const p of per) { if (p.correct >= PASS) known = p.d; else break }
-    const top = testable.length ? testable[testable.length - 1].d : 1
+    for (const p of per) { if (p.skipped || p.correct >= PASS) known = p.d; else break }
     const level = Math.max(1, Math.min(known + 1, top))
-    // 估算词汇量：每档答对比例 × 这一档的词数（没答到的档按 0 算）
+    // 估算词汇量：每档答对比例 × 这一档的词数（没答到的档按 0 算，跳过的低档按全会）
     const vocab = Math.round(per.reduce((n, p) => n + (p.correct / PER) * p.size, 0) / 10) * 10
-    const result = { at: now, level, known, vocab, per: per.map(({ d, label, asked, correct }) => ({ d, label, asked, correct })) }
+    const result = { at: now, from, level, known, vocab, prev: st.diff_level || 0, per: per.map(({ d, label, asked, correct, skipped }) => ({ d, label, asked, correct, ...(skipped ? { skipped: true } : {}) })) }
 
     await tx(async c => {
       for (const g of graded) {
@@ -100,7 +108,7 @@ export function createPlacement({ all, one, run, tx, day, openLevels, audioUrl }
       }
       await c.run('UPDATE students SET diff_level = ?, placed_at = ?, placement = ?, lv_new = 0, lv_know = 0 WHERE id = ?', level, now, JSON.stringify(result), st.id)
     })
-    return { ...result, label: diffLabel(level), knownLabel: diffLabel(known) }
+    return { ...result, label: diffLabel(level), knownLabel: diffLabel(known), prevLabel: diffLabel(st.diff_level) }
   }
 
   // 推新词（测过的学生用；没测过的还走原来按站的顺序）

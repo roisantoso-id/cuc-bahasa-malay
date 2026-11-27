@@ -184,6 +184,11 @@
       </view>
       <view wx:if="{{stop}}" class="dA-ln-tr dA-ln-c">{{stop.city}}站：已学 {{stop.learned}} / {{stop.total}}。模糊和不认识的词会排进后面的复习。</view>
     </view>
+    <view wx:if="{{easy}}" class="ln-easy dA-card" hover-class="hover" bindtap="placement">
+      <image class="ln-easy-bird" src="/assets/bird-hero.png" mode="aspectFit" />
+      <view class="ln-easy-m"><view class="ln-easy-t">这一组对你太简单？</view><view class="ln-easy-d">测一测，直接跳到合适的难度</view></view>
+      <text class="ln-easy-go">›</text>
+    </view>
     <button class="dA-btn" hover-class="hover" bindtap="again">{{left ? '继续今天的' : '再学 10 个'}}</button>
     <view class="dA-ln-link" hover-class="hover" bindtap="back">回到路线</view>
   </view>
@@ -203,6 +208,11 @@
       <view class="stat"><view class="stat-n">{{stats.mastered}}</view><view class="stat-l">已掌握</view></view>
     </view>
     <view wx:if="{{stop}}" class="muted small center">{{stop.city}}站：已学 {{stop.learned}} / {{stop.total}}。模糊和不认识的词会排进后面的复习。</view>
+    <view wx:if="{{easy}}" class="ln-easy" hover-class="hover" bindtap="placement">
+      <image class="ln-easy-bird" src="/assets/bird-hero.png" mode="aspectFit" />
+      <view class="ln-easy-m"><view class="ln-easy-t">这一组对你太简单？</view><view class="ln-easy-d">测一测，直接跳到合适的难度</view></view>
+      <text class="ln-easy-go">›</text>
+    </view>
     <view class="btns">
       <button class="btn btn-main" hover-class="hover" bindtap="again">{{left ? '继续今天的' : '再学 10 个'}}</button>
       <view class="btn-text" hover-class="hover" bindtap="back">回到路线</view>

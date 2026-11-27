@@ -415,7 +415,7 @@ async function appApi(req, res, p, url) {
   if (br !== undefined) return send(res, 200, br)
   if (p === '/api/app/home') return send(res, 200, await home(st))
   // 入门测评：GET 出题，POST 交卷（或 { skip: true } 先不测）
-  if (p === '/api/app/placement' && req.method === 'GET') return send(res, 200, await placement.questions())
+  if (p === '/api/app/placement' && req.method === 'GET') return send(res, 200, await placement.questions(st, url.searchParams.get('from')))
   if (p === '/api/app/placement' && req.method === 'POST') return send(res, 200, await placement.submit(st, await body(req)))
   if (p === '/api/app/start' && req.method === 'POST') return send(res, 200, await start(st, await body(req)))
   if (p === '/api/app/grade' && req.method === 'POST') return send(res, 200, await grade(st, await body(req)))

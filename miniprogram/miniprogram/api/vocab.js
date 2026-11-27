@@ -50,8 +50,8 @@ module.exports = {
   async register(form) { const r = await post('/register', form); me = { ...(me || {}), student: r.student }; return r.student },
   home: () => call('/home'),
   // 入门测评（admin/placement.mjs）：出题、交卷、先跳过
-  placement: () => call('/placement'),
-  placementSubmit: answers => post('/placement', { answers }),
+  placement: (from = 1) => call('/placement?' + qs({ from })),
+  placementSubmit: (answers, from = 1) => post('/placement', { answers, from }),
   placementSkip: () => post('/placement', { skip: true }),
   start: (mode, level) => post('/start', { mode, level }),
   grade: (rank, result) => post('/grade', { rank, result }),

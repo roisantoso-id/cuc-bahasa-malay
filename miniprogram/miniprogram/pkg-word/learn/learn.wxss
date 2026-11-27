@@ -227,3 +227,17 @@ button.ln-fb-b { flex: none; min-width: 200rpx; }
 .dA-ln-st-y { color: var(--gr); }
 .dA-ln-st-n2 { color: var(--rd); }
 .dA-ln-st-l { font-size: 24rpx; color: var(--mu); }
+
+/* 结束页「太简单？测一测」：犀鸟举着手机挥手，点了去入门测评（从当前档往上测） */
+.ln-easy { display: flex; align-items: center; gap: var(--s2); margin: var(--s3) 0; padding: 16rpx 24rpx 16rpx 8rpx; border-radius: var(--r-lg); background: var(--star-l); border: 2rpx solid var(--star-line); animation: ln-easy-in .4s cubic-bezier(.3, 1.4, .5, 1) .9s both; }
+.ln-easy.dA-card { background: var(--am-l); border-color: var(--am); }
+.ln-easy-bird { flex: none; width: 104rpx; height: 128rpx; animation: ln-easy-wave 1.6s ease-in-out 1.3s infinite; transform-origin: 50% 90%; }
+.ln-easy-m { flex: 1; min-width: 0; text-align: left; }
+.ln-easy-t { font-size: 30rpx; font-weight: 700; color: var(--strong); }
+.dA .ln-easy-t { color: var(--ik); }
+.ln-easy-d { margin-top: 4rpx; font-size: 26rpx; color: var(--ink2); }
+.dA .ln-easy-d { color: var(--ik2); }
+.ln-easy-go { flex: none; font-size: 44rpx; color: var(--star); }
+.dA .ln-easy-go { color: var(--am); }
+@keyframes ln-easy-in { from { opacity: 0; transform: translateY(24rpx); } }
+@keyframes ln-easy-wave { 0%, 60%, 100% { transform: rotate(0); } 20% { transform: rotate(-6deg); } 40% { transform: rotate(4deg); } }

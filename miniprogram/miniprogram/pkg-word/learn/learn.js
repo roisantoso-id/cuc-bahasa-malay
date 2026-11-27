@@ -231,7 +231,10 @@ Page({
     // 结算：铜锣 + 彩纸 + 经验值从 0 滚上去
     const st = this.data.stats
     const xp = st.know * 10 + st.mastered * 10 + st.vague * 5 + st.forgot * 2
-    this.setData({ view: 'done', xp: 0, xpTo: xp })
+    // 这一组对他太简单（点了 3 次以上「太简单」，或 8 个以上的词里认识 ≥ 85%）：结束页请他去测一测、直接跳档
+    const n = st.know + st.mastered + st.vague + st.forgot
+    const easy = st.mastered >= 3 || (n >= 8 && (st.know + st.mastered) / n >= 0.85)
+    this.setData({ view: 'done', xp: 0, xpTo: xp, easy })
     sfx.play('complete')
     setTimeout(() => this.setData({ cfFire: (this.data.cfFire || 0) + 1 }), 150)
     const t0 = Date.now()
@@ -245,5 +248,7 @@ Page({
     } catch (e) { /* 结束页不依赖这些数据 */ }
   },
   again() { wx.redirectTo({ url: `/pkg-word/learn/learn?mode=${this.data.left ? 'today' : 'new'}&level=${(this.data.stop && this.data.stop.level) || 1}` }) },
-  back() { wx.navigateBack() }
+  back() { wx.navigateBack() },
+  // 觉得太简单：去测一测，从当前推荐档往上测
+  placement() { wx.redirectTo({ url: '/pkg-word/placement/placement?src=learn' }) }
 })
