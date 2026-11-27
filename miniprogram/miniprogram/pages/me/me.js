@@ -34,7 +34,7 @@ Page({
         memory.peakLabel = peak7 > 1 && top > 0 ? '最多：' + next7[top].label : peak7 > 1 ? '今天最多' : ''
       }
       const lv = this.lvData(s.levels)
-      this.setData({ view: 'ok', ...this.dayData(h, s, lv), student: h.student, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv, goal: this.goalData(ach, s.levels) })
+      this.setData({ view: 'ok', ...this.dayData(h, s, lv), student: h.student, place: h.placement || {}, track: TRACK[h.student.track] || '', s, heat, memory, next7, total: h.total, stamps: s.levels.filter(l => l.stamped).length, ...this.achData(ach), lv, goal: this.goalData(ach, s.levels) })
     } catch (e) { this.setData({ view: 'error', error: e.message }) }
   },
   // 白天「护照」排版：资料页（出发日、当前站、MRZ 一行）+ 签证页印章（每站一个）

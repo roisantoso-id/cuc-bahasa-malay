@@ -14,7 +14,7 @@
 
 /* 词云是这一屏唯一的面板。左右各留 32rpx：atlas.js 按「屏宽 - 32px」排版，别改 */
 .at-cloud { position: relative; margin: var(--s2) var(--s4) 0; border-radius: var(--r-lg); background: var(--panel2); overflow: hidden; }
-.at-w { position: absolute; white-space: nowrap; font-family: var(--f-ms); font-style: italic; line-height: 1.2; padding: 2px 4px; opacity: 0; animation-name: at-pop, at-drift; animation-timing-function: cubic-bezier(.3,1.5,.5,1), ease-in-out; animation-fill-mode: both, none; animation-iteration-count: 1, infinite; animation-direction: normal, alternate; }
+.at-w { position: absolute; white-space: nowrap; font-family: var(--f-ms); font-style: var(--ms-style); line-height: 1.2; padding: 2px 4px; opacity: 0; animation-name: at-pop, at-drift; animation-timing-function: cubic-bezier(.3,1.5,.5,1), ease-in-out; animation-fill-mode: both, none; animation-iteration-count: 1, infinite; animation-direction: normal, alternate; }
 .at-w.b0 { color: var(--ink3); }
 .at-w.b1 { color: var(--ink2); }
 .at-w.b2 { color: var(--strong); }
@@ -34,7 +34,7 @@
 .at-pop { width: 86vw; max-height: 62vh; display: flex; flex-direction: column; padding-bottom: var(--s2); transform: scale(.08); opacity: 0; transition: transform .28s cubic-bezier(.3,1.3,.5,1), opacity .2s; }
 .at-pop.on { transform: scale(1); opacity: 1; }
 .at-pop-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
-.at-pop-ms { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: 64rpx; color: var(--leaf); line-height: 1.15; white-space: nowrap; }
+.at-pop-ms { font-family: var(--f-ms); font-style: var(--ms-style); font-weight: var(--ms-bold); font-size: 64rpx; color: var(--leaf); line-height: 1.15; white-space: nowrap; }
 .at-pop-root { font-size: var(--t-caption); color: var(--dark-ink2); margin-top: var(--s1); }
 .at-pop-body { margin-top: var(--s2); max-height: 40vh; }
 .at-pop-s { padding: var(--s2) 0; border-top: 2rpx solid var(--dark-hair); }

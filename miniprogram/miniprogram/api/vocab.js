@@ -49,6 +49,10 @@ module.exports = {
   async deleteMe() { await post('/delete-me', {}); wx.removeStorageSync(TOKEN_KEY); me = null },
   async register(form) { const r = await post('/register', form); me = { ...(me || {}), student: r.student }; return r.student },
   home: () => call('/home'),
+  // 入门测评（admin/placement.mjs）：出题、交卷、先跳过
+  placement: () => call('/placement'),
+  placementSubmit: answers => post('/placement', { answers }),
+  placementSkip: () => post('/placement', { skip: true }),
   start: (mode, level) => post('/start', { mode, level }),
   grade: (rank, result) => post('/grade', { rank, result }),
   fav: (rank, on) => post('/fav', { rank, on }),

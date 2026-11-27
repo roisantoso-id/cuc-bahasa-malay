@@ -67,11 +67,20 @@ Page({
         left: cur ? cur.total - cur.learned : 0,
         wkday: '星期' + WD[bj().getUTCDay()],
         route: this.routeOf(h)
-      }, () => { this.ring(); this.wordOfDay(h.level); this.checkUnlock(); if (this.data.th && this.data.th.day) this.dayExtras() })
+      }, () => { this.ring(); this.wordOfDay(h.level); if (!this.askPlacement(h)) this.checkUnlock(); if (this.data.th && this.data.th.day) this.dayExtras() })
     } catch (e) {
       this.setData({ view: 'error', error: e.message })
     }
   },
+  // 每个人第一次进来先做入门测评（可以跳过；跳过也记下，不再自动弹）。一次打开只问一次
+  askPlacement(h) {
+    const g = getApp().globalData
+    if (!h.placement || h.placement.done || g.placementAsked) return false
+    g.placementAsked = true
+    wx.navigateTo({ url: '/pkg-word/placement/placement?from=home' })
+    return true
+  },
+  placement() { wx.navigateTo({ url: '/pkg-word/placement/placement' }) },
   // 换了白天 / 夜晚：进度环重画；换到白天补上车票词序和这一周
   onTheme(th) { this.ring(); if (th && th.day && this.data.h && this.extrasFor !== this.loadId) this.dayExtras() },
   // ---- 白天「旅行手账」用 ----
@@ -147,6 +156,7 @@ Page({
   playWod() { const w = this.data.wod; if (w) audio.play(w.audio) },
   atlas() { wx.switchTab({ url: '/pages/atlas/atlas' }) },
   start() { wx.navigateTo({ url: '/pkg-word/learn/learn?mode=today' }) },
-  more() { wx.navigateTo({ url: `/pkg-word/learn/learn?mode=new&level=${this.data.h.level}` }) },
+  // 测过的按推荐难度再推 10 个；没测过的照旧学当前站
+  more() { const h = this.data.h; wx.navigateTo({ url: h.placement && h.placement.level ? '/pkg-word/learn/learn?mode=more' : `/pkg-word/learn/learn?mode=new&level=${h.level}` }) },
   onShareAppMessage() { return { title: '一起背马来语 5000 高频词', path: '/pages/home/home' } }
 })

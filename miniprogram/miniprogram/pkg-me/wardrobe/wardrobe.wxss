@@ -58,7 +58,7 @@
 .wd-chev { width: 14rpx; height: 14rpx; border-left: 3rpx solid var(--strong); border-bottom: 3rpx solid var(--strong); transform: translateX(3rpx) rotate(45deg); }
 .wd-nav.r .wd-chev { transform: translateX(-3rpx) rotate(-135deg); }
 .wd-pv-t { margin-top: 28rpx; font-size: 40rpx; font-weight: 800; color: var(--strong); text-align: center; font-family: var(--f-zh); }
-.wd-pv-ms { margin-top: 4rpx; font-size: 26rpx; color: var(--ink2); font-family: var(--f-ms); font-style: italic; }
+.wd-pv-ms { margin-top: 4rpx; font-size: 26rpx; color: var(--ink2); font-family: var(--f-ms); font-style: var(--ms-style); }
 .wd-story { margin-top: 16rpx; font-size: 26rpx; line-height: 1.6; color: var(--strong); opacity: .88; text-align: center; }
 .wd-how { margin-top: 16rpx; font-size: 24rpx; color: var(--star); text-align: center; }
 .wd-pg { align-self: stretch; height: 12rpx; margin-top: 28rpx; border-radius: 999rpx; background: var(--hair); overflow: hidden; }

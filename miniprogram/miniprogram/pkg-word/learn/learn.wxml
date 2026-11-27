@@ -73,7 +73,7 @@
       <view wx:else class="dA-ln-opts">
         <view wx:for="{{quiz.options}}" wx:key="*this" class="dA-ln-opt {{quiz.type === 'ms2zh' ? 'dA-ln-opt-zh' : ''}} {{picked && item === quiz.answer ? 'dA-ln-opt-y' : ''}} {{picked === item && item !== quiz.answer ? 'dA-ln-opt-n' : ''}} {{picked && item !== quiz.answer && picked !== item ? 'dA-ln-opt-dim' : ''}}" data-o="{{item}}" bindtap="pick">
           <text class="dA-ln-l">{{u.L[index]}}</text><text class="dA-ln-ot">{{item}}</text>
-          <block wx:if="{{picked && item === quiz.answer}}"><text class="dA-ln-os">{{quiz.type === 'ms2zh' ? quiz.word.ms : quiz.zh}} · {{picked === item ? '答对' : '正确答案'}}</text><text class="dA-ln-ck">✓</text></block>
+          <block wx:if="{{picked && item === quiz.answer}}"><text class="dA-ln-os"><text wx:if="{{quiz.type === 'ms2zh'}}" class="dA-ln-osw">{{quiz.word.ms}}</text><text wx:else>{{quiz.zh}}</text> · {{picked === item ? '答对' : '正确答案'}}</text><text class="dA-ln-ck">✓</text></block>
           <text wx:elif="{{picked === item}}" class="dA-ln-ck">✗</text>
         </view>
       </view>

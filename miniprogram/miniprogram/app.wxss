@@ -87,6 +87,8 @@ page {
   --t-body: 30rpx;
   --t-caption: 24rpx;
   --f-ms: Georgia, "Times New Roman", serif;
+  --ms-style: italic;   /* 马来语单词：夜晚斜体，白天正体（theme.js 覆盖） */
+  --ms-bold: 700;       /* 大号单词（词卡、详情、弹窗）的字重：夜晚粗，白天常规 */
   --f-zh: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
   --f-body: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
 
@@ -124,7 +126,7 @@ page {
 .h2 { font-size: var(--t-section); font-weight: 700; line-height: 1.4; margin: var(--s5) 0 var(--s2); font-family: var(--f-zh); }
 .muted { color: var(--ink2); }
 .small { font-size: var(--t-caption); }
-.ms { font-family: var(--f-ms); font-style: italic; font-weight: 400; }
+.ms { font-family: var(--f-ms); font-style: var(--ms-style); font-weight: 400; }
 .serif, .no, .num { font-family: var(--f-ms); }
 .num { font-size: var(--t-title); line-height: 1.15; }
 .num-xl { font-family: var(--f-ms); font-size: var(--t-display); line-height: 1.1; }
@@ -268,7 +270,7 @@ button.btn-danger[disabled] { color: var(--bad); }
    只在 th.day 时用：每页 <block wx:if="{{th.day}}"> 里用 dA- 开头的类，夜晚那套不动。
    尺寸 = 设计稿 px × 2 rpx。颜色写死成手账色（这些类只在白天出现）。 */
 .dA { --pa: #f7f2e8; --pa2: #efe6d3; --cd: #fcf9f3; --ik: #1c2420; --ik2: #47524c; --mu: #727a74; --ln: #dcd1bb; --gr: #1f5a43; --gr-d: #15402f; --gr-l: #e3ece4; --tl: #123f45; --am: #c46d1c; --am-l: #f5e2c7; --rd: #b4472f;
-  --serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif; --latin: Georgia, "Times New Roman", serif; --mono: Menlo, "SF Mono", Consolas, monospace;
+  --serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif; --latin: var(--f-ms); --mono: Menlo, "SF Mono", Consolas, monospace;
   color: var(--ik); font-size: 30rpx; line-height: 1.5; }
 .dA-pad { padding: 8rpx 40rpx 0; }
 .dA-eb { font-size: 24rpx; letter-spacing: .12em; color: var(--mu); }

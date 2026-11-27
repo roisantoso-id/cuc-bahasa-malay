@@ -1,6 +1,7 @@
 // 后台接口 /api/admin/*:账号密码登录、角色权限、学生、单词、课程(10 站)、老师、后台账号、操作日志
 // server.mjs 把数据库和通用函数传进来(makeAdminApi(ctx)),这里不直接连库
 import { randomBytes, createHash } from 'node:crypto'
+import { DIFFS, MAX_DIFF, autoDiff, diffLabel } from './placement.mjs'
 
 // ---------------- 权限目录 ----------------
 // 每个接口要一项权限;超级管理员的角色是 ['*'],什么都能做,不能改
@@ -93,10 +94,14 @@ export function makeAdminApi(ctx) {
     return (await one(`SELECT COUNT(*) n FROM admin_users u JOIN admin_roles r ON r.id = u.role_id WHERE r.code = 'super_admin' AND u.status = 'active' AND u.id <> ?`, exceptId)).n
   }
 
+  // 学生的测评情况：推荐难度、什么时候测的、估算词汇量
+  function placementOf(st) { try { return JSON.parse(st.placement || 'null') } catch { return null } }
+  function vocabOf(st) { const p = placementOf(st); return p && p.vocab != null ? p.vocab : null }
+  const placedOf = st => ({ diffLevel: st.diff_level || 0, diffLabel: diffLabel(st.diff_level), placedAt: st.placed_at || '', vocab: vocabOf(st), placeSkipped: !!(placementOf(st) || {}).skipped })
   function wordAdminOut(w) {
     let extra = {}
     try { extra = JSON.parse(w.extra || '{}') || {} } catch {}
-    return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, topic: w.topic || '', senses: JSON.parse(w.senses || '[]'), audio: w.audio, audioUrl: audioUrl(w.audio), status: w.status, edited: !!w.edited, updatedAt: w.updated_at, extra }
+    return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, difficulty: w.difficulty || 0, topic: w.topic || '', senses: JSON.parse(w.senses || '[]'), audio: w.audio, audioUrl: audioUrl(w.audio), status: w.status, edited: !!w.edited, updatedAt: w.updated_at, extra }
   }
   const listOf = (v, n = 20, max = 80) => (Array.isArray(v) ? v : String(v || '').split(/[,，;；\n]/)).map(x => str(x, max)).filter(Boolean).slice(0, n)
   const cleanExtra = e => ({
@@ -208,8 +213,8 @@ export function makeAdminApi(ctx) {
       if (p.endsWith('.csv')) {
         const rows = await all(SQL, ...args)
         await audit(s, req, 'students.export', `${rows.length} 人`)
-        const head = ['姓名', '学校', '班级', '起点', '手机号', '状态', '已学', '已掌握', '学习天数', '注册时间', '最近活跃']
-        const lines = rows.map(r => [r.name, r.school, r.class_name, r.track === 'some' ? '会说一些' : '零基础', r.phone, r.status === 'disabled' ? '已停用' : '正常', r.learned, r.mastered, r.days, r.created_at, r.last_active_at].map(csvCell).join(','))
+        const head = ['姓名', '学校', '班级', '起点', '推荐难度', '测评估算词汇量', '手机号', '状态', '已学', '已掌握', '学习天数', '注册时间', '最近活跃']
+        const lines = rows.map(r => [r.name, r.school, r.class_name, r.track === 'some' ? '会说一些' : '零基础', diffLabel(r.diff_level) || '没测', vocabOf(r) ?? '', r.phone, r.status === 'disabled' ? '已停用' : '正常', r.learned, r.mastered, r.days, r.created_at, r.last_active_at].map(csvCell).join(','))
         res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="students-${day()}.csv"`, 'cache-control': 'no-store' })
         return res.end('﻿' + [head.join(','), ...lines].join('\n'))
       }
@@ -217,7 +222,7 @@ export function makeAdminApi(ctx) {
       const total = (await one(`SELECT COUNT(*) n FROM students s ${where}`, ...args)).n
       const rows = await all(`${SQL} LIMIT ? OFFSET ?`, ...args, pg.size, pg.offset)
       const counts = await one(`SELECT COUNT(*) total, SUM(status = 'disabled') disabled, SUM(last_active_at >= ?) active7, SUM(last_active_at < ? OR last_active_at IS NULL) idle, SUM(track = 'some') some FROM students`, day(-6), day(-13))
-      return send(res, 200, { total, page: pg.page, size: pg.size, counts, rows: rows.map(r => ({ id: r.id, name: r.name, school: r.school, className: r.class_name, track: r.track, phone: r.phone, status: r.status, note: r.note, dailyNew: r.daily_new, learned: r.learned, mastered: r.mastered, days: r.days, createdAt: r.created_at, lastActiveAt: r.last_active_at })) })
+      return send(res, 200, { total, page: pg.page, size: pg.size, counts, rows: rows.map(r => ({ id: r.id, name: r.name, school: r.school, className: r.class_name, track: r.track, ...placedOf(r), phone: r.phone, status: r.status, note: r.note, dailyNew: r.daily_new, learned: r.learned, mastered: r.mastered, days: r.days, createdAt: r.created_at, lastActiveAt: r.last_active_at })) })
     }
     const sm = /^\/api\/admin\/students\/(\d+)$/.exec(p)
     if (sm && req.method === 'GET') {
@@ -233,7 +238,7 @@ export function makeAdminApi(ctx) {
       const tot = await one('SELECT SUM(seen > 0) learned, SUM(box = 6) mastered, COALESCE(SUM(fav), 0) fav, SUM(wrong > 0 AND box < 6) wrong FROM progress WHERE student_id = ?', st.id)
       const studyDays = (await one('SELECT COUNT(*) n FROM daily WHERE student_id = ? AND (new_cnt + review_cnt) > 0', st.id)).n
       return send(res, 200, {
-        student: { id: st.id, name: st.name, school: st.school, className: st.class_name, track: st.track, phone: st.phone, status: st.status, note: st.note, dailyNew: st.daily_new, createdAt: st.created_at, lastActiveAt: st.last_active_at },
+        student: { id: st.id, name: st.name, school: st.school, className: st.class_name, track: st.track, ...placedOf(st), placement: placementOf(st), phone: st.phone, status: st.status, note: st.note, dailyNew: st.daily_new, createdAt: st.created_at, lastActiveAt: st.last_active_at },
         total: { learned: Number(tot.learned || 0), mastered: Number(tot.mastered || 0), fav: Number(tot.fav || 0), wrong: Number(tot.wrong || 0), studyDays },
         days, boxes, levels: await levelsOf(st.id, true), ...(await streakOf(st.id)),
         wrong: wrong.map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses || '[]')[0] || {}).zh || '', wrong: w.wrong, box: w.box }))
@@ -246,9 +251,13 @@ export function makeAdminApi(ctx) {
       if (!st) return fail(res, 404, '没有这个学生')
       const d = { name: str(b.name ?? st.name, 30), school: str(b.school ?? st.school, 60), class_name: str(b.className ?? st.class_name, 40), phone: str(b.phone ?? st.phone, 20).replace(/[\s-]/g, ''),
         track: ['zero', 'some'].includes(b.track) ? b.track : st.track, daily_new: [10, 20, 30, 50].includes(Number(b.dailyNew)) ? Number(b.dailyNew) : st.daily_new,
-        note: str(b.note ?? st.note, 500), status: ['active', 'disabled'].includes(b.status) ? b.status : st.status }
-      if (!d.name) return fail(res, 400, '姓名不能为空')
+        note: str(b.note ?? st.note, 500), status: ['active', 'disabled'].includes(b.status) ? b.status : st.status,
+        // 老师手动定推荐难度（0 = 让学生重新测）；改了就清掉自动调档的计数
+        diff_level: b.diffLevel !== undefined && Number.isInteger(Number(b.diffLevel)) && Number(b.diffLevel) >= 0 && Number(b.diffLevel) <= MAX_DIFF ? Number(b.diffLevel) : st.diff_level }
+      // 微信登录自动建的学生没有名字：允许不填就保存（改难度、备注），只是不能把已有的名字清空
+      if (!d.name && st.name) return fail(res, 400, '姓名不能为空')
       await run('UPDATE students SET name = ?, school = ?, class_name = ?, phone = ?, track = ?, daily_new = ?, note = ?, status = ? WHERE id = ?', d.name, d.school, d.class_name, d.phone, d.track, d.daily_new, d.note, d.status, id)
+      if (d.diff_level !== st.diff_level) await run('UPDATE students SET diff_level = ?, placed_at = ?, lv_new = 0, lv_know = 0 WHERE id = ?', d.diff_level, d.diff_level ? (st.placed_at || now()) : null, id)
       const changed = Object.keys(d).filter(k => String(d[k] ?? '') !== String(st[k] ?? ''))
       await audit(s, req, d.status !== st.status ? (d.status === 'disabled' ? 'student.disable' : 'student.enable') : 'student.edit', `${d.name} #${id}`, changed.join(', '))
       return send(res, 200, { ok: true })
@@ -264,6 +273,8 @@ export function makeAdminApi(ctx) {
       if (status === 'check') conds.push(`senses LIKE '%"check":true%'`)
       if (status === 'edited') conds.push('edited = 1')
       if (topic) { conds.push('topic = ?'); args.push(topic) }
+      const diff = Number(url.searchParams.get('diff')) || 0
+      if (diff) { conds.push('difficulty = ?'); args.push(diff) }
       if (k) { const l = `%${k}%`; conds.push('(lower(ms) LIKE ? OR lower(root) LIKE ? OR senses LIKE ? OR rank = ?)'); args.push(l, l, l, Number(k) || -1) }
       const where = conds.length ? 'WHERE ' + conds.join(' AND ') : ''
       const pg = page(url, 50)
@@ -272,7 +283,8 @@ export function makeAdminApi(ctx) {
       const lc = level ? 'WHERE level = ?' : '', la = level ? [level] : []
       const counts = await one(`SELECT COUNT(*) total, SUM(status = 'approved') approved, SUM(status = 'pending') pending, SUM(senses LIKE '%"check":true%') \`check\`, SUM(edited = 1) edited FROM words ${lc}`, ...la)
       const topics = await all(`SELECT topic, COUNT(*) n FROM words WHERE topic <> '' GROUP BY topic ORDER BY n DESC`)
-      return send(res, 200, { total, page: pg.page, size: pg.size, counts, topics, words: rows.map(wordAdminOut) })
+      const dc = Object.fromEntries((await all(`SELECT difficulty d, COUNT(*) n FROM words ${lc} GROUP BY difficulty`, ...la)).map(r => [Number(r.d), Number(r.n)]))
+      return send(res, 200, { total, page: pg.page, size: pg.size, counts, topics, diffs: DIFFS.map(x => ({ ...x, n: dc[x.d] || 0 })), words: rows.map(wordAdminOut) })
     }
     if (p === '/api/admin/words/export.json') {
       need(s, 'words.view')
@@ -307,9 +319,18 @@ export function makeAdminApi(ctx) {
       return send(res, 200, r)
     }
     if (p === '/api/admin/words/batch' && req.method === 'POST') {
-      need(s, 'words.publish')
       const b = await body(req, 64 * 1024)
       const ranks = (Array.isArray(b.ranks) ? b.ranks : []).map(Number).filter(Number.isInteger).slice(0, 500)
+      // 批量改难度
+      if (b.difficulty !== undefined) {
+        need(s, 'words.edit')
+        const dv = Number(b.difficulty)
+        if (!ranks.length || !Number.isInteger(dv) || dv < 1 || dv > MAX_DIFF) return fail(res, 400, '参数不对')
+        const r = await run('UPDATE words SET difficulty = ?, edited = 1, updated_at = ? WHERE rank IN (?) AND difficulty <> ?', dv, now(), ranks, dv)
+        await audit(s, req, 'words.difficulty', `${r.affectedRows} 词 → ${diffLabel(dv)}`, ranks.slice(0, 50).join(','))
+        return send(res, 200, { ok: r.affectedRows, skipped: 0 })
+      }
+      need(s, 'words.publish')
       if (!ranks.length || !['approved', 'pending'].includes(b.status)) return fail(res, 400, '参数不对')
       let ok = 0, skipped = 0
       for (const w of await all('SELECT rank, senses FROM words WHERE rank IN (?)', ranks)) {
@@ -327,9 +348,10 @@ export function makeAdminApi(ctx) {
       const rank = Number(b.rank) || ((await one('SELECT COALESCE(MAX(rank), 0) n FROM words')).n + 1)
       if (await one('SELECT 1 FROM words WHERE rank = ?', rank)) return fail(res, 400, `序号 ${rank} 已经有词了`)
       const level = Number(b.level) || Math.min(Math.ceil(rank / 500), 10)
+      const difficulty = Number(b.difficulty) >= 1 && Number(b.difficulty) <= MAX_DIFF ? Number(b.difficulty) : autoDiff(rank)
       const senses = (Array.isArray(b.senses) ? b.senses : []).map(cleanSenseFull).filter(x => x.zh)
-      await run('INSERT INTO words (rank, ms, root, level, topic, senses, extra, audio, status, edited, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)',
-        rank, ms, str(b.root, 80), level, str(b.topic, 32), JSON.stringify(senses), JSON.stringify(cleanExtra(b.extra || {})), str(b.audio, 200), 'pending', now())
+      await run('INSERT INTO words (rank, ms, root, level, difficulty, topic, senses, extra, audio, status, edited, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)',
+        rank, ms, str(b.root, 80), level, difficulty, str(b.topic, 32), JSON.stringify(senses), JSON.stringify(cleanExtra(b.extra || {})), str(b.audio, 200), 'pending', now())
       await audit(s, req, 'word.create', `${ms} #${rank}`)
       return send(res, 200, { ok: true, rank })
     }
@@ -359,7 +381,7 @@ export function makeAdminApi(ctx) {
       const b = await body(req, 64 * 1024), rank = Number(wm[1])
       const w = await one('SELECT * FROM words WHERE rank = ?', rank)
       if (!w) return fail(res, 404, '没有这个词')
-      const editing = ['ms', 'root', 'senses', 'extra', 'topic', 'level', 'audio'].some(k => b[k] !== undefined)
+      const editing = ['ms', 'root', 'senses', 'extra', 'topic', 'level', 'difficulty', 'audio'].some(k => b[k] !== undefined)
       if (editing) need(s, 'words.edit')
       const senses = Array.isArray(b.senses) ? b.senses.map(cleanSenseFull).filter(x => x.zh) : JSON.parse(w.senses || '[]')
       const ms = b.ms !== undefined ? str(b.ms, 80) : w.ms
@@ -368,8 +390,9 @@ export function makeAdminApi(ctx) {
       if (b.status !== undefined && b.status !== w.status) { need(s, 'words.publish'); status = b.status === 'approved' ? 'approved' : 'pending' }
       if (status === 'approved' && !senses.some(x => !x.check)) return fail(res, 400, '至少要有一条审过的释义才能上架')
       const level = b.level !== undefined ? Math.min(Math.max(Number(b.level) || 1, 1), 99) : w.level
-      await run('UPDATE words SET ms = ?, root = ?, level = ?, topic = ?, senses = ?, extra = ?, audio = ?, status = ?, edited = 1, updated_at = ? WHERE rank = ?',
-        ms, b.root !== undefined ? str(b.root, 80) : w.root, level, b.topic !== undefined ? str(b.topic, 32) : (w.topic || ''), JSON.stringify(senses),
+      const difficulty = b.difficulty !== undefined ? Math.min(Math.max(Number(b.difficulty) || 1, 1), MAX_DIFF) : w.difficulty
+      await run('UPDATE words SET ms = ?, root = ?, level = ?, difficulty = ?, topic = ?, senses = ?, extra = ?, audio = ?, status = ?, edited = 1, updated_at = ? WHERE rank = ?',
+        ms, b.root !== undefined ? str(b.root, 80) : w.root, level, difficulty, b.topic !== undefined ? str(b.topic, 32) : (w.topic || ''), JSON.stringify(senses),
         b.extra !== undefined ? JSON.stringify(cleanExtra(b.extra)) : (w.extra || '{}'), b.audio !== undefined ? str(b.audio, 200) : w.audio, status, now(), rank)
       const what = status !== w.status ? (status === 'approved' ? 'word.publish' : 'word.unpublish') : 'word.edit'
       await audit(s, req, what, `${ms} #${rank}`)

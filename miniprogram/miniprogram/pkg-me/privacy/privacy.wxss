@@ -1,7 +1,7 @@
 .pv { padding-bottom: 64rpx; }
 .pv-hero { position: relative; padding: 16rpx 200rpx 24rpx 0; }
 .pv-bird { position: absolute; right: -8rpx; top: 0; width: 190rpx; height: 196rpx; }
-.pv-h1 { font-family: "Songti SC", "STSong", serif; font-size: 48rpx; font-weight: 900; line-height: 1.3; color: var(--strong); }
+.pv-h1 { font-family: var(--f-zh); font-size: 48rpx; font-weight: 900; line-height: 1.3; color: var(--strong); }
 .pv-hl { color: var(--star); }
 .pv-upd { font-size: 22rpx; color: var(--ink2); margin-top: 10rpx; }
 /* 三条承诺：唯一的面板，是这页的重点 */

@@ -17,6 +17,8 @@
 .hm-wave { width: 14rpx; height: 24rpx; border: 4rpx solid var(--strong); border-left: 0; border-radius: 0 24rpx 24rpx 0; }
 .hm-w1 { display: flex; align-items: baseline; gap: var(--s2); }
 .hm-wms { font-size: 36rpx; }
+/* 推荐难度：一个圆里写档位数字 */
+.hm-lvl { flex: none; width: 64rpx; height: 64rpx; line-height: 60rpx; text-align: center; border-radius: 50%; border: 2rpx solid var(--star); color: var(--star); font-family: var(--f-ms); font-size: 30rpx; box-sizing: border-box; }
 
 /* 解锁新成就弹窗 */
 .hm-ul-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 300; background: var(--scrim); display: flex; align-items: center; justify-content: center; }

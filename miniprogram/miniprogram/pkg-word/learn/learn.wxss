@@ -7,7 +7,7 @@
 /* 词卡 */
 .ln-card { position: relative; flex: none; height: 400rpx; border-radius: var(--r-lg); background: var(--raise); box-shadow: var(--raise-sh); padding: var(--s2); box-sizing: border-box; will-change: transform; }
 .ln-card-in { height: 100%; border: 2rpx solid var(--dark-hair); border-radius: var(--r-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 var(--s3); box-sizing: border-box; }
-.ln-w { font-family: var(--f-ms); font-style: italic; font-weight: 700; font-size: var(--t-display); line-height: 1.15; white-space: nowrap; text-align: center; color: var(--leaf); }
+.ln-w { font-family: var(--f-ms); font-style: var(--ms-style); font-weight: var(--ms-bold); font-size: var(--t-display); line-height: 1.15; white-space: nowrap; text-align: center; color: var(--leaf); }
 .ln-card-hint { margin-top: var(--s2); font-size: var(--t-caption); color: var(--dark-ink2); }
 .ln-say { position: absolute; right: var(--s4); bottom: var(--s4); }
 /* 翻开后卡片收矮，把位置让给释义和例句，一屏看完 */
@@ -65,7 +65,7 @@
 .ln-q-cloze { margin: var(--s4) 0 var(--s5); padding: var(--s3) 0; border-top: 2rpx solid var(--hair); border-bottom: 2rpx solid var(--hair); }
 .ln-cl-ms { font-family: var(--f-ms); font-size: 36rpx; line-height: 1.6; margin-bottom: var(--s1); }
 .ln-cl-gap { display: inline-block; min-width: 140rpx; padding: 0 var(--s1); border-bottom: 2rpx solid var(--strong); font-style: italic; text-align: center; }
-.ln-spell { height: 112rpx; font-family: var(--f-ms); font-style: italic; font-size: var(--t-title); text-align: center; }
+.ln-spell { height: 112rpx; font-family: var(--f-ms); font-style: var(--ms-style); font-size: var(--t-title); text-align: center; }
 .ln-spell.ok { border-color: var(--ok); background: var(--ok-l); }
 .ln-spell.bad { border-color: var(--bad); background: var(--bad-l); }
 .ln-answer { text-align: center; margin-top: var(--s3); }
@@ -179,7 +179,7 @@ button.ln-fb-b { flex: none; min-width: 200rpx; }
 /* A3 小测：句子最大，选项是四行字（字母 + 细线），不是盒子 */
 .dA-ln-q { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 20rpx 8rpx 240rpx; }
 .dA-ln-sent { margin-top: 28rpx; font-family: var(--latin); font-size: 54rpx; line-height: 1.4; word-break: break-word; }
-.dA-ln-blank { display: inline-block; min-width: 208rpx; border-bottom: 4rpx solid var(--gr); color: var(--gr); font-style: italic; text-align: center; line-height: 1.2; }
+.dA-ln-blank { display: inline-block; min-width: 208rpx; border-bottom: 4rpx solid var(--gr); color: var(--gr); font-style: var(--ms-style); text-align: center; line-height: 1.2; }
 .dA-ln-tr { margin-top: 16rpx; font-size: 28rpx; color: var(--ik2); }
 .dA-ln-listen { display: flex; flex-direction: column; align-items: center; margin: 40rpx 0 8rpx; }
 .dA-ln-pw { margin: 40rpx 0 8rpx; font-family: var(--latin); line-height: 1.15; white-space: nowrap; overflow: hidden; }
@@ -194,13 +194,14 @@ button.ln-fb-b { flex: none; min-width: 200rpx; }
 .dA-ln-ck { flex: none; margin-left: 12rpx; font-size: 32rpx; font-weight: 700; }
 .dA-ln-opt-y { color: var(--gr); font-weight: 700; }
 .dA-ln-opt-y .dA-ln-os { color: var(--gr); }
+.dA-ln-osw { font-family: var(--f-ms); font-style: var(--ms-style); font-size: 30rpx; }
 .dA-ln-opt-n { color: var(--rd); }
 .dA-ln-opt-dim { opacity: .45; }
-.dA-ln-spell { height: 112rpx; margin-top: 40rpx; border-top: 3rpx solid var(--ik); border-bottom: 2rpx solid var(--ln); font-family: var(--latin); font-style: italic; font-size: 52rpx; text-align: center; color: var(--ik); }
+.dA-ln-spell { height: 112rpx; margin-top: 40rpx; border-top: 3rpx solid var(--ik); border-bottom: 2rpx solid var(--ln); font-family: var(--latin); font-style: var(--ms-style); font-size: 52rpx; text-align: center; color: var(--ik); }
 .dA-ln-spell-y { color: var(--gr); border-bottom-color: var(--gr); }
 .dA-ln-spell-n { color: var(--rd); border-bottom-color: var(--rd); }
 .dA-ln-ph { color: var(--mu); }
-.dA-ln-ans { font-family: var(--latin); font-weight: 700; color: var(--ik); }
+.dA-ln-ans { font-family: var(--latin); font-style: var(--ms-style); font-weight: 700; color: var(--ik); }
 .dA-ln-ok { margin-top: 40rpx; }
 .dA-ln-fb { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; padding: 28rpx 40rpx calc(28rpx + env(safe-area-inset-bottom)); background: var(--gr-l); border-top: 3rpx solid var(--gr); animation: fbup .32s cubic-bezier(.3,1.4,.5,1); }
 .dA-ln-fb-n { background: var(--pa); border-top-color: var(--rd); }

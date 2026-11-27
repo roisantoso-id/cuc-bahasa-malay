@@ -18,11 +18,14 @@ import { actionLabel } from './Audit'
 
 type Sense = { pos: string; zh: string; en?: string; exMs?: string; exZh?: string; check?: boolean }
 type Extra = { ex?: { ms: string; zh: string }[]; col?: string[]; fam?: string[]; syn?: string[]; ant?: string[]; tip?: string; note?: string; image?: string; audioOrig?: string; audioBy?: string }
-type Word = { rank: number; ms: string; root: string; level: number; topic: string; senses: Sense[]; audio: string; audioUrl: string; status: string; edited: boolean; updatedAt: string; extra: Extra }
-type List = { total: number; page: number; size: number; counts: { total: number; approved: number | null; pending: number | null; check: number | null; edited: number | null }; topics: { topic: string; n: number }[]; words: Word[] }
+type Word = { rank: number; ms: string; root: string; level: number; difficulty: number; topic: string; senses: Sense[]; audio: string; audioUrl: string; status: string; edited: boolean; updatedAt: string; extra: Extra }
+type List = { total: number; page: number; size: number; counts: { total: number; approved: number | null; pending: number | null; check: number | null; edited: number | null }; topics: { topic: string; n: number }[]; diffs: { d: number; label: string; note: string; n: number }[]; words: Word[] }
 type Course = { level: number; city: string; ms: string }
 type WordDetail = Word & { learners: { n: number; mastered: number; wrong: number }; history: { at: string; username: string; action: string; detail: string }[] }
 
+// 单词难度 1–5（和 admin/placement.mjs 的 DIFFS 一致）：默认按词频自动定，老师可以改；学生按入门测评的结果从某一档学起
+export const DIFF = ['', '入门', '初级', '中级', '中高级', '高级']
+const DIFF_OPTS = [1, 2, 3, 4, 5].map(d => ({ value: String(d), label: DIFF[d] }))
 // 词库里出现最多的词性(content/vocab5000/words.json),其它的选「其它…」自己写
 const POS = ['名词', '动词', '形容词', '副词', '专有名词', '被动动词', '介词', '连词', '代词', '数词', '助动词', '及物动词', '量词', '感叹词', '否定词', '疑问词', '助词', '短语']
 let audioEl: HTMLAudioElement | null = null
@@ -48,12 +51,13 @@ export function Words() {
   const [topic, setTopic] = useState('')
   const level = sp.get('level') || ''
   const status = sp.get('status') || ''
+  const diff = sp.get('diff') || ''
   const [page, setPage] = useState(1)
   const [sel, setSel] = useState<Set<number>>(new Set())
   const [importOpen, setImportOpen] = useState(false)
   const dq = useDebounced(q)
-  useEffect(() => { setPage(1); setSel(new Set()) }, [dq, status, topic, level])
-  const { data, error, loading, reload } = useFetch<List>('/words' + qs({ q: dq, status, topic, level, page, size: 50 }))
+  useEffect(() => { setPage(1); setSel(new Set()) }, [dq, status, topic, level, diff])
+  const { data, error, loading, reload } = useFetch<List>('/words' + qs({ q: dq, status, topic, level, diff, page, size: 50 }))
   const { data: courses } = useFetch<Course[]>(can('courses.view') ? '/courses' : null)
   const openRank = sp.get('rank')
   const setParam = (k: string, v: string, replace = false) => { const p = new URLSearchParams(sp); if (v) p.set(k, v); else p.delete(k); setSp(p, { replace }) }
@@ -92,12 +96,20 @@ export function Words() {
     ...(dq ? [{ label: `搜索「${dq}」`, clear: () => setQ('') }] : []),
     ...(level ? [{ label: city(Number(level)), clear: () => setParam('level', '') }] : []),
     ...(status ? [{ label: { approved: '已上架', pending: '待补 / 下架', check: '待复核', edited: '后台改过' }[status] || status, clear: () => setStatus('') }] : []),
-    ...(topic ? [{ label: `主题 ${topic}`, clear: () => setTopic('') }] : [])
+    ...(topic ? [{ label: `主题 ${topic}`, clear: () => setTopic('') }] : []),
+    ...(diff ? [{ label: `难度 ${DIFF[Number(diff)] || diff}`, clear: () => setParam('diff', '') }] : [])
   ]
   const batch = async (st: 'approved' | 'pending') => {
     try {
       const r = await api<{ ok: number; skipped: number }>('/words/batch', { body: { ranks: [...sel], status: st } })
       toast.success(`${st === 'approved' ? '上架' : '下架'}了 ${r.ok} 个${r.skipped ? `,${r.skipped} 个没有审过的释义,没上架` : ''}`)
+      setSel(new Set()); reload()
+    } catch (e) { toast.error((e as Error).message) }
+  }
+  const batchDiff = async (d: string) => {
+    try {
+      const r = await api<{ ok: number }>('/words/batch', { body: { ranks: [...sel], difficulty: Number(d) } })
+      toast.success(`${r.ok} 个词改成「${DIFF[Number(d)]}」`)
       setSel(new Set()); reload()
     } catch (e) { toast.error((e as Error).message) }
   }
@@ -128,6 +140,7 @@ export function Words() {
             </Select>
           </div>
         </Toolbar>
+        {!!data?.diffs?.length && <div className="border-b px-4 py-2"><Chips group="难度" value={diff} onChange={v => setParam('diff', v === diff ? '' : v)} options={data.diffs.map(x => ({ value: String(x.d), label: x.label, count: x.n }))} /></div>}
         {!!data?.topics.length && <div className="border-b px-4 py-2"><Chips group="主题" value={topic} onChange={v => setTopic(v === topic ? '' : v)} options={data.topics.slice(0, 12).map(t => ({ value: t.topic, label: t.topic, count: t.n }))} /></div>}
         <ActiveFilters total={data?.total || 0} items={filters} onClear={() => { setQ(''); setTopic(''); setSp({}) }} />
         {sel.size > 0 && (
@@ -135,6 +148,7 @@ export function Words() {
             <span className="text-blue">已选 <b className="num">{sel.size}</b> 个</span>
             <Button size="sm" onClick={() => batch('approved')}>上架</Button>
             <Button size="sm" variant="outline" onClick={() => batch('pending')}>下架</Button>
+            {can('words.edit') && <span className="ml-2 flex flex-wrap items-center gap-1.5"><span className="text-xs text-text-3">难度改成</span>{DIFF_OPTS.map(o => <Button key={o.value} size="sm" variant="outline" onClick={() => batchDiff(o.value)}>{o.label}</Button>)}</span>}
             <button type="button" className="ml-1 text-xs text-text-3 hover:text-foreground" onClick={() => setSel(new Set())}>取消选择</button>
           </div>
         )}
@@ -143,7 +157,7 @@ export function Words() {
           <table className="jb-table">
             <thead><tr>
               {can('words.publish') && <th className="hidden w-10 sm:table-cell"><Checkbox aria-label="全选这一页" checked={all} onCheckedChange={v => setSel(v ? new Set(data.words.map(w => w.rank)) : new Set())} /></th>}
-              <th>单词</th>{!wide && <th>释义</th>}{!wide && <th className="hidden lg:table-cell">站</th>}<th className="hidden sm:table-cell">状态</th><th className="w-10" />{!wide && <th className="w-8" />}
+              <th>单词</th>{!wide && <th>释义</th>}{!wide && <th className="hidden lg:table-cell" title="所在站 / 难度">站 · 难度</th>}<th className="hidden sm:table-cell">状态</th><th className="w-10" />{!wide && <th className="w-8" />}
             </tr></thead>
             <tbody>
               {data.words.map(w => {
@@ -154,10 +168,10 @@ export function Words() {
                     {wide ? (
                       // 宽屏窄列表:一格两行——单词,下面「#序号 · 第一条释义」,长的省略、悬停看全
                       <td className="min-w-0 max-w-0 w-full"><div className="truncate font-mono text-[13px] font-semibold" title={w.ms}>{w.ms}</div>
-                        <div className="truncate text-xs text-text-3" title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}><span className="num text-text-4">#{w.rank}</span>{w.senses.length ? <> · <span className="text-text-4">{w.senses[0].pos}</span> {w.senses.map(s => s.zh).join(';')}</> : <span className="text-text-4"> · 还没有释义</span>}</div></td>
+                        <div className="truncate text-xs text-text-3" title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}><span className="num text-text-4">#{w.rank}</span>{w.difficulty ? <span className="text-text-4"> · {DIFF[w.difficulty]}</span> : null}{w.senses.length ? <> · <span className="text-text-4">{w.senses[0].pos}</span> {w.senses.map(s => s.zh).join(';')}</> : <span className="text-text-4"> · 还没有释义</span>}</div></td>
                     ) : <><td className="nw"><div className="flex items-center gap-1.5 font-mono text-[13px] font-semibold"><span className="sm:hidden" title={w.status === 'approved' ? '已上架' : '待补'}><Dot tone={w.status === 'approved' ? 'ok' : checks ? 'warn' : 'off'} /></span>{w.ms}</div><div className="num text-xs text-text-4">#{w.rank}{w.root && w.root !== w.ms ? ` · 词根 ${w.root}` : ''}</div></td>
                     <td className="min-w-0"><div className={wide ? 'line-clamp-1 text-text-2' : 'line-clamp-2 text-text-2'} title={w.senses.map(s => `${s.pos} ${s.zh}`).join('\n')}>{w.senses.length ? w.senses.map((s, i) => <span key={i} className={s.check ? 'text-text-4' : ''}>{i > 0 && ';'}<span className="text-xs text-text-4">{s.pos} </span>{s.zh}</span>) : <span className="text-text-4">还没有释义</span>}</div></td></>}
-                    {!wide && <td className="nw hidden text-text-3 lg:table-cell">{city(w.level)}</td>}
+                    {!wide && <td className="nw hidden text-text-3 lg:table-cell">{city(w.level)}<div className="text-xs text-text-4">{DIFF[w.difficulty] || '—'}</div></td>}
                     <td className="nw hidden sm:table-cell">{wide ? (
                       // 窄的一栏里只放一个状态点 + 待复核数,别的在右边详情里
                       <div className="flex items-center gap-1.5 text-xs text-text-3" title={`${w.status === 'approved' ? '已上架' : '待补 / 下架'}${checks ? ` · ${checks} 条待复核` : ''}${w.edited ? ' · 后台改过' : ''}`}><Dot tone={w.status === 'approved' ? 'ok' : 'off'} />{w.status === 'approved' ? '上架' : '待补'}{checks > 0 && <span className="text-warn">· 复核 {checks}</span>}</div>
@@ -195,7 +209,7 @@ function PanelShell({ docked, open, onClose, title, sub, footer, children }: { d
     ? <DockPanel title={title} sub={sub} footer={footer}>{children}</DockPanel>
     : <SidePanel open={open} onClose={onClose} width={720} title={title} sub={sub} footer={footer}>{children}</SidePanel>
 }
-const empty: Word = { rank: 0, ms: '', root: '', level: 1, topic: '', senses: [{ pos: '名词', zh: '' }], audio: '', audioUrl: '', status: 'pending', edited: false, updatedAt: '', extra: {} }
+const empty: Word = { rank: 0, ms: '', root: '', level: 1, difficulty: 0, topic: '', senses: [{ pos: '名词', zh: '' }], audio: '', audioUrl: '', status: 'pending', edited: false, updatedAt: '', extra: {} }
 const listText = (a?: string[]) => (a || []).join(', ')
 const textList = (s: string) => s.split(/[,，;；\n]/).map(x => x.trim()).filter(Boolean)
 
@@ -262,6 +276,7 @@ function WordPanel({ rank, courses, onClose, onSaved, onCreated, docked, onDirty
                   <SelectContent>{(courses.length ? courses : Array.from({ length: 10 }, (_, i) => ({ level: i + 1, city: '', ms: '' }))).map(c => <SelectItem key={c.level} value={String(c.level)}>{c.level} · {c.city}</SelectItem>)}</SelectContent>
                 </Select>
               </Field>
+              <Field label="难度" className="sm:col-span-3" hint="默认按词频定;学生按入门测评的结果从某一档学起"><Segmented label="难度" value={String(w.difficulty || 0)} onChange={v => edit && up({ difficulty: Number(v) })} options={[...(isNew ? [{ value: '0', label: '按词频' }] : []), ...DIFF_OPTS]} /></Field>
               <Field label="主题" hint="词光按主题分组,例如 food、family"><Input value={w.topic} onChange={e => up({ topic: e.target.value })} placeholder="没有就空着" /></Field>
             </div>
           </Section>
@@ -454,7 +469,7 @@ function WordView({ rank, courses, stamp, onEdit, onSaved }: { rank: string; cou
   const ok = !!d && d.senses.some(s => s.zh && !s.check)
   return (
     <DockPanel title={d ? <span className="font-mono">{d.ms}</span> : '单词'}
-      sub={d && <>#{d.rank} · 第 {d.level} 站 {course?.city || ''}{d.root && d.root !== d.ms ? ` · 词根 ${d.root}` : ''} · {d.edited ? `${ago(d.updatedAt)}在后台改过` : '没在后台改过'}</>}
+      sub={d && <>#{d.rank} · 第 {d.level} 站 {course?.city || ''}{d.difficulty ? ` · ${DIFF[d.difficulty]}` : ''}{d.root && d.root !== d.ms ? ` · 词根 ${d.root}` : ''} · {d.edited ? `${ago(d.updatedAt)}在后台改过` : '没在后台改过'}</>}
       footer={d && <>
         {can('words.publish') && (d.status === 'approved'
           ? <Button variant="outline" disabled={busy} onClick={() => put({ status: 'pending' }, '已下架')}>下架</Button>
@@ -470,6 +485,9 @@ function WordView({ rank, courses, stamp, onEdit, onSaved }: { rank: string; cou
             {d.topic && <Pill>{d.topic}</Pill>}
           </div>
           <MiniStats items={[{ label: '学过的学生', value: n(d.learners.n) }, { label: '已掌握', value: n(d.learners.mastered), tone: 'ok' }, { label: '被答错', value: `${n(d.learners.wrong)} 次`, tone: d.learners.wrong ? 'bad' : undefined }, { label: '义项', value: d.senses.length }]} />
+          <Section title="难度" extra={<span className="text-xs text-text-4">学生按推荐难度学;改了马上生效</span>}>
+            <Segmented label="难度" value={String(d.difficulty || 0)} onChange={v => { if (can('words.edit') && !busy && Number(v) !== d.difficulty) put({ difficulty: Number(v) }, `难度改成「${DIFF[Number(v)]}」`) }} options={DIFF_OPTS} />
+          </Section>
           <Section title={`释义 ${d.senses.length}`}>
             {!d.senses.length ? <div className="text-xs text-text-4">还没有释义</div> : (
               <ol className="divide-y rounded-xl border">

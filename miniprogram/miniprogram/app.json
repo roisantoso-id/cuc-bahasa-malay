@@ -14,7 +14,8 @@
         "stop/stop",
         "book/book",
         "search/search",
-        "word/word"
+        "word/word",
+        "placement/placement"
       ]
     },
     {

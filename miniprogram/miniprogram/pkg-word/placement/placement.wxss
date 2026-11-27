@@ -1,0 +1,44 @@
+/* 入门测评：一套版面，颜色全走主题变量（夜晚词光 / 白天手账都能用） */
+.pt { min-height: 100vh; display: flex; flex-direction: column; padding: var(--s3) var(--s4) calc(var(--s4) + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.pt-grow { flex: 1; min-height: var(--s4); }
+.pt-eb { font-size: var(--t-caption); letter-spacing: .08em; color: var(--ink2); }
+.pt-h { margin-top: var(--s1); }
+.pt-lead { margin-top: var(--s2); font-size: 28rpx; line-height: 1.6; color: var(--ink2); }
+
+/* 五档难度：竖着一条梯子 */
+.pt-ladder { margin-top: var(--s4); border-top: 2rpx solid var(--hair); }
+.pt-step { display: flex; align-items: center; gap: var(--s3); min-height: 104rpx; border-bottom: 2rpx solid var(--hair); }
+.pt-step-n { flex: none; width: 56rpx; height: 56rpx; line-height: 52rpx; text-align: center; border-radius: 50%; border: 2rpx solid var(--star); color: var(--star); font-family: var(--f-ms); font-size: 28rpx; box-sizing: border-box; }
+.pt-step-t { font-size: 30rpx; font-weight: 600; color: var(--strong); }
+
+/* 答题 */
+.pt-top { display: flex; align-items: center; gap: var(--s2); }
+.pt-x { flex: none; width: 64rpx; height: 64rpx; line-height: 60rpx; text-align: center; font-size: 44rpx; color: var(--ink2); }
+.pt-bar { flex: 1; }
+.pt-no { flex: none; min-width: 48rpx; text-align: right; font-size: var(--t-caption); color: var(--ink2); }
+.pt-lv { margin-top: var(--s3); font-size: var(--t-caption); color: var(--star); text-align: center; }
+.pt-word { display: flex; flex-direction: column; align-items: center; gap: var(--s2); margin: var(--s4) 0 var(--s2); }
+.pt-w { font-weight: var(--ms-bold); line-height: 1.15; white-space: nowrap; color: var(--strong); text-align: center; }
+.pt-ask { margin-bottom: var(--s3); font-size: var(--t-caption); color: var(--ink2); text-align: center; }
+.pt-opt { justify-content: flex-start; font-family: var(--f-zh); font-size: 30rpx; line-height: 1.4; }
+.pt-l { flex: none; width: 40rpx; font-family: var(--f-ms); font-size: 26rpx; color: var(--ink2); }
+.pt-ot { flex: 1; min-width: 0; word-break: break-all; }
+.pt-none { justify-content: center; font-family: var(--f-body); color: var(--ink2); border-style: dashed; }
+
+/* 结果 */
+.pt-res { display: flex; flex-direction: column; align-items: center; padding-top: var(--s4); }
+.pt-stamp { width: 168rpx; height: 168rpx; margin-bottom: var(--s3); animation: pt-stamp .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.pt-stamp .s1 { font-size: 34rpx; }
+@keyframes pt-stamp { from { transform: scale(1.6) rotate(-12deg); opacity: 0; } to { transform: scale(1) rotate(-6deg); opacity: 1; } }
+.pt-big { margin: var(--s3) 0 var(--s4); text-align: center; }
+.pt-big-n { font-family: var(--f-ms); font-size: 88rpx; font-weight: 700; color: var(--star); }
+.pt-big-u { display: block; font-size: var(--t-caption); color: var(--ink2); }
+.pt-rows { border-top: 2rpx solid var(--hair); }
+.pt-row { display: flex; align-items: center; gap: var(--s2); min-height: 88rpx; border-bottom: 2rpx solid var(--hair); font-size: 28rpx; }
+.pt-row.rec { color: var(--strong); font-weight: 700; }
+.pt-row-t { flex: none; width: 120rpx; }
+.pt-row-bar { flex: 1; min-width: 0; }
+.pt-row-bar .bar-in.ok { background: var(--ok); }
+.pt-row-n { flex: none; width: 112rpx; text-align: right; font-family: var(--f-ms); font-size: 26rpx; color: var(--ink2); }
+.pt-row-tag { flex: none; width: 112rpx; text-align: right; font-size: 22rpx; color: var(--star); font-weight: 400; }
+.pt-note { margin-top: var(--s3); font-size: 26rpx; line-height: 1.6; color: var(--ink2); }

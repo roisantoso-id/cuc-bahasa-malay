@@ -1,5 +1,5 @@
 .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
-.title { font-size: 32rpx; font-weight: 700; font-family: "Songti SC", "STSong", serif; }
+.title { font-size: 32rpx; font-weight: 700; font-family: var(--f-zh); }
 .nav { width: 88rpx; height: 88rpx; line-height: 84rpx; text-align: center; font-size: 44rpx; color: rgba(243,234,214,.64); }
 .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8rpx; }
 .wk { text-align: center; font-size: 24rpx; color: rgba(243,234,214,.64); padding: 8rpx 0; }

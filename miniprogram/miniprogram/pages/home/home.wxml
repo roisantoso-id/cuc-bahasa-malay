@@ -26,6 +26,7 @@
         <view class="dA-hm-tk-m"><text>站点</text><view class="dA-hm-tk-mb">{{cur ? (cur.level < 10 ? '0' : '') + cur.level + ' ' + cur.city : '—'}}</view></view>
         <view wx:if="{{seq}}" class="dA-hm-tk-m"><text>词序</text><view class="dA-hm-tk-mb dA-latin">{{seq}}</view></view>
         <view class="dA-hm-tk-m"><text>预计</text><view class="dA-hm-tk-mb">{{mins}} 分钟</view></view>
+        <view wx:if="{{h.placement.level}}" class="dA-hm-tk-m" bindtap="placement"><text>难度</text><view class="dA-hm-tk-mb">{{h.placement.label}}</view></view>
       </view>
       <view class="dA-hm-tk-cut"><view class="dA-hm-tk-nt l" /><view class="dA-hm-tk-nt r" /></view>
       <view class="dA-hm-tk-go">
@@ -86,6 +87,15 @@
         <view class="item-main">
           <view>已点亮 <text class="hm-star">{{h.total.learned}}</text> 颗星</view>
           <view class="muted small">{{cur.city}}还有 {{left}} 颗没亮</view>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+
+      <view class="item" hover-class="hover-row" bindtap="placement">
+        <view class="hm-lvl">{{h.placement.level || '?'}}</view>
+        <view class="item-main">
+          <view>{{h.placement.level ? '推荐难度 · ' + h.placement.label : '还没做入门测评'}}</view>
+          <view class="muted small">{{h.placement.vocab ? '估算认识约 ' + h.placement.vocab + ' 个高频词 · ' : ''}}{{h.placement.level ? '重新测评' : '3 分钟测出从哪一档学起'}}</view>
         </view>
         <text class="arrow">›</text>
       </view>

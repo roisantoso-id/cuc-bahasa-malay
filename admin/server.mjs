@@ -19,6 +19,7 @@ import { createBattle } from './battle.mjs'
 import { createAchievements } from './achievements.mjs'
 import { alikeSource } from './alike.mjs'
 import { createTts } from './tts.mjs'
+import { createPlacement, AUTO_DIFF_SQL, DIFFS } from './placement.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(HERE, 'public')
@@ -102,7 +103,15 @@ const COLUMNS = [
   ['students', 'note', `VARCHAR(500) NOT NULL DEFAULT ''`],
   ['words', 'topic', `VARCHAR(32) NOT NULL DEFAULT ''`],
   ['words', 'extra', 'MEDIUMTEXT'], // 例句、搭配、同义 / 反义、提示、配图(词光要用的字段),JSON
-  ['students', 'mascot', `VARCHAR(64) NOT NULL DEFAULT ''`] // 学生选的犀鸟形象（achievements.mjs），当头像用
+  ['students', 'mascot', `VARCHAR(64) NOT NULL DEFAULT ''`], // 学生选的犀鸟形象（achievements.mjs），当头像用
+  // 单词难度和入门测评（placement.mjs）
+  ['words', 'difficulty', 'TINYINT NOT NULL DEFAULT 0'], // 1–5；0 = 还没定，启动和导入后按词频自动补
+  ['progress', 'miss', 'TINYINT NOT NULL DEFAULT 0'], // 测评里答错的词（还没学），新词里先推
+  ['students', 'diff_level', 'TINYINT NOT NULL DEFAULT 0'], // 推荐从哪一档难度学；0 = 还没测
+  ['students', 'placed_at', 'VARCHAR(32)'],
+  ['students', 'placement', 'TEXT'], // 最近一次测评结果 JSON
+  ['students', 'lv_new', 'INT NOT NULL DEFAULT 0'], // 自动调档：推荐档里学了几个新词
+  ['students', 'lv_know', 'INT NOT NULL DEFAULT 0'] //          其中认识几个
 ]
 // rank 在 MySQL 8 是保留字:SQL 里没带表名前缀的 rank 自动加反引号(w.rank / p.rank 这种不用)
 const mySql = sql => sql.replace(/(?<![.\w`])rank\b/g, '`rank`')
@@ -123,6 +132,8 @@ const openLevels = () => STOPS.filter(s => s.published).map(s => s.level)
 const alikeOf = alikeSource(async () => (await all(`SELECT rank, ms, senses FROM words WHERE status = 'approved'`)).map(w => ({ rank: w.rank, ms: w.ms, zh: (JSON.parse(w.senses || '[]').find(s => !s.check) || {}).zh || '' })))
 const battle = createBattle({ all, one, run, day: (o = 0) => day(o), AUDIO_BASE, audioUrl, openLevels, alikeOf, avatarOf: s => ach.imgOf(s.mascot) })
 const ach = createAchievements({ all, one, run, day: (o = 0) => day(o), levelsOf: sid => levelsOf(sid), weekStart: () => battle.weekStart() }) // 成就与犀鸟形象（achievements.mjs） // 好友 PK、周榜、每周擂台（battle.mjs）
+const placement = createPlacement({ all, one, run, tx, day: (o = 0) => day(o), openLevels, audioUrl })
+const fillDifficulty = () => run(`UPDATE words SET difficulty = ${AUTO_DIFF_SQL} WHERE difficulty = 0`)
 let TOKEN_KEY = '' // 小程序 token 的签名密钥:第一次启动随机生成,存在 meta 表里
 
 const str = (v, max = 500) => String(v ?? '').trim().slice(0, max)
@@ -146,6 +157,7 @@ async function importWords(list, { overwriteEdited = false } = {}) {
       if (r.affectedRows) changed++
     }
   })
+  await fillDifficulty()
   return { total: list.length, changed }
 }
 
@@ -167,6 +179,7 @@ async function init() {
     const seed = [join(HERE, '../content/vocab5000/words.json'), join(HERE, 'words.json')].find(existsSync)
     if (seed) console.log('首次启动,导入词库:', await importWords(JSON.parse(readFileSync(seed, 'utf8'))))
   }
+  await fillDifficulty()
   if (!(await one('SELECT 1 FROM teachers LIMIT 1'))) {
     const ins = 'INSERT INTO teachers (name, title, role, bio, photo, sort) VALUES (?, ?, ?, ?, ?, ?)'
     await run(ins, '张静灵', '副教授 · 中国传媒大学马来语专业教师', '课程主持', '长期从事马来语教学与马来世界文化研究。出版专著《同源异流》、马来文专著 Warisan Kebudayaan Minangkabau，译著《马来西亚诗选》；参与编撰《马来语报刊选读》《新经典马来文学史教程》《马来语写作教程》。', '', 1)
@@ -183,7 +196,7 @@ const REVIEW_MAX = 60
 
 function wordOut(w, p) {
   const senses = JSON.parse(w.senses || '[]').filter(s => !s.check)
-  return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, senses, audio: audioUrl(w.audio), box: p && p.box != null ? p.box : -1, fav: !!(p && p.fav), wrong: (p && p.wrong) || 0 }
+  return { rank: w.rank, ms: w.ms, root: w.root, level: w.level, diff: w.difficulty || 0, senses, audio: audioUrl(w.audio), box: p && p.box != null ? p.box : -1, fav: !!(p && p.fav), wrong: (p && p.wrong) || 0 }
 }
 async function streakOf(sid) {
   const days = new Set((await all('SELECT day FROM daily WHERE student_id = ? AND (new_cnt + review_cnt) > 0 AND day >= ?', sid, day(-400))).map(r => r.day))
@@ -207,11 +220,14 @@ function currentLevel(levels) { const l = levels.find(l => l.open && !l.stamped)
 async function home(st) {
   const sid = st.id, today = day()
   const levels = await levelsOf(sid)
+  // 测过的学生：当前站 = 下一个推荐词所在的站
+  const focus = st.diff_level ? await placement.focusLevel(st) : 0
   const d = await one('SELECT * FROM daily WHERE student_id = ? AND day = ?', sid, today) || { new_cnt: 0, review_cnt: 0 }
   const due = (await one('SELECT COUNT(*) n FROM progress WHERE student_id = ? AND seen > 0 AND box < 6 AND due <= ?', sid, today)).n
   const tot = await one('SELECT SUM(CASE WHEN seen > 0 THEN 1 ELSE 0 END) learned, SUM(CASE WHEN box = 6 THEN 1 ELSE 0 END) mastered, COALESCE(SUM(fav), 0) fav, SUM(CASE WHEN wrong > 0 AND box < 6 THEN 1 ELSE 0 END) wrong FROM progress WHERE student_id = ?', sid)
   return {
-    student: studentOut(st), levels, level: currentLevel(levels),
+    student: studentOut(st), levels, level: focus || currentLevel(levels),
+    placement: placement.summary(st), diffs: DIFFS,
     today: { goal: st.daily_new, learned: d.new_cnt, reviewed: d.review_cnt, newLeft: Math.max(st.daily_new - d.new_cnt, 0), due: Number(due) },
     total: { learned: Number(tot.learned || 0), mastered: Number(tot.mastered || 0), fav: Number(tot.fav || 0), wrong: Number(tot.wrong || 0), words: levels.reduce((n, l) => n + l.total, 0) },
     ...(await streakOf(sid))
@@ -219,19 +235,21 @@ async function home(st) {
 }
 
 const COLS = 'w.*, p.box, p.fav, p.wrong'
-// 开一组:mode = today(到期复习 + 今天剩下的新词)/ review / new(level 指定一站,10 个)/ wrong(错词重练)/ fav(收藏)
+// 开一组:mode = today(到期复习 + 今天剩下的新词)/ review / new(level 指定一站,10 个)/ more(再推 10 个新词)/ wrong(错词重练)/ fav(收藏)
+// 测过的学生(diff_level > 0)today / more 的新词按难度推(placement.pickNew),没测过的照旧按站
 async function start(st, b) {
   const sid = st.id, today = day()
-  const mode = ['today', 'review', 'new', 'wrong', 'fav'].includes(b.mode) ? b.mode : 'today'
+  const mode = ['today', 'review', 'new', 'more', 'wrong', 'fav'].includes(b.mode) ? b.mode : 'today'
   let review = [], fresh = []
   if (mode === 'today' || mode === 'review') review = await all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.seen > 0 AND p.box < 6 AND p.due <= ? AND w.status = 'approved' ORDER BY p.due, p.box LIMIT ?`, sid, today, REVIEW_MAX)
   if (mode === 'wrong') review = await all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.wrong > 0 AND p.box < 6 AND w.status = 'approved' ORDER BY p.wrong DESC, p.last_at LIMIT 20`, sid)
   if (mode === 'fav') review = await all(`SELECT ${COLS} FROM progress p JOIN words w ON w.rank = p.rank WHERE p.student_id = ? AND p.fav = 1 AND w.status = 'approved' ORDER BY p.last_at LIMIT 20`, sid)
-  if (mode === 'today' || mode === 'new') {
+  if (mode === 'today' || mode === 'new' || mode === 'more') {
     const d = await one('SELECT new_cnt FROM daily WHERE student_id = ? AND day = ?', sid, today)
-    const left = mode === 'new' ? 10 : Math.max(st.daily_new - (d ? d.new_cnt : 0), 0)
+    const left = mode === 'new' || mode === 'more' ? 10 : Math.max(st.daily_new - (d ? d.new_cnt : 0), 0)
     const level = mode === 'new' ? Number(b.level) || 1 : currentLevel(await levelsOf(sid))
-    if (left) fresh = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE (p.rank IS NULL OR p.seen = 0) AND w.status = 'approved' AND w.level ${mode === 'new' ? '=' : '>='} ? AND w.level IN (?) ORDER BY w.rank LIMIT ?`, sid, level, openLevels().length ? openLevels() : [0], left)
+    if (left && mode !== 'new' && st.diff_level) fresh = await placement.pickNew(st, left, COLS)
+    else if (left) fresh = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE (p.rank IS NULL OR p.seen = 0) AND w.status = 'approved' AND w.level ${mode === 'new' ? '=' : '>='} ? AND w.level IN (?) ORDER BY w.rank LIMIT ?`, sid, level, openLevels().length ? openLevels() : [0], left)
   }
   const items = [...review.map(w => ({ ...wordOut(w, w), kind: 'review' })), ...fresh.map(w => ({ ...wordOut(w, w), kind: 'new' }))]
   // 出题用的干扰项:同一站的其他词
@@ -245,7 +263,8 @@ async function start(st, b) {
 
 async function grade(st, b) {
   const sid = st.id, today = day(), rank = Number(b.rank)
-  if (!await one(`SELECT 1 FROM words WHERE rank = ? AND status = 'approved'`, rank)) throw Object.assign(new Error('没有这个词'), { code: 404 })
+  const wd = await one(`SELECT difficulty FROM words WHERE rank = ? AND status = 'approved'`, rank)
+  if (!wd) throw Object.assign(new Error('没有这个词'), { code: 404 })
   const result = ['know', 'vague', 'forgot', 'mastered'].includes(b.result) ? b.result : 'vague'
   const p = await one('SELECT * FROM progress WHERE student_id = ? AND rank = ?', sid, rank)
   const isNew = !p || !p.seen
@@ -267,7 +286,9 @@ async function grade(st, b) {
       sid, today, isNew ? 1 : 0, reviewCounted ? 1 : 0, result === 'know' || result === 'mastered' ? 1 : 0)
     await c.run('UPDATE students SET last_active_at = ? WHERE id = ?', now, sid)
   })
-  return { ok: true, box, due }
+  // 测过的学生学新词：攒够一批看看要不要升降一档（levelChange 给小程序提示）
+  const levelChange = isNew ? await placement.adjust(st, Number(wd.difficulty) || 0, result) : null
+  return { ok: true, box, due, levelChange }
 }
 
 async function book(st, type, page) {
@@ -393,6 +414,9 @@ async function appApi(req, res, p, url) {
   const br = await battle.handle(st, p, req, url, body)
   if (br !== undefined) return send(res, 200, br)
   if (p === '/api/app/home') return send(res, 200, await home(st))
+  // 入门测评：GET 出题，POST 交卷（或 { skip: true } 先不测）
+  if (p === '/api/app/placement' && req.method === 'GET') return send(res, 200, await placement.questions())
+  if (p === '/api/app/placement' && req.method === 'POST') return send(res, 200, await placement.submit(st, await body(req)))
   if (p === '/api/app/start' && req.method === 'POST') return send(res, 200, await start(st, await body(req)))
   if (p === '/api/app/grade' && req.method === 'POST') return send(res, 200, await grade(st, await body(req)))
   if (p === '/api/app/fav' && req.method === 'POST') {
@@ -405,7 +429,7 @@ async function appApi(req, res, p, url) {
   if (p === '/api/app/level') {
     const level = Number(url.searchParams.get('level')) || 1
     const rows = await all(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.level = ? AND w.status = 'approved' ORDER BY w.rank`, st.id, level)
-    return send(res, 200, { stop: (await levelsOf(st.id)).find(l => l.level === level), words: rows.map(w => { const o = wordOut(w, w); return { rank: o.rank, ms: o.ms, zh: (o.senses[0] || {}).zh || '', pos: (o.senses[0] || {}).pos || '', box: o.box, fav: o.fav, audio: o.audio } }) })
+    return send(res, 200, { stop: (await levelsOf(st.id)).find(l => l.level === level), words: rows.map(w => { const o = wordOut(w, w); return { rank: o.rank, ms: o.ms, zh: (o.senses[0] || {}).zh || '', pos: (o.senses[0] || {}).pos || '', diff: o.diff, box: o.box, fav: o.fav, audio: o.audio } }) })
   }
   if (p === '/api/app/word') {
     const w = await one(`SELECT ${COLS} FROM words w LEFT JOIN progress p ON p.rank = w.rank AND p.student_id = ? WHERE w.rank = ? AND w.status = 'approved'`, st.id, Number(url.searchParams.get('rank')))

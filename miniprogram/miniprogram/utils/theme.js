@@ -49,7 +49,9 @@ const DAY = {
   '--fb-bad': '#f6e1da',
   '--tag-blue': '#2f6f95',
   '--tag-blue-l': 'rgba(47,111,149,.1)',
-  '--bar': '#fffdf8'
+  '--bar': '#fffdf8',
+  '--ms-style': 'normal',          // 马来语单词：白天手账用正体（夜晚斜体）
+  '--ms-bold': '400'               // 大号单词字重：白天常规（夜晚 700）
 }
 const DAY_STYLE = Object.keys(DAY).map(k => `${k}:${DAY[k]}`).join(';')
 const NIGHT_BG = '#0a1f22', DAY_BG = '#f4eee1'

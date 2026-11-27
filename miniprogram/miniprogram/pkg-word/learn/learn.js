@@ -41,7 +41,7 @@ const marks = (ex, ms) => {
   return [{ t: ex.slice(0, m.index) }, { t: m[1], hit: 1 }, { t: ex.slice(m.index + m[1].length) }].filter(x => x.t)
 }
 const prep = c => ({ ...c, hints: hintsOf(c), first: c.kind === 'new' && !c.again, senses: (c.senses || []).map(s => ({ ...s, parts: marks(s.exMs, c.ms) })) })
-const TITLES = { today: '今日车票', review: '复习', new: '新词', wrong: '错词重练', fav: '收藏重练' }
+const TITLES = { today: '今日车票', review: '复习', new: '新词', more: '新词', wrong: '错词重练', fav: '收藏重练' }
 // 白天版小测顶上的小格子：每格一题，y 对 n 错 v 模糊；超过 30 格太密，改用细进度条（list 为 null）
 const pipsOf = (marks, n, cur) => ({ n, cur, list: n <= 30 ? Array.from({ length: n }, (_, i) => marks[i] || '') : null })
 const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 10).replace('-', '.')
@@ -139,7 +139,11 @@ Page({
     if (this.data.busy) return
     const card = this.data.card
     this.setData({ busy: true, [`stats.${result}`]: this.data.stats[result] + 1 })
-    try { await vocab.grade(card.rank, result) } catch (err) { wx.showToast({ title: '没保存上：' + err.message, icon: 'none' }) }
+    try {
+      const r = await vocab.grade(card.rank, result)
+      // 推荐档里认识得多 / 太难，服务端自动升降一档
+      if (r && r.levelChange) { getApp().globalData.dirty = true; wx.showToast({ title: r.levelChange.up ? `学得很顺，升到「${r.levelChange.label}」` : `先降到「${r.levelChange.label}」打牢基础`, icon: 'none', duration: 2500 }) }
+    } catch (err) { wx.showToast({ title: '没保存上：' + err.message, icon: 'none' }) }
     if (result === 'forgot' && !this.retried.has(card.rank)) {
       this.retried.add(card.rank)
       this.queue.splice(Math.min(3, this.queue.length), 0, { ...card, again: true })

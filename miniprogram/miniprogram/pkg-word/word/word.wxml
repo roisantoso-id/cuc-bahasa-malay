@@ -5,7 +5,7 @@
   <hb-empty wx:elif="{{view === 'error'}}" image="fail" title="{{error}}" />
   <block wx:else>
     <view class="between">
-      <text class="no muted small">№ {{w.rank}} · 第 {{w.level}} 站</text>
+      <text class="no muted small">№ {{w.rank}} · 第 {{w.level}} 站{{diff ? ' · 难度 ' + diff : ''}}</text>
       <view class="wd-fav-wrap"><view class="wd-fav {{w.fav ? 'on' : ''}} {{favPop ? 'pop' : ''}}" bindtap="fav"><image class="wd-fav-i" src="/assets/fx/{{w.fav ? 'star-amber' : (th.day ? 'star-line-day' : 'star-line')}}.svg" />{{w.fav ? '已收藏' : '收藏'}}</view><fx-burst fire="{{favFx}}" /></view>
     </view>
     <view class="wd-head">

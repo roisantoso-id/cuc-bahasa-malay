@@ -122,9 +122,9 @@ export function ActiveFilters({ total, items, onClear }: { total: number; items:
     <div className="flex flex-wrap items-center gap-1.5 border-b bg-[#FCFCFD] px-4 py-2 text-xs text-text-3">
       <span>筛出 <b className="num text-foreground">{n(total)}</b> 个:</span>
       {items.map(i => (
-        <button key={i.label} type="button" onClick={i.clear} className="inline-flex h-6 items-center gap-1 rounded-full bg-blue-bg px-2 text-blue hover:bg-blue-line/50">{i.label}<X className="size-3" /></button>
+        <button key={i.label} type="button" onClick={i.clear} className="inline-flex h-6 items-center gap-1 rounded-full bg-blue-bg px-2 text-blue hover:bg-blue-line/50 max-sm:h-9 max-sm:px-3">{i.label}<X className="size-3" /></button>
       ))}
-      <button type="button" onClick={onClear} className="ml-1 text-text-3 underline-offset-2 hover:text-foreground hover:underline">清空</button>
+      <button type="button" onClick={onClear} className="ml-1 inline-flex h-6 items-center text-text-3 underline-offset-2 hover:text-foreground hover:underline max-sm:h-9 max-sm:px-2">清空</button>
     </div>
   )
 }

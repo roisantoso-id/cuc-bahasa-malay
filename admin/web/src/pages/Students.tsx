@@ -12,12 +12,16 @@ import { useDebounced, useFetch } from '@/lib/use-fetch'
 import { ago, full, n } from '@/lib/format'
 import { ActiveFilters, Avatar, Chips, Empty, ErrorLine, Field, Kpis, Loading, MiniStats, PageHeader, Pager, Panel, Pill, SearchBox, Section, Segmented, SidePanel, Toolbar, rowClick, useConfirm } from '@/components/app/ui'
 
-type Row = { id: number; name: string; school: string; className: string; track: string; phone: string; status: string; note: string; dailyNew: number; learned: number; mastered: number; days: number; createdAt: string; lastActiveAt: string }
+type Row = { id: number; name: string; school: string; className: string; track: string; diffLevel: number; diffLabel: string; placedAt: string; vocab: number | null; placeSkipped: boolean; phone: string; status: string; note: string; dailyNew: number; learned: number; mastered: number; days: number; createdAt: string; lastActiveAt: string }
 type List = { total: number; page: number; size: number; counts: { total: number; disabled: number | null; active7: number | null; idle: number | null; some: number | null }; rows: Row[] }
 type Level = { level: number; city: string; total: number; learned: number; mastered: number; published: boolean; stamped: boolean }
-type Detail = { student: Row; total: { learned: number; mastered: number; fav: number; wrong: number; studyDays: number }; days: { day: string; new: number; review: number }[]; boxes: number[]; levels: Level[]; streak: number; checkedToday: boolean; wrong: { rank: number; ms: string; zh: string; wrong: number; box: number }[] }
+type Placement = { at: string; level: number; known: number; vocab: number; per: { d: number; label: string; asked: number; correct: number }[] }
+type Detail = { student: Row & { placement: Placement | null }; total: { learned: number; mastered: number; fav: number; wrong: number; studyDays: number }; days: { day: string; new: number; review: number }[]; boxes: number[]; levels: Level[]; streak: number; checkedToday: boolean; wrong: { rank: number; ms: string; zh: string; wrong: number; box: number }[] }
 
 const TRACK: Record<string, string> = { zero: '零基础', some: '会说一些' }
+const DIFF = ['没测', '入门', '初级', '中级', '中高级', '高级'] // 和 admin/placement.mjs 一致
+// 推荐难度一句话：中级 · 约 1,200 词 / 跳过了测评 / 没测
+const placeText = (r: Row) => !r.diffLevel ? '没测' : `${DIFF[r.diffLevel]}${r.placeSkipped ? ' · 跳过了测评' : r.vocab != null ? ` · 约 ${n(r.vocab)} 词` : ''}`
 const ACTIVE = [{ value: '', label: '全部' }, { value: '7d', label: '近 7 天在学' }, { value: 'idle', label: '两周没来' }] as const
 
 export function Students() {
@@ -64,7 +68,7 @@ export function Students() {
         {!data ? (loading ? <Loading /> : null) : !data.rows.length ? <Empty>{filters.length ? '没有符合条件的学生' : '还没有学生注册。学生在小程序里填完资料就会出现在这里'}</Empty> : (
           <table className="jb-table">
             <thead><tr>
-              <th>学生</th><th className="hidden md:table-cell">起点</th>
+              <th>学生</th><th className="hidden md:table-cell" title="注册时选的起点 / 入门测评推荐的难度">起点 · 难度</th>
               <th title="已学 = 学过至少一次的词;已掌握 = 进了第 6 个盒子">学习</th>
               <th className="r hidden sm:table-cell" title="有学习记录的天数">学习天数</th>
               <th className="r">最近活跃</th><th className="w-8" />
@@ -76,7 +80,7 @@ export function Students() {
                     <div className="flex items-center gap-1.5 truncate font-medium">{r.name || '没填名字'}{r.status === 'disabled' && <Pill tone="bad">已停用</Pill>}</div>
                     <div className="truncate text-xs text-text-4" title={`${r.school} ${r.className}`}>{[r.school, r.className].filter(Boolean).join(' · ') || '没填学校'}</div>
                   </div></div></td>
-                  <td className="nw hidden md:table-cell"><Pill tone={r.track === 'some' ? 'blue' : 'off'}>{TRACK[r.track] || '零基础'}</Pill></td>
+                  <td className="nw hidden md:table-cell"><Pill tone={r.track === 'some' ? 'blue' : 'off'}>{TRACK[r.track] || '零基础'}</Pill><div className={`mt-1 text-xs ${r.diffLevel ? 'text-text-3' : 'text-text-4'}`} title={r.placedAt ? `测评于 ${full(r.placedAt)}` : '还没做入门测评'}>{placeText(r)}</div></td>
                   <td className="nw"><div className="num text-[13px]"><b>{n(r.learned)}</b> <span className="text-text-3">· 掌握 {n(r.mastered)}</span></div>
                     <div className="mt-1 h-1 w-28 jb-progress overflow-hidden rounded-full bg-secondary"><div className="h-full rounded-full bg-ok" style={{ width: `${r.learned ? r.mastered / r.learned * 100 : 0}%` }} /></div></td>
                   <td className="r num hidden sm:table-cell">{r.days ? `${r.days} 天` : <span className="text-text-4">—</span>}</td>
@@ -130,6 +134,7 @@ function StudentPanel({ id, onClose, onSaved }: { id: number; onClose: () => voi
             {s.student.status === 'disabled' ? <Pill tone="bad" dot>已停用</Pill> : <Pill tone="ok" dot>正常</Pill>}
             <Pill tone={s.student.track === 'some' ? 'blue' : 'off'}>{TRACK[s.student.track] || '零基础'}</Pill>
             <Pill>每天新词 {s.student.dailyNew}</Pill>
+            <Pill tone={s.student.diffLevel ? 'blue' : 'off'} title={s.student.placedAt ? `测评于 ${full(s.student.placedAt)}` : '还没做入门测评'}>推荐难度 {placeText(s.student)}</Pill>
             {s.checkedToday && <Pill tone="ok">今天已打卡</Pill>}
           </div>
           <MiniStats items={[
@@ -145,6 +150,17 @@ function StudentPanel({ id, onClose, onSaved }: { id: number; onClose: () => voi
                 </div>
                 <div className="mt-1 flex justify-between text-[11px] text-text-4"><span>{s.days[0]?.day.slice(5)}</span><span>今天</span></div>
               </Section>
+              {s.student.placement?.per?.length ? (
+                <Section title="入门测评" extra={<span className="text-xs text-text-4" title={full(s.student.placement.at)}>{ago(s.student.placement.at)} · 每档 6 题,答对 4 个算会</span>}>
+                  <table className="jb-table rounded-lg border"><tbody>
+                    {s.student.placement.per.map(p => (
+                      <tr key={p.d}><td className="nw">{p.label}{p.d === s.student.placement!.level && <span className="ml-1.5"><Pill tone="blue">从这里学</Pill></span>}</td>
+                        <td className="w-[45%]"><div className="h-1.5 jb-progress overflow-hidden rounded-full bg-secondary"><div className={`h-full rounded-full ${p.d <= s.student.placement!.known ? 'bg-ok' : 'bg-blue'}`} style={{ width: `${p.correct / 6 * 100}%` }} /></div></td>
+                        <td className="r num nw text-xs text-text-3">{p.asked ? `${p.correct} / ${p.asked}` : '没测到'}</td></tr>
+                    ))}
+                  </tbody></table>
+                </Section>
+              ) : null}
               <Section title="每一站">
                 <table className="jb-table rounded-lg border"><tbody>
                   {s.levels.map(l => (
@@ -174,6 +190,7 @@ function StudentPanel({ id, onClose, onSaved }: { id: number; onClose: () => voi
                 <Field label="学校"><Input value={f.school || ''} onChange={e => setF({ ...f, school: e.target.value })} /></Field>
                 <Field label="班级"><Input value={f.className || ''} onChange={e => setF({ ...f, className: e.target.value })} /></Field>
                 <Field label="起点"><Segmented label="起点" value={(f.track || 'zero') as string} onChange={v => setF({ ...f, track: v })} options={[{ value: 'zero', label: '零基础' }, { value: 'some', label: '会说一些' }]} /></Field>
+                <Field label="推荐难度" className="sm:col-span-2" hint="新词从这一档推起;改成「没测」学生下次打开小程序会重新测评"><Segmented label="推荐难度" value={String(f.diffLevel ?? 0)} onChange={v => setF({ ...f, diffLevel: Number(v) })} options={DIFF.map((l, i) => ({ value: String(i), label: l }))} /></Field>
                 <Field label="每天新词"><Segmented label="每天新词" value={String(f.dailyNew || 20)} onChange={v => setF({ ...f, dailyNew: Number(v) })} options={['10', '20', '30', '50'].map(v => ({ value: v, label: v }))} /></Field>
                 <Field label="老师备注" className="sm:col-span-2" hint="学生看不到"><Textarea rows={3} value={f.note || ''} onChange={e => setF({ ...f, note: e.target.value })} placeholder="例如:插班生,先从第 2 站开始" /></Field>
               </fieldset>

@@ -38,6 +38,7 @@
         <view class="dA-me-row" hover-class="hover" data-url="/pkg-word/book/book?type=wrong" bindtap="go"><text class="dA-me-rt">错词本</text><text class="dA-me-rx">{{total.wrong}} 个 ›</text></view>
         <view class="dA-me-row" hover-class="hover" data-url="/pkg-word/book/book?type=fav" bindtap="go"><text class="dA-me-rt">收藏</text><text class="dA-me-rx">{{total.fav}} 个 ›</text></view>
         <view class="dA-me-row" hover-class="hover" data-url="/pkg-me/wardrobe/wardrobe" bindtap="go"><text class="dA-me-rt">犀鸟衣柜</text><text class="dA-me-rx">{{costumeN}} 套 · {{badgeN}} 枚徽章 ›</text></view>
+        <view class="dA-me-row" hover-class="hover" data-url="/pkg-word/placement/placement" bindtap="go"><text class="dA-me-rt">难度测评</text><text class="dA-me-rx">{{place.level ? place.label + ' · 重新测评' : '还没测'}} ›</text></view>
         <view class="dA-me-row" hover-class="hover" data-url="/pkg-me/more/more" bindtap="go"><text class="dA-me-rt">设置与关于</text><text class="dA-me-rx">›</text></view>
       </view>
     </view>
@@ -97,6 +98,13 @@
           <view class="me-bt"><view class="me-bf {{item.today ? 'today' : ''}}" style="height:{{item.h}}%" /></view>
           <view class="me-bl {{item.today ? 'today' : ''}}">{{item.label}}</view>
         </view>
+      </view>
+    </view>
+
+    <view class="list me-place">
+      <view class="item" hover-class="hover-row" data-url="/pkg-word/placement/placement" bindtap="go">
+        <view class="item-main"><view>难度测评</view><view class="muted small">{{place.level ? '推荐难度 · ' + place.label + (place.vocab ? ' · 约 ' + place.vocab + ' 词' : '') : '还没测，3 分钟测出从哪一档学起'}}</view></view>
+        <text class="muted small">{{place.level ? '重新测评' : '去测'}}</text><text class="arrow">›</text>
       </view>
     </view>
 
